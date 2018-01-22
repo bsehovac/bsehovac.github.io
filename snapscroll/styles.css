@@ -1,0 +1,15 @@
+* { position: relative; box-sizing: border-box; }
+html, body { margin: 0; padding: 0; overflow-x: hidden; }
+
+.container { width: 60vw; background: #f5f5f5; margin: 0 auto; padding: 5vw 0; }
+.viewport { width: 60vw; height: 20vw; margin: 5vw auto; /*overflow: hidden;*/ }
+
+.holder { font-size: 0; height: 100%; white-space: nowrap; display: inline-block; }
+
+.item { display: inline-block; width: 60vw; height: 20vw; border-radius: 2vw;}
+.item:last-child { margin-right: 0 !important; }
+.item i { font-size: 6vw; color: rgba(0, 0, 0, 0.1); position: absolute; top: 50%; left: 50%; transform: translate3d(-50%, -50%, 0); }
+
+.viewport.red .item { background: #f5dddd; margin-right: 2vw; }
+.viewport.green .item { background: #ddf5dd; width: 29vw; margin-right: 2vw; }
+.viewport.blue .item { background: #ddddf5; width: 18.66vw; margin-right: 2vw; }
