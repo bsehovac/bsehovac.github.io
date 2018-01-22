@@ -153,7 +153,7 @@ article .code pre {
 }
 
 @media (max-width: 760px) {
-  html { font-size: 8.5px; }
+  html { font-size: 9px; }
   article .code {
     margin: 3.5rem -10vw;
     border-radius: 0;
