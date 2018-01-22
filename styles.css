@@ -116,12 +116,9 @@ article main p {
 
 article intro p {
   margin-top: 5rem;
-}
-
-article intro {
   display: block;
   color: #718ca1;
-  font-size: 1.8rem;
+  font-size: 1.75rem;
 }
 
 .code, .code pre, .code code {
@@ -156,6 +153,7 @@ article .code pre {
 }
 
 @media (max-width: 760px) {
+  html { font-size: 9px; }
   article .code {
     margin: 3.5rem -10vw;
     border-radius: 0;
@@ -166,5 +164,8 @@ article .code pre {
   .code code {
     white-space: pre-wrap !important;
     word-break: break-word !important;
+  }
+  article {
+    padding: 7.2rem 0;
   }
 }
