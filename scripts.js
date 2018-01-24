@@ -1,9 +1,12 @@
 Prism.highlightAll(false);
 
-/*var lineNumbers = document.getElementById('line-numbers');
+var title = document.querySelector('h1');
+var titleText = title.innerHTML;
+var titleChar = 0;
+title.innerHTML = '';
 
-for (var i = 0; i < 100; i++) {
-  var number = document.createElement('p');
-  number.innerHTML = i;
-  lineNumbers.appendChild(number);
-}*/
+var titleTyping = setInterval(function() {
+  title.innerHTML += titleText.charAt(titleChar);
+  titleChar++;
+  if (titleChar == titleText.length) clearTimeout(titleTyping);
+}, 100);
