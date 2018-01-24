@@ -178,6 +178,9 @@ window:before {
 }
 
 @media (max-width: 700px) {
+  html {
+    font-size: 9.5px;
+  }
   header, article, footer {
     width: calc(100% - 8rem);
   }
