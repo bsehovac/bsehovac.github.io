@@ -115,13 +115,11 @@ article h1 {
 }
 
 article h1:after {
-  content: '';
+  content: '\258F';
   display: inline-block;
   width: 0.3rem;
-  background: #696969;
-  height: 1em;
   vertical-align: bottom;
-  /*margin-left: 1.6rem;*/
+  color: #696969;
   animation: 1.25s blink step-end infinite;
 }
 
