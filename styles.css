@@ -1,4 +1,12 @@
 /*
+ *
+ * INSPIRATION
+ *
+ * https://dixonandmoe.com/rellax/
+ * 
+ */
+
+/*
  * CSS RESET
  */
 
@@ -81,13 +89,7 @@ body {
   font-weight: 400;
   background: #191919;
   color: #b9b9b9;
-  font-size: 1.6rem;
-}
-
-header, article, footer {
-  width: calc(100% - 20rem);
-  max-width: 115rem;
-  margin: 0 auto;
+  font-size: 1.5rem;
 }
 
 footer {
@@ -97,7 +99,10 @@ footer {
 }
 
 container {
-  width: 50rem;
+  width: 60rem;
+  max-width: 90vw;
+  max-width: calc(100vw - 4rem);
+  margin: 0 auto;
 }
 
 header {
@@ -128,24 +133,82 @@ article h1:after {
   50% { opacity:1; }
 }
 
-article h2 {
-  margin-top: 4rem;
-  font-size: 3.4rem;
+h2 {
+  margin-top: 3.5rem;
+  font-size: 3rem;
   color: #ffffff;
 }
 
-article p {
+h3 {
   margin-top: 3rem;
-  line-height: 1.75;
+  font-size: 2.5rem;
+  color: #ffffff;
+}
+
+h4 {
+  margin-top: 2.5rem;
+  font-size: 2rem;
+  color: #ffffff;
+}
+
+/*h3.underline {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #696969;
+}*/
+
+article p {
+  line-height: 1.7;
+}
+
+article p, article ul, article pre, table {
+  margin-top: 2rem;
 }
 
 article h1 + p {
-  margin-top: 4.5rem;
+  margin-top: 4rem;
   color: #8e8e8e;
   font-size: 1.7rem;
 }
 
-h1 + p:before {
+ul {
+  line-height: 1.7;
+}
+
+ul li {
+  padding-left: 2rem;
+}
+
+ul li+li {
+  margin-top: 0.5rem;
+}
+
+ul li:before {
+  position: absolute;
+  content: '\2022';
+  left: 0;
+  top: 0;
+}
+
+table td {
+  vertical-align: top;
+  padding-left: 2rem;
+  padding-top: 1rem;
+}
+
+table tr:first-child td {
+  text-align: left;
+  color: #fff;
+  vertical-align: top;
+  padding-top: 0;
+  padding-bottom: 1rem;
+}
+
+table td:first-child {
+  padding-left: 0;
+}
+
+
+/*h1 + p:before {
   content: '<!-- ';
   white-space: nowrap;
 }
@@ -153,12 +216,13 @@ h1 + p:before {
 h1 + p:after {
   content: ' -->';
   white-space: nowrap;
-}
+}*/
 
 pre {
-  background: #1f1f1f !important;
+  background: #333333 !important;/*#1f1f1f !important;*/
   border-radius: 1rem;
-  margin: 3rem -4rem 0;
+  margin-left: -4rem;
+  margin-right: -4rem;
   padding: 3rem 4rem;
   font-size: 1.5rem;
   line-height: 1.5;
@@ -175,21 +239,13 @@ window:before {
   letter-spacing: 0.4rem;
 }
 
-@media (max-width: 700px) {
-  html {
-    font-size: 9.5px;
-  }
-  header, article, footer {
-    width: calc(100% - 8rem);
-  }
-  container {
-    width: 100%;
-  }
+@media (max-width: 600px) {
   pre {
-    margin: 3.5rem -4rem 0;
-    border-radius: 0;
-    padding: 3rem 4rem;
-    overflow-x: auto;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+  pre::-webkit-scrollbar {
+    display: none;
   }
   article {
     padding: 3rem 0;
@@ -198,3 +254,65 @@ window:before {
     font-size: 3.7rem;
   }
 }
+
+/*
+███████  ██████ ██████   ██████  ██      ██      ███████ ███    ██  █████  ██████  
+██      ██      ██   ██ ██    ██ ██      ██      ██      ████   ██ ██   ██ ██   ██ 
+███████ ██      ██████  ██    ██ ██      ██      ███████ ██ ██  ██ ███████ ██████  
+     ██ ██      ██   ██ ██    ██ ██      ██           ██ ██  ██ ██ ██   ██ ██      
+███████  ██████ ██   ██  ██████  ███████ ███████ ███████ ██   ████ ██   ██ ██      
+*/
+
+.scrollsnap,
+.scrollsnap .viewport,
+.scrollsnap .item {
+  width: 60rem;
+  max-width: 90vw;
+  max-width: calc(100vw - 4rem);
+  height: 24rem;
+}
+
+.scrollsnap {
+  margin-top: 2rem;
+}
+
+.scrollsnap .holder {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 0.1px;
+}
+
+.scrollsnap .item {
+  line-height: 24rem;
+  font-size: 4rem;
+  color: #fff;
+  text-align: center;
+  margin-right: 2rem;
+  background: #333333;
+  border-radius: 0.5rem;
+  display: inline-block;
+}
+
+.scrollsnap .item:last-child {
+  margin-right: 0;
+}
+
+/*.scrollsnap:before,
+.scrollsnap:after {
+  content: '';
+  width: calc((100% - 200px) / 2);
+  height: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.scrollsnap:before {
+  left: 0;
+  background-image: linear-gradient(90deg, #191919 0%, rgba(25, 25, 25, 0) 100%);
+}
+.scrollsnap:after {
+  right: 0;
+  background-image: linear-gradient(270deg, #191919 0%, rgba(25, 25, 25, 0) 100%);
+}*/

@@ -10,3 +10,10 @@ var titleTyping = setInterval(function() {
   titleChar++;
   if (titleChar == titleText.length) clearTimeout(titleTyping);
 }, 100);
+
+
+var viewport = document.querySelectorAll('.scrollsnap .viewport');
+var scrollsnap = [];
+for (var i = 0; i < viewport.length; i++) {
+  scrollsnap[i] = new ScrollSnap(viewport[i], { start: 0 });
+}
