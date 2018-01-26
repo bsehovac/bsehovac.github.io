@@ -385,7 +385,7 @@
       Window[RemoveListener]("t", options, options);
     } catch(err) { Supported = false; }
 
-    return Supported ? { passive: false } : false;
+    return /*Supported ? { passive: false } :*/ false;
   }
 
   function Translate3D(x) {
