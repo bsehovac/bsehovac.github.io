@@ -343,7 +343,7 @@
     var CallbackEnd = callbacks[2];
 
     var Touch = (EventStart == 'touchstart') ? true : false;
-    var Win = (Touch) ? el : Window;
+    var Win = (Touch) ? el : document;
     el[AddListener](EventStart, OnTouchStart, false);
 
     function OnTouchStart(e) {
