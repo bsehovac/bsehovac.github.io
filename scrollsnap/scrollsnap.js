@@ -343,21 +343,23 @@
     var CallbackEnd = callbacks[2];
 
     var Touch = (EventStart == 'touchstart') ? true : false;
-    var Win = (Touch) ? el : document;
-    el[AddListener](EventStart, OnTouchStart, false);
+    var Win = (Touch) ? el : Window;
+    el[AddListener](EventStart, OnTouchStart);
 
     function OnTouchStart(e) {
       CallbackStart(e, Touch);
-      Win[AddListener](EventMove, OnTouchMove, false);
-      Win[AddListener](EventEnd, OnTouchEnd, false);
+      Win[AddListener](EventMove, OnTouchMove);
+      Win[AddListener](EventEnd, OnTouchEnd);
+      Win[AddListener]('touchmove', function() {});
     }
     function OnTouchMove(e) {
       CallbackMove(e, Touch);
     }
     function OnTouchEnd(e) {
       CallbackEnd(e, Touch);
-      Win[RemoveListener](EventMove, OnTouchMove, false);
-      Win[RemoveListener](EventEnd, OnTouchEnd, false); 
+      Win[RemoveListener](EventMove, OnTouchMove);
+      Win[RemoveListener](EventEnd, OnTouchEnd); 
+      Win[RemoveListener]('touchmove', function() {});
     }
   }
 
