@@ -154,14 +154,12 @@
         if (Distance.d > MinDistance && Distance.a > MinAngle) {
           DragStarted = true;
           DragDelta = { x: 0, y: 0 };
-
+          Window[AddListener](TouchEvents[1], function() {});
           OnDragStart();
-
         } else if (Distance.d > MinDistance && Distance.a < MinAngle) {
           DragStarted = false;
           DragActive = false;
         }
-
       }
 
       DragStart = DragCurrent;
@@ -192,6 +190,7 @@
 
       GoToPosition(SlideCurrent, Duration);
 
+      Window[RemoveListener](TouchEvents[1], function() {});
       DragStarted = false;
       DragActive = false;
 
@@ -350,7 +349,6 @@
       CallbackStart(e, Touch);
       Win[AddListener](EventMove, OnTouchMove);
       Win[AddListener](EventEnd, OnTouchEnd);
-      Win[AddListener]('touchmove', function() {});
     }
     function OnTouchMove(e) {
       CallbackMove(e, Touch);
@@ -359,7 +357,6 @@
       CallbackEnd(e, Touch);
       Win[RemoveListener](EventMove, OnTouchMove);
       Win[RemoveListener](EventEnd, OnTouchEnd); 
-      Win[RemoveListener]('touchmove', function() {});
     }
   }
 
