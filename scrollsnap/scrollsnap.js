@@ -11,7 +11,6 @@
   var TransitionTimingFunction = 'transitionTimingFunction';
   var TransitionDuration = 'transitionDuration';
   var TransitionProperty = 'transitionProperty';
-  var TouchPassive = TouchPassiveSupport();
 
   var MinDistance = 5;
   var MinAngle = 55;
@@ -35,7 +34,7 @@
 
     var OnStart     = SetOption(Options.start, false);
     var Duration    = SetOption(Options.duration, 350);
-    var Easing      = SetOption(Options.easing, 'ease');
+    var Easing      = SetOption(Options.easing, 'cubic-bezier(0,0,0.25,1)');
     var HolderClass = SetOption(Options.holderClass, 'holder');
     var ItemClass   = SetOption(Options.itemClass, 'item');
     var Overscroll  = SetOption(Options.overscroll, false);
@@ -51,8 +50,8 @@
 
     var CallBacks = [TouchStart, TouchMove, TouchEnd];
 
-    TouchControls(Holder, MouseEvents, CallBacks, TouchPassive);
-    TouchControls(Holder, TouchEvents, CallBacks, TouchPassive);
+    TouchControls(Holder, MouseEvents, CallBacks);
+    TouchControls(Holder, TouchEvents, CallBacks);
 
     if (AutoRefresh) EnableRefreshListener(ScrollSnap);
 
@@ -318,7 +317,7 @@
         for (var i = 0; i < RefreshElements.length; i++) {
           RefreshElements[i].refresh();
         }
-      }, false);
+      });
     }
   }
 
@@ -335,7 +334,7 @@
     return { x: e.pageX, y: e.pageY };
   }
 
-  function TouchControls(el, events, callbacks, passive) {
+  function TouchControls(el, events, callbacks) {
     var EventStart = events[0];
     var EventMove = events[1];
     var EventEnd = events[2];
@@ -344,20 +343,21 @@
     var CallbackEnd = callbacks[2];
 
     var Touch = (EventStart == 'touchstart') ? true : false;
-    el[AddListener](EventStart, OnTouchStart, passive);
+    var Win = (Touch) ? el : Window;
+    el[AddListener](EventStart, OnTouchStart, false);
 
     function OnTouchStart(e) {
       CallbackStart(e, Touch);
-      Window[AddListener](EventMove, OnTouchMove, passive);
-      Window[AddListener](EventEnd, OnTouchEnd, passive);
+      Win[AddListener](EventMove, OnTouchMove, false);
+      Win[AddListener](EventEnd, OnTouchEnd, false);
     }
     function OnTouchMove(e) {
       CallbackMove(e, Touch);
     }
     function OnTouchEnd(e) {
       CallbackEnd(e, Touch);
-      Window[RemoveListener](EventMove, OnTouchMove, passive);
-      Window[RemoveListener](EventEnd, OnTouchEnd, passive); 
+      Win[RemoveListener](EventMove, OnTouchMove, false);
+      Win[RemoveListener](EventEnd, OnTouchEnd, false); 
     }
   }
 
@@ -369,23 +369,6 @@
 
   function SetOption(inputValue, defaultValue) {
     return (typeof inputValue == 'undefined') ? defaultValue : inputValue;
-  }
-
-  function TouchPassiveSupport() {
-    var Supported = false;
-
-    try {
-      var options = Object.defineProperty({}, "passive", {
-        get: function() {
-          Supported = true;
-        }
-      });
-
-      Window[AddListener]("t", options, options);
-      Window[RemoveListener]("t", options, options);
-    } catch(err) { Supported = false; }
-
-    return /*Supported ? { passive: false } :*/ false;
   }
 
   function Translate3D(x) {

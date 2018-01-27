@@ -219,13 +219,17 @@ h1 + p:after {
 }*/
 
 pre {
-  background: #333333 !important;/*#1f1f1f !important;*/
+  background: #222222 !important;
   border-radius: 1rem;
   margin-left: -4rem;
   margin-right: -4rem;
   padding: 3rem 4rem;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   line-height: 1.5;
+}
+
+pre * {
+  background: #222222 !important;
 }
 
 window:before {
@@ -263,56 +267,84 @@ window:before {
 ███████  ██████ ██   ██  ██████  ███████ ███████ ███████ ██   ████ ██   ██ ██      
 */
 
-.scrollsnap,
-.scrollsnap .viewport,
-.scrollsnap .item {
+.hidden-code {
+  display: none;
+}
+
+.scrollsnap-holder .scrollsnap,
+.scrollsnap-holder .item {
   width: 60rem;
   max-width: 90vw;
   max-width: calc(100vw - 4rem);
   height: 24rem;
 }
 
-.scrollsnap {
-  margin-top: 2rem;
+.scrollsnap-holder {
+  margin-top: 3rem;
 }
 
-.scrollsnap .holder {
+.scrollsnap-holder .holder {
   display: inline-block;
   white-space: nowrap;
   font-size: 0.1px;
 }
 
-.scrollsnap .item {
+.scrollsnap-holder .item {
   line-height: 24rem;
   font-size: 4rem;
   color: #fff;
   text-align: center;
   margin-right: 2rem;
-  background: #333333;
+  background: #222222;
   border-radius: 0.5rem;
   display: inline-block;
 }
 
-.scrollsnap .item:last-child {
+.scrollsnap-holder .item:last-child {
   margin-right: 0;
 }
 
-/*.scrollsnap:before,
-.scrollsnap:after {
-  content: '';
-  width: calc((100% - 200px) / 2);
-  height: 100%;
-  position: absolute;
-  top: 0;
-  z-index: 100;
-  pointer-events: none;
+.dots {
+  margin-top: 1rem;
+  text-align: center;
 }
 
-.scrollsnap:before {
-  left: 0;
-  background-image: linear-gradient(90deg, #191919 0%, rgba(25, 25, 25, 0) 100%);
+.dot {
+  display: inline-block;
+  margin: 0 0.2rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 1rem;
+  background: #333;
+  transition: background 350ms, transform 350ms;
+  transform: scale(0.7);
 }
-.scrollsnap:after {
-  right: 0;
-  background-image: linear-gradient(270deg, #191919 0%, rgba(25, 25, 25, 0) 100%);
-}*/
+
+.dot.active {
+  background: #fff;
+  transform: scale(1);
+}
+
+#demo-3 .item {
+  opacity: 0;
+  transition: opacity 350ms;
+}
+
+#demo-3 .item.active {
+  opacity: 1;
+}
+
+.show-code {
+  display: table;
+  padding: 1rem 3rem;
+  background: #fff;
+  color: #191919;
+  text-transform: uppercase;
+  margin: 0 auto;
+  margin-top: 2.5rem;
+  border-radius: 0.5rem;
+}
+
+.hidden-codes {
+  display: none;
+}
