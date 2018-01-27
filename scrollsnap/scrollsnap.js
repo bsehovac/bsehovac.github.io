@@ -6,6 +6,8 @@
   var MouseEvents = ['mousedown', 'mousemove', 'mouseup'];
   var TouchEvents = ['touchstart', 'touchmove', 'touchend'];
 
+  Window[AddListener](TouchEvents[1], function(){ });
+
   var Style = 'style';
   var Transform = 'transform';
   var TransitionTimingFunction = 'transitionTimingFunction';
@@ -82,6 +84,8 @@
       OnStart = false;
     }
 
+    iOSFix = function(){};
+
     Resize();
 
     /*
@@ -122,11 +126,11 @@
 
     function TouchMove(e) {
       if (!DragActive) return;
-      e.preventDefault();
 
       var DragCurrent = TouchPosition(e);
 
       if (DragStarted) {
+        e.preventDefault();
         DragDelta.x = DragCurrent.x - DragStart.x;
         DragDelta.y = DragCurrent.y - DragStart.y;
 
@@ -148,13 +152,11 @@
       } else {
         DragDelta.x += DragCurrent.x - DragStart.x;
         DragDelta.y += DragCurrent.y - DragStart.y;
-
         var Distance = TouchDistance(DragDelta);
 
         if (Distance.d > MinDistance && Distance.a > MinAngle) {
           DragStarted = true;
           DragDelta = { x: 0, y: 0 };
-          Window[AddListener](TouchEvents[1], function() {});
           OnDragStart();
         } else if (Distance.d > MinDistance && Distance.a < MinAngle) {
           DragStarted = false;
@@ -189,8 +191,6 @@
       }
 
       GoToPosition(SlideCurrent, Duration);
-
-      Window[RemoveListener](TouchEvents[1], function() {});
       DragStarted = false;
       DragActive = false;
 
