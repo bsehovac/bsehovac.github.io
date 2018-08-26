@@ -1,0 +1,20 @@
+{
+  "build_systems":
+  [
+    {
+      "file_patterns": ["*.js"],
+      "name": "RollupJS",
+      "shell_cmd": "rollup -c",
+      "working_dir": "${project_path}"
+    }
+  ],
+  "folders":
+  [
+    {
+      "path": "."
+    }
+  ],
+  "settings":
+  {
+  }
+}

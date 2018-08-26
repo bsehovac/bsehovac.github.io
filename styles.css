@@ -1,350 +1,43 @@
-/*
- *
- * INSPIRATION
- *
- * https://dixonandmoe.com/rellax/
- * 
- */
-
-/*
- * CSS RESET
- */
-
 *, *:before, *:after {
-  position: relative;
-  box-sizing: inherit;
-  cursor: inherit;
-  font: inherit;
-  line-height: inherit;
-  border: none;
-  outline: none;
   margin: 0;
   padding: 0;
-}
-
-img {
-  display: block;
-}
-
-a {
-  text-decoration: inherit;
-  color: inherit;
-}
-
-a img {
-  border: none;
-  outline: none;
-}
-
-input[type=text], textarea, button {
-  display: block;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-input, textarea {
-  cursor: text;
-}
-
-a, button, input[type="submit"] {
-  cursor: pointer;
-}
-
-ul, ol {
-  list-style: none;
-}
-
-header, article, section, footer, aside, nav, main, container, window {
-  display: block; 
-}
-
-.clearfix:after {
-  content: '';
-  display: table;
-  clear: both;
+  box-sizing: border-box;
+  outline: none !important;
 }
 
 html, body {
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  overflow-x: hidden;
+  height: 100%;
 }
-
-html {
-  font-size: 10px;
-  cursor: default;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-tap-highlight-color: transparent;
-  -webkit-font-smoothing: antialiased;
-}
-
-/*
- * MAIN SETTINGS
- */
 
 body {
-  font-family: 'Roboto Mono', monospace;
-  box-sizing: border-box;
-  line-height: 1.2;
-  font-weight: 400;
-  background: #191919;
-  color: #b9b9b9;
-  font-size: 1.5rem;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Montserrat', sans-serif;
+  background-image: linear-gradient(120deg, #fdfbfb 0%, #dbddde 100%);
+  -webkit-tap-highlight-color: transparent;
 }
 
-footer {
-  text-align: center;
-  padding: 1rem 0 6rem;
-  font-size: 3rem;
-}
-
-container {
-  width: 60rem;
-  max-width: 90vw;
-  max-width: calc(100vw - 4rem);
-  margin: 0 auto;
-}
-
-header {
-  height: 4rem;
-}
-
-article {
-  padding: 5rem 0;
-}
-
-article h1 {
-  line-height: 1.1;
-  color: #ffffff;
-  font-size: 4.4rem;
-}
-
-article h1:after {
-  content: '\258F';
-  display: inline-block;
-  width: 0.3rem;
-  vertical-align: bottom;
-  color: #696969;
-  animation: 1.25s blink step-end infinite;
-}
-
-@keyframes blink{
-  0%, 100% { opacity: 0; }
-  50% { opacity:1; }
-}
-
-h2 {
-  margin-top: 3.5rem;
-  font-size: 3rem;
-  color: #ffffff;
-}
-
-h3 {
-  margin-top: 3rem;
-  font-size: 2.5rem;
-  color: #ffffff;
-}
-
-h4 {
-  margin-top: 2.5rem;
-  font-size: 2rem;
-  color: #ffffff;
-}
-
-/*h3.underline {
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #696969;
-}*/
-
-article p {
-  line-height: 1.7;
-}
-
-article p, article ul, article pre, table {
-  margin-top: 2rem;
-}
-
-article h1 + p {
-  margin-top: 4rem;
-  color: #8e8e8e;
-  font-size: 1.7rem;
-}
-
-ul {
-  line-height: 1.7;
-}
-
-ul li {
-  padding-left: 2rem;
-}
-
-ul li+li {
-  margin-top: 0.5rem;
-}
-
-ul li:before {
+#game {
   position: absolute;
-  content: '\2022';
-  left: 0;
   top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
 }
 
-table td {
-  vertical-align: top;
-  padding-left: 2rem;
-  padding-top: 1rem;
+#game canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-table tr:first-child td {
-  text-align: left;
-  color: #fff;
-  vertical-align: top;
-  padding-top: 0;
-  padding-bottom: 1rem;
-}
-
-table td:first-child {
-  padding-left: 0;
-}
-
-
-/*h1 + p:before {
-  content: '<!-- ';
-  white-space: nowrap;
-}
-
-h1 + p:after {
-  content: ' -->';
-  white-space: nowrap;
-}*/
-
-pre {
-  background: #222222 !important;
-  border-radius: 1rem;
-  margin-left: -4rem;
-  margin-right: -4rem;
-  padding: 3rem 4rem;
-  font-size: 1.4rem;
-  line-height: 1.5;
-}
-
-pre * {
-  background: #222222 !important;
-}
-
-window:before {
+#ui {
   position: absolute;
-  content: '\2B24\2B24\2B24';
-  color: #191919;
-  left: 0.8rem;
-  top: 0.8rem;
-  line-height: 1;
-  font-size: 1.3rem;
-  letter-spacing: 0.4rem;
-}
-
-@media (max-width: 600px) {
-  pre {
-    overflow-x: scroll;
-    -webkit-overflow-scrolling: touch;
-  }
-  pre::-webkit-scrollbar {
-    display: none;
-  }
-  article {
-    padding: 3rem 0;
-  }
-  article h1 {
-    font-size: 3.7rem;
-  }
-}
-
-/*
-███████  ██████ ██████   ██████  ██      ██      ███████ ███    ██  █████  ██████  
-██      ██      ██   ██ ██    ██ ██      ██      ██      ████   ██ ██   ██ ██   ██ 
-███████ ██      ██████  ██    ██ ██      ██      ███████ ██ ██  ██ ███████ ██████  
-     ██ ██      ██   ██ ██    ██ ██      ██           ██ ██  ██ ██ ██   ██ ██      
-███████  ██████ ██   ██  ██████  ███████ ███████ ███████ ██   ████ ██   ██ ██      
-*/
-
-.hidden-code {
-  display: none;
-}
-
-.scrollsnap-holder .scrollsnap,
-.scrollsnap-holder .item {
-  width: 60rem;
-  max-width: 90vw;
-  max-width: calc(100vw - 4rem);
-  height: 24rem;
-}
-
-.scrollsnap-holder {
-  margin-top: 3rem;
-}
-
-.scrollsnap-holder .holder {
-  display: inline-block;
-  white-space: nowrap;
-  font-size: 0.1px;
-}
-
-.scrollsnap-holder .item {
-  line-height: 24rem;
-  font-size: 4rem;
-  color: #fff;
-  text-align: center;
-  margin-right: 2rem;
-  background: #222222;
-  border-radius: 0.5rem;
-  display: inline-block;
-}
-
-.scrollsnap-holder .item:last-child {
-  margin-right: 0;
-}
-
-.dots {
-  margin-top: 1rem;
-  text-align: center;
-}
-
-.dot {
-  display: inline-block;
-  margin: 0 0.2rem;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 1rem;
-  background: #333;
-  transition: background 350ms, transform 350ms;
-  transform: scale(0.7);
-}
-
-.dot.active {
-  background: #fff;
-  transform: scale(1);
-}
-
-#demo-3 .item {
-  opacity: 0;
-  transition: opacity 350ms;
-}
-
-#demo-3 .item.active {
-  opacity: 1;
-}
-
-.show-code {
-  display: table;
-  padding: 1rem 3rem;
-  background: #fff;
-  color: #191919;
-  text-transform: uppercase;
-  margin: 0 auto;
-  margin-top: 2.5rem;
-  border-radius: 0.5rem;
-}
-
-.hidden-codes {
-  display: none;
+  z-index: 2;
 }

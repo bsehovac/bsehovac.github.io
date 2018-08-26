@@ -1,2 +1,0 @@
-# bsehovac.github.io
-e
