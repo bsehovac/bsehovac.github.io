@@ -20,21 +20,10 @@ class Game {
 		game.container = container;
 		game.renderer = renderer;
 
-		game.stage = { width: 2.1, height: 3.5 };
+		game.stage = { width: 2, height: 3.5 };
 		game.fov = 2;
 
 		game.createLights();
-
-		function animate() {
-
-			renderer.render( scene, camera );
-			game.onAnimate();
-
-			requestAnimationFrame( animate );
-
-		}
-
-		animate();
 
 		function resize() {
 
@@ -51,6 +40,17 @@ class Game {
 		resize();
 
 		window.addEventListener( 'resize', resize, false );
+
+		function animate() {
+
+			renderer.render( scene, camera );
+			game.onAnimate();
+
+			requestAnimationFrame( animate );
+
+		}
+
+		animate();
 
 	}
 
@@ -86,6 +86,9 @@ class Game {
 	  const camera = game.camera;
 	  const fov = game.fov;
 
+	  camera.fov = fov;
+	  camera.aspect = game.width / game.height;
+
 		const aspect = stage.width / stage.height;
 	  const fovRad = fov * THREE.Math.DEG2RAD;
 
@@ -95,8 +98,6 @@ class Game {
 
 	  distance /= 2.1;
 
-	  camera.fov = fov;
-	  camera.aspect = game.width / game.height;
 		camera.position.set( distance, distance, distance );
 		camera.lookAt( new THREE.Vector3() );
 		camera.updateProjectionMatrix();

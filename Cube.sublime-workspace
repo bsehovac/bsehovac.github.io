@@ -520,19 +520,37 @@
 	"buffers":
 	[
 		{
-			"file": "index.html",
+			"file": "index.php",
 			"settings":
 			{
-				"buffer_size": 701,
+				"buffer_size": 821,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "styles.css",
+			"file": "src/components/Game.js",
 			"settings":
 			{
-				"buffer_size": 1410,
+				"buffer_size": 2634,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/components/CubePieces.js",
+			"settings":
+			{
+				"buffer_size": 2928,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/components/Cube.js",
+			"settings":
+			{
+				"buffer_size": 23457,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -541,7 +559,7 @@
 			"file": "src/components/helpers/TouchEvents.js",
 			"settings":
 			{
-				"buffer_size": 3414,
+				"buffer_size": 3387,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -551,24 +569,6 @@
 			"settings":
 			{
 				"buffer_size": 10317,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "init.js",
-			"settings":
-			{
-				"buffer_size": 3349,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "index.php",
-			"settings":
-			{
-				"buffer_size": 638,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -673,14 +673,14 @@
 	"expanded_folders":
 	[
 		"/Library/WebServer/Documents/Localhost/cube.local",
-		"/Library/WebServer/Documents/Localhost/cube.local/build",
 		"/Library/WebServer/Documents/Localhost/cube.local/src",
-		"/Library/WebServer/Documents/Localhost/cube.local/src/components",
-		"/Library/WebServer/Documents/Localhost/cube.local/src/components/helpers"
+		"/Library/WebServer/Documents/Localhost/cube.local/src/components"
 	],
 	"file_history":
 	[
 		"/Library/WebServer/Documents/Localhost/cube.local/init.js",
+		"/Library/WebServer/Documents/Localhost/cube.local/index.php",
+		"/Library/WebServer/Documents/Localhost/cube.local/styles.css",
 		"/Library/WebServer/Documents/Localhost/cube.local/src/components/CubePieces.js",
 		"/Library/WebServer/Documents/Localhost/cube.local/src/components/Game.js",
 		"/Library/WebServer/Documents/Localhost/cube.local/src/components/CubePieces-TEST.js",
@@ -805,9 +805,7 @@
 		"/Users/boris/Documents/2amigos-site/frontend/views/open-source/index.php",
 		"/Users/boris/Documents/2amigos-site/frontend/views/layouts/main.php",
 		"/Users/boris/Documents/2amigos-site/frontend/models/ContactForm.php",
-		"/Users/boris/Documents/2amigos-site/frontend/views/partials/_bar-category.php",
-		"/Users/boris/Documents/2amigos-site/backend/modules/blog/models/BlogPost.php",
-		"/Users/boris/Documents/2amigos-site/frontend/modules/blog/controllers/PostController.php"
+		"/Users/boris/Documents/2amigos-site/frontend/views/partials/_bar-category.php"
 	],
 	"find":
 	{
@@ -888,29 +886,29 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 5,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "index.html",
+					"file": "index.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 701,
+						"buffer_size": 821,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								109,
-								109
+								742,
+								742
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
@@ -918,54 +916,53 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "styles.css",
+					"file": "src/components/Game.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1410,
+						"buffer_size": 2634,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								74,
-								74
+								1198,
+								1265
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/CSS/CSS.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1000.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "src/components/helpers/TouchEvents.js",
+					"file": "src/components/CubePieces.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3414,
+						"buffer_size": 2928,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								109,
-								109
+								555,
+								555
 							]
 						],
 						"settings":
@@ -982,6 +979,64 @@
 				},
 				{
 					"buffer": 3,
+					"file": "src/components/Cube.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 23457,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								451,
+								457
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/components/helpers/TouchEvents.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3387,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1314,
+								1314
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 595.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
 					"file": "src/components/Controls.js",
 					"semi_transient": false,
 					"settings":
@@ -1003,70 +1058,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 600.0,
+						"translation.y": 404.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "init.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3349,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								101,
-								101
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "index.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 638,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								166,
-								166
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]

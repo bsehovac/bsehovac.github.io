@@ -50,7 +50,6 @@ function TouchEvents( element, options ) {
 
 		drag: function ( event ) {
 
-			event.preventDefault();
 			t.getPosition( event, 'current' );
 			t.onDrag( event, t.position, t.touch );
 

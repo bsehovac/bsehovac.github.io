@@ -29,7 +29,7 @@ function CubePieces( size, colors ) {
 
 		for ( let yy = 0; yy < size; yy ++ ) {
 
-	  for ( let zz = 0; zz < size; zz ++ ) {
+	  	for ( let zz = 0; zz < size; zz ++ ) {
 
 				const x = - 0.5 + pieceSize / 2 + pieceSize * xx;
 				const y = - 0.5 + pieceSize / 2 + pieceSize * yy;
@@ -47,26 +47,28 @@ function CubePieces( size, colors ) {
 
 				if ( xx == 0 || xx == size - 1 ) {
 
-		  edge = createEdge( ( xx == 0 ) ? 0 : 1 ); // 0 - left, 1 - right
-		  piece.add( edge[ 0 ], edge[ 1 ] );
+				  edge = createEdge( ( xx == 0 ) ? 0 : 1 ); // 0 - left, 1 - right
+				  piece.add( edge[ 0 ], edge[ 1 ] );
 
 				}
+
 				if ( yy == 0 || yy == size - 1 ) {
 
-		  edge = createEdge( ( yy == 0 ) ? 2 : 3 ); // 2 - bottom, 3 - top
-		  piece.add( edge[ 0 ], edge[ 1 ] );
+				  edge = createEdge( ( yy == 0 ) ? 2 : 3 ); // 2 - bottom, 3 - top
+				  piece.add( edge[ 0 ], edge[ 1 ] );
 
 				}
+
 				if ( zz == 0 || zz == size - 1 ) {
 
-		  edge = createEdge( ( zz == 0 ) ? 4 : 5 ); // 4 - back, 5 - front
-		  piece.add( edge[ 0 ], edge[ 1 ] );
+				  edge = createEdge( ( zz == 0 ) ? 4 : 5 ); // 4 - back, 5 - front
+				  piece.add( edge[ 0 ], edge[ 1 ] );
 
 				}
 
 				pieces.push( piece );
 
-	  }
+	  	}
 
 		}
 
@@ -75,20 +77,20 @@ function CubePieces( size, colors ) {
 	function createEdge( position ) {
 
 		const edge = new THREE.Mesh(
-	  edgeGeometry,
-	  edgeMaterial.clone()
+		  edgeGeometry,
+		  edgeMaterial.clone()
 		);
 		const distance = pieceSize / 2;
 
 		edge.position.set(
-	  distance * [ - 1, 1, 0, 0, 0, 0 ][ position ],
-	  distance * [ 0, 0, - 1, 1, 0, 0 ][ position ],
-	  distance * [ 0, 0, 0, 0, - 1, 1 ][ position ]
+		  distance * [ - 1, 1, 0, 0, 0, 0 ][ position ],
+		  distance * [ 0, 0, - 1, 1, 0, 0 ][ position ],
+		  distance * [ 0, 0, 0, 0, - 1, 1 ][ position ]
 		);
 
 		edge.rotation.set(
-	  Math.PI / 2 * [ 0, 0, 1, - 1, 0, 0 ][ position ],
-	  Math.PI / 2 * [ - 1, 1, 0, 0, 2, 0 ][ position ],
+		  Math.PI / 2 * [ 0, 0, 1, - 1, 0, 0 ][ position ],
+		  Math.PI / 2 * [ - 1, 1, 0, 0, 2, 0 ][ position ],
 	  0
 		);
 
