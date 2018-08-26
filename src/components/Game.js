@@ -6,8 +6,9 @@ class Game {
 
 		const scene = new THREE.Scene();
 
-		const renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+		const renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
 		renderer.setPixelRatio( window.devicePixelRatio );
+		renderer.setClearColor( 0xffffff, 1 );
 		container.appendChild( renderer.domElement );
 
 		const camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
@@ -20,7 +21,7 @@ class Game {
 		game.renderer = renderer;
 
 		game.stage = { width: 2.1, height: 3.5 };
-		game.fov = 2;
+		game.fov = 25;
 
 		game.createLights();
 
