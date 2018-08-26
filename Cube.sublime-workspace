@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"lowPo",
+				"LowPolyGeometry"
+			],
+			[
 				"game",
 				"gameStarted"
 			],
@@ -510,15 +514,46 @@
 			[
 				"wind",
 				"windowScroll"
-			],
-			[
-				"win",
-				"windowResize"
 			]
 		]
 	},
 	"buffers":
 	[
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 583,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "styles.css",
+			"settings":
+			{
+				"buffer_size": 1334,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "init.js",
+			"settings":
+			{
+				"buffer_size": 3184,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "index.php",
+			"settings":
+			{
+				"buffer_size": 638,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -618,11 +653,21 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/bsehovac/Desktop/Cube",
-		"/Users/bsehovac/Desktop/Cube/build"
+		"/Library/WebServer/Documents/Localhost/cube.local",
+		"/Library/WebServer/Documents/Localhost/cube.local/build",
+		"/Library/WebServer/Documents/Localhost/cube.local/src",
+		"/Library/WebServer/Documents/Localhost/cube.local/src/components",
+		"/Library/WebServer/Documents/Localhost/cube.local/src/components/geometries"
 	],
 	"file_history":
 	[
+		"/Library/WebServer/Documents/Localhost/cube.local/init.js",
+		"/Library/WebServer/Documents/Localhost/cube.local/src/components/CubePieces.js",
+		"/Library/WebServer/Documents/Localhost/cube.local/src/components/Game.js",
+		"/Library/WebServer/Documents/Localhost/cube.local/src/components/CubePieces-TEST.js",
+		"/Users/bsehovac/Downloads/geometry.json",
+		"/Library/WebServer/Documents/Localhost/cube.local/src/components/Cube.js",
+		"/Library/WebServer/Documents/Localhost/cube.local/src/components/geometries/LowPoly.json",
 		"/Users/bsehovac/Desktop/Cube/index.html",
 		"/Users/bsehovac/Desktop/Cube/init.js",
 		"/Users/bsehovac/Desktop/Cube/src/components/Shatter.js",
@@ -743,14 +788,7 @@
 		"/Users/boris/Documents/2amigos-site/frontend/models/ContactForm.php",
 		"/Users/boris/Documents/2amigos-site/frontend/views/partials/_bar-category.php",
 		"/Users/boris/Documents/2amigos-site/backend/modules/blog/models/BlogPost.php",
-		"/Users/boris/Documents/2amigos-site/frontend/modules/blog/controllers/PostController.php",
-		"/Users/boris/Documents/2amigos-site/frontend/modules/blog/views/post/index.php",
-		"/Users/boris/Documents/2amigos-site/frontend/web/src/js/components/filterable.js",
-		"/Users/boris/Documents/2amigos-site/frontend/web/src/js/components/load-more.js",
-		"/Users/boris/Documents/2amigos-site/gulpfile.js",
-		"/Users/boris/Documents/2amigos-site/frontend/web/src/js/scripts.js",
-		"/Users/boris/Documents/2amigos-site/frontend/web/src/scss/base/_variable.scss",
-		"/Users/boris/Documents/2amigos-site/frontend/web/src/scss/theme/components/_blog.scss"
+		"/Users/boris/Documents/2amigos-site/frontend/modules/blog/controllers/PostController.php"
 	],
 	"find":
 	{
@@ -829,8 +867,129 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 583,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "styles.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1334,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1331,
+								1331
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1171.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "init.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3184,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1075,
+								1075
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 243.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "index.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 638,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								166,
+								166
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
 			]
 		}
 	],

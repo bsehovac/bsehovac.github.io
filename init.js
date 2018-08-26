@@ -4,6 +4,7 @@ http://zz85.github.io/mrdoobapproves/
 
 const scrambleLength = 20;
 
+const ui = document.querySelector( '#ui' );
 const start = document.querySelector( '#start' );
 const time = document.querySelector( '#time' );
 const moves = document.querySelector( '#moves' );
@@ -38,6 +39,8 @@ controls.disabled = true;
 let gameStarted = false;
 
 start.onclick = function ( event ) {
+
+  ui.classList.add('game');
 
 	if ( gameStarted ) return;
 	gameStarted = true;

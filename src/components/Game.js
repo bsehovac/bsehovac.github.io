@@ -27,11 +27,10 @@ class Game {
 
 		function animate() {
 
-			requestAnimationFrame( animate );
-
 			renderer.render( scene, camera );
-
 			game.onAnimate();
+
+			requestAnimationFrame( animate );
 
 		}
 
@@ -39,16 +38,10 @@ class Game {
 
 		function resize() {
 
-			const width = container.offsetWidth;
-			const height = container.offsetHeight;
+			game.width = container.offsetWidth;
+			game.height = container.offsetHeight;
 
-			camera.aspect = width / height;
-			camera.updateProjectionMatrix();
-
-			renderer.setSize( width, height );
-
-			game.width = width;
-			game.height = height;
+			renderer.setSize( game.width, game.height );
 
 			game.updateCamera();
 			game.onResize();
@@ -103,6 +96,7 @@ class Game {
 	  distance /= 2.1;
 
 	  camera.fov = fov;
+	  camera.aspect = game.width / game.height;
 		camera.position.set( distance, distance, distance );
 		camera.lookAt( new THREE.Vector3() );
 		camera.updateProjectionMatrix();

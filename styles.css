@@ -1,5 +1,12 @@
 *, *:before, *:after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
 }
 
 html, body {
@@ -7,14 +14,22 @@ html, body {
   overflow: hidden;
 }
 
-body {
+html {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-family: 'Montserrat', sans-serif;
-  /* background-image: linear-gradient(120deg, #fdfbfb 0%, #dbddde 100%); */
   -webkit-tap-highlight-color: transparent;
-  margin: 0;
-  padding: 0;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+#view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
 #game {
@@ -33,5 +48,49 @@ body {
 
 #ui {
   position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 2;
+}
+
+#ui.game {
+  pointer-events: none;
+}
+
+.button {
+  height: 60px;
+  position: absolute;
+  left: 50%;
+  width: 200px;
+  border-radius: 30px;
+  background: #fff;
+  top: 80%;
+  margin-left: -100px;
+  line-height: 60px;
+  text-align: center;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.2);
+  cursor: pointer;
+}
+
+#ui.game .button {
+  display: none;
+}
+
+#time {
+  position: absolute;
+  left: 50%;
+  bottom: 85%;
+  text-align: center;
+  width: 500px;
+  margin-left: -250px;
+  font-size: 40px;
+}
+
+#moves, #undo {
+  display: none;
 }
