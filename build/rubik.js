@@ -27,7 +27,7 @@
 			game.renderer = renderer;
 
 			game.stage = { width: 2.1, height: 3.5 };
-			game.fov = 25;
+			game.fov = 2;
 
 			game.createLights();
 
