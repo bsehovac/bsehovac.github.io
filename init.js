@@ -2,6 +2,9 @@
 http://zz85.github.io/mrdoobapproves/
 */
 
+window.addEventListener( 'touchmove', function () {} );
+document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
+
 const scrambleLength = 20;
 
 const ui = document.querySelector( '#ui' );

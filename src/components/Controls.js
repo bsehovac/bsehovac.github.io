@@ -98,7 +98,6 @@ class Controls {
 
 		touchEvents.onDrag = ( event, position ) => {
 
-			event.preventDefault();
 			if ( ! drag.active ) return;
 
 			if ( drag.rotation == null && position.delta.length() > 10 ) {

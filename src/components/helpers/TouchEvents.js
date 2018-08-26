@@ -1,13 +1,10 @@
 import { extendObject } from './ArrayHelpers.js';
 
-window.addEventListener( 'touchmove', function () {} );
-
 function TouchEvents( element, options ) {
 
 	var t = this;
 
 	options = extendObject( ( ( typeof options !== 'undefined' ) ? options : {} ), {
-		passiveEvent: false,
 		touchEvents: true,
 		mouseEvents: true,
 		useVector: false,
@@ -35,8 +32,6 @@ function TouchEvents( element, options ) {
 		delta: { x: 0, y: 0 },
 	};
 
-	t.passive = { passive: options.passiveEvent };
-
 	t.touch = null;
 
 	t.triggers = {
@@ -48,13 +43,14 @@ function TouchEvents( element, options ) {
 			t.getPosition( event, 'start' );
 			t.touch = ( event.type == 'touchstart' );
 			t.onStart( event, t.position, t.touch );
-			window.addEventListener( ( t.touch ) ? 'touchmove' : 'mousemove', t.triggers.drag, t.passive );
+			window.addEventListener( ( t.touch ) ? 'touchmove' : 'mousemove', t.triggers.drag, false );
 			window.addEventListener( ( t.touch ) ? 'touchend' : 'mouseup', t.triggers.end, false );
 
 		},
 
 		drag: function ( event ) {
 
+			event.preventDefault();
 			t.getPosition( event, 'current' );
 			t.onDrag( event, t.position, t.touch );
 
@@ -64,7 +60,7 @@ function TouchEvents( element, options ) {
 
 			t.getPosition( event, 'current' );
 			t.onEnd( event, t.position, t.touch );
-			window.removeEventListener( ( t.touch ) ? 'touchmove' : 'mousemove', t.triggers.drag, t.passive );
+			window.removeEventListener( ( t.touch ) ? 'touchmove' : 'mousemove', t.triggers.drag, false );
 			window.removeEventListener( ( t.touch ) ? 'touchend' : 'mouseup', t.triggers.end, false );
 
 		},
