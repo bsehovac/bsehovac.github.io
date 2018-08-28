@@ -3,8 +3,14 @@
   [
     {
       "file_patterns": ["*.js"],
-      "name": "RollupJS",
-      "shell_cmd": "rollup -c",
+      "name": "Rollup Rubik",
+      "shell_cmd": "rollup -c rollup.config.rubik.js",
+      "working_dir": "${project_path}"
+    },
+    {
+      "file_patterns": ["*.nofile"],
+      "name": "Rollup THREE",
+      "shell_cmd": "rollup -c rollup.config.three.js",
       "working_dir": "${project_path}"
     }
   ],

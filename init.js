@@ -106,35 +106,12 @@ controls.onSolved = function () {
 //   }
 // }
 
-// var floating = {
-//   cube: TweenMax.fromTo( cube.object.position, 1.5,
-//     { y: -0.1 },
-//     { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut }
-//   ),
-//   shadow: TweenMax.fromTo( scene.shadow.material, 1.5,
-//     { opacity: 0.5 },
-//     { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut }
-//   ),
-// };
 
-// var start = document.querySelector('#start');
-// var timer = document.querySelector('#timer');
-// var title = document.querySelector('#title');
-// var startTime = null;
-
-// start.onclick = function(e) {
-  
-
-//   title.classList.add('is-hidden');
-//   start.classList.add('is-hidden');
-// }
-
-// var startTime = null;
-
-// scene.animate.push(function() {
-//   if (startTime == null) return;
-//   var millis = new Date(Date.now() - startTime);
-//   var minutes = Math.floor(millis / 60000);
-//   var seconds = Math.round((millis % 60000) / 1000);
-//   timeDomElement.innerHTML = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-// });
+/*
+var plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+var geom = new THREE.BoxGeometry(1, 1, 1);
+geom = sliceGeometry(geom, plane);
+var material = new THREE.MeshBasicMaterial({ wireframe: true });
+var mesh = new THREE.Mesh(geom, material);
+scene.add(mesh);
+*/
