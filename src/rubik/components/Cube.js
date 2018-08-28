@@ -1,4 +1,3 @@
-import { extendObject } from './helpers/ArrayHelpers.js';
 import { CubePieces } from './CubePieces.js';
 
 class Cube {
@@ -9,7 +8,7 @@ class Cube {
 
 		size = ( typeof size !== 'undefined' ) ? size : 3;
 
-		options = extendObject( ( typeof options === 'undefined' ) ? {} : options, {
+		options = Object.assign( {
 			colors: {
 				right: 0x41aac8, // blue
 				left: 0x82ca38, // green
@@ -19,7 +18,7 @@ class Cube {
 				back: 0xff8c0a, // orange
 				piece: 0x08101a, // black
 			},
-		} );
+		}, options || {} );
 
 		const positions = cube.generatePositions( size );
 		const object = new THREE.Object3D();

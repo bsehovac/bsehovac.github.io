@@ -1,6 +1,5 @@
-import { TouchEvents } from './helpers/TouchEvents.js';
-import { getVectorMaxAxis, roundVectorDirection, closestAngle } from './helpers/VectorHelpers.js';
-import { eachObject, extendObject } from './helpers/ArrayHelpers.js';
+import { roundAngle, roundVectorAngle } from './Helpers.js';
+import { TouchEvents } from './TouchEvents.js';
 
 class Controls {
 
@@ -8,13 +7,13 @@ class Controls {
 
 		const controls = this;
 
-		options = extendObject( ( typeof options === 'undefined' ) ? {} : options, {
+		options = Object.assign( {
 			animationSpeed: 0.15,
 			animationBounce: 1,
 			scrambleSpeed: 0.1,
 			scrambleBounce: 0,
 			minimumRotationAngle: Math.PI / 12, // 15deg
-		} );
+		}, options || {} );
 
 		const raycaster = new THREE.Raycaster();
 		const rotation = new THREE.Vector3();
@@ -36,7 +35,7 @@ class Controls {
 		};
 
 		const drag = {
-			active: false, // drag currentlyactive
+			active: false, // drag is active
 			layer: null, // drag selected layer
 			direction: null, // drag direction - temp between start and drag
 			rotation: null, // drag rotation axis
@@ -44,8 +43,8 @@ class Controls {
 			deltaAngle: new THREE.Vector3(),
 		};
 
-		const touchEvents = new TouchEvents( game.container, {
-			listenerHolder: document.body,
+		const touchEvents = new TouchEvents( {
+			element: game.container,
 			useVector: THREE.Vector2,
 			invertY: true,
 		} );
@@ -66,7 +65,6 @@ class Controls {
 		controls.onSolved = () => {};
 		controls.onMove = () => {};
 
-		// game.controls = controls;
 		cube.controls = controls;
 
 		touchEvents.onStart = ( event, position ) => {
@@ -82,7 +80,8 @@ class Controls {
 
 				intersect.piece = intersects[ 0 ].object.parent;
 				intersect.start = intersects[ 0 ].point;
-				drag.direction = roundVectorDirection( intersects[ 0 ].point );
+				drag.direction = new THREE.Vector3();
+				drag.direction[ Object.keys( intersect.start ).reduce( ( a, b ) => intersect.start[ a ] > intersect.start[ b ] ? a : b ) ] = 1;
 				helper.position.set( intersect.start.x, intersect.start.y, intersect.start.z );
 				helper.rotation.set( drag.direction.y * Math.PI / 2, drag.direction.x * Math.PI / 2, drag.direction.z * Math.PI / 2 );
 
@@ -110,35 +109,33 @@ class Controls {
 					if ( intersects.length == 0 ) return;
 					const intersectHelper = intersects[ 0 ].point;
 
-					const normalX = ( drag.direction.x == 1 ) ? 'z' : 'x';
-					const normalY = ( drag.direction.y == 1 ) ? 'z' : 'y';
+					const normalX = [ 'x', 'z' ][ drag.direction.x ];
+					const normalY = [ 'y', 'z' ][ drag.direction.y ];
 
 					const vs = new THREE.Vector2( intersect.start[ normalX ] * 1, intersect.start[ normalY ] * 1 );
 					const ve = new THREE.Vector2( intersectHelper[ normalX ] * 1, intersectHelper[ normalY ] * 1 );
-					var angle = Math.round( ve.sub( vs ).angle() / ( Math.PI / 2 ) ) * ( Math.PI / 2 ) / ( Math.PI * 2 );
 
-					const layer = ( angle == 0.25 || angle == 0.75 )
-						? ( ( drag.direction.x == 1 ) ? 'z' : 'y' )
-						: ( ( drag.direction.y == 1 ) ? 'z' : 'x' );
+					let angle = Math.round( ve.sub( vs ).angle() / ( Math.PI / 2 ) ) * ( Math.PI / 2 ) / ( Math.PI * 2 );
 
-					drag.rotation = layer;
+					drag.rotation = ( angle == 0.25 || angle == 0.75 )
+						? [ 'y', 'z' ][ drag.direction.x ]
+						: [ 'x', 'z' ][ drag.direction.y ];
 
-					eachObject( cube.layers[ layer ], ( key, layer ) => {
+					const layers = cube.layers[ drag.rotation ];
 
-						if ( layer.includes( pieceIndex ) ) {
+					Object.keys( layers ).forEach( key => {
 
-							controls.selectLayer( layer );
-							return;
-
-						}
+				    if ( layers[ key ].includes( pieceIndex ) )
+				    	controls.selectLayer( layers[ key ] );
 
 					} );
 
 				} else if ( drag.type == 'cube' ) {
 
-					var angle = closestAngle( position.delta.angle(), false ) / ( Math.PI * 2 );
+					let angle = roundAngle( position.delta.angle(), false ) / ( Math.PI * 2 );
 
 					controls.selectLayer( cube.layers.a );
+
 					drag.rotation = ( angle == 0.25 || angle == 0.75 )
 						? ( ( position.start.x > game.width * 0.5 ) ? 'z' : 'y' )
 						: 'x';
@@ -168,7 +165,7 @@ class Controls {
 			if ( ! drag.active ) return;
 			drag.active = false;
 
-			const angle = closestAngle( drag.deltaAngle, options.minimumRotationAngle );
+			const angle = roundVectorAngle( drag.deltaAngle, options.minimumRotationAngle );
 			const layer = drag.layer;
 
 			controls.rotateLayer( angle, options.animationSpeed, options.animationBounce, () => {
@@ -286,7 +283,7 @@ class Controls {
 
 		}
 
-		const axis = getVectorMaxAxis( angle );
+		const axis = Object.keys( angle ).reduce( ( a, b ) => angle[ a ] > angle[ b ] ? a : b );
 		const cubeRotation = cube.object.rotation[ axis ] * 1;
 		let bounceStarted = false;
 
@@ -357,7 +354,7 @@ class Controls {
 		pieces.forEach( piece => {
 
 			piece.position.multiplyScalar( cube.size ).round().divideScalar( cube.size );
-			closestAngle( piece.rotation, false );
+			roundVectorAngle( piece.rotation, false );
 			newPositions.push( piece.position.clone().multiplyScalar( cube.size ).round().toArray().toString() );
 
 		} );
@@ -431,6 +428,7 @@ class Controls {
 		const move = converted[ 0 ];
 		const layer = cube.layers[ move.layer ][ move.row ];
 		const rotation = new THREE.Vector3();
+
 		rotation[ move.axis ] = move.angle;
 
 		controls.selectLayer( layer );

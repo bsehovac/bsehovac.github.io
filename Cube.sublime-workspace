@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"roun",
+				"roundVectorAngle"
+			],
+			[
 				"lowPo",
 				"LowPolyGeometry"
 			],
@@ -510,33 +514,11 @@
 			[
 				"boun",
 				"scrollBoundaryTop"
-			],
-			[
-				"wind",
-				"windowScroll"
 			]
 		]
 	},
 	"buffers":
 	[
-		{
-			"file": "src/rubik/components/Cube.js",
-			"settings":
-			{
-				"buffer_size": 24077,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/rubik/components/CubePieces.js",
-			"settings":
-			{
-				"buffer_size": 2945,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
 		{
 			"file": "index.html",
 			"settings":
@@ -661,18 +643,33 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/boris/Documents/bsehovac.github.io",
-		"/Users/boris/Documents/bsehovac.github.io/build",
-		"/Users/boris/Documents/bsehovac.github.io/src",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components"
+		"/Users/boris/Documents/bsehovac.github.io"
 	],
 	"file_history":
 	[
+		"/Users/boris/Documents/bsehovac.github.io/init.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Controls.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/TouchEvents.js",
+		"/Users/boris/Documents/bsehovac.github.io/rollup.config.rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/Rubik.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/three/plugins/RoundedBoxGeometry.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Helpers.js",
 		"/Users/boris/Documents/bsehovac.github.io/Cube.sublime-project",
+		"/Users/boris/Documents/bsehovac.github.io/rollup.config.minify.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Cube.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/helpers/VectorHelpers.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/three/math/Vector3.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/helpers/TouchEvents.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/TouchEvents",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/helpers/ArrayHelpers.js",
+		"/Users/boris/Documents/bsehovac.github.io/package.json",
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.three.js",
+		"/Users/boris/Documents/bsehovac.github.io/build/three.js",
+		"/Users/boris/Documents/bsehovac.github.io/build/rubik.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/three/Three.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/three/cameras/PerspectiveCamera.js",
+		"/Users/boris/Documents/bsehovac.github.io/index.html",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/CubePieces.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/three/plugins/RoundedBoxGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/components/helpers/TouchEvents.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/components/Cube.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/components/CubePieces.js",
@@ -777,26 +774,7 @@
 		"/Users/boris/Documents/2amigos-site/frontend/config/params.php",
 		"/Users/boris/Documents/2amigos-site/frontend/views/site/ourStory.php",
 		"/Users/boris/Documents/coinolution/common/components/forms/ActiveForm.php",
-		"/Users/boris/Documents/coinolution/common/components/forms/ActiveField.php",
-		"/Users/boris/Documents/coinolution/frontend/views/site/landing/_main_evolution.php",
-		"/Users/boris/Documents/coinolution/vendor/yiisoft/yii2/helpers/BaseHtml.php",
-		"/Users/boris/Documents/coinolution/vendor/yiisoft/yii2/widgets/ActiveField.php",
-		"/Users/boris/Documents/coinolution/frontend/modules/dashboard/views/user/recovery/request.php",
-		"/Users/boris/Documents/coinolution/frontend/models/forms/NewsletterForm.php",
-		"/Users/boris/Documents/coinolution/frontend/views/site/layouts/_header_menu.php",
-		"/Users/boris/Documents/coinolution/frontend/web/src/scss/theme/components/_bar.scss",
-		"/Users/boris/Documents/coinolution/frontend/web/src/js/svg-icons.js",
-		"/Users/boris/Documents/coinolution/frontend/web/js/main.js",
-		"/Users/boris/Documents/coinolution/frontend/views/site/api.php",
-		"/Users/boris/Documents/coinolution/frontend/web/src/js/scripts.js",
-		"/Users/boris/Documents/coinolution/frontend/web/dist/js/redoc.js",
-		"/Users/boris/Documents/coinolution/frontend/web/src/js/redoc.js",
-		"/Users/boris/Documents/coinolution/frontend/web/src/js/components/api.js",
-		"/Users/boris/Documents/coinolution/frontend/web/src/js/api.js",
-		"/Users/boris/Documents/coinolution/frontend/web/src/scss/theme/layout/_body.scss",
-		"/Users/boris/Documents/2amigos-site/frontend/views/success-stories/document-management-system.php",
-		"/Users/boris/Documents/coinolution/frontend/web/dist/js/scripts.js",
-		"/Users/boris/Documents/coinolution/frontend/assets/AppAsset.php"
+		"/Users/boris/Documents/coinolution/common/components/forms/ActiveField.php"
 	],
 	"find":
 	{
@@ -807,6 +785,13 @@
 		"height": 122.0,
 		"where_history":
 		[
+			"/Users/boris/Documents/bsehovac.github.io/src/rubik/components",
+			"/Users/boris/Documents/bsehovac.github.io/src/rubik",
+			"/Users/boris/Documents/bsehovac.github.io/src/rubik/components",
+			"/Users/boris/Documents/bsehovac.github.io/src/rubik",
+			"/Users/boris/Documents/bsehovac.github.io/src/rubik/components",
+			"/Users/boris/Documents/bsehovac.github.io/src/rubik",
+			"/Users/boris/Documents/bsehovac.github.io/src/three",
 			"/Users/bsehovac/Desktop/Cube/src/components",
 			"/Users/bsehovac/Desktop/Cube/src",
 			"/Users/boris/Downloads/Cube/src/components"
@@ -817,6 +802,26 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"roundVectorAngle",
+			"roundAngle",
+			"roundVectorAngle",
+			"Object.assign",
+			"drag.direction",
+			"drag.deltaAngle",
+			"closestAngle",
+			"roundVector",
+			"roundVectorDirection",
+			"getVectorMaxAxis",
+			"extendObject",
+			"randomObjectKey",
+			"randomArrayValue",
+			"eachObject",
+			"element",
+			"init",
+			"touchEvents.init",
+			"TouchEvents",
+			"prototype",
+			"class",
 			"buffer",
 			"passiv",
 			"pa",
@@ -878,69 +883,11 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/rubik/components/Cube.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 24077,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2212,
-								2212
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1316.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/rubik/components/CubePieces.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2945,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								274,
-								274
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
 					"file": "index.html",
 					"semi_transient": false,
 					"settings":
@@ -952,8 +899,8 @@
 						"selection":
 						[
 							[
-								399,
-								399
+								282,
+								282
 							]
 						],
 						"settings":
@@ -966,7 +913,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
