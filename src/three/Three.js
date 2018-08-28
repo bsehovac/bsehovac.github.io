@@ -149,6 +149,3 @@ export { Path } from './extras/core/Path.js';
 // export { ShapeUtils } from './extras/ShapeUtils.js';
 // export { WebGLUtils } from './renderers/webgl/WebGLUtils.js';
 export * from './constants.js';
-
-export { RoundedBoxGeometry } from './plugins/RoundedBoxGeometry.js';
-export { SliceGeometry } from './plugins/SliceGeometry.js';

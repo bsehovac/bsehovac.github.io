@@ -519,6 +519,24 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "src/rubik/Rubik.js",
+			"settings":
+			{
+				"buffer_size": 300,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/rubik/components/CubePieces.js",
+			"settings":
+			{
+				"buffer_size": 3016,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Rollup THREE",
 	"build_system_choices":
@@ -634,10 +652,17 @@
 	},
 	"expanded_folders":
 	[
+		"/Users/boris/Documents/bsehovac.github.io",
+		"/Users/boris/Documents/bsehovac.github.io/src",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/plugins"
 	],
 	"file_history":
 	[
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/plugins/RoundedBoxGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three/Three.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/plugins/SliceGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three/plugins/RoundedBoxGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three-plugins/SliceGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three-plugins/RoundedBoxGeometry.js",
@@ -762,13 +787,11 @@
 		"/Users/boris/Documents/r/controls.js",
 		"/Users/boris/Documents/r/scene.js",
 		"/Users/boris/Documents/r/cube.js",
-		"/Users/boris/Documents/r/geometry.js",
-		"/Users/boris/Desktop/scramble.js",
-		"/Users/boris/Desktop/test/scripts.js"
+		"/Users/boris/Documents/r/geometry.js"
 	],
 	"find":
 	{
-		"height": 54.0
+		"height": 27.0
 	},
 	"find_in_files":
 	{
@@ -793,6 +816,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"roundedBoxGeometry",
 			"RoundedBoxGeometry",
 			"game",
 			"Game",
@@ -872,6 +896,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"RoundedBoxGeometry",
 			"roundedBoxGeometry",
 			"world",
 			"World",
@@ -887,8 +912,66 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "src/rubik/Rubik.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 300,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/rubik/components/CubePieces.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3016,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								491,
+								491
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -931,7 +1014,7 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "Rollup THREE",
+	"pinned_build_system": "Rollup Rubik",
 	"project": "Cube.sublime-project",
 	"replace":
 	{

@@ -1,3 +1,5 @@
+import { RoundedBoxGeometry } from './plugins/RoundedBoxGeometry.js';
+
 function CubePieces( size, positions, colors ) {
 
 	const pieces = [];
