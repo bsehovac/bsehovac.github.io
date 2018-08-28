@@ -520,19 +520,38 @@
 	"buffers":
 	[
 		{
-			"file": "src/rubik/components/World.js",
+			"file": "init.js",
 			"settings":
 			{
-				"buffer_size": 2672,
+				"buffer_size": 3167,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "index.php",
+			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 821,
+				"buffer_size": 975,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "styles.css",
+			"settings":
+			{
+				"buffer_size": 1944,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/rubik/components/Timer.js",
+			"settings":
+			{
+				"buffer_size": 774,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		}
@@ -658,9 +677,12 @@
 	],
 	"file_history":
 	[
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/World.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/styles.css",
+		"/Users/bsehovac/Desktop/threejs export scene.js",
+		"/Users/bsehovac/Desktop/cube.json",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/index.html",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/init.js",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/styles.css",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/TouchEvents.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/Helpers.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/Controls.js",
@@ -668,7 +690,6 @@
 		"/Applications/MAMP/Localhost/bsehovac.github.io/build/BokehShader.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/plugins/BokehShader.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/Rubik.js",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/World.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/plugins/RoundedBoxGeometry.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/CubePieces.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/plugins/RoundedBoxGeometry.js",
@@ -783,9 +804,7 @@
 		"/Users/boris/Documents/r/rubik/components/Utils.js",
 		"/Users/boris/Documents/r/components/RubikCubeGeometry.js",
 		"/Users/boris/Documents/r/components/Utils.js",
-		"/Users/boris/Documents/r/Rubik.js",
-		"/Users/boris/Documents/r/components/Controls.js",
-		"/Users/boris/Documents/r/utils.js"
+		"/Users/boris/Documents/r/Rubik.js"
 	],
 	"find":
 	{
@@ -811,9 +830,10 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": true,
+		"case_sensitive": false,
 		"find_history":
 		[
+			"canvas",
 			"console",
 			"Object.keys",
 			"roundedBoxGeometry",
@@ -912,24 +932,114 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/rubik/components/World.js",
+					"file": "init.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2672,
+						"buffer_size": 3167,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								599,
-								599
+								1200,
+								1200
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 245.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 975,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								630,
+								630
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "styles.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1944,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1799,
+								1799
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2303.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/rubik/components/Timer.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 774,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								731,
+								731
 							]
 						],
 						"settings":
@@ -938,40 +1048,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 417.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "index.php",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 821,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
 					"type": "text"
 				}
 			]

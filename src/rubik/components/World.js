@@ -21,7 +21,7 @@ class World {
 		world.renderer = renderer;
 
 		world.stage = { width: 2, height: 3 };
-		world.fov = 2;
+		world.fov = 15;
 
 		world.createLights();
 
@@ -61,17 +61,17 @@ class World {
 
 		const lights = {
 			ambient: new THREE.AmbientLight( 0xffffff, 0.725 ),
-			directional1: new THREE.DirectionalLight( 0xffffff, 0.15 ),
-			directional2: new THREE.DirectionalLight( 0xffffff, 0.15 ),
+			directional1: new THREE.DirectionalLight( 0xffffff, 0.16 ),
+			directional2: new THREE.DirectionalLight( 0xffffff, 0.16 ),
 		};
 
 		scene.add( lights.ambient );
 
-		lights.directional1.position.set( 0, 2, 2 );
+		lights.directional1.position.set( 0, 1.5, 2 );
 		lights.directional1.lookAt( new THREE.Vector3() );
 		scene.add( lights.directional1 );
 
-		lights.directional2.position.set( 2, 2, 0 );
+		lights.directional2.position.set( 2, 1.5, 0 );
 		lights.directional2.lookAt( new THREE.Vector3() );
 		scene.add( lights.directional2 );
 

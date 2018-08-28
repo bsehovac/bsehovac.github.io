@@ -38,7 +38,7 @@ class Timer {
 		const seconds = parseInt( ( time / 1000 ) % 60 );
 		const minutes = parseInt( ( time / ( 1000 * 60 ) ) % 60 );
 
-		return minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds + '.' + millis;
+		return minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds; // + '.' + millis;
 
 	}
 
