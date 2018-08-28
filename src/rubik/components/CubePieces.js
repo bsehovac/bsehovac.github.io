@@ -12,7 +12,7 @@ function CubePieces( size, positions, colors ) {
 	const pieceSize = 1 / size;
 
 	const pieceMesh = new THREE.Mesh(
-		new THREE.RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
+		new RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
 		new THREE.MeshBasicMaterial( { color: colors.piece } )
 	);
 

@@ -9,7 +9,7 @@ class Controls {
 
 		options = Object.assign( {
 			animationSpeed: 0.15,
-			animationBounce: 1,
+			animationBounce: 1.75,
 			scrambleSpeed: 0.1,
 			scrambleBounce: 0,
 			minimumRotationAngle: Math.PI / 12, // 15deg
@@ -82,7 +82,9 @@ class Controls {
 				intersect.piece = intersects[ 0 ].object.parent;
 				intersect.start = intersects[ 0 ].point;
 				drag.direction = new THREE.Vector3();
-				drag.direction[ Object.keys( intersect.start ).reduce( ( a, b ) => intersect.start[ a ] > intersect.start[ b ] ? a : b ) ] = 1;
+				drag.direction[ Object.keys( intersect.start ).reduce( ( a, b ) =>
+					Math.abs( intersect.start[ a ] ) > Math.abs( intersect.start[ b ] ) ? a : b
+				) ] = 1;
 				helper.position.set( intersect.start.x, intersect.start.y, intersect.start.z );
 				helper.rotation.set( drag.direction.y * Math.PI / 2, drag.direction.x * Math.PI / 2, drag.direction.z * Math.PI / 2 );
 
@@ -284,7 +286,12 @@ class Controls {
 
 		}
 
-		const axis = Object.keys( angle ).reduce( ( a, b ) => angle[ a ] > angle[ b ] ? a : b );
+		const axis = Object.keys( angle ).reduce( ( a, b ) =>
+			Math.abs( angle[ a ] ) > Math.abs( angle[ b ] ) ? a : b 
+		);
+
+
+
 		const cubeRotation = cube.object.rotation[ axis ] * 1;
 		let bounceStarted = false;
 
@@ -305,6 +312,7 @@ class Controls {
 			}
 
 			const bounceValue = ( angle[ axis ] - group.rotation[ axis ] ) * - 1;
+
 			cube.object.rotation[ axis ] = cubeRotation + bounceValue;
 
 		};

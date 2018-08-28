@@ -4,11 +4,11 @@
 	(factory((global.RUBIK = {})));
 }(this, (function (exports) { 'use strict';
 
-	class Game {
+	class World {
 
 		constructor( container ) {
 
-			const game = this;
+			const world = this;
 
 			const scene = new THREE.Scene();
 
@@ -19,27 +19,27 @@
 
 			const camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
 
-			game.onAnimate = () => {};
-			game.onResize = () => {};
-			game.scene = scene;
-			game.camera = camera;
-			game.container = container;
-			game.renderer = renderer;
+			world.onAnimate = () => {};
+			world.onResize = () => {};
+			world.scene = scene;
+			world.camera = camera;
+			world.container = container;
+			world.renderer = renderer;
 
-			game.stage = { width: 2, height: 3.5 };
-			game.fov = 2;
+			world.stage = { width: 2, height: 3 };
+			world.fov = 2;
 
-			game.createLights();
+			world.createLights();
 
 			function resize() {
 
-				game.width = container.offsetWidth;
-				game.height = container.offsetHeight;
+				world.width = container.offsetWidth;
+				world.height = container.offsetHeight;
 
-				renderer.setSize( game.width, game.height );
+				renderer.setSize( world.width, world.height );
 
-				game.updateCamera();
-				game.onResize();
+				world.updateCamera();
+				world.onResize();
 
 			}
 
@@ -50,7 +50,7 @@
 			function animate() {
 
 				renderer.render( scene, camera );
-				game.onAnimate();
+				world.onAnimate();
 
 				requestAnimationFrame( animate );
 
@@ -62,8 +62,8 @@
 
 		createLights() {
 
-			const game = this;
-			const scene = game.scene;
+			const world = this;
+			const scene = world.scene;
 
 			const lights = {
 				ambient: new THREE.AmbientLight( 0xffffff, 0.725 ),
@@ -81,19 +81,19 @@
 			lights.directional2.lookAt( new THREE.Vector3() );
 			scene.add( lights.directional2 );
 
-			game.lights = lights;
+			world.lights = lights;
 
 		}
 
 		updateCamera() {
 
-			const game = this;
-			const stage = game.stage;
-		  const camera = game.camera;
-		  const fov = game.fov;
+			const world = this;
+			const stage = world.stage;
+		  const camera = world.camera;
+		  const fov = world.fov;
 
 		  camera.fov = fov;
-		  camera.aspect = game.width / game.height;
+		  camera.aspect = world.width / world.height;
 
 			const aspect = stage.width / stage.height;
 		  const fovRad = fov * THREE.Math.DEG2RAD;
@@ -112,29 +112,496 @@
 
 		addCube( cube ) {
 
-			const game = this;
+			const world = this;
 
-			game.cube = cube;
-			cube.game = game;
+			world.cube = cube;
+			cube.world = world;
 
-			game.scene.add( cube.object );
-			game.scene.add( cube.shadow );
+			world.scene.add( cube.object );
+			world.scene.add( cube.shadow );
 
 		}
 
 		addControls( controls ) {
 
-			const game = this;
+			const world = this;
 
-			game.controls = controls;
-			controls.game = game;
+			world.controls = controls;
+			controls.world = world;
 
-			game.scene.add( controls.helper );
-			controls.touchEvents.init();
+			world.scene.add( controls.helper );
+			controls.touchEvents.init( world.container );
 
 		}
 
 	}
+
+	function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
+
+	  THREE.BufferGeometry.call( this );
+
+	  this.type = 'RoundedBoxGeometry';
+
+	  radiusSegments = ! isNaN( radiusSegments ) ? Math.max( 1, Math.floor( radiusSegments ) ) : 1;
+
+	  width = ! isNaN( width ) ? width : 1;
+	  height = ! isNaN( height ) ? height : 1;
+	  depth = ! isNaN( depth ) ? depth : 1;
+
+	  radius = ! isNaN( radius ) ? radius : .15;
+	  radius = Math.min( radius, Math.min( width, Math.min( height, Math.min( depth ) ) ) / 2 );
+
+	  var edgeHalfWidth = width / 2 - radius;
+	  var edgeHalfHeight = height / 2 - radius;
+	  var edgeHalfDepth = depth / 2 - radius;
+
+	  this.parameters = {
+	    width: width,
+	    height: height,
+	    depth: depth,
+	    radius: radius,
+	    radiusSegments: radiusSegments
+	  };
+
+	  var rs1 = radiusSegments + 1; //radius segments + 1
+	  var totalVertexCount = ( rs1 * radiusSegments + 1 ) << 3;
+
+	  var positions = new THREE.BufferAttribute( new Float32Array( totalVertexCount * 3 ), 3 );
+	  var normals = new THREE.BufferAttribute( new Float32Array( totalVertexCount * 3 ), 3 );
+
+	  var
+	    cornerVerts = [],
+	    cornerNormals = [],
+	    normal = new THREE.Vector3(),
+	    vertex = new THREE.Vector3(),
+	    vertexPool = [],
+	    normalPool = [],
+	    indices = []
+	  ;
+
+	  var
+	    lastVertex = rs1 * radiusSegments,
+	    cornerVertNumber = rs1 * radiusSegments + 1
+	  ;
+
+	  doVertices();
+	  doFaces();
+	  doCorners();
+	  doHeightEdges();
+	  doWidthEdges();
+	  doDepthEdges();
+
+	  function doVertices() {
+
+	    var cornerLayout = [
+	      new THREE.Vector3( 1, 1, 1 ),
+	      new THREE.Vector3( 1, 1, - 1 ),
+	      new THREE.Vector3( - 1, 1, - 1 ),
+	      new THREE.Vector3( - 1, 1, 1 ),
+	      new THREE.Vector3( 1, - 1, 1 ),
+	      new THREE.Vector3( 1, - 1, - 1 ),
+	      new THREE.Vector3( - 1, - 1, - 1 ),
+	      new THREE.Vector3( - 1, - 1, 1 )
+	    ];
+
+	    for ( var j = 0; j < 8; j ++ ) {
+
+	      cornerVerts.push( [] );
+	      cornerNormals.push( [] );
+
+	    }
+
+	    var PIhalf = Math.PI / 2;
+	    var cornerOffset = new THREE.Vector3( edgeHalfWidth, edgeHalfHeight, edgeHalfDepth );
+
+	    for ( var y = 0; y <= radiusSegments; y ++ ) {
+
+	      var v = y / radiusSegments;
+	      var va = v * PIhalf; //arrange in 90 deg
+	      var cosVa = Math.cos( va ); //scale of vertical angle
+	      var sinVa = Math.sin( va );
+
+	      if ( y == radiusSegments ) {
+
+	        vertex.set( 0, 1, 0 );
+	        var vert = vertex.clone().multiplyScalar( radius ).add( cornerOffset );
+	        cornerVerts[ 0 ].push( vert );
+	        vertexPool.push( vert );
+	        var norm = vertex.clone();
+	        cornerNormals[ 0 ].push( norm );
+	        normalPool.push( norm );
+	        continue; //skip row loop
+
+	      }
+
+	      for ( var x = 0; x <= radiusSegments; x ++ ) {
+
+	        var u = x / radiusSegments;
+	        var ha = u * PIhalf;
+	        vertex.x = cosVa * Math.cos( ha );
+	        vertex.y = sinVa;
+	        vertex.z = cosVa * Math.sin( ha );
+
+	        var vert = vertex.clone().multiplyScalar( radius ).add( cornerOffset );
+	        cornerVerts[ 0 ].push( vert );
+	        vertexPool.push( vert );
+
+	        var norm = vertex.clone().normalize();
+	        cornerNormals[ 0 ].push( norm );
+	        normalPool.push( norm );
+
+	      }
+
+	    }
+
+	    for ( var i = 1; i < 8; i ++ ) {
+
+	      for ( var j = 0; j < cornerVerts[ 0 ].length; j ++ ) {
+
+	        var vert = cornerVerts[ 0 ][ j ].clone().multiply( cornerLayout[ i ] );
+	        cornerVerts[ i ].push( vert );
+	        vertexPool.push( vert );
+
+	        var norm = cornerNormals[ 0 ][ j ].clone().multiply( cornerLayout[ i ] );
+	        cornerNormals[ i ].push( norm );
+	        normalPool.push( norm );
+
+	      }
+
+	    }
+
+	  }
+
+
+	  // weave corners ====================================
+
+	  function doCorners() {
+
+	    var flips = [
+	      true,
+	      false,
+	      true,
+	      false,
+	      false,
+	      true,
+	      false,
+	      true
+	    ];
+
+	    var lastRowOffset = rs1 * ( radiusSegments - 1 );
+
+	    for ( var i = 0; i < 8; i ++ ) {
+
+	      var cornerOffset = cornerVertNumber * i;
+
+	      for ( var v = 0; v < radiusSegments - 1; v ++ ) {
+
+	        var r1 = v * rs1; //row offset
+	        var r2 = ( v + 1 ) * rs1; //next row
+
+	        for ( var u = 0; u < radiusSegments; u ++ ) {
+
+	          var u1 = u + 1;
+	          var a = cornerOffset + r1 + u;
+	          var b = cornerOffset + r1 + u1;
+	          var c = cornerOffset + r2 + u;
+	          var d = cornerOffset + r2 + u1;
+
+	          if ( ! flips[ i ] ) {
+
+	            indices.push( a );
+	            indices.push( b );
+	            indices.push( c );
+
+	            indices.push( b );
+	            indices.push( d );
+	            indices.push( c );
+
+	          } else {
+
+	            indices.push( a );
+	            indices.push( c );
+	            indices.push( b );
+
+	            indices.push( b );
+	            indices.push( c );
+	            indices.push( d );
+
+	          }
+
+	        }
+
+	      }
+
+	      for ( var u = 0; u < radiusSegments; u ++ ) {
+
+	        var a = cornerOffset + lastRowOffset + u;
+	        var b = cornerOffset + lastRowOffset + u + 1;
+	        var c = cornerOffset + lastVertex;
+
+	        if ( ! flips[ i ] ) {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+
+	        }
+
+	      }
+
+	    }
+
+	  }
+
+	  function doFaces() {
+
+	    var a = lastVertex;// + cornerVertNumber * 0;
+	    var b = lastVertex + cornerVertNumber;// * 1;
+	    var c = lastVertex + cornerVertNumber * 2;
+	    var d = lastVertex + cornerVertNumber * 3;
+
+	    indices.push( a );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( d );
+
+	    a = lastVertex + cornerVertNumber * 4;// + cornerVertNumber * 0;
+	    b = lastVertex + cornerVertNumber * 5;// * 1;
+	    c = lastVertex + cornerVertNumber * 6;
+	    d = lastVertex + cornerVertNumber * 7;
+
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( a );
+	    indices.push( d );
+	    indices.push( c );
+
+	    a = 0;
+	    b = cornerVertNumber;
+	    c = cornerVertNumber * 4;
+	    d = cornerVertNumber * 5;
+
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( d );
+
+	    a = cornerVertNumber * 2;
+	    b = cornerVertNumber * 3;
+	    c = cornerVertNumber * 6;
+	    d = cornerVertNumber * 7;
+
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( d );
+
+	    a = radiusSegments;
+	    b = radiusSegments + cornerVertNumber * 3;
+	    c = radiusSegments + cornerVertNumber * 4;
+	    d = radiusSegments + cornerVertNumber * 7;
+
+	    indices.push( a );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( d );
+	    indices.push( c );
+
+	    a = radiusSegments + cornerVertNumber;
+	    b = radiusSegments + cornerVertNumber * 2;
+	    c = radiusSegments + cornerVertNumber * 5;
+	    d = radiusSegments + cornerVertNumber * 6;
+
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( d );
+
+	  }
+
+	  function doHeightEdges() {
+
+	    for ( var i = 0; i < 4; i ++ ) {
+
+	      var cOffset = i * cornerVertNumber;
+	      var cRowOffset = 4 * cornerVertNumber + cOffset;
+	      var needsFlip = i & 1 === 1;
+
+	      for ( var u = 0; u < radiusSegments; u ++ ) {
+
+	        var u1 = u + 1;
+	        var a = cOffset + u;
+	        var b = cOffset + u1;
+	        var c = cRowOffset + u;
+	        var d = cRowOffset + u1;
+
+	        if ( ! needsFlip ) {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( d );
+	          indices.push( c );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( d );
+
+	        }
+
+	      }
+
+	    }
+
+	  }
+
+	  function doDepthEdges() {
+
+	    var cStarts = [ 0, 2, 4, 6 ];
+	    var cEnds = [ 1, 3, 5, 7 ];
+
+	    for ( var i = 0; i < 4; i ++ ) {
+
+	      var cStart = cornerVertNumber * cStarts[ i ];
+	      var cEnd = cornerVertNumber * cEnds[ i ];
+
+	      var needsFlip = 1 >= i;
+
+	      for ( var u = 0; u < radiusSegments; u ++ ) {
+
+	        var urs1 = u * rs1;
+	        var u1rs1 = ( u + 1 ) * rs1;
+
+	        var a = cStart + urs1;
+	        var b = cStart + u1rs1;
+	        var c = cEnd + urs1;
+	        var d = cEnd + u1rs1;
+
+	        if ( needsFlip ) {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( d );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( d );
+	          indices.push( c );
+
+	        }
+
+	      }
+
+	    }
+
+	  }
+
+	  function doWidthEdges() {
+
+	    var end = radiusSegments - 1;
+
+	    var cStarts = [ 0, 1, 4, 5 ];
+	    var cEnds = [ 3, 2, 7, 6 ];
+	    var needsFlip = [ 0, 1, 1, 0 ];
+
+	    for ( var i = 0; i < 4; i ++ ) {
+
+	      var cStart = cStarts[ i ] * cornerVertNumber;
+	      var cEnd = cEnds[ i ] * cornerVertNumber;
+
+	      for ( var u = 0; u <= end; u ++ ) {
+
+	        var a = cStart + radiusSegments + u * rs1;
+	        var b = cStart + ( u != end ? radiusSegments + ( u + 1 ) * rs1 : cornerVertNumber - 1 );
+
+	        var c = cEnd + radiusSegments + u * rs1;
+	        var d = cEnd + ( u != end ? radiusSegments + ( u + 1 ) * rs1 : cornerVertNumber - 1 );
+
+	        if ( ! needsFlip[ i ] ) {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( d );
+	          indices.push( c );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( d );
+
+	        }
+
+	      }
+
+	    }
+
+	  }
+
+	  var index = 0;
+
+	  for ( var i = 0; i < vertexPool.length; i ++ ) {
+
+	    positions.setXYZ(
+	      index,
+	      vertexPool[ i ].x,
+	      vertexPool[ i ].y,
+	      vertexPool[ i ].z
+	    );
+
+	    normals.setXYZ(
+	      index,
+	      normalPool[ i ].x,
+	      normalPool[ i ].y,
+	      normalPool[ i ].z
+	    );
+
+	    index ++;
+
+	  }
+
+	  this.setIndex( new THREE.BufferAttribute( new Uint16Array( indices ), 1 ) );
+	  this.addAttribute( 'position', positions );
+	  this.addAttribute( 'normal', normals );
+
+	}
+
+	RoundedBoxGeometry.prototype = Object.create( THREE.BufferGeometry.prototype );
+	RoundedBoxGeometry.constructor = RoundedBoxGeometry;
 
 	function CubePieces( size, positions, colors ) {
 
@@ -148,7 +615,7 @@
 		const pieceSize = 1 / size;
 
 		const pieceMesh = new THREE.Mesh(
-			new THREE.RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
+			new RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
 			new THREE.MeshBasicMaterial( { color: colors.piece } )
 		);
 
@@ -286,9 +753,9 @@
 			cube.edges = geometry.edges;
 			cube.origin = origin;
 			cube.positions = positions;
-			cube.game = game;
+			cube.world = world;
 
-			game.cube = cube;
+			world.cube = cube;
 
 			cube.generateLayers();
 			cube.generateShadow();
@@ -425,7 +892,6 @@
 	      mouseEvents: true,
 	      useVector: false,
 	      invertY: false,
-	      element: null,
 	      onStart() {},
 	      onDrag() {},
 	      onEnd() {},
@@ -494,10 +960,9 @@
 
 	  }
 
-	  init() {
+	  init( element ) {
 
 	    const t = this;
-	    const element = t.options.element;
 
 	    t.element = ( typeof element === 'string' )
 	      ? document.querySelector( element )
@@ -566,7 +1031,7 @@
 
 			options = Object.assign( {
 				animationSpeed: 0.15,
-				animationBounce: 1,
+				animationBounce: 1.75,
 				scrambleSpeed: 0.1,
 				scrambleBounce: 0,
 				minimumRotationAngle: Math.PI / 12, // 15deg
@@ -609,7 +1074,7 @@
 			controls.raycaster = raycaster;
 			controls.group = group;
 			controls.disabled = false;
-			controls.game = null;
+			controls.world = null;
 			controls.cube = cube;
 			controls.intersect = intersect;
 			controls.drag = drag;
@@ -639,7 +1104,9 @@
 					intersect.piece = intersects[ 0 ].object.parent;
 					intersect.start = intersects[ 0 ].point;
 					drag.direction = new THREE.Vector3();
-					drag.direction[ Object.keys( intersect.start ).reduce( ( a, b ) => intersect.start[ a ] > intersect.start[ b ] ? a : b ) ] = 1;
+					drag.direction[ Object.keys( intersect.start ).reduce( ( a, b ) =>
+						Math.abs( intersect.start[ a ] ) > Math.abs( intersect.start[ b ] ) ? a : b
+					) ] = 1;
 					helper.position.set( intersect.start.x, intersect.start.y, intersect.start.z );
 					helper.rotation.set( drag.direction.y * Math.PI / 2, drag.direction.x * Math.PI / 2, drag.direction.z * Math.PI / 2 );
 
@@ -695,7 +1162,7 @@
 						controls.selectLayer( cube.layers.a );
 
 						drag.rotation = ( angle == 0.25 || angle == 0.75 )
-							? ( ( position.start.x > controls.game.width * 0.5 ) ? 'z' : 'y' )
+							? ( ( position.start.x > controls.world.width * 0.5 ) ? 'z' : 'y' )
 							: 'x';
 
 					}
@@ -841,7 +1308,12 @@
 
 			}
 
-			const axis = Object.keys( angle ).reduce( ( a, b ) => angle[ a ] > angle[ b ] ? a : b );
+			const axis = Object.keys( angle ).reduce( ( a, b ) =>
+				Math.abs( angle[ a ] ) > Math.abs( angle[ b ] ) ? a : b 
+			);
+
+
+
 			const cubeRotation = cube.object.rotation[ axis ] * 1;
 			let bounceStarted = false;
 
@@ -862,6 +1334,7 @@
 				}
 
 				const bounceValue = ( angle[ axis ] - group.rotation[ axis ] ) * - 1;
+
 				cube.object.rotation[ axis ] = cubeRotation + bounceValue;
 
 			};
@@ -950,13 +1423,13 @@
 		getIntersect( position, object, multiple ) {
 
 			const controls = this;
-			const game = controls.game;
+			const world = controls.world;
 			const raycaster = controls.raycaster;
 
 			const convertedPosition = controls.touchEvents.convertPosition( position.clone() );
 			convertedPosition.y *= - 1;
 
-			raycaster.setFromCamera( convertedPosition, game.camera );
+			raycaster.setFromCamera( convertedPosition, world.camera );
 
 			return ( multiple )
 				? raycaster.intersectObjects( object )
@@ -1083,12 +1556,12 @@
 
 	class Timer {
 
-		constructor( game, element ) {
+		constructor( world, element ) {
 
 			this.element = element;
 			this.startTime = null;
 
-			this.game = game;
+			this.world = world;
 
 		}
 
@@ -1096,7 +1569,7 @@
 
 			this.startTime = Date.now();
 
-			this.game.onAnimate = function () {
+			this.world.onAnimate = function () {
 
 				const delta = Date.now() - timer.startTime;
 				timer.element.innerHTML = timer.convert( delta );
@@ -1109,7 +1582,7 @@
 
 			const delta = Date.now() - this.startTime;
 
-			game.onAnimate = function () {};
+			world.onAnimate = function () {};
 
 			return { time: this.convert( delta ), millis: delta };
 
@@ -1129,7 +1602,7 @@
 
 	// export { Shatter } from './components/Shatter.js';
 
-	exports.Game = Game;
+	exports.World = World;
 	exports.Cube = Cube;
 	exports.Controls = Controls;
 	exports.Scramble = Scramble;

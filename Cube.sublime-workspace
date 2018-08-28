@@ -520,20 +520,19 @@
 	"buffers":
 	[
 		{
-			"file": "src/rubik/Rubik.js",
+			"file": "src/rubik/components/World.js",
 			"settings":
 			{
-				"buffer_size": 300,
+				"buffer_size": 2672,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/rubik/components/CubePieces.js",
+			"file": "index.php",
 			"settings":
 			{
-				"buffer_size": 3016,
-				"encoding": "UTF-8",
+				"buffer_size": 821,
 				"line_ending": "Unix"
 			}
 		}
@@ -652,14 +651,26 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/boris/Documents/bsehovac.github.io",
-		"/Users/boris/Documents/bsehovac.github.io/src",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/plugins"
+		"/Applications/MAMP/Localhost/bsehovac.github.io",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components"
 	],
 	"file_history":
 	[
+		"/Applications/MAMP/Localhost/bsehovac.github.io/index.html",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/init.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/styles.css",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/TouchEvents.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/Helpers.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/Controls.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/index.php",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/build/BokehShader.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/plugins/BokehShader.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/Rubik.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/World.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/plugins/RoundedBoxGeometry.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/CubePieces.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/plugins/RoundedBoxGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three/Three.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/plugins/SliceGeometry.js",
@@ -774,24 +785,11 @@
 		"/Users/boris/Documents/r/components/Utils.js",
 		"/Users/boris/Documents/r/Rubik.js",
 		"/Users/boris/Documents/r/components/Controls.js",
-		"/Users/boris/Documents/r/utils.js",
-		"/Users/boris/Documents/r/components/Cube.js",
-		"/Users/boris/Documents/r/components/RoundedPlaneGeometry.js",
-		"/Users/boris/Documents/r/components/RoundedBoxGeometry.js",
-		"/Users/boris/Documents/r/components/Geometry.js",
-		"/Users/boris/Documents/r/components/Scramble.js",
-		"/Users/boris/Documents/r/scramble.js",
-		"/Users/boris/Documents/r/Scene.js",
-		"/Users/boris/Documents/r/roundedPlane.js",
-		"/Users/boris/Documents/r/roundedBoxGeometry.js",
-		"/Users/boris/Documents/r/controls.js",
-		"/Users/boris/Documents/r/scene.js",
-		"/Users/boris/Documents/r/cube.js",
-		"/Users/boris/Documents/r/geometry.js"
+		"/Users/boris/Documents/r/utils.js"
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 54.0
 	},
 	"find_in_files":
 	{
@@ -816,6 +814,8 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"console",
+			"Object.keys",
 			"roundedBoxGeometry",
 			"RoundedBoxGeometry",
 			"game",
@@ -912,52 +912,24 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/rubik/Rubik.js",
+					"file": "src/rubik/components/World.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 300,
+						"buffer_size": 2672,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/rubik/components/CubePieces.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3016,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								491,
-								491
+								599,
+								599
 							]
 						],
 						"settings":
@@ -971,13 +943,43 @@
 					},
 					"stack_index": 0,
 					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "index.php",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 821,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
 				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 27.0
+		"height": 30.0
 	},
 	"input":
 	{

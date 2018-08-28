@@ -5,7 +5,7 @@ http://zz85.github.io/mrdoobapproves/
 window.addEventListener( 'touchmove', function () {} );
 document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
 
-const scrambleLength = 2;
+const scrambleLength = 20;
 
 const ui = document.querySelector( '#ui' );
 const start = document.querySelector( '#start' );
@@ -43,7 +43,7 @@ let worldStarted = false;
 
 start.onclick = function ( event ) {
 
-  ui.classList.add('world');
+  ui.classList.add('game');
 
 	if ( worldStarted ) return;
 	worldStarted = true;

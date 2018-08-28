@@ -20,7 +20,7 @@ class World {
 		world.container = container;
 		world.renderer = renderer;
 
-		world.stage = { width: 2, height: 3.5 };
+		world.stage = { width: 2, height: 3 };
 		world.fov = 2;
 
 		world.createLights();
@@ -124,10 +124,10 @@ class World {
 		controls.world = world;
 
 		world.scene.add( controls.helper );
-		controls.touchEvents.init();
+		controls.touchEvents.init( world.container );
 
 	}
 
 }
 
-export { world };
+export { World };

@@ -9,7 +9,6 @@ class TouchEvents {
       mouseEvents: true,
       useVector: false,
       invertY: false,
-      element: null,
       onStart() {},
       onDrag() {},
       onEnd() {},
@@ -78,10 +77,9 @@ class TouchEvents {
 
   }
 
-  init() {
+  init( element ) {
 
     const t = this;
-    const element = t.options.element;
 
     t.element = ( typeof element === 'string' )
       ? document.querySelector( element )
