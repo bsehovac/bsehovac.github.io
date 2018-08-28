@@ -1,8 +1,8 @@
-class Game {
+class World {
 
 	constructor( container ) {
 
-		const game = this;
+		const world = this;
 
 		const scene = new THREE.Scene();
 
@@ -13,27 +13,27 @@ class Game {
 
 		const camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
 
-		game.onAnimate = () => {};
-		game.onResize = () => {};
-		game.scene = scene;
-		game.camera = camera;
-		game.container = container;
-		game.renderer = renderer;
+		world.onAnimate = () => {};
+		world.onResize = () => {};
+		world.scene = scene;
+		world.camera = camera;
+		world.container = container;
+		world.renderer = renderer;
 
-		game.stage = { width: 2, height: 3.5 };
-		game.fov = 2;
+		world.stage = { width: 2, height: 3.5 };
+		world.fov = 2;
 
-		game.createLights();
+		world.createLights();
 
 		function resize() {
 
-			game.width = container.offsetWidth;
-			game.height = container.offsetHeight;
+			world.width = container.offsetWidth;
+			world.height = container.offsetHeight;
 
-			renderer.setSize( game.width, game.height );
+			renderer.setSize( world.width, world.height );
 
-			game.updateCamera();
-			game.onResize();
+			world.updateCamera();
+			world.onResize();
 
 		}
 
@@ -44,7 +44,7 @@ class Game {
 		function animate() {
 
 			renderer.render( scene, camera );
-			game.onAnimate();
+			world.onAnimate();
 
 			requestAnimationFrame( animate );
 
@@ -56,8 +56,8 @@ class Game {
 
 	createLights() {
 
-		const game = this;
-		const scene = game.scene;
+		const world = this;
+		const scene = world.scene;
 
 		const lights = {
 			ambient: new THREE.AmbientLight( 0xffffff, 0.725 ),
@@ -75,19 +75,19 @@ class Game {
 		lights.directional2.lookAt( new THREE.Vector3() );
 		scene.add( lights.directional2 );
 
-		game.lights = lights;
+		world.lights = lights;
 
 	}
 
 	updateCamera() {
 
-		const game = this;
-		const stage = game.stage;
-	  const camera = game.camera;
-	  const fov = game.fov;
+		const world = this;
+		const stage = world.stage;
+	  const camera = world.camera;
+	  const fov = world.fov;
 
 	  camera.fov = fov;
-	  camera.aspect = game.width / game.height;
+	  camera.aspect = world.width / world.height;
 
 		const aspect = stage.width / stage.height;
 	  const fovRad = fov * THREE.Math.DEG2RAD;
@@ -106,28 +106,28 @@ class Game {
 
 	addCube( cube ) {
 
-		const game = this;
+		const world = this;
 
-		game.cube = cube;
-		cube.game = game;
+		world.cube = cube;
+		cube.world = world;
 
-		game.scene.add( cube.object );
-		game.scene.add( cube.shadow );
+		world.scene.add( cube.object );
+		world.scene.add( cube.shadow );
 
 	}
 
 	addControls( controls ) {
 
-		const game = this;
+		const world = this;
 
-		game.controls = controls;
-		controls.game = game;
+		world.controls = controls;
+		controls.world = world;
 
-		game.scene.add( controls.helper );
-		controls.touchEvents.init( game.container );
+		world.scene.add( controls.helper );
+		controls.touchEvents.init();
 
 	}
 
 }
 
-export { Game };
+export { world };

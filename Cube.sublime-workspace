@@ -519,15 +519,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "index.html",
-			"settings":
-			{
-				"buffer_size": 841,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "Rollup THREE",
 	"build_system_choices":
@@ -643,19 +634,25 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/boris/Documents/bsehovac.github.io"
 	],
 	"file_history":
 	[
+		"/Users/boris/Documents/bsehovac.github.io/src/three/Three.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/three/plugins/RoundedBoxGeometry.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/three-plugins/SliceGeometry.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/three-plugins/RoundedBoxGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/init.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/Rubik.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Timer.js",
+		"/Users/boris/Documents/bsehovac.github.io/index.html",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Game.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Cube.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Controls.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/TouchEvents.js",
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.rubik.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/Rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Helpers.js",
 		"/Users/boris/Documents/bsehovac.github.io/Cube.sublime-project",
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.minify.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Cube.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/helpers/VectorHelpers.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three/math/Vector3.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/helpers/TouchEvents.js",
@@ -665,11 +662,8 @@
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.three.js",
 		"/Users/boris/Documents/bsehovac.github.io/build/three.js",
 		"/Users/boris/Documents/bsehovac.github.io/build/rubik.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/three/Three.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three/cameras/PerspectiveCamera.js",
-		"/Users/boris/Documents/bsehovac.github.io/index.html",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/CubePieces.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/three/plugins/RoundedBoxGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/components/helpers/TouchEvents.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/components/Cube.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/components/CubePieces.js",
@@ -770,11 +764,7 @@
 		"/Users/boris/Documents/r/cube.js",
 		"/Users/boris/Documents/r/geometry.js",
 		"/Users/boris/Desktop/scramble.js",
-		"/Users/boris/Desktop/test/scripts.js",
-		"/Users/boris/Documents/2amigos-site/frontend/config/params.php",
-		"/Users/boris/Documents/2amigos-site/frontend/views/site/ourStory.php",
-		"/Users/boris/Documents/coinolution/common/components/forms/ActiveForm.php",
-		"/Users/boris/Documents/coinolution/common/components/forms/ActiveField.php"
+		"/Users/boris/Desktop/test/scripts.js"
 	],
 	"find":
 	{
@@ -785,6 +775,7 @@
 		"height": 122.0,
 		"where_history":
 		[
+			"/Users/boris/Documents/bsehovac.github.io/src/rubik",
 			"/Users/boris/Documents/bsehovac.github.io/src/rubik/components",
 			"/Users/boris/Documents/bsehovac.github.io/src/rubik",
 			"/Users/boris/Documents/bsehovac.github.io/src/rubik/components",
@@ -799,9 +790,18 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"RoundedBoxGeometry",
+			"game",
+			"Game",
+			"game",
+			"Game",
+			"init",
+			"touchEvents",
+			"init",
+			"game",
 			"roundVectorAngle",
 			"roundAngle",
 			"roundVectorAngle",
@@ -872,6 +872,10 @@
 		"regex": false,
 		"replace_history":
 		[
+			"roundedBoxGeometry",
+			"world",
+			"World",
+			"world",
 			"rotateLayer"
 		],
 		"reverse": false,
@@ -883,39 +887,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 841,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								282,
-								282
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -958,11 +931,11 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "Rollup Rubik",
+	"pinned_build_system": "Rollup THREE",
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 50.0
+		"height": 88.0
 	},
 	"save_all_on_build": true,
 	"select_file":

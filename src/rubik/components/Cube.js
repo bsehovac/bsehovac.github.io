@@ -40,9 +40,9 @@ class Cube {
 		cube.edges = geometry.edges;
 		cube.origin = origin;
 		cube.positions = positions;
-		cube.game = game;
+		cube.world = world;
 
-		game.cube = cube;
+		world.cube = cube;
 
 		cube.generateLayers();
 		cube.generateShadow();

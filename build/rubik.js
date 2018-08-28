@@ -130,7 +130,7 @@
 			controls.game = game;
 
 			game.scene.add( controls.helper );
-			controls.touchEvents.init( game.container );
+			controls.touchEvents.init();
 
 		}
 
@@ -601,7 +601,7 @@
 			};
 
 			const touchEvents = new TouchEvents( {
-				element: game.container,
+				element: null,
 				useVector: THREE.Vector2,
 				invertY: true,
 			} );
@@ -609,6 +609,7 @@
 			controls.raycaster = raycaster;
 			controls.group = group;
 			controls.disabled = false;
+			controls.game = null;
 			controls.cube = cube;
 			controls.intersect = intersect;
 			controls.drag = drag;
@@ -694,7 +695,7 @@
 						controls.selectLayer( cube.layers.a );
 
 						drag.rotation = ( angle == 0.25 || angle == 0.75 )
-							? ( ( position.start.x > game.width * 0.5 ) ? 'z' : 'y' )
+							? ( ( position.start.x > controls.game.width * 0.5 ) ? 'z' : 'y' )
 							: 'x';
 
 					}

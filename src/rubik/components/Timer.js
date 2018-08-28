@@ -1,11 +1,11 @@
 class Timer {
 
-	constructor( game, element ) {
+	constructor( world, element ) {
 
 		this.element = element;
 		this.startTime = null;
 
-		this.game = game;
+		this.world = world;
 
 	}
 
@@ -13,7 +13,7 @@ class Timer {
 
 		this.startTime = Date.now();
 
-		this.game.onAnimate = function () {
+		this.world.onAnimate = function () {
 
 			const delta = Date.now() - timer.startTime;
 			timer.element.innerHTML = timer.convert( delta );
@@ -26,7 +26,7 @@ class Timer {
 
 		const delta = Date.now() - this.startTime;
 
-		game.onAnimate = function () {};
+		world.onAnimate = function () {};
 
 		return { time: this.convert( delta ), millis: delta };
 

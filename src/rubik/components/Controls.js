@@ -44,7 +44,7 @@ class Controls {
 		};
 
 		const touchEvents = new TouchEvents( {
-			element: game.container,
+			element: null,
 			useVector: THREE.Vector2,
 			invertY: true,
 		} );
@@ -52,6 +52,7 @@ class Controls {
 		controls.raycaster = raycaster;
 		controls.group = group;
 		controls.disabled = false;
+		controls.world = null;
 		controls.cube = cube;
 		controls.intersect = intersect;
 		controls.drag = drag;
@@ -137,7 +138,7 @@ class Controls {
 					controls.selectLayer( cube.layers.a );
 
 					drag.rotation = ( angle == 0.25 || angle == 0.75 )
-						? ( ( position.start.x > game.width * 0.5 ) ? 'z' : 'y' )
+						? ( ( position.start.x > controls.world.width * 0.5 ) ? 'z' : 'y' )
 						: 'x';
 
 				}
@@ -392,13 +393,13 @@ class Controls {
 	getIntersect( position, object, multiple ) {
 
 		const controls = this;
-		const game = controls.game;
+		const world = controls.world;
 		const raycaster = controls.raycaster;
 
 		const convertedPosition = controls.touchEvents.convertPosition( position.clone() );
 		convertedPosition.y *= - 1;
 
-		raycaster.setFromCamera( convertedPosition, game.camera );
+		raycaster.setFromCamera( convertedPosition, world.camera );
 
 		return ( multiple )
 			? raycaster.intersectObjects( object )

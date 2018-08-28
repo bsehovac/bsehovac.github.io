@@ -13,12 +13,12 @@ const time = document.querySelector( '#time' );
 const moves = document.querySelector( '#moves' );
 const undo = document.querySelector( '#undo' );
 
-const container = document.getElementById( 'game' );
+const container = document.getElementById( 'world' );
 
-const game = new RUBIK.Game( container );
+const world = new RUBIK.World( container );
 const cube = new RUBIK.Cube( 3 );
 const controls = new RUBIK.Controls( cube );
-const timer = new RUBIK.Timer( game, time );
+const timer = new RUBIK.Timer( world, time );
 
 const floating = {
   cube: TweenMax.fromTo( cube.object.position, 1.5,
@@ -31,22 +31,22 @@ const floating = {
   ),
 };
 
-game.addCube( cube );
-game.addControls( controls );
+world.addCube( cube );
+world.addControls( controls );
 
-game.camera.zoom = 0.8;
-game.camera.updateProjectionMatrix();
+world.camera.zoom = 0.8;
+world.camera.updateProjectionMatrix();
 
 controls.disabled = true;
 
-let gameStarted = false;
+let worldStarted = false;
 
 start.onclick = function ( event ) {
 
-  ui.classList.add('game');
+  ui.classList.add('world');
 
-	if ( gameStarted ) return;
-	gameStarted = true;
+	if ( worldStarted ) return;
+	worldStarted = true;
 
 	const scramble = new RUBIK.Scramble( cube, scrambleLength );
 
@@ -55,9 +55,9 @@ start.onclick = function ( event ) {
 
   TweenMax.to( cube.object.position, 0.4, { y: 0, ease: Sine.easeInOut } );
   TweenMax.to( cube.shadow.material, 0.4, { opacity: 0.4, ease: Sine.easeInOut } );
-  TweenMax.to( game.camera, 0.4, { zoom: 1, ease: Sine.easeInOut, onUpdate: function() {
+  TweenMax.to( world.camera, 0.4, { zoom: 1, ease: Sine.easeInOut, onUpdate: function() {
 
-    game.camera.updateProjectionMatrix();
+    world.camera.updateProjectionMatrix();
 
   }, onComplete: function() {
     
@@ -92,7 +92,7 @@ controls.onSolved = function () {
 };
 
 
-// game.scene.fog = new THREE.Fog(0x000000, 77, 79)
+// world.scene.fog = new THREE.Fog(0x000000, 77, 79)
 
 // var shatter = new RUBIK.Shatter( cube );
 // var shattered = false;
