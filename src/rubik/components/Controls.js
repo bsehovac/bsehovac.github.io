@@ -1,5 +1,5 @@
+import { Draggable } from './Draggable.js';
 import { roundAngle, roundVectorAngle } from './Helpers.js';
-import { TouchEvents } from './TouchEvents.js';
 
 class Controls {
 
@@ -41,13 +41,13 @@ class Controls {
 			rotation: null, // drag rotation axis
 			type: null, // drag type cube or layer
 			deltaAngle: new THREE.Vector3(),
+			axis: {
+				group: null,
+				mouse: null,
+			},
 		};
 
-		const touchEvents = new TouchEvents( {
-			element: null,
-			useVector: THREE.Vector2,
-			invertY: true,
-		} );
+		const draggable = new Draggable( { useVector: THREE.Vector2, invertY: true} );
 
 		controls.raycaster = raycaster;
 		controls.group = group;
@@ -58,7 +58,7 @@ class Controls {
 		controls.drag = drag;
 		controls.rotation = rotation;
 		controls.options = options;
-		controls.touchEvents = touchEvents;
+		controls.draggable = draggable;
 		controls.scramble = null;
 		controls.moves = moves;
 		controls.helper = helper;
@@ -68,7 +68,7 @@ class Controls {
 
 		cube.controls = controls;
 
-		touchEvents.onStart = ( event, position ) => {
+		draggable.onStart = ( event, position ) => {
 
 			if ( drag.active || drag.rotation != null || controls.disabled || controls.scramble !== null ) return;
 
@@ -98,72 +98,26 @@ class Controls {
 
 		};
 
-		touchEvents.onDrag = ( event, position ) => {
+		draggable.onDrag = ( event, position ) => {
 
 			if ( ! drag.active ) return;
 
-			if ( drag.rotation == null && position.delta.length() > 10 ) {
+			if ( drag.rotation != null ) {
 
-				if ( drag.type == 'layer' ) {
-
-					const pieceIndex = cube.pieces.indexOf( intersect.piece );
-					const intersects = controls.getIntersect( position.current, helper, false );
-
-					if ( intersects.length == 0 ) return;
-					const intersectHelper = intersects[ 0 ].point;
-
-					const normalX = [ 'x', 'z' ][ drag.direction.x ];
-					const normalY = [ 'y', 'z' ][ drag.direction.y ];
-
-					const vs = new THREE.Vector2( intersect.start[ normalX ] * 1, intersect.start[ normalY ] * 1 );
-					const ve = new THREE.Vector2( intersectHelper[ normalX ] * 1, intersectHelper[ normalY ] * 1 );
-
-					let angle = Math.round( ve.sub( vs ).angle() / ( Math.PI / 2 ) ) * ( Math.PI / 2 ) / ( Math.PI * 2 );
-
-					drag.rotation = ( angle == 0.25 || angle == 0.75 )
-						? [ 'y', 'z' ][ drag.direction.x ]
-						: [ 'x', 'z' ][ drag.direction.y ];
-
-					const layers = cube.layers[ drag.rotation ];
-
-					Object.keys( layers ).forEach( key => {
-
-				    if ( layers[ key ].includes( pieceIndex ) )
-				    	controls.selectLayer( layers[ key ] );
-
-					} );
-
-				} else if ( drag.type == 'cube' ) {
-
-					let angle = roundAngle( position.delta.angle(), false ) / ( Math.PI * 2 );
-
-					controls.selectLayer( cube.layers.a );
-
-					drag.rotation = ( angle == 0.25 || angle == 0.75 )
-						? ( ( position.start.x > controls.world.width * 0.5 ) ? 'z' : 'y' )
-						: 'x';
-
-				}
-
-			} else if ( drag.rotation != null ) {
-
-				const groupAxis = { x: 'y', y: 'x', z: 'z' }[ drag.rotation ];
-				const mouseAxis = { x: 'x', y: 'y', z: 'y' }[ drag.rotation ];
-
-				group.rotation[ groupAxis ] = position.delta[ mouseAxis ] / 100 * ( ( drag.rotation == 'y' ) ? - 1 : 1 );
+				group.rotation[ drag.axis.group ] = position.delta[ drag.axis.mouse ] / 100 * ( ( drag.rotation == 'y' ) ? - 1 : 1 );
 				drag.deltaAngle = group.rotation.toVector3();
 
-				if ( Math.abs( drag.deltaAngle[ groupAxis ] ) > Math.PI / 4 ) {
+				if ( Math.abs( drag.deltaAngle[ drag.axis.group ] ) > Math.PI / 4 ) draggable.onEnd();
 
-					touchEvents.onEnd();
+			} else if ( drag.rotation == null && position.delta.length() > 10 ) {
 
-				}
+				controls.getLayerAndAxis( position );
 
 			}
 
 		};
 
-		touchEvents.onEnd = ( event, position ) => {
+		draggable.onEnd = ( event, position ) => {
 
 			if ( ! drag.active ) return;
 			drag.active = false;
@@ -187,7 +141,7 @@ class Controls {
 	disable() {
 
 		const controls = this;
-		controls.touchEvents.dispose();
+		controls.draggable.dispose();
 		return controls;
 
 	}
@@ -319,6 +273,60 @@ class Controls {
 
 	}
 
+	getLayerAndAxis( position ) {
+
+		const controls = this;
+		const cube = controls.cube;
+		const intersect = controls.intersect;
+		const drag = controls.drag;
+		const helper = controls.helper;
+
+		if ( drag.type == 'layer' ) {
+
+			const pieceIndex = cube.pieces.indexOf( intersect.piece );
+			const intersects = controls.getIntersect( position.current, helper, false );
+
+			if ( intersects.length == 0 ) return;
+			const intersectHelper = intersects[ 0 ].point;
+
+			const normalX = [ 'x', 'z' ][ drag.direction.x ];
+			const normalY = [ 'y', 'z' ][ drag.direction.y ];
+
+			const vs = new THREE.Vector2( intersect.start[ normalX ] * 1, intersect.start[ normalY ] * 1 );
+			const ve = new THREE.Vector2( intersectHelper[ normalX ] * 1, intersectHelper[ normalY ] * 1 );
+
+			let angle = Math.round( ve.sub( vs ).angle() / ( Math.PI / 2 ) ) * ( Math.PI / 2 ) / ( Math.PI * 2 );
+
+			drag.rotation = ( angle == 0.25 || angle == 0.75 )
+				? [ 'y', 'z' ][ drag.direction.x ]
+				: [ 'x', 'z' ][ drag.direction.y ];
+
+			const layers = cube.layers[ drag.rotation ];
+
+			Object.keys( layers ).forEach( key => {
+
+		    if ( layers[ key ].includes( pieceIndex ) )
+		    	controls.selectLayer( layers[ key ] );
+
+			} );
+
+		} else if ( drag.type == 'cube' ) {
+
+			let angle = roundAngle( position.delta.angle(), false ) / ( Math.PI * 2 );
+
+			drag.rotation = ( angle == 0.25 || angle == 0.75 )
+				? ( ( position.start.x > controls.world.width * 0.5 ) ? 'z' : 'y' )
+				: 'x';
+
+			controls.selectLayer( cube.layers.a );
+
+		}
+
+		drag.axis.group = { x: 'y', y: 'x', z: 'z' }[ drag.rotation ];
+		drag.axis.mouse = { x: 'x', y: 'y', z: 'y' }[ drag.rotation ];
+
+	}
+
 	selectLayer( layer ) {
 
 		const controls = this;
@@ -404,7 +412,7 @@ class Controls {
 		const world = controls.world;
 		const raycaster = controls.raycaster;
 
-		const convertedPosition = controls.touchEvents.convertPosition( position.clone() );
+		const convertedPosition = controls.draggable.convertPosition( position.clone() );
 		convertedPosition.y *= - 1;
 
 		raycaster.setFromCamera( convertedPosition, world.camera );

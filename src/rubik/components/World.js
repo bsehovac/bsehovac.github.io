@@ -124,7 +124,7 @@ class World {
 		controls.world = world;
 
 		world.scene.add( controls.helper );
-		controls.touchEvents.init( world.container );
+		controls.draggable.init( world.container );
 
 	}
 

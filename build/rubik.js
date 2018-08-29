@@ -130,7 +130,7 @@
 			controls.world = world;
 
 			world.scene.add( controls.helper );
-			controls.touchEvents.init( world.container );
+			controls.draggable.init( world.container );
 
 		}
 
@@ -851,6 +851,158 @@
 
 	}
 
+	class Draggable {
+
+	  constructor( options ) {
+
+	    const draggable = this;
+
+	    draggable.options = Object.assign( {
+	      useVector: false,
+	      invertY: false,
+	      mouseMove: false,
+	    }, options || {} );
+
+	    draggable.position = ( typeof draggable.options.useVector === 'function' ) ? {
+	      start: new draggable.options.useVector(),
+	      current: new draggable.options.useVector(),
+	      delta: new draggable.options.useVector(),
+	    } : {
+	      start: { x: 0, y: 0 },
+	      current: { x: 0, y: 0 },
+	      delta: { x: 0, y: 0 },
+	    };
+
+	    draggable.element = null;
+	    draggable.touch = null;
+	    draggable.onStart = () => {};
+	    draggable.onDrag = () => {};
+	    draggable.onEnd = () => {};
+	    draggable.onMove = () => {};
+
+	    draggable.createTriggers();
+
+	    return draggable;
+
+	  }
+
+	  createTriggers() {
+
+	    const draggable = this;
+	    const touch = draggable.touch;
+	    const position = draggable.position;
+
+	    draggable.triggers = {
+
+	      start: ( event ) => {
+
+	        if ( event.type == 'mousedown' && event.which != 1 ) return;
+	        if ( event.type == 'touchstart' && event.touches.length > 1 ) return;
+	        draggable.getPosition( event, 'start' );
+	        touch = ( event.type == 'touchstart' );
+	        draggable.onStart( event, position, touch );
+	        window.addEventListener( ( touch ) ? 'touchmove' : 'mousemove', triggers.drag, false );
+	        window.addEventListener( ( touch ) ? 'touchend' : 'mouseup', triggers.end, false );
+
+	      },
+
+	      drag: ( event ) => {
+
+	        draggable.getPosition( event, 'current' );
+	        draggable.onDrag( event, position, touch );
+
+	      },
+
+	      end: ( event ) => {
+
+	        draggable.getPosition( event, 'current' );
+	        draggable.onEnd( event, position, touch );
+	        window.removeEventListener( ( touch ) ? 'touchmove' : 'mousemove', triggers.drag, false );
+	        window.removeEventListener( ( touch ) ? 'touchend' : 'mouseup', triggers.end, false );
+
+	      },
+
+	      move: move = ( event ) => {
+
+	        draggable.getPosition( event );
+	        draggable.onMove( event, false );
+
+	      },
+
+	    };
+
+	  }
+
+	  init( element ) {
+
+	    const draggable = this;
+	    const triggers = draggable.triggers;
+
+	    draggable.element = ( typeof element === 'string' )
+	      ? document.querySelector( element )
+	      : element;
+
+	    element.addEventListener( 'touchstart', triggers.start, false );
+	    element.addEventListener( 'mousedown', triggers.start, false );
+
+	    if ( typeof draggable.options.mouseMove )
+	      element.addEventListener( 'mousemove', triggers.move, false );
+
+	    draggable.element = element;
+
+	    return draggable;
+
+	  }
+
+	  dispose() {
+
+	    const draggable = this;
+	    const element = draggable.element;
+	    const triggers = draggable.triggers;
+
+	    element.removeEventListener( 'touchstart', triggers.start, false );
+	    element.removeEventListener( 'mousedown', triggers.start, false );
+
+	    if ( typeof draggable.options.mouseMove )
+	      element.removeEventListener( 'mousemove', triggers.start, false );
+
+	    return draggable;
+
+	  }
+
+	  getPosition( event, type ) {
+
+	    const draggable = this;
+	    const position = draggable.position;
+	    const offset = draggable.element.getBoundingClientRect();
+	    const dragEvent = event.touches ? ( event.touches[ 0 ] || event.changedTouches[ 0 ] ) : event;
+
+	    position[ type ].x = dragEvent.pageX - offset.left;
+	    position[ type ].y = dragEvent.pageY - offset.top;
+
+	    if ( type == 'current' ) {
+
+	      position.delta.x = position.current.x - position.start.x;
+	      position.delta.y = ( position.current.y - position.start.y ) * ( draggable.options.invertY ? - 1 : 1 );
+
+	    }
+
+	  }
+
+	  convertPosition( position ) {
+
+	    const draggable = this;
+	    const element = draggable.element;
+
+	    position.x = ( position.x / element.offsetWidth ) * 2 - 1,
+	    position.y = ( position.y / element.offsetHeight ) * 2 - 1;
+
+	    return position;
+
+	  }
+
+	}
+
 	function roundAngle( angle, minimum ) {
 
 	  const round = Math.PI / 2;
@@ -878,148 +1030,6 @@
 	  );
 
 	  return angle;
-
-	}
-
-	class TouchEvents {
-
-	  constructor( options ) {
-
-	    const t = this;
-
-	    options = Object.assign( {
-	      touchEvents: true,
-	      mouseEvents: true,
-	      useVector: false,
-	      invertY: false,
-	      onStart() {},
-	      onDrag() {},
-	      onEnd() {},
-	      move: false,
-	    }, options || {} );
-
-	    t.options = options;
-
-	    t.onStart = options.onStart;
-	    t.onDrag = options.onDrag;
-	    t.onEnd = options.onEnd;
-	    t.onMove = options.onMove;
-
-	    t.position = ( typeof options.useVector === 'function' ) ? {
-	      start: new options.useVector(),
-	      current: new options.useVector(),
-	      delta: new options.useVector(),
-	    } : {
-	      start: { x: 0, y: 0 },
-	      current: { x: 0, y: 0 },
-	      delta: { x: 0, y: 0 },
-	    };
-
-	    t.touch = null;
-
-	    t.triggers = {
-
-	      start( event ) {
-
-	        if ( event.type == 'mousedown' && event.which != 1 ) return;
-	        if ( event.type == 'touchstart' && event.touches.length > 1 ) return;
-	        t.getPosition( event, 'start' );
-	        t.touch = ( event.type == 'touchstart' );
-	        t.onStart( event, t.position, t.touch );
-	        window.addEventListener( ( t.touch ) ? 'touchmove' : 'mousemove', t.triggers.drag, false );
-	        window.addEventListener( ( t.touch ) ? 'touchend' : 'mouseup', t.triggers.end, false );
-
-	      },
-
-	      drag( event ) {
-
-	        t.getPosition( event, 'current' );
-	        t.onDrag( event, t.position, t.touch );
-
-	      },
-
-	      end( event ) {
-
-	        t.getPosition( event, 'current' );
-	        t.onEnd( event, t.position, t.touch );
-	        window.removeEventListener( ( t.touch ) ? 'touchmove' : 'mousemove', t.triggers.drag, false );
-	        window.removeEventListener( ( t.touch ) ? 'touchend' : 'mouseup', t.triggers.end, false );
-
-	      },
-
-	      move( event ) {
-
-	        t.getPosition( event );
-	        t.onMove( event, false );
-
-	      },
-
-	    };
-
-	    return t;
-
-	  }
-
-	  init( element ) {
-
-	    const t = this;
-
-	    t.element = ( typeof element === 'string' )
-	      ? document.querySelector( element )
-	      : element;
-
-	    t.element.addEventListener( 'touchstart', t.triggers.start, false );
-	    t.element.addEventListener( 'mousedown', t.triggers.start, false );
-
-	    if ( typeof t.options.move === 'function' )
-	      t.element.addEventListener( 'mousemove', t.triggers.move, false );
-
-	    return t;
-
-	  }
-
-	  dispose() {
-
-	    const t = this;
-
-	    t.element.removeEventListener( 'touchstart', t.triggers.start, false );
-	    t.element.removeEventListener( 'mousedown', t.triggers.start, false );
-
-	    if ( typeof t.options.move === 'function' )
-	      t.element.removeEventListener( 'mousemove', t.triggers.start, false );
-
-	    return t;
-
-	  }
-
-	  getPosition( event, type ) {
-
-	    const t = this;
-	    const offset = t.element.getBoundingClientRect();
-	    var event = event.touches ? ( event.touches[ 0 ] || event.changedTouches[ 0 ] ) : event;
-
-	    t.position[ type ].x = event.pageX - offset.left;
-	    t.position[ type ].y = event.pageY - offset.top;
-
-	    if ( type == 'current' ) {
-
-	      t.position.delta.x = t.position.current.x - t.position.start.x;
-	      t.position.delta.y = ( t.position.current.y - t.position.start.y ) * ( t.options.invertY ? - 1 : 1 );
-
-	    }
-
-	  }
-
-	  convertPosition( position ) {
-
-	    const t = this;
-
-	    position.x = ( position.x / t.element.offsetWidth ) * 2 - 1,
-	    position.y = ( position.y / t.element.offsetHeight ) * 2 - 1;
-
-	    return position;
-
-	  }
 
 	}
 
@@ -1063,13 +1073,13 @@
 				rotation: null, // drag rotation axis
 				type: null, // drag type cube or layer
 				deltaAngle: new THREE.Vector3(),
+				axis: {
+					group: null,
+					mouse: null,
+				},
 			};
 
-			const touchEvents = new TouchEvents( {
-				element: null,
-				useVector: THREE.Vector2,
-				invertY: true,
-			} );
+			const draggable = new Draggable( { useVector: THREE.Vector2, invertY: true} );
 
 			controls.raycaster = raycaster;
 			controls.group = group;
@@ -1080,7 +1090,7 @@
 			controls.drag = drag;
 			controls.rotation = rotation;
 			controls.options = options;
-			controls.touchEvents = touchEvents;
+			controls.draggable = draggable;
 			controls.scramble = null;
 			controls.moves = moves;
 			controls.helper = helper;
@@ -1090,7 +1100,7 @@
 
 			cube.controls = controls;
 
-			touchEvents.onStart = ( event, position ) => {
+			draggable.onStart = ( event, position ) => {
 
 				if ( drag.active || drag.rotation != null || controls.disabled || controls.scramble !== null ) return;
 
@@ -1120,72 +1130,26 @@
 
 			};
 
-			touchEvents.onDrag = ( event, position ) => {
+			draggable.onDrag = ( event, position ) => {
 
 				if ( ! drag.active ) return;
 
-				if ( drag.rotation == null && position.delta.length() > 10 ) {
+				if ( drag.rotation != null ) {
 
-					if ( drag.type == 'layer' ) {
-
-						const pieceIndex = cube.pieces.indexOf( intersect.piece );
-						const intersects = controls.getIntersect( position.current, helper, false );
-
-						if ( intersects.length == 0 ) return;
-						const intersectHelper = intersects[ 0 ].point;
-
-						const normalX = [ 'x', 'z' ][ drag.direction.x ];
-						const normalY = [ 'y', 'z' ][ drag.direction.y ];
-
-						const vs = new THREE.Vector2( intersect.start[ normalX ] * 1, intersect.start[ normalY ] * 1 );
-						const ve = new THREE.Vector2( intersectHelper[ normalX ] * 1, intersectHelper[ normalY ] * 1 );
-
-						let angle = Math.round( ve.sub( vs ).angle() / ( Math.PI / 2 ) ) * ( Math.PI / 2 ) / ( Math.PI * 2 );
-
-						drag.rotation = ( angle == 0.25 || angle == 0.75 )
-							? [ 'y', 'z' ][ drag.direction.x ]
-							: [ 'x', 'z' ][ drag.direction.y ];
-
-						const layers = cube.layers[ drag.rotation ];
-
-						Object.keys( layers ).forEach( key => {
-
-					    if ( layers[ key ].includes( pieceIndex ) )
-					    	controls.selectLayer( layers[ key ] );
-
-						} );
-
-					} else if ( drag.type == 'cube' ) {
-
-						let angle = roundAngle( position.delta.angle(), false ) / ( Math.PI * 2 );
-
-						controls.selectLayer( cube.layers.a );
-
-						drag.rotation = ( angle == 0.25 || angle == 0.75 )
-							? ( ( position.start.x > controls.world.width * 0.5 ) ? 'z' : 'y' )
-							: 'x';
-
-					}
-
-				} else if ( drag.rotation != null ) {
-
-					const groupAxis = { x: 'y', y: 'x', z: 'z' }[ drag.rotation ];
-					const mouseAxis = { x: 'x', y: 'y', z: 'y' }[ drag.rotation ];
-
-					group.rotation[ groupAxis ] = position.delta[ mouseAxis ] / 100 * ( ( drag.rotation == 'y' ) ? - 1 : 1 );
+					group.rotation[ drag.axis.group ] = position.delta[ drag.axis.mouse ] / 100 * ( ( drag.rotation == 'y' ) ? - 1 : 1 );
 					drag.deltaAngle = group.rotation.toVector3();
 
-					if ( Math.abs( drag.deltaAngle[ groupAxis ] ) > Math.PI / 4 ) {
+					if ( Math.abs( drag.deltaAngle[ drag.axis.group ] ) > Math.PI / 4 ) draggable.onEnd();
 
-						touchEvents.onEnd();
+				} else if ( drag.rotation == null && position.delta.length() > 10 ) {
 
-					}
+					controls.getLayerAndAxis( position );
 
 				}
 
 			};
 
-			touchEvents.onEnd = ( event, position ) => {
+			draggable.onEnd = ( event, position ) => {
 
 				if ( ! drag.active ) return;
 				drag.active = false;
@@ -1209,7 +1173,7 @@
 		disable() {
 
 			const controls = this;
-			controls.touchEvents.dispose();
+			controls.draggable.dispose();
 			return controls;
 
 		}
@@ -1341,6 +1305,60 @@
 
 		}
 
+		getLayerAndAxis( position ) {
+
+			const controls = this;
+			const cube = controls.cube;
+			const intersect = controls.intersect;
+			const drag = controls.drag;
+			const helper = controls.helper;
+
+			if ( drag.type == 'layer' ) {
+
+				const pieceIndex = cube.pieces.indexOf( intersect.piece );
+				const intersects = controls.getIntersect( position.current, helper, false );
+
+				if ( intersects.length == 0 ) return;
+				const intersectHelper = intersects[ 0 ].point;
+
+				const normalX = [ 'x', 'z' ][ drag.direction.x ];
+				const normalY = [ 'y', 'z' ][ drag.direction.y ];
+
+				const vs = new THREE.Vector2( intersect.start[ normalX ] * 1, intersect.start[ normalY ] * 1 );
+				const ve = new THREE.Vector2( intersectHelper[ normalX ] * 1, intersectHelper[ normalY ] * 1 );
+
+				let angle = Math.round( ve.sub( vs ).angle() / ( Math.PI / 2 ) ) * ( Math.PI / 2 ) / ( Math.PI * 2 );
+
+				drag.rotation = ( angle == 0.25 || angle == 0.75 )
+					? [ 'y', 'z' ][ drag.direction.x ]
+					: [ 'x', 'z' ][ drag.direction.y ];
+
+				const layers = cube.layers[ drag.rotation ];
+
+				Object.keys( layers ).forEach( key => {
+
+			    if ( layers[ key ].includes( pieceIndex ) )
+			    	controls.selectLayer( layers[ key ] );
+
+				} );
+
+			} else if ( drag.type == 'cube' ) {
+
+				let angle = roundAngle( position.delta.angle(), false ) / ( Math.PI * 2 );
+
+				drag.rotation = ( angle == 0.25 || angle == 0.75 )
+					? ( ( position.start.x > controls.world.width * 0.5 ) ? 'z' : 'y' )
+					: 'x';
+
+				controls.selectLayer( cube.layers.a );
+
+			}
+
+			drag.axis.group = { x: 'y', y: 'x', z: 'z' }[ drag.rotation ];
+			drag.axis.mouse = { x: 'x', y: 'y', z: 'y' }[ drag.rotation ];
+
+		}
+
 		selectLayer( layer ) {
 
 			const controls = this;
@@ -1426,7 +1444,7 @@
 			const world = controls.world;
 			const raycaster = controls.raycaster;
 
-			const convertedPosition = controls.touchEvents.convertPosition( position.clone() );
+			const convertedPosition = controls.draggable.convertPosition( position.clone() );
 			convertedPosition.y *= - 1;
 
 			raycaster.setFromCamera( convertedPosition, world.camera );

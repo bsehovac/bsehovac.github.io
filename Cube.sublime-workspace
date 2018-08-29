@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"drag",
+				"draggable"
+			],
+			[
 				"roun",
 				"roundVectorAngle"
 			],
@@ -510,47 +514,34 @@
 			[
 				"scroll-reve",
 				"scroll-reveal-bottom"
-			],
-			[
-				"boun",
-				"scrollBoundaryTop"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "init.js",
+			"file": "src/rubik/Rubik.js",
 			"settings":
 			{
-				"buffer_size": 3167,
+				"buffer_size": 300,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "index.html",
+			"file": "src/rubik/components/Draggable.js",
 			"settings":
 			{
-				"buffer_size": 975,
+				"buffer_size": 3911,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "styles.css",
+			"file": "src/rubik/components/World.js",
 			"settings":
 			{
-				"buffer_size": 1944,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/rubik/components/Timer.js",
-			"settings":
-			{
-				"buffer_size": 774,
+				"buffer_size": 2675,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -670,13 +661,20 @@
 	},
 	"expanded_folders":
 	[
-		"/Applications/MAMP/Localhost/bsehovac.github.io",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components"
+		"/Users/boris/Documents/bsehovac.github.io",
+		"/Users/boris/Documents/bsehovac.github.io/src",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components"
 	],
 	"file_history":
 	[
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Controls.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Draggable.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/World.js",
+		"/Users/boris/Documents/bsehovac.github.io/init.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Timer.js",
+		"/Users/boris/Documents/bsehovac.github.io/index.html",
+		"/Users/boris/Documents/bsehovac.github.io/styles.css",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/World.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/styles.css",
 		"/Users/bsehovac/Desktop/threejs export scene.js",
@@ -698,13 +696,9 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/three/plugins/RoundedBoxGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three-plugins/SliceGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three-plugins/RoundedBoxGeometry.js",
-		"/Users/boris/Documents/bsehovac.github.io/init.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/Rubik.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Timer.js",
-		"/Users/boris/Documents/bsehovac.github.io/index.html",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Game.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Cube.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Controls.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/TouchEvents.js",
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Helpers.js",
@@ -801,10 +795,7 @@
 		"/Users/boris/Documents/r/rollup.config.js",
 		"/Users/boris/Documents/r/build/rubik.module.js",
 		"/Users/boris/Documents/r/rubik/rollup.config.js",
-		"/Users/boris/Documents/r/rubik/components/Utils.js",
-		"/Users/boris/Documents/r/components/RubikCubeGeometry.js",
-		"/Users/boris/Documents/r/components/Utils.js",
-		"/Users/boris/Documents/r/Rubik.js"
+		"/Users/boris/Documents/r/rubik/components/Utils.js"
 	],
 	"find":
 	{
@@ -815,6 +806,7 @@
 		"height": 122.0,
 		"where_history":
 		[
+			"/Users/boris/Documents/bsehovac.github.io/src/rubik/components",
 			"/Users/boris/Documents/bsehovac.github.io/src/rubik",
 			"/Users/boris/Documents/bsehovac.github.io/src/rubik/components",
 			"/Users/boris/Documents/bsehovac.github.io/src/rubik",
@@ -830,9 +822,18 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"draggable",
+			"function",
+			"move",
+			"invertY",
+			"mouseEvents",
+			"touchevents",
+			"toucheve",
+			"t = t",
+			"t.",
 			"canvas",
 			"console",
 			"Object.keys",
@@ -916,6 +917,9 @@
 		"regex": false,
 		"replace_history":
 		[
+			"_",
+			"draggable = t",
+			"draggable.",
 			"RoundedBoxGeometry",
 			"roundedBoxGeometry",
 			"world",
@@ -932,61 +936,29 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "init.js",
+					"file": "src/rubik/Rubik.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3167,
+						"buffer_size": 300,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1200,
-								1200
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 245.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 975,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								630,
-								630
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -996,50 +968,50 @@
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "styles.css",
+					"buffer": 1,
+					"file": "src/rubik/components/Draggable.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1944,
+						"buffer_size": 3911,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1799,
-								1799
+								2186,
+								2186
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2303.0,
+						"translation.y": 1379.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "src/rubik/components/Timer.js",
+					"buffer": 2,
+					"file": "src/rubik/components/World.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 774,
+						"buffer_size": 2675,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								731,
-								731
+								2624,
+								2624
 							]
 						],
 						"settings":
@@ -1048,10 +1020,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 417.0,
+						"translation.y": 1713.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
