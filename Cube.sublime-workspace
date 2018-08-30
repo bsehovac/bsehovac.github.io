@@ -532,8 +532,16 @@
 			"file": "src/rubik/components/Draggable.js",
 			"settings":
 			{
-				"buffer_size": 3904,
+				"buffer_size": 3980,
 				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/rubik/components/Controls.js",
+			"settings":
+			{
+				"buffer_size": 10531,
 				"line_ending": "Unix"
 			}
 		},
@@ -964,7 +972,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
@@ -973,15 +981,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3904,
+						"buffer_size": 3980,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2295,
-								2295
+								1525,
+								1525
 							]
 						],
 						"settings":
@@ -991,7 +999,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1379.0,
+						"translation.y": 628.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -999,6 +1007,35 @@
 				},
 				{
 					"buffer": 2,
+					"file": "src/rubik/components/Controls.js",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 10531,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1191,
+								1200
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 300.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
 					"file": "src/rubik/components/World.js",
 					"semi_transient": false,
 					"settings":
@@ -1023,7 +1060,7 @@
 						"translation.y": 1713.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				}
 			]

@@ -36,8 +36,8 @@ class Draggable {
   createTriggers() {
 
     const draggable = this;
-    const touch = draggable.touch;
     const position = draggable.position;
+    let touch = draggable.touch;
 
     draggable.triggers = {
 
@@ -48,8 +48,8 @@ class Draggable {
         draggable.getPosition( event, 'start' );
         touch = ( event.type == 'touchstart' );
         draggable.onStart( event, position, touch );
-        window.addEventListener( ( touch ) ? 'touchmove' : 'mousemove', triggers.drag, false );
-        window.addEventListener( ( touch ) ? 'touchend' : 'mouseup', triggers.end, false );
+        window.addEventListener( ( touch ) ? 'touchmove' : 'mousemove', draggable.triggers.drag, false );
+        window.addEventListener( ( touch ) ? 'touchend' : 'mouseup', draggable.triggers.end, false );
 
       },
 
@@ -64,15 +64,16 @@ class Draggable {
 
         draggable.getPosition( event, 'current' );
         draggable.onEnd( event, position, touch );
-        window.removeEventListener( ( touch ) ? 'touchmove' : 'mousemove', triggers.drag, false );
-        window.removeEventListener( ( touch ) ? 'touchend' : 'mouseup', triggers.end, false );
+        window.removeEventListener( ( touch ) ? 'touchmove' : 'mousemove', draggable.triggers.drag, false );
+        window.removeEventListener( ( touch ) ? 'touchend' : 'mouseup', draggable.triggers.end, false );
 
       },
 
       move: ( event ) => {
 
-        draggable.getPosition( event );
-        draggable.onMove( event, false );
+        console.log('moving');
+        draggable.getPosition( event, 'current' );
+        draggable.onMove( event, position, false );
 
       },
 
@@ -92,7 +93,7 @@ class Draggable {
     element.addEventListener( 'touchstart', triggers.start, false );
     element.addEventListener( 'mousedown', triggers.start, false );
 
-    if ( typeof draggable.options.mouseMove )
+    if ( draggable.options.mouseMove )
       element.addEventListener( 'mousemove', triggers.move, false );
 
     draggable.element = element;
@@ -110,7 +111,7 @@ class Draggable {
     element.removeEventListener( 'touchstart', triggers.start, false );
     element.removeEventListener( 'mousedown', triggers.start, false );
 
-    if ( typeof draggable.options.mouseMove )
+    if ( draggable.options.mouseMove )
       element.removeEventListener( 'mousemove', triggers.start, false );
 
     return draggable;
