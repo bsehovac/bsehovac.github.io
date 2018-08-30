@@ -11,10 +11,10 @@
 			const world = this;
 
 			const scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0xffffff );
 
 			const renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
 			renderer.setPixelRatio( window.devicePixelRatio );
-			renderer.setClearColor( 0xffffff, 1 );
 			container.appendChild( renderer.domElement );
 
 			const camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );

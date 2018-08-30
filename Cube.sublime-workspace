@@ -523,7 +523,7 @@
 			"file": "src/rubik/components/World.js",
 			"settings":
 			{
-				"buffer_size": 2485,
+				"buffer_size": 2494,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -800,7 +800,7 @@
 	],
 	"find":
 	{
-		"height": 54.0
+		"height": 30.0
 	},
 	"find_in_files":
 	{
@@ -930,7 +930,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -939,15 +939,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2485,
+						"buffer_size": 2494,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								325,
-								325
+								140,
+								140
 							]
 						],
 						"settings":
@@ -956,10 +956,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1170.0,
+						"translation.y": 4.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
@@ -987,7 +987,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
@@ -1017,7 +1017,7 @@
 						"translation.y": 203.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -1066,7 +1066,7 @@
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 88.0
+		"height": 56.0
 	},
 	"save_all_on_build": true,
 	"select_file":
