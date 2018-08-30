@@ -13,6 +13,7 @@ class Controls {
 			scrambleSpeed: 0.1,
 			scrambleBounce: 0,
 			minimumRotationAngle: Math.PI / 12, // 15deg
+			dragDelta: 20,
 		}, options || {} );
 
 		const raycaster = new THREE.Raycaster();
@@ -109,7 +110,7 @@ class Controls {
 
 				if ( Math.abs( drag.deltaAngle[ drag.axis.group ] ) > Math.PI / 4 ) draggable.onEnd();
 
-			} else if ( drag.rotation == null && position.delta.length() > 10 ) {
+			} else if ( drag.rotation == null && position.delta.length() > options.dragDelta ) {
 
 				controls.getLayerAndAxis( position );
 

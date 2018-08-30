@@ -65,21 +65,18 @@
 			const world = this;
 			const scene = world.scene;
 
-			const lights = {
-				ambient: new THREE.AmbientLight( 0xffffff, 0.725 ),
-				directional1: new THREE.DirectionalLight( 0xffffff, 0.16 ),
-				directional2: new THREE.DirectionalLight( 0xffffff, 0.16 ),
-			};
+			const lights = [
+				new THREE.AmbientLight( 0xffffff, 0.75 ),
+				new THREE.DirectionalLight( 0xffffff, 0.25 ),
+				new THREE.DirectionalLight( 0xffffff, 0.15 ),
+			];
 
-			scene.add( lights.ambient );
+			scene.add( lights[0] );
+			scene.add( lights[1] );
+			scene.add( lights[2] );
 
-			lights.directional1.position.set( 0, 1.5, 2 );
-			lights.directional1.lookAt( new THREE.Vector3() );
-			scene.add( lights.directional1 );
-
-			lights.directional2.position.set( 2, 1.5, 0 );
-			lights.directional2.lookAt( new THREE.Vector3() );
-			scene.add( lights.directional2 );
+			lights[1].position.set( 0, 1.5, 2 );
+			lights[2].position.set( 2, 1.5, 0 );
 
 			world.lights = lights;
 
@@ -616,7 +613,11 @@
 
 		const pieceMesh = new THREE.Mesh(
 			new RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
-			new THREE.MeshBasicMaterial( { color: colors.piece } )
+			new THREE.MeshPhongMaterial( {
+				color: colors.piece,
+				side: THREE.FrontSide,
+				shininess: 20,
+			} )
 		);
 
 		const helper = new THREE.Mesh(
@@ -625,7 +626,12 @@
 		);
 
 		const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
-		const edgeMaterial = new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } );
+		const edgeMaterial = new THREE.MeshStandardMaterial( {
+			color: colors.piece,
+			side: THREE.FrontSide,
+			roughness: 1,
+			metalness: 0,
+		} );
 
 		positions.forEach( position => {
 
@@ -1046,6 +1052,7 @@
 				scrambleSpeed: 0.1,
 				scrambleBounce: 0,
 				minimumRotationAngle: Math.PI / 12, // 15deg
+				dragDelta: 20,
 			}, options || {} );
 
 			const raycaster = new THREE.Raycaster();
@@ -1142,7 +1149,7 @@
 
 					if ( Math.abs( drag.deltaAngle[ drag.axis.group ] ) > Math.PI / 4 ) draggable.onEnd();
 
-				} else if ( drag.rotation == null && position.delta.length() > 10 ) {
+				} else if ( drag.rotation == null && position.delta.length() > options.dragDelta ) {
 
 					controls.getLayerAndAxis( position );
 

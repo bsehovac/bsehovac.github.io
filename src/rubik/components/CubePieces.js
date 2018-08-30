@@ -13,7 +13,11 @@ function CubePieces( size, positions, colors ) {
 
 	const pieceMesh = new THREE.Mesh(
 		new RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
-		new THREE.MeshBasicMaterial( { color: colors.piece } )
+		new THREE.MeshPhongMaterial( {
+			color: colors.piece,
+			side: THREE.FrontSide,
+			shininess: 20,
+		} )
 	);
 
 	const helper = new THREE.Mesh(
@@ -22,7 +26,12 @@ function CubePieces( size, positions, colors ) {
 	);
 
 	const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
-	const edgeMaterial = new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } );
+	const edgeMaterial = new THREE.MeshStandardMaterial( {
+		color: colors.piece,
+		side: THREE.FrontSide,
+		roughness: 1,
+		metalness: 0,
+	} );
 
 	positions.forEach( position => {
 

@@ -1,4 +1,4 @@
-import minify from 'rollup-plugin-babel-minify';
+// import minify from 'rollup-plugin-babel-minify';
 
 function glsl() {
 	return {
@@ -22,10 +22,10 @@ export default {
 	input: './src/three/Three.js',
 	plugins: [
 		glsl(),
-		minify({
-			comments: false,
-			sourceMap: false,
-		}),
+		// minify({
+		// 	comments: false,
+		// 	sourceMap: false,
+		// }),
 	],
 	output: [
 		{
