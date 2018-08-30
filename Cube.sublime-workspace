@@ -532,7 +532,7 @@
 			"file": "src/rubik/components/Draggable.js",
 			"settings":
 			{
-				"buffer_size": 3911,
+				"buffer_size": 3904,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -973,15 +973,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3911,
+						"buffer_size": 3904,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2186,
-								2186
+								2295,
+								2295
 							]
 						],
 						"settings":

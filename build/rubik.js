@@ -922,7 +922,7 @@
 
 	      },
 
-	      move: move = ( event ) => {
+	      move: ( event ) => {
 
 	        draggable.getPosition( event );
 	        draggable.onMove( event, false );
