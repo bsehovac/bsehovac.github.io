@@ -19,33 +19,18 @@ const world = new RUBIK.World( container );
 const cube = new RUBIK.Cube( 3 );
 const controls = new RUBIK.Controls( cube );
 const timer = new RUBIK.Timer( world, time );
+const animate = new RUBIK.Animate( cube );
 
-cube.object.rotation.x = -Math.PI/4;
+cube.object.rotation.x = Math.PI/6;
+cube.object.rotation.y = Math.PI/6;
 cube.object.position.y = 3;
-cube.object.position.x = -1;
-cube.object.position.z = -1;
 cube.shadow.material.opacity = 0;
 
-const floating = {
-  cube: null,
-  shadow: null,
-};
+animate.dropAndFloat( () => {
 
-TweenMax.to( cube.shadow.material, 2.5, { opacity: 0.5, ease: Power1.easeOut } );
-TweenMax.to( cube.object.rotation, 2.5, { x: 0, ease: Power1.easeOut } );
-TweenMax.to( cube.object.position, 2.5, { x: 0, y: -0.1, z: 0, ease: Power1.easeOut, onComplete: () => {
   ui.classList.add('menu');
 
-  floating.cube = TweenMax.fromTo( cube.object.position, 1.5,
-    { y: -0.1 },
-    { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut }
-  );
-
-  floating.shadow = TweenMax.fromTo( cube.shadow.material, 1.5,
-    { opacity: 0.5 },
-    { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut }
-  );
-} } );
+} );
 
 world.addCube( cube );
 world.addControls( controls );
@@ -66,25 +51,14 @@ start.onclick = function ( event ) {
 
 	const scramble = new RUBIK.Scramble( cube, scrambleLength );
 
-	floating.cube.kill();
-  floating.shadow.kill();
+	animate.gameStart( () => {
 
-  TweenMax.to( cube.object.position, 0.4, { y: 0, ease: Sine.easeInOut } );
-  TweenMax.to( cube.shadow.material, 0.4, { opacity: 0.4, ease: Sine.easeInOut } );
-  TweenMax.to( world.camera, 0.4, { zoom: 1, ease: Sine.easeInOut, onUpdate: function() {
+    controls.scrambleCube( scramble, function () {
+      timer.start();
+      controls.disabled = false;
+    } );
 
-    world.camera.updateProjectionMatrix();
-
-  }, onComplete: function() {
-    
-  	controls.scrambleCube( scramble, function () {
-
-			timer.start();
-			controls.disabled = false;
-
-		} );
-
-  } } );
+  } );
 
 };
 

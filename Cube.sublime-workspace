@@ -520,6 +520,24 @@
 	"buffers":
 	[
 		{
+			"file": "styles.css",
+			"settings":
+			{
+				"buffer_size": 2901,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "init.js",
+			"settings":
+			{
+				"buffer_size": 2252,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "src/rubik/components/World.js",
 			"settings":
 			{
@@ -529,10 +547,29 @@
 			}
 		},
 		{
-			"file": "src/three/Three.js",
+			"file": "src/rubik/components/Cube.js",
 			"settings":
 			{
-				"buffer_size": 8944,
+				"buffer_size": 23985,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/rubik/components/Animate.js",
+			"settings":
+			{
+				"buffer_size": 2665,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "class Animate {"
+			}
+		},
+		{
+			"file": "src/rubik/Rubik.js",
+			"settings":
+			{
+				"buffer_size": 351,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -541,7 +578,7 @@
 			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 975,
+				"buffer_size": 883,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -664,15 +701,15 @@
 		"/Applications/MAMP/Localhost/bsehovac.github.io",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/three"
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components"
 	],
 	"file_history":
 	[
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/World.js",
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/three/Three.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/styles.css",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/rollup.config.three.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/Controls.js",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/World.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/CubePieces.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/init.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/index.html",
@@ -795,12 +832,11 @@
 		"/Users/boris/Documents/r/rollup.config.js",
 		"/Users/boris/Documents/r/build/rubik.module.js",
 		"/Users/boris/Documents/r/rubik/rollup.config.js",
-		"/Users/boris/Documents/r/rubik/components/Utils.js",
-		"/Users/boris/Documents/r/components/RubikCubeGeometry.js"
+		"/Users/boris/Documents/r/rubik/components/Utils.js"
 	],
 	"find":
 	{
-		"height": 30.0
+		"height": 54.0
 	},
 	"find_in_files":
 	{
@@ -825,6 +861,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"/font/",
 			"THREE.WebGLRenderTarget",
 			"build/t/",
 			"build/t",
@@ -912,6 +949,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"/assets/fonts/",
 			"plugins/",
 			"plugins",
 			"RoundedBoxGeometry",
@@ -930,11 +968,71 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
+					"file": "styles.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2901,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2287,
+								2287
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2727.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "init.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2252,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								937,
+								937
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 581.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
 					"file": "src/rubik/components/World.js",
 					"semi_transient": false,
 					"settings":
@@ -946,8 +1044,8 @@
 						"selection":
 						[
 							[
-								140,
-								140
+								628,
+								628
 							]
 						],
 						"settings":
@@ -956,27 +1054,85 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 4.0,
+						"translation.y": 323.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "src/three/Three.js",
+					"buffer": 3,
+					"file": "src/rubik/components/Cube.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8944,
+						"buffer_size": 23985,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								667,
-								667
+								23933,
+								23933
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2298.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/rubik/components/Animate.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2665,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								416,
+								416
+							]
+						],
+						"settings":
+						{
+							"auto_name": "class Animate {",
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/rubik/Rubik.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 351,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								261,
+								261
 							]
 						],
 						"settings":
@@ -987,24 +1143,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 6,
 					"file": "index.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 975,
+						"buffer_size": 883,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								639,
-								639
+								157,
+								157
 							]
 						],
 						"settings":
@@ -1014,10 +1170,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 203.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 6,
 					"type": "text"
 				}
 			]
@@ -1066,7 +1222,7 @@
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 56.0
+		"height": 88.0
 	},
 	"save_all_on_build": true,
 	"select_file":

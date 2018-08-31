@@ -1,3 +1,24 @@
+@font-face {
+  font-family: Akzidenz;
+  font-weight: 400;
+  font-style: normal;
+  src: url(assets/fonts/Akzidenz400.woff2) format("woff2"), url(assets/fonts/Akzidenz400.woff) format("woff")
+}
+
+@font-face {
+  font-family: Akzidenz;
+  font-weight: 500;
+  font-style: normal;
+  src: url(assets/fonts/Akzidenz500.woff2) format("woff2"), url(assets/fonts/Akzidenz500.woff) format("woff")
+}
+
+@font-face {
+  font-family: Moteur;
+  font-weight: 700;
+  font-style: normal;
+  src: url(assets/fonts/Moteur700.woff2) format("woff2"), url(assets/fonts/Moteur700.woff) format("woff")
+}
+
 *, *:before, *:after {
   box-sizing: border-box;
   margin: 0;
@@ -15,13 +36,15 @@ html, body {
 }
 
 html {
+  -webkit-text-size-adjust: none;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: subpixel-antialiased;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Akzidenz', sans-serif;
 }
 
 #view {
@@ -63,21 +86,21 @@ body {
 
 .button {
   transition: opacity 500ms, visibility 500ms;
-  height: 60px;
+  height: 15vw;
   position: absolute;
   left: 50%;
-  width: 200px;
-  border-radius: 30px;
+  width: 60vw;
+  border-radius: 7.5vw;
   background: #fff;
-  top: 80%;
-  margin-left: -100px;
-  line-height: 60px;
+  top: 78%;
+  margin-left: -30vw;
+  line-height: 15vw;
   text-align: center;
   font-weight: 900;
   text-transform: uppercase;
-  font-size: 20px;
+  font-size: 5vw;
   opacity: 0;
-  box-shadow: 0 5px 15px rgba(0,0,0,.2);
+  box-shadow: 0 2vw 3vw rgba(0,0,0,.2);
   cursor: pointer;
 }
 
@@ -96,22 +119,22 @@ h2 span {
 
 h2 span:first-child {
   font-size: 0.5em;
-  margin-bottom: 0.2em;
-  font-weight: 400;
 }
 
 h2 {
   transition: opacity 500ms;
   position: absolute;
-  bottom: 80%;
+  bottom: 78vh;
   left: 0;
   width: 100%;
-  font-size: 17vw;
-  font-weight: 900;
-  line-height: 0.7;
+  font-size: 18vw;
+  font-family: 'Moteur', sans-serif;
+  font-weight: 500;
+  line-height: 0.95;
+  height: 1.25em;
   text-align: center;
-  letter-spacing: 0.05em;
   opacity: 0;
+  letter-spacing: 0.02em;
 }
 
 #ui.menu h2 {
@@ -126,7 +149,7 @@ h2 {
   transition: opacity 500ms;
   position: absolute;
   left: 0;
-  bottom: 82%;
+  bottom: 82vh;
   text-align: center;
   width: 100%;
   font-size: 16vw;
@@ -139,4 +162,24 @@ h2 {
 
 #moves, #undo {
   display: none;
+}
+
+@media (min-aspect-ratio: 2/3) {
+  body {
+    opacity: 0.5;
+  }
+
+  h2 {
+    font-size: 12vh;
+  }
+
+  .button {
+    height: 10vw;
+    width: 40vw;
+    border-radius: 5vw;
+    margin-left: -20vw;
+    line-height: 10vw;
+    font-size: 3.333vw;
+    box-shadow: 0 1.333vw 2vw rgba(0,0,0,.2);
+  }
 }

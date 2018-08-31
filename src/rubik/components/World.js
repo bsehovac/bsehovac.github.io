@@ -21,7 +21,7 @@ class World {
 		world.renderer = renderer;
 
 		world.stage = { width: 2, height: 3 };
-		world.fov = 15;
+		world.fov = 10;
 
 		world.createLights();
 
