@@ -127,14 +127,13 @@ h2 {
   bottom: 78vh;
   left: 0;
   width: 100%;
-  font-size: 18vw;
+  font-size: 20vw;
   font-family: 'Moteur', sans-serif;
   font-weight: 500;
   line-height: 0.95;
   height: 1.25em;
   text-align: center;
   opacity: 0;
-  letter-spacing: 0.02em;
 }
 
 #ui.menu h2 {
@@ -165,12 +164,8 @@ h2 {
 }
 
 @media (min-aspect-ratio: 2/3) {
-  body {
-    opacity: 0.5;
-  }
-
   h2 {
-    font-size: 12vh;
+    font-size: 13.333vh;
   }
 
   .button {
