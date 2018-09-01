@@ -124,7 +124,7 @@ h2 span:first-child {
 h2 {
   transition: opacity 500ms;
   position: absolute;
-  bottom: 78vh;
+  bottom: 78%;
   left: 0;
   width: 100%;
   font-size: 20vw;
@@ -163,12 +163,13 @@ h2 {
   display: none;
 }
 
-@media (min-aspect-ratio: 2/3) {
+@media (min-aspect-ratio: 3/3) {
   h2 {
     font-size: 13.333vh;
   }
 
   .button {
+    border: 1px solid #fff;
     height: 10vw;
     width: 40vw;
     border-radius: 5vw;
