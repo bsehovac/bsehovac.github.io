@@ -49,6 +49,12 @@ class Timer {
 
 	}
 
+	destroy() {
+
+		world.onAnimate = function () {};
+		
+	}
+
 	convert( time ) {
 
 		// const millis = parseInt( ( time % 1000 ) / 100 );

@@ -154,10 +154,13 @@ const home = document.querySelector( '#home' );
 
 home.onclick = e => {
 
+  gameSaved = true;
+  start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
+
   ui.classList.remove('in-game');
   ui.classList.add('in-menu');
 
-  timer.stop();
+  timer.destroy();
   animate.gameStop();
 
 }
