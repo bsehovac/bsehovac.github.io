@@ -6,6 +6,7 @@
   height: 100%;
   z-index: 2;
   overflow: hidden;
+  pointer-events: none;
 
   &__menu,
   &__game {
@@ -18,7 +19,6 @@
 
   &__menu {
     z-index: 2;
-    pointer-events: none;
 
     &-title {
       transition: opacity 500ms;
@@ -80,20 +80,14 @@
 
       .ui.in-menu & {
         opacity: 1;
+        pointer-events: all;
       }
 
       .ui.in-game & {
         opacity: 0;
         visibility: hidden;
+        pointer-events: none;
       }
-    }
-
-    .ui.in-menu & {
-      pointer-events: all;
-    }
-
-    .ui.in-game & {
-      pointer-events: none;
     }
   }
 
