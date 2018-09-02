@@ -6,6 +6,7 @@ class Timer {
 		this.startTime = null;
 
 		this.world = world;
+		world.timer = this;
 
 	}
 
@@ -13,10 +14,25 @@ class Timer {
 
 		this.startTime = Date.now();
 
-		this.world.onAnimate = function () {
+		this.world.onAnimate = () => {
 
-			const delta = Date.now() - timer.startTime;
-			timer.element.innerHTML = timer.convert( delta );
+			this.currentTime = Date.now();
+			this.deltaTime = this.currentTime - this.startTime;
+			this.element.innerHTML = this.convert( this.deltaTime );
+
+		};
+
+	}
+
+	continue() {
+
+		this.startTime = Date.now() - this.deltaTime;
+
+		this.world.onAnimate = () => {
+
+			this.currentTime = Date.now();
+			this.deltaTime = this.currentTime - this.startTime;
+			this.element.innerHTML = this.convert( this.deltaTime );
 
 		};
 
@@ -24,19 +40,20 @@ class Timer {
 
 	stop() {
 
-		const delta = Date.now() - this.startTime;
+		this.currentTime = Date.now();
+		this.deltaTime = this.currentTime - this.startTime;
 
 		world.onAnimate = function () {};
 
-		return { time: this.convert( delta ), millis: delta };
+		return { time: this.convert( deltaTime ), millis: deltaTime };
 
 	}
 
 	convert( time ) {
 
-		const millis = parseInt( ( time % 1000 ) / 100 );
+		// const millis = parseInt( ( time % 1000 ) / 100 );
 		const seconds = parseInt( ( time / 1000 ) % 60 );
-		const minutes = parseInt( ( time / ( 1000 * 60 ) ) % 60 );
+		const minutes = parseInt( ( time / ( 1000 * 60 ) ) /*% 60*/ );
 
 		return minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds; // + '.' + millis;
 

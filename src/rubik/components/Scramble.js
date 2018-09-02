@@ -31,6 +31,8 @@ class Scramble {
 		scramble.callback = () => {};
 		scramble.moves = moves;
 		scramble.print = moves.join( ' ' );
+		scramble.convert();
+
 		return scramble;
 
 	}

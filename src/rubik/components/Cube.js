@@ -136,6 +136,74 @@ class Cube {
 
 	}
 
+	loadState() {
+
+		const gameInProgress = localStorage.getItem( 'gameInProgress' ) == 'yes';
+
+		if ( !gameInProgress ) return false;
+
+		const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
+		const gameData = JSON.parse( localStorage.getItem( 'gameData' ) );
+
+		cube.pieces.forEach( piece => {
+
+			const index = cubeData.names.indexOf( piece.name );
+
+			const position = cubeData.positions[index];
+			const rotation = cubeData.rotations[index];
+
+			piece.position.set( position.x, position.y, position.z );
+			piece.rotation.set( rotation.x, rotation.y, rotation.z );
+
+		} );
+
+		this.controls.rearrangePieces();
+		this.controls.moves = gameData.moves;
+
+		this.controls.moves.forEach( move => {
+
+			const angle = move[0];
+			move[0] = new THREE.Vector3( angle.x, angle.y, angle.z );
+
+		} );
+
+		this.world.timer.deltaTime = gameData.time;
+
+		return gameInProgress; 
+
+	}
+
+	saveState() {
+
+		const cube = this;
+		const timer = this.world.timer;
+		const controls = this.controls;
+
+		const cubeData = {
+			names: [],
+			positions: [],
+			rotations: [],
+		};
+
+		const gameData = {
+			moves: controls.moves,
+			time: timer.deltaTime,
+		};
+
+		cube.pieces.forEach( piece => {
+
+			cubeData.names.push( piece.name );
+		  cubeData.positions.push( piece.position );
+		  cubeData.rotations.push( piece.rotation.toVector3() );
+
+		} );
+
+		localStorage.setItem( 'gameInProgress', 'yes' );
+		localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
+		localStorage.setItem( 'gameData', JSON.stringify( gameData ) );
+
+	}
+
 }
 
 export { Cube };

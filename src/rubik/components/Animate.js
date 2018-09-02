@@ -9,106 +9,90 @@ class Animate {
 
   dropAndFloat( callback ) {
 
-    const bounce = 0.1;
-    const duration = 2;
-
-    let bounces = [];
-    let durations = [];
-
-    ( () => {
-
-      const bouncePower = 1.25;
-      const timePower = 1.01
-      const stepsCount = 4;
-
-      let step = bounce;
-      let time = duration;
-      let switcher = stepsCount % 2 === 0;
-
-      const stepsReversed = [], timesReversed = [];
-
-      for ( var i = 0 ; i < stepsCount; i++ ) {
-        timesReversed.push( time );
-        stepsReversed.push( step * (switcher ? 1 : -1) );
-        switcher = !switcher;
-        step = step * bouncePower;
-        time = time / timePower;
-      }
-
-      bounces = stepsReversed.reverse();
-      durations = timesReversed.reverse();
-
-    } )();
-
-    // console.log(bounces, durations);
-
     const cube = this.cube.object;
     const shadow = this.cube.shadow;
+    const tweens = this.tweens;
 
-    let step = 0;
+    cube.position.y = 4; 
+    cube.position.x = -2; 
+    cube.position.z = -2; 
+    cube.rotation.x = Math.PI/4;
+    // cube.rotation.y = Math.PI/6;
+    shadow.material.opacity = 0;
 
-    TweenMax.to( cube.rotation, durations[step], {
-      x: 0,
-      y: 0,
-      ease: Power2.easeOut
-    } );
+    TweenMax.to( shadow.material, 1.5, { opacity: 0.5, ease: Power1.easeOut, delay: 1 } ); 
+    TweenMax.to( cube.rotation, 2.5, { x: 0, y: 0, ease: Power1.easeOut } ); 
+    TweenMax.to( cube.position, 2.5, { x: 0, y: -0.1, z: 0, ease: Power1.easeOut, onComplete: () => { 
+     
+      tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
+        { y: -0.1 }, 
+        { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+      ); 
+     
+      tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
+        { opacity: 0.5 }, 
+        { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+      ); 
 
-    const dropBox = () => {
+      callback();
 
-      if ( step == 1 ) callback();
-
-      if ( step != bounces.length ) {
-
-        this.tweens.position = TweenMax.to( cube.position, durations[step], {
-          y: bounces[step] * ( step == 0 ? 2 : 1 ),
-          ease: (step == 0) ? Sine.easeOut : Sine.easeInOut,
-          onComplete: dropBox,
-        });
-
-        this.tweens.shadow = TweenMax.to( shadow.material, durations[step], {
-          opacity: 0.4 - bounces[step],
-          ease: (step == 0) ? Sine.easeOut : Sine.easeInOut,
-        });
-
-        console.log( 0.4 - bounces[step] )
-
-        step++;
-
-      } else {
-
-        step = bounces.length - 1;
-
-        this.tweens.position = TweenMax.fromTo( cube.position, durations[step],
-          { y: bounces[step] },
-          { y: bounces[step] * -1, repeat: -1, yoyo: true, ease: Sine.easeInOut }
-        );
-
-        this.tweens.shadow = TweenMax.fromTo( shadow.material, durations[step],
-          { opacity: 0.4 - bounces[step] },
-          { opacity: 0.4 + bounces[step], repeat: -1, yoyo: true, ease: Sine.easeInOut }
-        );
-
-      }
-
-    }
-
-    dropBox();
+    } } ); 
 
   }
 
-  gameStart( callback ) {
+  gameStart( callback, time ) {
 
-    this.tweens.position.kill();
-    this.tweens.shadow.kill();
+    const cube = this.cube.object;
+    const shadow = this.cube.shadow;
+    const camera = this.cube.world.camera;
+    const tweens = this.tweens;
+    const zoomDuration = 0.5;
 
-    TweenMax.to( cube.object.position, 0.5, { y: 0, ease: Sine.easeInOut } );
-    TweenMax.to( cube.shadow.material, 0.5, { opacity: 0.4, ease: Sine.easeInOut } );
-    TweenMax.to( world.camera, 0.5, { zoom: 1, ease: Elastic.easeOut.config(1,0.5),
-      onUpdate: function() {
-        world.camera.updateProjectionMatrix();
-      },
-      onComplete: callback
-    } );
+    tweens.cube.kill();
+    tweens.shadow.kill();
+
+    tweens.cube = TweenMax.to( cube.position, zoomDuration, { y: 0, ease: Sine.easeInOut } );
+    tweens.shadow = TweenMax.to( shadow.material, zoomDuration, { opacity: 0.4, ease: Sine.easeInOut, onComplete: () => {
+
+      callback();
+
+    } } );
+
+    if ( time > 0 ) {
+
+      const div = document.createElement( 'div' );
+      const value = { old: 0, current: 0, delta: 0 };
+      const matrix = new THREE.Matrix4();
+      const duration = time + zoomDuration;
+      const rotations = Math.min( Math.round( duration / 2 ), 1 ) * 2;
+
+      tweens.cameraZoom = TweenMax.to( camera, duration, { zoom: 1, ease: Sine.easeInOut, onUpdate: () => {
+
+        camera.updateProjectionMatrix();
+
+      } } );
+
+      tweens.cameraRotation = TweenMax.to( div, duration, { x: Math.PI * rotations, ease: Sine.easeInOut, onUpdate: () => {
+
+        value.current = this.tweens.cameraRotation.target._gsTransform.x;
+        value.delta = value.current - value.old;
+        value.old = value.current * 1;
+
+        matrix.makeRotationY( value.delta );
+        camera.position.applyMatrix4( matrix );
+        camera.lookAt( this.cube.world.scene.position );
+
+      } } );
+
+    } else {
+
+      tweens.cameraZoom = TweenMax.to( camera, zoomDuration, { zoom: 1, ease: Sine.easeInOut, onUpdate: () => {
+
+         camera.updateProjectionMatrix();
+
+      } } );
+
+    }
 
   }
 

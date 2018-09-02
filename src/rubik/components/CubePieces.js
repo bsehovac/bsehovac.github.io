@@ -33,13 +33,14 @@ function CubePieces( size, positions, colors ) {
 		metalness: 0,
 	} );
 
-	positions.forEach( position => {
+	positions.forEach( ( position, index ) => {
 
 		const piece = new THREE.Object3D();
 		const pieceCube = pieceMesh.clone();
 
 		piece.position.copy( position.clone().divideScalar( size ) );
 		piece.add( pieceCube );
+		piece.name = index;
 
 		position.edges.forEach( position => {
 

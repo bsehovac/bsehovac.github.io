@@ -633,13 +633,14 @@
 			metalness: 0,
 		} );
 
-		positions.forEach( position => {
+		positions.forEach( ( position, index ) => {
 
 			const piece = new THREE.Object3D();
 			const pieceCube = pieceMesh.clone();
 
 			piece.position.copy( position.clone().divideScalar( size ) );
 			piece.add( pieceCube );
+			piece.name = index;
 
 			position.edges.forEach( position => {
 
@@ -852,6 +853,74 @@
 			shadow.position.y = - 1.2;
 
 			cube.shadow = shadow;
+
+		}
+
+		loadState() {
+
+			const gameInProgress = localStorage.getItem( 'gameInProgress' ) == 'yes';
+
+			if ( !gameInProgress ) return false;
+
+			const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
+			const gameData = JSON.parse( localStorage.getItem( 'gameData' ) );
+
+			cube.pieces.forEach( piece => {
+
+				const index = cubeData.names.indexOf( piece.name );
+
+				const position = cubeData.positions[index];
+				const rotation = cubeData.rotations[index];
+
+				piece.position.set( position.x, position.y, position.z );
+				piece.rotation.set( rotation.x, rotation.y, rotation.z );
+
+			} );
+
+			this.controls.rearrangePieces();
+			this.controls.moves = gameData.moves;
+
+			this.controls.moves.forEach( move => {
+
+				const angle = move[0];
+				move[0] = new THREE.Vector3( angle.x, angle.y, angle.z );
+
+			} );
+
+			this.world.timer.deltaTime = gameData.time;
+
+			return gameInProgress; 
+
+		}
+
+		saveState() {
+
+			const cube = this;
+			const timer = this.world.timer;
+			const controls = this.controls;
+
+			const cubeData = {
+				names: [],
+				positions: [],
+				rotations: [],
+			};
+
+			const gameData = {
+				moves: controls.moves,
+				time: timer.deltaTime,
+			};
+
+			cube.pieces.forEach( piece => {
+
+				cubeData.names.push( piece.name );
+			  cubeData.positions.push( piece.position );
+			  cubeData.rotations.push( piece.rotation.toVector3() );
+
+			} );
+
+			localStorage.setItem( 'gameInProgress', 'yes' );
+			localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
+			localStorage.setItem( 'gameData', JSON.stringify( gameData ) );
 
 		}
 
@@ -1194,9 +1263,11 @@
 
 			if ( new THREE.Vector3().equals( angle ) ) return;
 
+			window.dbg = moves;
+
 			if (
 				moves.length > 0 &&
-							moves[ moves.length - 1 ][ 0 ].clone().multiplyScalar( - 1 ).equals( angle )
+				moves[ moves.length - 1 ][ 0 ].clone().multiplyScalar( - 1 ).equals( angle )
 			) {
 
 				moves.pop();
@@ -1395,8 +1466,6 @@
 			const cube = controls.cube;
 			const group = controls.group;
 			const pieces = cube.pieces;
-			const newPositions = [];
-			const newPieces = [];
 
 			group.updateMatrixWorld();
 
@@ -1407,6 +1476,18 @@
 				cube.object.add( pieces[ index ] );
 
 			} );
+
+			this.rearrangePieces();
+
+		}
+
+		rearrangePieces() {
+
+			const controls = this;
+			const cube = controls.cube;
+			const pieces = cube.pieces;
+			const newPositions = [];
+			const newPieces = [];
 
 			pieces.forEach( piece => {
 
@@ -1471,7 +1552,6 @@
 
 			if ( controls.scramble == null ) {
 
-				scramble.convert();
 				scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
 				controls.scramble = scramble;
 
@@ -1543,6 +1623,8 @@
 			scramble.callback = () => {};
 			scramble.moves = moves;
 			scramble.print = moves.join( ' ' );
+			scramble.convert();
+
 			return scramble;
 
 		}
@@ -1588,6 +1670,7 @@
 			this.startTime = null;
 
 			this.world = world;
+			world.timer = this;
 
 		}
 
@@ -1595,10 +1678,25 @@
 
 			this.startTime = Date.now();
 
-			this.world.onAnimate = function () {
+			this.world.onAnimate = () => {
 
-				const delta = Date.now() - timer.startTime;
-				timer.element.innerHTML = timer.convert( delta );
+				this.currentTime = Date.now();
+				this.deltaTime = this.currentTime - this.startTime;
+				this.element.innerHTML = this.convert( this.deltaTime );
+
+			};
+
+		}
+
+		continue() {
+
+			this.startTime = Date.now() - this.deltaTime;
+
+			this.world.onAnimate = () => {
+
+				this.currentTime = Date.now();
+				this.deltaTime = this.currentTime - this.startTime;
+				this.element.innerHTML = this.convert( this.deltaTime );
 
 			};
 
@@ -1606,17 +1704,20 @@
 
 		stop() {
 
-			const delta = Date.now() - this.startTime;
+			this.currentTime = Date.now();
+			this.deltaTime = this.currentTime - this.startTime;
 
 			world.onAnimate = function () {};
 
-			return { time: this.convert( delta ), millis: delta };
+			return { time: this.convert( deltaTime ), millis: deltaTime };
 
 		}
 
 		convert( time ) {
+
+			// const millis = parseInt( ( time % 1000 ) / 100 );
 			const seconds = parseInt( ( time / 1000 ) % 60 );
-			const minutes = parseInt( ( time / ( 1000 * 60 ) ) % 60 );
+			const minutes = parseInt( ( time / ( 1000 * 60 ) ) /*% 60*/ );
 
 			return minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds; // + '.' + millis;
 
@@ -1635,106 +1736,90 @@
 
 	  dropAndFloat( callback ) {
 
-	    const bounce = 0.1;
-	    const duration = 2;
-
-	    let bounces = [];
-	    let durations = [];
-
-	    ( () => {
-
-	      const bouncePower = 1.25;
-	      const timePower = 1.01;
-	      const stepsCount = 4;
-
-	      let step = bounce;
-	      let time = duration;
-	      let switcher = stepsCount % 2 === 0;
-
-	      const stepsReversed = [], timesReversed = [];
-
-	      for ( var i = 0 ; i < stepsCount; i++ ) {
-	        timesReversed.push( time );
-	        stepsReversed.push( step * (switcher ? 1 : -1) );
-	        switcher = !switcher;
-	        step = step * bouncePower;
-	        time = time / timePower;
-	      }
-
-	      bounces = stepsReversed.reverse();
-	      durations = timesReversed.reverse();
-
-	    } )();
-
-	    // console.log(bounces, durations);
-
 	    const cube = this.cube.object;
 	    const shadow = this.cube.shadow;
+	    const tweens = this.tweens;
 
-	    let step = 0;
+	    cube.position.y = 4; 
+	    cube.position.x = -2; 
+	    cube.position.z = -2; 
+	    cube.rotation.x = Math.PI/4;
+	    // cube.rotation.y = Math.PI/6;
+	    shadow.material.opacity = 0;
 
-	    TweenMax.to( cube.rotation, durations[step], {
-	      x: 0,
-	      y: 0,
-	      ease: Power2.easeOut
-	    } );
+	    TweenMax.to( shadow.material, 1.5, { opacity: 0.5, ease: Power1.easeOut, delay: 1 } ); 
+	    TweenMax.to( cube.rotation, 2.5, { x: 0, y: 0, ease: Power1.easeOut } ); 
+	    TweenMax.to( cube.position, 2.5, { x: 0, y: -0.1, z: 0, ease: Power1.easeOut, onComplete: () => { 
+	     
+	      tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
+	        { y: -0.1 }, 
+	        { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+	      ); 
+	     
+	      tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
+	        { opacity: 0.5 }, 
+	        { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+	      ); 
 
-	    const dropBox = () => {
+	      callback();
 
-	      if ( step == 1 ) callback();
-
-	      if ( step != bounces.length ) {
-
-	        this.tweens.position = TweenMax.to( cube.position, durations[step], {
-	          y: bounces[step] * ( step == 0 ? 2 : 1 ),
-	          ease: (step == 0) ? Sine.easeOut : Sine.easeInOut,
-	          onComplete: dropBox,
-	        });
-
-	        this.tweens.shadow = TweenMax.to( shadow.material, durations[step], {
-	          opacity: 0.4 - bounces[step],
-	          ease: (step == 0) ? Sine.easeOut : Sine.easeInOut,
-	        });
-
-	        console.log( 0.4 - bounces[step] );
-
-	        step++;
-
-	      } else {
-
-	        step = bounces.length - 1;
-
-	        this.tweens.position = TweenMax.fromTo( cube.position, durations[step],
-	          { y: bounces[step] },
-	          { y: bounces[step] * -1, repeat: -1, yoyo: true, ease: Sine.easeInOut }
-	        );
-
-	        this.tweens.shadow = TweenMax.fromTo( shadow.material, durations[step],
-	          { opacity: 0.4 - bounces[step] },
-	          { opacity: 0.4 + bounces[step], repeat: -1, yoyo: true, ease: Sine.easeInOut }
-	        );
-
-	      }
-
-	    };
-
-	    dropBox();
+	    } } ); 
 
 	  }
 
-	  gameStart( callback ) {
+	  gameStart( callback, time ) {
 
-	    this.tweens.position.kill();
-	    this.tweens.shadow.kill();
+	    const cube = this.cube.object;
+	    const shadow = this.cube.shadow;
+	    const camera = this.cube.world.camera;
+	    const tweens = this.tweens;
+	    const zoomDuration = 0.5;
 
-	    TweenMax.to( cube.object.position, 0.5, { y: 0, ease: Sine.easeInOut } );
-	    TweenMax.to( cube.shadow.material, 0.5, { opacity: 0.4, ease: Sine.easeInOut } );
-	    TweenMax.to( world.camera, 0.5, { zoom: 1, ease: Elastic.easeOut.config(1,0.5),
-	      onUpdate: function() {
-	        world.camera.updateProjectionMatrix();
-	      },
-	      onComplete: callback
-	    } );
+	    tweens.cube.kill();
+	    tweens.shadow.kill();
+
+	    tweens.cube = TweenMax.to( cube.position, zoomDuration, { y: 0, ease: Sine.easeInOut } );
+	    tweens.shadow = TweenMax.to( shadow.material, zoomDuration, { opacity: 0.4, ease: Sine.easeInOut, onComplete: () => {
+
+	      callback();
+
+	    } } );
+
+	    if ( time > 0 ) {
+
+	      const div = document.createElement( 'div' );
+	      const value = { old: 0, current: 0, delta: 0 };
+	      const matrix = new THREE.Matrix4();
+	      const duration = time + zoomDuration;
+	      const rotations = Math.min( Math.round( duration / 2 ), 1 ) * 2;
+
+	      tweens.cameraZoom = TweenMax.to( camera, duration, { zoom: 1, ease: Sine.easeInOut, onUpdate: () => {
+
+	        camera.updateProjectionMatrix();
+
+	      } } );
+
+	      tweens.cameraRotation = TweenMax.to( div, duration, { x: Math.PI * rotations, ease: Sine.easeInOut, onUpdate: () => {
+
+	        value.current = this.tweens.cameraRotation.target._gsTransform.x;
+	        value.delta = value.current - value.old;
+	        value.old = value.current * 1;
+
+	        matrix.makeRotationY( value.delta );
+	        camera.position.applyMatrix4( matrix );
+	        camera.lookAt( this.cube.world.scene.position );
+
+	      } } );
+
+	    } else {
+
+	      tweens.cameraZoom = TweenMax.to( camera, zoomDuration, { zoom: 1, ease: Sine.easeInOut, onUpdate: () => {
+
+	         camera.updateProjectionMatrix();
+
+	      } } );
+
+	    }
 
 	  }
 

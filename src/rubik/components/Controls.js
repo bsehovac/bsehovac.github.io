@@ -155,9 +155,11 @@ class Controls {
 
 		if ( new THREE.Vector3().equals( angle ) ) return;
 
+		window.dbg = moves;
+
 		if (
 			moves.length > 0 &&
-						moves[ moves.length - 1 ][ 0 ].clone().multiplyScalar( - 1 ).equals( angle )
+			moves[ moves.length - 1 ][ 0 ].clone().multiplyScalar( - 1 ).equals( angle )
 		) {
 
 			moves.pop();
@@ -356,8 +358,6 @@ class Controls {
 		const cube = controls.cube;
 		const group = controls.group;
 		const pieces = cube.pieces;
-		const newPositions = [];
-		const newPieces = [];
 
 		group.updateMatrixWorld();
 
@@ -368,6 +368,18 @@ class Controls {
 			cube.object.add( pieces[ index ] );
 
 		} );
+
+		this.rearrangePieces();
+
+	}
+
+	rearrangePieces() {
+
+		const controls = this;
+		const cube = controls.cube;
+		const pieces = cube.pieces;
+		const newPositions = [];
+		const newPieces = [];
 
 		pieces.forEach( piece => {
 
@@ -432,7 +444,6 @@ class Controls {
 
 		if ( controls.scramble == null ) {
 
-			scramble.convert();
 			scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
 			controls.scramble = scramble;
 
