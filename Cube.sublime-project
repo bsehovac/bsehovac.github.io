@@ -1,26 +1,32 @@
 {
-  "build_systems":
-  [
-    {
-      "file_patterns": ["*.js"],
-      "name": "Rollup Rubik",
-      "shell_cmd": "rollup -c rollup.config.rubik.js",
-      "working_dir": "${project_path}"
-    },
-    {
-      "file_patterns": ["*.nofile"],
-      "name": "Rollup THREE",
-      "shell_cmd": "rollup -c rollup.config.three.js",
-      "working_dir": "${project_path}"
-    }
-  ],
-  "folders":
-  [
-    {
-      "path": "."
-    }
-  ],
-  "settings":
-  {
-  }
+	"build_systems":
+	[
+		{
+			"file_patterns":
+			[
+				"*.js"
+			],
+			"name": "Rollup",
+			"shell_cmd": "rollup -c rollup.config.rubik.js",
+			"working_dir": "${project_path}"
+		},
+		{
+			"file_patterns":
+			[
+				"*.scss"
+			],
+			"name": "Libsass",
+			"shell_cmd": "",
+			"working_dir": "${project_path}"
+		},
+	],
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings":
+	{
+	}
 }

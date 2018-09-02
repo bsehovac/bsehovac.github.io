@@ -3,28 +3,42 @@
 <head>
   <title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700,900" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="styles.css?v=5">
+  <link rel="stylesheet" type="text/css" href="assets/css/styles.css?v=5">
   <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
-  <div id="world"></div>
-
-  <div id="ui">
-    <div id="time">0:00</div>
-    <div class="button" id="start">Start</div>
-    <div id="moves">0</div>
-    <div id="undo">Undo</div>
-    <h2>
-      <span>THE</span>
-      <span>CUBE</span>
-    </h2>
+  <div class="game" id="world"></div>
+  <div class="ui" id="ui">
+    <div class="ui__menu">
+      <h1 class="ui__menu-title">
+        <span>THE</span>
+        <span>CUBE</span>
+      </h1>
+      <div class="ui__menu-start" id="start">
+        Start
+      </div>
+      <div class="ui__menu-top">
+        <div class="ui__corner-button" id="music">Music: <span>On</span></div>
+      </div>
+      <div class="ui__menu-bottom">
+        
+      </div>
+    </div>
+    <div class="ui__game">
+      <div class="ui__game-time" id="time">
+        0:00
+      </div>
+      <div class="ui__game-moves" id="moves">
+        0
+      </div>
+      <div class="ui__game-undo" id="undo">
+        Undo
+      </div>
+    </div>
   </div>
-
-  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/95/three.min.js"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/95/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.1/TweenMax.min.js"></script>
-  <script src="build/three.js?v=5"></script>
-  <script src="build/rubik.js?v=5"></script>
+  <script src="assets/js/rubik.js?v=5"></script>
   <script src="init.js?v=5"></script>
 </body>
 </html>

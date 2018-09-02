@@ -44,13 +44,13 @@ start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
 
 animate.dropAndFloat( () => {
 
-    ui.classList.add('menu');
+    ui.classList.add('in-menu');
 
 } );;
 
 start.onclick = function ( event ) {
 
-  ui.classList.add('game');
+  ui.classList.add('in-game');
 
   gameStarted = true;
 
@@ -109,3 +109,40 @@ window.onbeforeunload = function () {
   if ( gameStarted ) cube.saveState();
 
 };
+
+var music = document.querySelector('#music');
+var musicOn = localStorage.getItem( 'music' );
+if ( musicOn == null ) {
+  musicOn = true;
+} else {
+  musicOn = ( musicOn == 'true' ) ? true : false;
+}
+
+music.querySelector('span').innerHTML = musicOn ? 'ON' : 'OFF';
+
+var listener = new THREE.AudioListener();
+var sound = new THREE.Audio( listener );
+var audioLoader = new THREE.AudioLoader();
+
+world.camera.add( listener );
+
+audioLoader.load( 'assets/sounds/music.mp3', function( buffer ) {
+  sound.setBuffer( buffer );
+  sound.setLoop( true );
+  sound.setVolume( 0.5 );
+  if ( musicOn ) sound.play();
+});
+
+music.addEventListener( 'click', () => {
+
+  musicOn = !musicOn;
+
+  console.log( musicOn );
+
+  if ( musicOn ) { sound.play(); } else { sound.pause(); }
+
+  music.querySelector('span').innerHTML = musicOn ? 'ON' : 'OFF';
+
+  localStorage.setItem( 'music', musicOn );
+
+}, false );

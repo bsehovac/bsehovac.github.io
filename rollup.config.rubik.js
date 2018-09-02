@@ -1,7 +1,7 @@
 //import minify from 'rollup-plugin-babel-minify';
 
 export default {
-  input: './src/rubik/Rubik.js',
+  input: './src/js/Rubik.js',
   // plugins: [
   //   minify({
   //     comments: false,
@@ -11,7 +11,7 @@ export default {
   output: {
       format: 'umd',
       name: 'RUBIK',
-      file: './build/rubik.js',
+      file: './assets/js/rubik.js',
       indent: '\t',
   },
 };
