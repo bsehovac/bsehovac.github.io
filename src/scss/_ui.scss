@@ -71,12 +71,7 @@
       opacity: 0;
       box-shadow: 0 4vw 13vw rgba(0,0,0,.2);
       cursor: pointer;
-      border-top: 5px solid #d0d0d0;
       box-sizing: content-box;
-
-      &:active {
-        border-top: 3px solid #d0d0d0
-      }
 
       .ui.in-menu & {
         opacity: 1;
