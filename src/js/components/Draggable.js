@@ -71,7 +71,6 @@ class Draggable {
 
       move: ( event ) => {
 
-        console.log('moving');
         draggable.getPosition( event, 'current' );
         draggable.onMove( event, position, false );
 

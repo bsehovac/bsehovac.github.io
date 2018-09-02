@@ -18,12 +18,15 @@
 			"name": "Libsass",
 			"shell_cmd": "",
 			"working_dir": "${project_path}"
-		},
+		}
 	],
 	"folders":
 	[
 		{
 			"path": "."
+		},
+		{
+			"path": "/Library/WebServer/Documents/Localhost/cointed.new"
 		}
 	],
 	"settings":

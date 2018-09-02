@@ -19,6 +19,7 @@
 
   &__menu {
     z-index: 2;
+    pointer-events: none;
 
     &-title {
       transition: opacity 500ms;
@@ -29,7 +30,6 @@
       font-size: 20vw;
       font-weight: 900;
       line-height: 0.75;
-      height: 1.25em;
       text-align: center;
       letter-spacing: -0.025em;
       opacity: 0;
@@ -38,18 +38,13 @@
         display: block;
 
         &:first-child {
-          font-size: 0.5em;
-          font-weight: 500;
-          margin-bottom: 0.2em;
+          font-size: 0.666em;
+          margin-bottom: 0.1em;
         }
       }
 
       .ui.in-menu & {
         opacity: 1;
-      }
-
-      .ui.in-game & {
-        opacity: 0;
       }
     }
 
@@ -61,7 +56,7 @@
       width: 60vw;
       border-radius: 7.5vw;
       background: #fff;
-      top: 78%;
+      top: 80%;
       margin-left: -30vw;
       line-height: 15vw;
       text-align: center;
@@ -69,25 +64,96 @@
       text-transform: uppercase;
       font-size: 5vw;
       opacity: 0;
-      box-shadow: 0 4vw 13vw rgba(0,0,0,.2);
+      box-shadow: 0 4vw 4vw rgba(0, 0, 0, 0.05);
       cursor: pointer;
+      visibility: hidden;
       box-sizing: content-box;
 
       .ui.in-menu & {
         opacity: 1;
+        visibility: visible;
         pointer-events: all;
       }
+    }
+
+    &-music {
+      position: absolute;
+      bottom: 4vw;
+      right: 4vw;
+      font-size: 6vw;
+      pointer-events: all;
+
+      .icon {
+        height: 1em;
+        width: 1.25em;
+        opacity: 0.333;
+
+        path {
+          @include transition(opacity);
+
+          &:nth-child(2) {
+            opacity: 0;
+          }
+
+          &:nth-child(3) {
+            opacity: 0;
+          }
+        }
+      }
+
+      &.is-active {
+        path {
+          &:nth-child(2) {
+            opacity: 1;
+          }
+
+          &:nth-child(3) {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    &-settings,
+    &-home {
+      @include transition(opacity, visibility);
+      position: absolute;
+      bottom: 4vw;
+      left: 4vw;
+      font-size: 6vw;
+      pointer-events: all;
+
+      .icon {
+        height: 1em;
+        width: 1em;
+        opacity: 0.333;
+      }
+    }
+
+    &-settings {
+      opacity: 1;
+      visibility: visible;
 
       .ui.in-game & {
         opacity: 0;
         visibility: hidden;
-        pointer-events: none;
+      }
+    }
+
+    &-home {
+      opacity: 0;
+      visibility: hidden;
+
+      .ui.in-game & {
+        opacity: 1;
+        visibility: visible;
       }
     }
   }
 
   &__game {
     z-index: 1;
+    pointer-events: none;
 
     &-time {
       transition: opacity 500ms;

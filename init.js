@@ -50,6 +50,7 @@ animate.dropAndFloat( () => {
 
 start.onclick = function ( event ) {
 
+  ui.classList.remove('in-menu');
   ui.classList.add('in-game');
 
   gameStarted = true;
@@ -93,6 +94,7 @@ undo.onclick = function ( event ) {
 controls.onMove = function ( data ) {
 
 	moves.innerHTML = data.length;
+  if ( musicOn ) clickSound.play();
 
 };
 
@@ -104,12 +106,6 @@ controls.onSolved = function () {
 
 };
 
-window.onbeforeunload = function () {
-  
-  if ( gameStarted ) cube.saveState();
-
-};
-
 var music = document.querySelector('#music');
 var musicOn = localStorage.getItem( 'music' );
 if ( musicOn == null ) {
@@ -118,19 +114,26 @@ if ( musicOn == null ) {
   musicOn = ( musicOn == 'true' ) ? true : false;
 }
 
-music.querySelector('span').innerHTML = musicOn ? 'ON' : 'OFF';
+music.classList[ musicOn ? 'add' : 'remove' ]('is-active');
 
 var listener = new THREE.AudioListener();
-var sound = new THREE.Audio( listener );
+var musicSound = new THREE.Audio( listener );
+var clickSound = new THREE.Audio( listener );
 var audioLoader = new THREE.AudioLoader();
 
 world.camera.add( listener );
 
 audioLoader.load( 'assets/sounds/music.mp3', function( buffer ) {
-  sound.setBuffer( buffer );
-  sound.setLoop( true );
-  sound.setVolume( 0.5 );
-  if ( musicOn ) sound.play();
+  musicSound.setBuffer( buffer );
+  musicSound.setLoop( true );
+  musicSound.setVolume( 0.5 );
+  if ( musicOn ) musicSound.play();
+});
+
+audioLoader.load( 'assets/sounds/click.mp3', function( buffer ) {
+  clickSound.setBuffer( buffer );
+  clickSound.setLoop( false );
+  clickSound.setVolume( 0.5 );
 });
 
 music.addEventListener( 'click', () => {
@@ -139,10 +142,22 @@ music.addEventListener( 'click', () => {
 
   console.log( musicOn );
 
-  if ( musicOn ) { sound.play(); } else { sound.pause(); }
+  if ( musicOn ) { musicSound.play(); } else { musicSound.stop(); }
 
-  music.querySelector('span').innerHTML = musicOn ? 'ON' : 'OFF';
+  music.classList[ musicOn ? 'add' : 'remove' ]('is-active');
 
   localStorage.setItem( 'music', musicOn );
 
 }, false );
+
+const home = document.querySelector( '#home' );
+
+home.onclick = e => {
+
+  ui.classList.remove('in-game');
+  ui.classList.add('in-menu');
+
+  timer.stop();
+  animate.gameStop();
+
+}

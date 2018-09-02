@@ -395,6 +395,8 @@ class Controls {
 		controls.drag.layer = null;
 		controls.drag.rotation = null;
 
+		cube.saveState();
+
 	}
 
 	checkIsSolved() {

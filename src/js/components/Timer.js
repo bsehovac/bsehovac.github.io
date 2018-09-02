@@ -45,7 +45,7 @@ class Timer {
 
 		world.onAnimate = function () {};
 
-		return { time: this.convert( deltaTime ), millis: deltaTime };
+		return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 
 	}
 

@@ -1,3 +1,4 @@
+export { Icons } from './components/Icons.js';
 export { World } from './components/World.js';
 export { Cube } from './components/Cube.js';
 export { Controls } from './components/Controls.js';

@@ -40,6 +40,39 @@ class Animate {
 
   }
 
+  gameStop() {
+
+    const cube = this.cube.object;
+    const shadow = this.cube.shadow;
+    const tweens = this.tweens;
+    const camera = this.cube.world.camera;
+    const zoomDuration = 0.5;
+
+    tweens.cameraZoom = TweenMax.to( camera, zoomDuration, { zoom: 0.8, ease: Sine.easeInOut, onUpdate: () => {
+
+       camera.updateProjectionMatrix();
+
+    }, onComplete: () => {
+
+      tweens.cube = TweenMax.to( cube.position, 0.75, { y: -0.1, ease: Sine.easeOut } );
+      tweens.shadow = TweenMax.to( shadow.material, 0.75, { opacity: 0.5, ease: Sine.easeOut, onComplete: () => {
+
+        tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
+          { y: -0.1 }, 
+          { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+        );
+
+        tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
+          { opacity: 0.5 }, 
+          { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+        ); 
+
+      } } );
+
+    } } );
+
+  }
+
   gameStart( callback, time ) {
 
     const cube = this.cube.object;

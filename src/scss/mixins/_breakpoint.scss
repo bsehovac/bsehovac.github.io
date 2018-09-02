@@ -1,0 +1,5 @@
+@mixin breakpoint() {
+  @media (min-aspect-ratio: 2/3) {
+    @content;
+  }
+}

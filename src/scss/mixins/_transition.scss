@@ -1,0 +1,12 @@
+@mixin transition($property-array...) {
+  $properties: null;
+  @each $property in $property-array {
+    @if $property != "none" {
+      $properties: $properties, $property 300ms ease;
+    }
+    @else {
+      transition: none;
+    }
+  }
+  transition: $properties;
+}

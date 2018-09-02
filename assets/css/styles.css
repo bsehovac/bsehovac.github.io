@@ -28,7 +28,7 @@ body {
   font-size: 10px;
   font-weight: 500;
   color: #070d15;
-  background-image: linear-gradient(to top, #3b9bf5 0%, #81c4f7 100%); }
+  background-image: linear-gradient(to bottom, #fdfbfb 0%, #ebedee 100%); }
 
 .game {
   position: absolute;
@@ -58,7 +58,8 @@ body {
     width: 100%;
     height: 100%; }
   .ui__menu {
-    z-index: 2; }
+    z-index: 2;
+    pointer-events: none; }
     .ui__menu-title {
       transition: opacity 500ms;
       position: absolute;
@@ -68,20 +69,16 @@ body {
       font-size: 20vw;
       font-weight: 900;
       line-height: 0.75;
-      height: 1.25em;
       text-align: center;
       letter-spacing: -0.025em;
       opacity: 0; }
       .ui__menu-title span {
         display: block; }
         .ui__menu-title span:first-child {
-          font-size: 0.5em;
-          font-weight: 500;
-          margin-bottom: 0.2em; }
+          font-size: 0.666em;
+          margin-bottom: 0.1em; }
       .ui.in-menu .ui__menu-title {
         opacity: 1; }
-      .ui.in-game .ui__menu-title {
-        opacity: 0; }
     .ui__menu-start {
       transition: opacity 500ms, visibility 500ms;
       height: 15vw;
@@ -90,7 +87,7 @@ body {
       width: 60vw;
       border-radius: 7.5vw;
       background: #fff;
-      top: 78%;
+      top: 80%;
       margin-left: -30vw;
       line-height: 15vw;
       text-align: center;
@@ -98,18 +95,60 @@ body {
       text-transform: uppercase;
       font-size: 5vw;
       opacity: 0;
-      box-shadow: 0 4vw 13vw rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4vw 4vw rgba(0, 0, 0, 0.05);
       cursor: pointer;
+      visibility: hidden;
       box-sizing: content-box; }
       .ui.in-menu .ui__menu-start {
         opacity: 1;
+        visibility: visible;
         pointer-events: all; }
-      .ui.in-game .ui__menu-start {
+    .ui__menu-music {
+      position: absolute;
+      bottom: 4vw;
+      right: 4vw;
+      font-size: 6vw;
+      pointer-events: all; }
+      .ui__menu-music .icon {
+        height: 1em;
+        width: 1.25em;
+        opacity: 0.333; }
+        .ui__menu-music .icon path {
+          transition: opacity 300ms ease; }
+          .ui__menu-music .icon path:nth-child(2) {
+            opacity: 0; }
+          .ui__menu-music .icon path:nth-child(3) {
+            opacity: 0; }
+      .ui__menu-music.is-active path:nth-child(2) {
+        opacity: 1; }
+      .ui__menu-music.is-active path:nth-child(3) {
+        opacity: 1; }
+    .ui__menu-settings, .ui__menu-home {
+      transition: opacity 300ms ease, visibility 300ms ease;
+      position: absolute;
+      bottom: 4vw;
+      left: 4vw;
+      font-size: 6vw;
+      pointer-events: all; }
+      .ui__menu-settings .icon, .ui__menu-home .icon {
+        height: 1em;
+        width: 1em;
+        opacity: 0.333; }
+    .ui__menu-settings {
+      opacity: 1;
+      visibility: visible; }
+      .ui.in-game .ui__menu-settings {
         opacity: 0;
-        visibility: hidden;
-        pointer-events: none; }
+        visibility: hidden; }
+    .ui__menu-home {
+      opacity: 0;
+      visibility: hidden; }
+      .ui.in-game .ui__menu-home {
+        opacity: 1;
+        visibility: visible; }
   .ui__game {
-    z-index: 1; }
+    z-index: 1;
+    pointer-events: none; }
     .ui__game-time {
       transition: opacity 500ms;
       position: absolute;

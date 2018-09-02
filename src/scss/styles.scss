@@ -1,3 +1,6 @@
-@import "document";
-@import "game";
-@import "ui";
+@import "mixins/transition";
+@import "mixins/breakpoint";
+
+@import "components/document";
+@import "components/game";
+@import "components/ui";
