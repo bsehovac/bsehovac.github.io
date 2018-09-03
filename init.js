@@ -55,6 +55,15 @@ start.onclick = function ( event ) {
 
   gameStarted = true;
 
+  if ( musicOn ) {
+    const currentVolume = { volume: musicSound.getVolume() }
+    const volumeTween = TweenMax.to( currentVolume, 1, { volume: 0, ease: Sine.easeOut, onUpdate: () => {
+      musicSound.setVolume( volumeTween.target.volume );
+    }, onComplete: () => {
+      musicSound.pause();
+    } } );
+  }
+
   if ( gameSaved ) {
 
     timer.element.innerHTML = timer.convert( timer.deltaTime );
@@ -75,6 +84,7 @@ start.onclick = function ( event ) {
       controls.scrambleCube( scramble, function () {
 
         timer.start();
+        cube.saveState();
         controls.disabled = false;
 
       } );
@@ -95,14 +105,6 @@ controls.onMove = function ( data ) {
 
 	moves.innerHTML = data.length;
   if ( musicOn ) clickSound.play();
-
-};
-
-controls.onSolved = function () {
-
-	var time = timer.stop();
-	controls.disabled = true;
-  gameStarted = false
 
 };
 
@@ -140,8 +142,6 @@ music.addEventListener( 'click', () => {
 
   musicOn = !musicOn;
 
-  console.log( musicOn );
-
   if ( musicOn ) { musicSound.play(); } else { musicSound.stop(); }
 
   music.classList[ musicOn ? 'add' : 'remove' ]('is-active');
@@ -154,13 +154,46 @@ const home = document.querySelector( '#home' );
 
 home.onclick = e => {
 
+  controls.disabled = true;
+
   gameSaved = true;
+  gameStarted = false;
+
   start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
 
   ui.classList.remove('in-game');
   ui.classList.add('in-menu');
 
-  timer.destroy();
+  timer.stop();
   animate.gameStop();
+  fadeMusiIn();
 
 }
+
+controls.onSolved = function () {
+
+  controls.disabled = true;
+  
+  gameSaved = false;
+  gameStarted = false;
+
+  start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
+
+  ui.classList.remove('in-game');
+  ui.classList.add('in-menu');
+
+  timer.stop();
+  animate.gameStop();
+  fadeMusiIn();
+
+};
+
+var fadeMusiIn = () => {
+  if ( musicOn ) {
+    musicSound.play();
+    const currentVolume = { volume: 0 }
+    const volumeTween = TweenMax.to( currentVolume, 1, { volume: 0.5, ease: Sine.easeOut, onUpdate: () => {
+      musicSound.setVolume( volumeTween.target.volume );
+    } } );
+  }
+};

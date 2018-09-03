@@ -1312,10 +1312,10 @@
 				const angle = roundVectorAngle( drag.deltaAngle, options.minimumRotationAngle );
 				const layer = drag.layer;
 
-				controls.rotateLayer( angle, options.animationSpeed, options.animationBounce, () => {
+				controls.rotateLayer( angle, options.animationSpeed, true, () => {
 
 					controls.addMove( angle, layer );
-					controls.checkIsSolved( cube );
+					controls.checkIsSolved();
 
 				} );
 
@@ -1375,7 +1375,7 @@
 
 				controls.selectLayer( layer );
 
-				controls.rotateLayer( angle, options.animationSpeed, options.animationBounce, () => {
+				controls.rotateLayer( angle, options.animationSpeed, true, () => {
 
 					moves.pop();
 					controls.onMove( { moves, move, length: moves.length } );
@@ -1386,12 +1386,15 @@
 
 		}
 
-		rotateLayer( angle, speed, bounce, callback ) {
+		rotateLayer( angle, speed, flip, callback ) {
 
 			const controls = this;
 			const cube = controls.cube;
 			const layer = controls.drag.layer;
 			const group = controls.group;
+			const bounce = ( flip )
+				? controls.options.animationBounce
+				: controls.options.scrambleBounce;
 
 			if ( layer == null ) return;
 
@@ -1550,6 +1553,7 @@
 			} );
 
 			this.rearrangePieces();
+			if ( controls.scramble === null ) cube.saveState();
 
 		}
 
@@ -1580,8 +1584,6 @@
 
 			controls.drag.layer = null;
 			controls.drag.rotation = null;
-
-			cube.saveState();
 
 		}
 
@@ -1643,7 +1645,7 @@
 			rotation[ move.axis ] = move.angle;
 
 			controls.selectLayer( layer );
-			controls.rotateLayer( rotation, options.scrambleSpeed, options.scrambleBounce, () => {
+			controls.rotateLayer( rotation, options.scrambleSpeed, false, () => {
 
 				converted.shift();
 
@@ -1751,6 +1753,7 @@
 		start() {
 
 			this.startTime = Date.now();
+			this.deltaTime = 0;
 
 			this.world.onAnimate = () => {
 
@@ -1785,12 +1788,6 @@
 
 			return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 
-		}
-
-		destroy() {
-
-			world.onAnimate = function () {};
-			
 		}
 
 		convert( time ) {

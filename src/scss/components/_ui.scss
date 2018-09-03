@@ -133,20 +133,24 @@
     &-settings {
       opacity: 1;
       visibility: visible;
+      pointer-events: all;
 
       .ui.in-game & {
         opacity: 0;
         visibility: hidden;
+        pointer-events: none;
       }
     }
 
     &-home {
       opacity: 0;
       visibility: hidden;
+      pointer-events: none;
 
       .ui.in-game & {
         opacity: 1;
         visibility: visible;
+        pointer-events: all;
       }
     }
   }

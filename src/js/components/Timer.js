@@ -13,6 +13,7 @@ class Timer {
 	start() {
 
 		this.startTime = Date.now();
+		this.deltaTime = 0;
 
 		this.world.onAnimate = () => {
 
@@ -47,12 +48,6 @@ class Timer {
 
 		return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 
-	}
-
-	destroy() {
-
-		world.onAnimate = function () {};
-		
 	}
 
 	convert( time ) {

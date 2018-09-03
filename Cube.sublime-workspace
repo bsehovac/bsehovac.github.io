@@ -4,12 +4,24 @@
 		"selected_items":
 		[
 			[
-				"music",
+				"musi",
 				"musicSound"
 			],
 			[
-				"musi",
-				"musicOn"
+				"pos",
+				"pointer-events"
+			],
+			[
+				"anima",
+				"animationBounce"
+			],
+			[
+				"spee",
+				"scrambleSpeed"
+			],
+			[
+				"music",
+				"musicSound"
 			],
 			[
 				"in-",
@@ -48,10 +60,6 @@
 				"directional1"
 			],
 			[
-				"pos",
-				"position"
-			],
-			[
 				"dis",
 				"distanceFix"
 			],
@@ -82,10 +90,6 @@
 			[
 				"get",
 				"getVectorMaxAxis"
-			],
-			[
-				"anima",
-				"animationSpeed"
 			],
 			[
 				"conve",
@@ -510,10 +514,6 @@
 			[
 				"to",
 				"toFixed"
-			],
-			[
-				"scro",
-				"scrollSpeed"
 			]
 		]
 	},
@@ -523,8 +523,16 @@
 			"file": "init.js",
 			"settings":
 			{
-				"buffer_size": 3453,
+				"buffer_size": 4300,
 				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/Animate.js",
+			"settings":
+			{
+				"buffer_size": 3648,
 				"line_ending": "Unix"
 			}
 		}
@@ -662,21 +670,21 @@
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins"
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components"
 	],
 	"file_history":
 	[
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Timer.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_ui.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/init.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Cube.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/CubePieces.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/assets/js/rubik.js",
 		"/Users/bsehovac/Documents/Windows 7/Windows 7/rubik/svgs/music.svg",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Rubik.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/init.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_ui.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Animate.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Timer.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Draggable.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_transition.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Icons.js",
@@ -793,10 +801,7 @@
 		"/Users/boris/Downloads/Cube/src/components/geometries/RoundedBoxGeometry.js",
 		"/Users/boris/Downloads/Cube/src/components/geometries/RoundedPlaneGeometry.js",
 		"/Users/boris/Downloads/Cube/src/components/Scramble.js",
-		"/Users/boris/Downloads/Cube/src/components/Controls.js",
-		"/Users/boris/Downloads/Cube/src/components/helpers/ArrayHelpers.js",
-		"/Users/boris/Downloads/Cube/src/components/helpers/TouchEvents.js",
-		"/Users/boris/Downloads/Cube/src/components/helpers/VectorHelpers.js"
+		"/Users/boris/Downloads/Cube/src/components/Controls.js"
 	],
 	"find":
 	{
@@ -807,6 +812,10 @@
 		"height": 122.0,
 		"where_history":
 		[
+			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
+			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components",
+			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
+			"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
 			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components",
 			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
 			"/Users/boris/Documents/bsehovac.github.io/src/rubik",
@@ -827,6 +836,21 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"checkIsSolved",
+			"solved",
+			"complete",
+			"console",
+			"deselectLayer",
+			"rearrangePieces",
+			"saveState",
+			".saveState()",
+			"saveState",
+			"scramble",
+			".scram",
+			"rotateLayer",
+			".rotateLa",
+			"saveSta",
+			"console",
 			"onMove",
 			"console",
 			"pointer-e",
@@ -953,15 +977,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3453,
+						"buffer_size": 4300,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3284,
-								3284
+								4288,
+								4288
 							]
 						],
 						"settings":
@@ -971,10 +995,40 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2916.0,
+						"translation.y": 3659.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/js/components/Animate.js",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 3648,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3171,
+								3152
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1836.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
 					"type": "text"
 				}
 			]

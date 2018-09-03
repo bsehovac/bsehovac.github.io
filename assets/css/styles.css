@@ -136,16 +136,20 @@ body {
         opacity: 0.333; }
     .ui__menu-settings {
       opacity: 1;
-      visibility: visible; }
+      visibility: visible;
+      pointer-events: all; }
       .ui.in-game .ui__menu-settings {
         opacity: 0;
-        visibility: hidden; }
+        visibility: hidden;
+        pointer-events: none; }
     .ui__menu-home {
       opacity: 0;
-      visibility: hidden; }
+      visibility: hidden;
+      pointer-events: none; }
       .ui.in-game .ui__menu-home {
         opacity: 1;
-        visibility: visible; }
+        visibility: visible;
+        pointer-events: all; }
   .ui__game {
     z-index: 1;
     pointer-events: none; }
