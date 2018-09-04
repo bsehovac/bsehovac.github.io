@@ -1,9 +1,50 @@
 class Animate {
 
-  constructor( cube ) {
+  constructor( cube, title ) {
 
     this.cube = cube;
+    this.title = title;
     this.tweens = {};
+
+  }
+
+  titleIn( text, callback ) {
+
+    const letters = [];
+
+    this.title.innerHTML = '';
+
+    text.split( '' ).forEach( letter => {
+
+      const span = document.createElement( 'span' );
+      span.innerHTML = letter;
+      span.style.opacity = 0;
+      this.title.appendChild( span );
+      letters.push( span );
+
+    } );
+
+    this.tweens.title = TweenMax.staggerFromTo( letters, 0.4,
+      { opacity: 0, rotationY: 90 },
+      { opacity: 1, rotationY: 0, ease: Sine.easeOut, onComplete: callback },
+    0.05 );
+
+  }
+
+  titleOut( callback ) {
+
+    const letters = [];
+
+    this.title.querySelectorAll( 'span' ).forEach( span => {
+
+      letters.push( span );
+
+    } );
+
+    this.tweens.title = TweenMax.staggerFromTo( letters, 0.4,
+      { opacity: 1, rotationY: 0 },
+      { opacity: 0, rotationY: -90, ease: Sine.easeOut, onComplete: callback },
+    0.05 );
 
   }
 
@@ -126,6 +167,36 @@ class Animate {
       } } );
 
     }
+
+  }
+
+  audioIn( sound ) {
+
+    sound.play();
+
+    const currentVolume = { volume: 0 }
+
+    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0.5, ease: Sine.easeOut, onUpdate: () => {
+
+      sound.setVolume( volumeTween.target.volume );
+
+    } } );
+
+  }
+
+  audioOut( sound ) {
+
+    const currentVolume = { volume: sound.getVolume() }
+
+    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0, ease: Sine.easeOut, onUpdate: () => {
+
+      sound.setVolume( volumeTween.target.volume );
+
+    }, onComplete: () => {
+
+      sound.pause();
+
+    } } );
 
   }
 

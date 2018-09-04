@@ -1,4 +1,5 @@
 export { World } from './components/World.js';
+export { Audio } from './components/Audio.js';
 export { Cube } from './components/Cube.js';
 export { Controls } from './components/Controls.js';
 export { Scramble } from './components/Scramble.js';

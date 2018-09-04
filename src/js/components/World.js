@@ -98,6 +98,15 @@ class World {
 
 	}
 
+	addAudio( audio ) {
+
+		audio.world = this;
+		this.audio = audio;
+
+		this.camera.add( audio.listener );
+
+	}
+
 	addControls( controls ) {
 
 		controls.world = this;

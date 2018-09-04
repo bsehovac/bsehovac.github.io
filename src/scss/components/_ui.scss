@@ -8,8 +8,8 @@
   overflow: hidden;
   pointer-events: none;
 
-  &__menu,
-  &__game {
+  &__main,
+  &__options {
     position: absolute;
     left: 0;
     top: 0;
@@ -17,87 +17,88 @@
     height: 100%;
   }
 
-  &__menu {
+  &__main {
     z-index: 2;
-    pointer-events: none;
+    visibility: visible;
+  }
 
-    &-title {
-      transition: opacity 500ms;
-      position: absolute;
-      bottom: 78%;
-      left: 0;
-      width: 100%;
-      font-size: 20vw;
-      font-weight: 900;
-      line-height: 0.75;
-      text-align: center;
-      letter-spacing: -0.025em;
-      opacity: 0;
+  &__options {
+    z-index: 1;
+    visibility: hidden;
+  }
 
-      span {
-        display: block;
+  &__title {
+    position: absolute;
+    bottom: 78%;
+    left: 0;
+    width: 100%;
+    font-size: 20vw;
+    font-weight: 700;
+    line-height: 0.75;
+    text-align: center;
+    letter-spacing: -0.025em;
+    opacity: 0;
+    text-transform: uppercase;
+    perspective: 100vw;
 
-        &:first-child {
-          font-size: 0.666em;
-          margin-bottom: 0.1em;
-        }
-      }
-
-      .ui.in-menu & {
-        opacity: 1;
-      }
+    span {
+      transform-origin: 50% 100%;
+      display: inline-block;
+      white-space: pre;
     }
 
-    &-start {
-      transition: opacity 500ms, visibility 500ms;
-      height: 15vw;
-      position: absolute;
-      left: 50%;
-      width: 60vw;
-      border-radius: 7.5vw;
-      background: #fff;
-      top: 80%;
-      margin-left: -30vw;
-      line-height: 15vw;
-      text-align: center;
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 5vw;
-      opacity: 0;
-      box-shadow: 0 4vw 4vw rgba(0, 0, 0, 0.05);
-      cursor: pointer;
-      visibility: hidden;
-      box-sizing: content-box;
-
-      .ui.in-menu & {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: all;
-      }
+    .ui.in-menu & {
+      opacity: 1;
     }
+  }
 
-    &-music {
-      position: absolute;
+  &__button {
+    transition: opacity 500ms, visibility 500ms;
+    height: 15vw;
+    position: absolute;
+    left: 50%;
+    width: 60vw;
+    border-radius: 7.5vw;
+    background: #fff;
+    top: 80%;
+    margin-left: -30vw;
+    line-height: 15vw;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 5vw;
+    opacity: 0;
+    box-shadow: 0 4vw 4vw rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    visibility: hidden;
+    box-sizing: content-box;
+
+    .ui.in-menu & {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    font-size: 6vw;
+    opacity: 0.333;
+    pointer-events: all;
+
+    &--audio {
       bottom: 4vw;
       right: 4vw;
-      font-size: 6vw;
-      pointer-events: all;
 
-      .icon {
-        height: 1em;
-        width: 1.25em;
-        opacity: 0.333;
+      path {
+        @include transition(opacity);
 
-        path {
-          @include transition(opacity);
+        &:nth-child(2) {
+          opacity: 0;
+        }
 
-          &:nth-child(2) {
-            opacity: 0;
-          }
-
-          &:nth-child(3) {
-            opacity: 0;
-          }
+        &:nth-child(3) {
+          opacity: 0;
         }
       }
 
@@ -114,90 +115,35 @@
       }
     }
 
-    &-settings,
-    &-home {
-      @include transition(opacity, visibility);
-      position: absolute;
+    &--settings {
       bottom: 4vw;
       left: 4vw;
-      font-size: 6vw;
-      pointer-events: all;
-
-      .icon {
-        height: 1em;
-        width: 1em;
-        opacity: 0.333;
-      }
     }
 
-    &-settings {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: all;
-
-      .ui.in-game & {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
-    }
-
-    &-home {
+    &--home {
+      bottom: 4vw;
+      left: 4vw;
       opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-
-      .ui.in-game & {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: all;
-      }
     }
   }
 
-  &__game {
-    z-index: 1;
-    pointer-events: none;
+  &__time {
+    transition: opacity 500ms;
+    position: absolute;
+    left: 0;
+    bottom: 84%;
+    text-align: center;
+    width: 100%;
+    font-size: 16vw;
+    opacity: 0;
 
-    &-time {
-      transition: opacity 500ms;
-      position: absolute;
-      left: 0;
-      bottom: 84%;
-      text-align: center;
-      width: 100%;
-      font-size: 16vw;
-      opacity: 0;
-
-      .ui.in-game & {
-        opacity: 1;
-      }
+    .ui.in-game & {
+      opacity: 1;
     }
+  }
 
-    &-moves,
-    &-undo {
-      display: none;
-    }
+  &__moves,
+  &__undo {
+    display: none;
   }
 }
-
-// #moves, #undo {
-//   display: none;
-// }
-
-// @media (min-aspect-ratio: 3/3) {
-//   h2 {
-//     font-size: 13.333vh;
-//   }
-
-//   .button {
-//     border: 1px solid #fff;
-//     height: 10vw;
-//     width: 40vw;
-//     border-radius: 5vw;
-//     margin-left: -20vw;
-//     line-height: 10vw;
-//     font-size: 3.333vw;
-//     box-shadow: 0 1.333vw 2vw rgba(0,0,0,.2);
-//   }
-// }

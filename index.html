@@ -1,48 +1,63 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link rel="stylesheet" type="text/css" href="assets/css/styles.css?v=5">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-</head>
-<body>
-  <div class="game" id="world"></div>
-  <div class="ui" id="ui">
-    <div class="ui__menu">
-      <h1 class="ui__menu-title">
-        <span>THE</span>
-        <span>CUBE</span>
-      </h1>
-      <div class="ui__menu-start" id="start">
-        Start
+  <head>
+
+    <title>The Cube</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="assets/css/styles.css?v=5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+    <div class="game"></div>
+
+    <div class="ui">
+
+      <div class="ui__main">
+
+        <h1 class="ui__title"></h1>
+
+        <button class="ui__button ui__button--start">
+          Start
+        </button>
+
+        <button class="ui__icon ui__icon--audio">
+          <icon audio />
+        </button>
+
+        <button class="ui__icon ui__icon--settings">
+          <icon settings />
+        </button>
+
+        <button class="ui__icon ui__icon--home">
+          <icon home />
+        </button>
+
+        <div class="ui__timer">
+          0:00
+        </div>
+
+        <!-- <div class="ui__moves" id="moves">
+          0:00
+        </div> -->
+
+        <!-- <button class="ui__button ui__button--undo" id="undo">
+          Undo
+        </button> -->
+
       </div>
-      <div class="ui__menu-music" id="music">
-        <icon music />
-      </div>
-      <div class="ui__menu-settings" id="settings">
-        <icon settings />
-      </div>
-      <div class="ui__menu-home" id="home">
-        <icon home />
-      </div>
+
+      <div class="ui__preferences"></div>
+
     </div>
-    <div class="ui__game">
-      <div class="ui__game-time" id="time">
-        0:00
-      </div>
-      <div class="ui__game-moves" id="moves">
-        0
-      </div>
-      <div class="ui__game-undo" id="undo">
-        Undo
-      </div>
-    </div>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/95/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.1/TweenMax.min.js"></script>
-  <script src="assets/js/rubik.js?v=5"></script>
-  <script>RUBIK.Init();</script>
-</body>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/95/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.1/TweenMax.min.js"></script>
+    <script src="assets/js/rubik.js?v=5"></script>
+
+    <script>RUBIK.Init();</script>
+
+  </body>
 </html>
 
