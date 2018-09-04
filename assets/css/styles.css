@@ -1,18 +1,18 @@
 @font-face {
   font-family: 'Proxima';
-  src: url("ProximaBlack.woff2") format("woff2"), url("ProximaBlack.woff") format("woff");
+  src: url("../fonts/ProximaBlack.woff2") format("woff2"), url("../fonts/ProximaBlack.woff") format("woff");
   font-weight: 900;
   font-style: normal; }
 
 @font-face {
   font-family: 'Proxima';
-  src: url("ProximaBold.woff2") format("woff2"), url("ProximaBold.woff") format("woff");
+  src: url("../fonts/ProximaBold.woff2") format("woff2"), url("../fonts/ProximaBold.woff") format("woff");
   font-weight: 700;
   font-style: normal; }
 
 @font-face {
   font-family: 'Proxima';
-  src: url("ProximaRegular.woff2") format("woff2"), url("ProximaRegular.woff") format("woff");
+  src: url("../fonts/ProximaRegular.woff2") format("woff2"), url("../fonts/ProximaRegular.woff") format("woff");
   font-weight: 400;
   font-style: normal; }
 
