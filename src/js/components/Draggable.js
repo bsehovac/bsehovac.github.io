@@ -2,77 +2,71 @@ class Draggable {
 
   constructor( options ) {
 
-    const draggable = this;
-
-    draggable.options = Object.assign( {
+    this.options = Object.assign( {
       useVector: false,
       invertY: false,
       mouseMove: false,
     }, options || {} );
 
-    draggable.position = ( typeof draggable.options.useVector === 'function' ) ? {
-      start: new draggable.options.useVector(),
-      current: new draggable.options.useVector(),
-      delta: new draggable.options.useVector(),
+    this.position = ( typeof this.options.useVector === 'function' ) ? {
+      start: new this.options.useVector(),
+      current: new this.options.useVector(),
+      delta: new this.options.useVector(),
     } : {
       start: { x: 0, y: 0 },
       current: { x: 0, y: 0 },
       delta: { x: 0, y: 0 },
     };
 
-    draggable.element = null;
-    draggable.touch = null;
-    draggable.onStart = () => {};
-    draggable.onDrag = () => {};
-    draggable.onEnd = () => {};
-    draggable.onMove = () => {};
+    this.element = null;
+    this.touch = null;
+    this.onStart = () => {};
+    this.onDrag = () => {};
+    this.onEnd = () => {};
+    this.onMove = () => {};
 
-    draggable.createTriggers();
+    this.createTriggers();
 
-    return draggable;
+    return this;
 
   }
 
   createTriggers() {
 
-    const draggable = this;
-    const position = draggable.position;
-    let touch = draggable.touch;
-
-    draggable.triggers = {
+    this.triggers = {
 
       start: ( event ) => {
 
         if ( event.type == 'mousedown' && event.which != 1 ) return;
         if ( event.type == 'touchstart' && event.touches.length > 1 ) return;
-        draggable.getPosition( event, 'start' );
-        touch = ( event.type == 'touchstart' );
-        draggable.onStart( event, position, touch );
-        window.addEventListener( ( touch ) ? 'touchmove' : 'mousemove', draggable.triggers.drag, false );
-        window.addEventListener( ( touch ) ? 'touchend' : 'mouseup', draggable.triggers.end, false );
+        this.getPosition( event, 'start' );
+        this.touch = ( event.type == 'touchstart' );
+        this.onStart( event, this.position, this.touch );
+        window.addEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.triggers.drag, false );
+        window.addEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.triggers.end, false );
 
       },
 
       drag: ( event ) => {
 
-        draggable.getPosition( event, 'current' );
-        draggable.onDrag( event, position, touch );
+        this.getPosition( event, 'current' );
+        this.onDrag( event, this.position, this.touch );
 
       },
 
       end: ( event ) => {
 
-        draggable.getPosition( event, 'current' );
-        draggable.onEnd( event, position, touch );
-        window.removeEventListener( ( touch ) ? 'touchmove' : 'mousemove', draggable.triggers.drag, false );
-        window.removeEventListener( ( touch ) ? 'touchend' : 'mouseup', draggable.triggers.end, false );
+        this.getPosition( event, 'current' );
+        this.onEnd( event, this.position, this.touch );
+        window.removeEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.triggers.drag, false );
+        window.removeEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.triggers.end, false );
 
       },
 
       move: ( event ) => {
 
-        draggable.getPosition( event, 'current' );
-        draggable.onMove( event, position, false );
+        this.getPosition( event, 'current' );
+        this.onMove( event, this.position, false );
 
       },
 
@@ -82,55 +76,46 @@ class Draggable {
 
   init( element ) {
 
-    const draggable = this;
-    const triggers = draggable.triggers;
-
-    draggable.element = ( typeof element === 'string' )
+    this.element = ( typeof element === 'string' )
       ? document.querySelector( element )
       : element;
 
-    element.addEventListener( 'touchstart', triggers.start, false );
-    element.addEventListener( 'mousedown', triggers.start, false );
+    element.addEventListener( 'touchstart', this.triggers.start, false );
+    element.addEventListener( 'mousedown', this.triggers.start, false );
 
-    if ( draggable.options.mouseMove )
-      element.addEventListener( 'mousemove', triggers.move, false );
+    if ( this.options.mouseMove )
+      element.addEventListener( 'mousemove', this.triggers.move, false );
 
-    draggable.element = element;
+    this.element = element;
 
-    return draggable;
+    return this;
 
   }
 
   dispose() {
 
-    const draggable = this;
-    const element = draggable.element;
-    const triggers = draggable.triggers;
+    this.element.removeEventListener( 'touchstart', this.triggers.start, false );
+    this.element.removeEventListener( 'mousedown', this.triggers.start, false );
 
-    element.removeEventListener( 'touchstart', triggers.start, false );
-    element.removeEventListener( 'mousedown', triggers.start, false );
+    if ( this.options.mouseMove )
+      this.element.removeEventListener( 'mousemove', this.triggers.start, false );
 
-    if ( draggable.options.mouseMove )
-      element.removeEventListener( 'mousemove', triggers.start, false );
-
-    return draggable;
+    return this;
 
   }
 
   getPosition( event, type ) {
 
-    const draggable = this;
-    const position = draggable.position;
-    const offset = draggable.element.getBoundingClientRect();
+    const offset = this.element.getBoundingClientRect();
     const dragEvent = event.touches ? ( event.touches[ 0 ] || event.changedTouches[ 0 ] ) : event;
 
-    position[ type ].x = dragEvent.pageX - offset.left;
-    position[ type ].y = dragEvent.pageY - offset.top;
+    this.position[ type ].x = dragEvent.pageX - offset.left;
+    this.position[ type ].y = dragEvent.pageY - offset.top;
 
     if ( type == 'current' ) {
 
-      position.delta.x = position.current.x - position.start.x;
-      position.delta.y = ( position.current.y - position.start.y ) * ( draggable.options.invertY ? - 1 : 1 );
+      this.position.delta.x = this.position.current.x - this.position.start.x;
+      this.position.delta.y = ( this.position.current.y - this.position.start.y ) * ( this.options.invertY ? - 1 : 1 );
 
     }
 
@@ -138,11 +123,8 @@ class Draggable {
 
   convertPosition( position ) {
 
-    const draggable = this;
-    const element = draggable.element;
-
-    position.x = ( position.x / element.offsetWidth ) * 2 - 1,
-    position.y = ( position.y / element.offsetHeight ) * 2 - 1;
+    position.x = ( position.x / this.element.offsetWidth ) * 2 - 1,
+    position.y = ( position.y / this.element.offsetHeight ) * 2 - 1;
 
     return position;
 

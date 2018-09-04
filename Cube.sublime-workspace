@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"conver",
+				"convertAllIcons"
+			],
+			[
+				"class",
+				"className"
+			],
+			[
 				"musi",
 				"musicSound"
 			],
@@ -506,36 +514,11 @@
 			[
 				"scroll",
 				"scrollAlpha"
-			],
-			[
-				"margin-",
-				"margin-bottom"
-			],
-			[
-				"to",
-				"toFixed"
 			]
 		]
 	},
 	"buffers":
 	[
-		{
-			"file": "init.js",
-			"settings":
-			{
-				"buffer_size": 4300,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/js/components/Animate.js",
-			"settings":
-			{
-				"buffer_size": 3648,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "Libsass",
 	"build_system_choices":
@@ -667,13 +650,30 @@
 	},
 	"expanded_folders":
 	[
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components"
+		"/Users/boris/Documents/bsehovac.github.io",
+		"/Users/boris/Documents/bsehovac.github.io/src"
 	],
 	"file_history":
 	[
+		"/Users/boris/Documents/bsehovac.github.io/assets/js/rubik.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Timer.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/World.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Controls.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Helpers.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Scramble.js",
+		"/Users/boris/Documents/bsehovac.github.io/index.html",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Init.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Draggable.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/scss/styles.scss",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/Rubik.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/SvgIcons.js",
+		"/Users/boris/Documents/bsehovac.github.io/init.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Icons.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/CubePieces.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Cube.js",
+		"/Users/boris/Documents/bsehovac.github.io/Cube.sublime-project",
+		"/Users/boris/Library/Application Support/Sublime Text 3/Packages/Libsass Build/Sass (libsass).sublime-build",
+		"/Users/boris/Library/Application Support/Sublime Text 3/Packages/Libsass Build/Libsass Build.sublime-settings",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Timer.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_ui.scss",
@@ -736,17 +736,14 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/three/plugins/RoundedBoxGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three-plugins/SliceGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three-plugins/RoundedBoxGeometry.js",
-		"/Users/boris/Documents/bsehovac.github.io/init.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/Rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Timer.js",
-		"/Users/boris/Documents/bsehovac.github.io/index.html",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Game.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Cube.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Controls.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/TouchEvents.js",
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/Helpers.js",
-		"/Users/boris/Documents/bsehovac.github.io/Cube.sublime-project",
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.minify.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/helpers/VectorHelpers.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three/math/Vector3.js",
@@ -785,23 +782,7 @@
 		"/Users/bsehovac/Desktop/Cube/src/components/Timer.js",
 		"/Users/bsehovac/Desktop/Cube/src/Rubik.js",
 		"/Users/bsehovac/Desktop/Cube/src/components/Game.js",
-		"/Users/bsehovac/Desktop/Cube/src/components/helpers/TimeConvert.js",
-		"/Users/bsehovac/Desktop/Cube/styles.css",
-		"/Users/bsehovac/Desktop/Cube/build/rubik.js",
-		"/Users/bsehovac/Desktop/Cube/src/components/Lights.js",
-		"/Users/bsehovac/Desktop/Cube/src/components/helpers/TouchEvents.js",
-		"/Users/bsehovac/Desktop/Cube/src/components/helpers/VectorHelpers.js",
-		"/Users/boris/Downloads/Cube/init.js",
-		"/Users/boris/Downloads/Cube/build/rubik.js",
-		"/Users/boris/Downloads/Cube/rollup.config.js",
-		"/Users/boris/Downloads/Cube/src/components/Game.js",
-		"/Users/boris/Downloads/Cube/src/components/Cube.js",
-		"/Users/boris/Downloads/Cube/src/components/CubePieces.js",
-		"/Users/boris/Downloads/Cube/src/Rubik.js",
-		"/Users/boris/Downloads/Cube/src/components/geometries/RoundedBoxGeometry.js",
-		"/Users/boris/Downloads/Cube/src/components/geometries/RoundedPlaneGeometry.js",
-		"/Users/boris/Downloads/Cube/src/components/Scramble.js",
-		"/Users/boris/Downloads/Cube/src/components/Controls.js"
+		"/Users/bsehovac/Desktop/Cube/src/components/helpers/TimeConvert.js"
 	],
 	"find":
 	{
@@ -812,6 +793,10 @@
 		"height": 122.0,
 		"where_history":
 		[
+			"/Users/boris/Documents/bsehovac.github.io/src/js",
+			"/Users/boris/Documents/bsehovac.github.io/src/js/components",
+			"/Users/boris/Documents/bsehovac.github.io/src/js",
+			"/Users/boris/Documents/bsehovac.github.io/src/js/components",
 			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
 			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components",
 			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
@@ -833,9 +818,29 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"function",
+			"roundAngle",
+			"world.",
+			"functio",
+			"scramble",
+			"timer.start",
+			"timer.continue",
+			"draggable",
+			"window.document",
+			"iconClass",
+			"each",
+			"functio",
+			"mouseMove",
+			"invertY",
+			"function",
+			"draggable.",
+			"this",
+			"cube.",
+			"cube",
+			"function",
 			"checkIsSolved",
 			"solved",
 			"complete",
@@ -949,6 +954,11 @@
 		"regex": false,
 		"replace_history":
 		[
+			"this.",
+			"document",
+			"className",
+			"this.",
+			"this",
 			"/assets/fonts/",
 			"plugins/",
 			"plugins",
@@ -968,69 +978,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "init.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4300,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4288,
-								4288
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3659.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/js/components/Animate.js",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 3648,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3171,
-								3152
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1836.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -1073,11 +1022,11 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "Rollup",
+	"pinned_build_system": "",
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 56.0
+		"height": 88.0
 	},
 	"save_all_on_build": true,
 	"select_file":

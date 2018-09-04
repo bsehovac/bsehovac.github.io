@@ -2,49 +2,44 @@ class World {
 
 	constructor( container ) {
 
-		const world = this;
+		this.container = container;
 
-		const scene = new THREE.Scene();
-		//scene.background = new THREE.Color( 0xffffff );
+		this.scene = new THREE.Scene();
 
-		const renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
-		renderer.setPixelRatio( window.devicePixelRatio );
-		container.appendChild( renderer.domElement );
+		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+		this.renderer.setPixelRatio( window.devicePixelRatio );
+		this.container.appendChild( this.renderer.domElement );
 
-		const camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
+		this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
 
-		world.onAnimate = () => {};
-		world.onResize = () => {};
-		world.scene = scene;
-		world.camera = camera;
-		world.container = container;
-		world.renderer = renderer;
+		this.onAnimate = () => {};
+		this.onResize = () => {};
 
-		world.stage = { width: 2, height: 3 };
-		world.fov = 10;
+		this.stage = { width: 2, height: 3 };
+		this.fov = 10;
 
-		world.createLights();
+		this.createLights();
 
-		function resize() {
+		const resize = e => {
 
-			world.width = container.offsetWidth;
-			world.height = container.offsetHeight;
+			this.width = container.offsetWidth;
+			this.height = container.offsetHeight;
 
-			renderer.setSize( world.width, world.height );
+			this.renderer.setSize( this.width, this.height );
 
-			world.updateCamera();
-			world.onResize();
+			this.updateCamera();
+			this.onResize();
 
-		}
-
-		resize();
+		};
 
 		window.addEventListener( 'resize', resize, false );
 
-		function animate() {
+		resize();
 
-			renderer.render( scene, camera );
-			world.onAnimate();
+		const animate = () => {
+
+			this.renderer.render( this.scene, this.camera );
+			this.onAnimate();
 
 			requestAnimationFrame( animate );
 
@@ -56,72 +51,60 @@ class World {
 
 	createLights() {
 
-		const world = this;
-		const scene = world.scene;
+		const lights = this.lights = [
 
-		const lights = [
 			new THREE.AmbientLight( 0xffffff, 1.65 ),
 			new THREE.DirectionalLight( 0xffffff, 0.2 ),
 			new THREE.DirectionalLight( 0xffffff, 0.4 ),
+
 		];
 
 		lights[1].position.set( -1, -1,  1 );
 		lights[2].position.set( -1,  1, -1 );
 
-		scene.add( lights[0] );
-		scene.add( lights[1] );
-		scene.add( lights[2] );
-
-		world.lights = lights;
+		this.scene.add( lights[0] );
+		this.scene.add( lights[1] );
+		this.scene.add( lights[2] );
 
 	}
 
 	updateCamera() {
 
-		const world = this;
-		const stage = world.stage;
-	  const camera = world.camera;
-	  const fov = world.fov;
+	  this.camera.fov = this.fov;
+	  this.camera.aspect = this.width / this.height;
 
-	  camera.fov = fov;
-	  camera.aspect = world.width / world.height;
+		const aspect = this.stage.width / this.stage.height;
+	  const fovRad = this.fov * THREE.Math.DEG2RAD;
 
-		const aspect = stage.width / stage.height;
-	  const fovRad = fov * THREE.Math.DEG2RAD;
-
-	  let distance = ( aspect < camera.aspect )
-			? ( stage.height / 2 ) / Math.tan( fovRad / 2 )
-			: ( stage.width / camera.aspect ) / ( 2 * Math.tan( fovRad / 2 ) );
+	  let distance = ( aspect < this.camera.aspect )
+			? ( this.stage.height / 2 ) / Math.tan( fovRad / 2 )
+			: ( this.stage.width / this.camera.aspect ) / ( 2 * Math.tan( fovRad / 2 ) );
 
 	  distance /= 2.1;
 
-		camera.position.set( distance, distance, distance );
-		camera.lookAt( new THREE.Vector3() );
-		camera.updateProjectionMatrix();
+		this.camera.position.set( distance, distance, distance );
+		this.camera.lookAt( new THREE.Vector3() );
+		this.camera.updateProjectionMatrix();
 
 	}
 
 	addCube( cube ) {
 
-		const world = this;
+		cube.world = this;
+		this.cube = cube;
 
-		world.cube = cube;
-		cube.world = world;
-
-		world.scene.add( cube.object );
-		world.scene.add( cube.shadow );
+		this.scene.add( cube.object );
+		this.scene.add( cube.shadow );
 
 	}
 
 	addControls( controls ) {
 
-		const world = this;
+		controls.world = this;
+		this.controls = controls;
 
-		world.controls = controls;
-		controls.world = world;
-
-		world.scene.add( controls.helper );
-		controls.draggable.init( world.container );
+		this.scene.add( controls.helper );
+		controls.draggable.init( this.container );
 
 	}
 

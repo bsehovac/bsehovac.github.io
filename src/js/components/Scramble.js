@@ -2,9 +2,6 @@ class Scramble {
 
 	constructor( cube, times ) {
 
-		const scramble = this;
-		const size = cube.size;
-
 		let count = 0;
 		const moves = ( typeof times === 'string' ) ? times.split( ' ' ) : [];
 
@@ -28,22 +25,20 @@ class Scramble {
 
 		}
 
-		scramble.callback = () => {};
-		scramble.moves = moves;
-		scramble.print = moves.join( ' ' );
-		scramble.convert();
+		this.callback = () => {};
+		this.moves = moves;
+		this.print = moves.join( ' ' );
+		this.convert();
 
-		return scramble;
+		return this;
 
 	}
 
 	convert() {
 
-		const scramble = this;
-		const moves = scramble.moves;
-		const converted = [];
+		this.converted = [];
 
-		moves.forEach( move => {
+		this.moves.forEach( move => {
 
 			const face = move.charAt( 0 );
 			const modifier = move.charAt( 1 );
@@ -58,13 +53,12 @@ class Scramble {
 
 			const convertedMove = { layer, row, axis, angle, name: move };
 
-			converted.push( convertedMove );
-			if ( modifier == "2" ) converted.push( convertedMove );
+			this.converted.push( convertedMove );
+			if ( modifier == "2" ) this.converted.push( convertedMove );
 
 		} );
 
-		scramble.converted = converted;
-		return converted;
+		return this.converted;
 
 	}
 

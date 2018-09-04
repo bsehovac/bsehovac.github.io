@@ -11,12 +11,13 @@
 			"working_dir": "${project_path}"
 		},
 		{
+			"cmd": "$file",
 			"file_patterns":
 			[
 				"*.scss"
 			],
 			"name": "Libsass",
-			"shell_cmd": "",
+			"target": "compile_sass",
 			"working_dir": "${project_path}"
 		}
 	],
@@ -26,7 +27,7 @@
 			"path": "."
 		},
 		{
-			"path": "/Library/WebServer/Documents/Localhost/cointed.new"
+			"path": "/Users/boris/Documents/2amigos-site"
 		}
 	],
 	"settings":

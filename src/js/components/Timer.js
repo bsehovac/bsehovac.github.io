@@ -10,24 +10,10 @@ class Timer {
 
 	}
 
-	start() {
+	start( continueGame ) {
 
-		this.startTime = Date.now();
+		this.startTime = ( continueGame ) ? Date.now() - this.deltaTime : Date.now();
 		this.deltaTime = 0;
-
-		this.world.onAnimate = () => {
-
-			this.currentTime = Date.now();
-			this.deltaTime = this.currentTime - this.startTime;
-			this.element.innerHTML = this.convert( this.deltaTime );
-
-		};
-
-	}
-
-	continue() {
-
-		this.startTime = Date.now() - this.deltaTime;
 
 		this.world.onAnimate = () => {
 
@@ -44,7 +30,7 @@ class Timer {
 		this.currentTime = Date.now();
 		this.deltaTime = this.currentTime - this.startTime;
 
-		world.onAnimate = function () {};
+		world.onAnimate = () => {};
 
 		return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 
