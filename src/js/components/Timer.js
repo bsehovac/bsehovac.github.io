@@ -12,7 +12,7 @@ class Timer {
 
 	start( continueGame ) {
 
-		this.startTime = ( continueGame ) ? Date.now() - this.deltaTime : Date.now();
+		this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
 		this.deltaTime = 0;
 
 		this.world.onAnimate = () => {

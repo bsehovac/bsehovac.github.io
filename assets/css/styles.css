@@ -30,7 +30,15 @@ html {
 
 body {
   color: #070d15;
-  background-image: linear-gradient(to bottom, #fdfbfb 60%, #e1e5eb 100%); }
+  background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%); }
+
+button {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border-radius: 0;
+  border-width: 0; }
 
 .game {
   position: absolute;
@@ -68,47 +76,74 @@ body {
     visibility: hidden; }
   .ui__title {
     position: absolute;
-    bottom: 78%;
+    bottom: 73%;
+    left: 0;
+    width: 100%;
+    font-size: 24vw;
+    font-weight: 700;
+    line-height: 0.8;
+    text-align: center;
+    height: 1.25em;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    perspective: 100vw;
+    opacity: 0; }
+    .ui__title span {
+      display: block; }
+      .ui__title span:first-child {
+        font-size: 0.75em; }
+      .ui__title span i {
+        font-style: normal; }
+    .ui__title i {
+      transform-origin: 50% 100%;
+      display: inline-block;
+      white-space: pre; }
+  .ui__timer {
+    transition: opacity 300ms ease;
+    position: absolute;
+    bottom: 82%;
     left: 0;
     width: 100%;
     font-size: 20vw;
     font-weight: 700;
-    line-height: 0.75;
+    line-height: 0.8;
     text-align: center;
+    height: 0.65em;
     letter-spacing: -0.025em;
-    opacity: 0;
     text-transform: uppercase;
-    perspective: 100vw; }
-    .ui__title span {
-      transform-origin: 50% 100%;
-      display: inline-block;
-      white-space: pre; }
-    .ui.in-menu .ui__title {
+    perspective: 100vw;
+    opacity: 0; }
+    .ui.in-game .ui__timer {
       opacity: 1; }
   .ui__button {
-    transition: opacity 500ms, visibility 500ms;
+    transition: transform 300ms ease, visibility 300ms ease, opacity 300ms ease;
     height: 15vw;
     position: absolute;
     left: 50%;
     width: 60vw;
-    border-radius: 7.5vw;
+    border-radius: 2vw;
     background: #fff;
-    top: 80%;
+    top: 82%;
     margin-left: -30vw;
     line-height: 15vw;
     text-align: center;
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 5vw;
+    font-size: 7vw;
     opacity: 0;
+    transform: translateY(10vw);
     box-shadow: 0 4vw 4vw rgba(0, 0, 0, 0.05);
     cursor: pointer;
     visibility: hidden;
-    box-sizing: content-box; }
+    box-sizing: content-box;
+    border-top: 0.75vw solid #ccc; }
     .ui.in-menu .ui__button {
       opacity: 1;
+      transform: none;
       visibility: visible;
       pointer-events: all; }
+      .ui.in-menu .ui__button:active {
+        transform: scale3d(0.95, 0.95, 0.95); }
   .ui__icon {
     position: absolute;
     font-size: 6vw;
@@ -135,7 +170,6 @@ body {
       left: 4vw;
       opacity: 0; }
   .ui__time {
-    transition: opacity 500ms;
     position: absolute;
     left: 0;
     bottom: 84%;
@@ -143,7 +177,5 @@ body {
     width: 100%;
     font-size: 16vw;
     opacity: 0; }
-    .ui.in-game .ui__time {
-      opacity: 1; }
   .ui__moves, .ui__undo {
     display: none; }

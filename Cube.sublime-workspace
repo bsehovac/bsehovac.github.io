@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"clas",
+				"classList"
+			],
+			[
 				"conver",
 				"convertAllIcons"
 			],
@@ -510,29 +514,34 @@
 			[
 				"alp",
 				"alphaFS"
-			],
-			[
-				"scroll",
-				"scrollAlpha"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "index.html",
+			"file": "src/js/components/Init.js",
 			"settings":
 			{
-				"buffer_size": 1440,
+				"buffer_size": 6388,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/js/components/Init.js",
+			"file": "src/js/components/Cube.js",
 			"settings":
 			{
-				"buffer_size": 6537,
+				"buffer_size": 25394,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/Timer.js",
+			"settings":
+			{
+				"buffer_size": 989,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -541,16 +550,16 @@
 			"file": "src/js/components/Animate.js",
 			"settings":
 			{
-				"buffer_size": 5124,
+				"buffer_size": 5394,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/js/components/Audio.js",
+			"file": "src/js/components/World.js",
 			"settings":
 			{
-				"buffer_size": 1387,
+				"buffer_size": 2382,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -559,25 +568,26 @@
 			"file": "src/scss/components/_ui.scss",
 			"settings":
 			{
-				"buffer_size": 2317,
+				"buffer_size": 2905,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/scss/components/_game.scss",
+			"file": "src/scss/mixins/_transition.scss",
 			"settings":
 			{
-				"buffer_size": 396,
+				"buffer_size": 265,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/Users/boris/Documents/2amigos-site/frontend/web/src/js/components/ajax-form.js",
+			"file": "src/scss/components/_document.scss",
 			"settings":
 			{
-				"buffer_size": 9275,
+				"buffer_size": 781,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		}
@@ -622,20 +632,16 @@
 	"command_palette":
 	{
 		"height": 127.0,
-		"last_filter": "install",
+		"last_filter": "remove",
 		"selected_items":
 		[
-			[
-				"install",
-				"Package Control: Install Package"
-			],
 			[
 				"remove",
 				"Package Control: Remove Package"
 			],
 			[
-				"filena",
-				"AutoFileName: Quick Settings"
+				"remo",
+				"Package Control: Remove Package"
 			],
 			[
 				"insta",
@@ -644,6 +650,14 @@
 			[
 				"packa",
 				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"filena",
+				"AutoFileName: Quick Settings"
 			],
 			[
 				"upgra",
@@ -666,10 +680,6 @@
 				"HTMLBeautify"
 			],
 			[
-				"remo",
-				"Package Control: Remove Package"
-			],
-			[
 				"pa",
 				"Package Control: Remove Package"
 			],
@@ -690,7 +700,7 @@
 				"Material Theme: Activate theme"
 			]
 		],
-		"width": 416.0
+		"width": 432.0
 	},
 	"console":
 	{
@@ -712,20 +722,29 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/boris/Documents/bsehovac.github.io",
-		"/Users/boris/Documents/bsehovac.github.io/src",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/components",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/mixins",
-		"/Users/boris/Documents/2amigos-site",
-		"/Users/boris/Documents/2amigos-site/frontend",
-		"/Users/boris/Documents/2amigos-site/frontend/web",
-		"/Users/boris/Documents/2amigos-site/frontend/web/src",
-		"/Users/boris/Documents/2amigos-site/frontend/web/src/js",
-		"/Users/boris/Documents/2amigos-site/frontend/web/src/js/components"
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins",
+		"/Library/WebServer/Documents/Localhost/cointed.new",
+		"/Library/WebServer/Documents/Localhost/cointed.new/src",
+		"/Library/WebServer/Documents/Localhost/cointed.new/src/scss",
+		"/Library/WebServer/Documents/Localhost/cointed.new/src/scss/framework",
+		"/Library/WebServer/Documents/Localhost/cointed.new/src/scss/framework/base"
 	],
 	"file_history":
 	[
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_button-reset.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Animate.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Init.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Audio.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_game.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_ui.scss",
+		"/Users/boris/Documents/2amigos-site/frontend/web/src/js/components/ajax-form.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/Rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/World.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Audio.js",
@@ -755,15 +774,12 @@
 		"/Users/boris/Library/Application Support/Sublime Text 3/Packages/Libsass Build/Libsass Build.sublime-settings",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Timer.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_ui.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/init.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Cube.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/CubePieces.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/assets/js/rubik.js",
 		"/Users/bsehovac/Documents/Windows 7/Windows 7/rubik/svgs/music.svg",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Rubik.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Animate.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Draggable.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_transition.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Icons.js",
@@ -848,12 +864,7 @@
 		"/Library/WebServer/Documents/Localhost/cube.local/src/components/Game.js",
 		"/Library/WebServer/Documents/Localhost/cube.local/src/components/CubePieces-TEST.js",
 		"/Users/bsehovac/Downloads/geometry.json",
-		"/Library/WebServer/Documents/Localhost/cube.local/src/components/Cube.js",
-		"/Library/WebServer/Documents/Localhost/cube.local/src/components/geometries/LowPoly.json",
-		"/Users/bsehovac/Desktop/Cube/index.html",
-		"/Users/bsehovac/Desktop/Cube/init.js",
-		"/Users/bsehovac/Desktop/Cube/src/components/Shatter.js",
-		"/Users/bsehovac/Desktop/Cube/src/components/Controls.js"
+		"/Library/WebServer/Documents/Localhost/cube.local/src/components/Cube.js"
 	],
 	"find":
 	{
@@ -892,6 +903,9 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"animate.audio",
+			"console",
+			"transition",
 			"fade",
 			"sound",
 			"-button",
@@ -1016,10 +1030,7 @@
 			"source",
 			"eachArray",
 			"for",
-			"scene",
-			"scrambleSpeed",
-			"rotateLa",
-			"console"
+			"scene"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1054,54 +1065,24 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1440,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								766,
-								780
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 268.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "src/js/components/Init.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6537,
+						"buffer_size": 6388,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6062,
-								6062
+								4466,
+								4479
 							]
 						],
 						"settings":
@@ -1111,37 +1092,65 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2880.0,
+						"translation.y": 1332.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/js/components/Cube.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 25394,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								24703,
+								24703
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3134.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "src/js/components/Animate.js",
+					"file": "src/js/components/Timer.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5124,
+						"buffer_size": 989,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								978,
-								978
+								234,
+								243
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 254.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
@@ -1149,19 +1158,19 @@
 				},
 				{
 					"buffer": 3,
-					"file": "src/js/components/Audio.js",
+					"file": "src/js/components/Animate.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1387,
+						"buffer_size": 5394,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								859,
-								859
+								4550,
+								4550
 							]
 						],
 						"settings":
@@ -1169,6 +1178,35 @@
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3605.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/js/components/World.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2382,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								415,
+								415
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1178,92 +1216,90 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "src/scss/components/_ui.scss",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2317,
+						"buffer_size": 2905,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								645,
-								645
+								1284,
+								1284
 							]
 						],
 						"settings":
 						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/City-Lights.tmTheme",
-							"syntax": "Packages/Sass/Syntaxes/SCSS.sublime-syntax",
+							"syntax": "Packages/Text/Plain text.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 522.0,
+						"translation.y": 1546.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "src/scss/components/_game.scss",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 396,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								115,
-								115
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/City-Lights.tmTheme",
-							"syntax": "Packages/Sass/Syntaxes/SCSS.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 6,
-					"file": "/Users/boris/Documents/2amigos-site/frontend/web/src/js/components/ajax-form.js",
+					"file": "src/scss/mixins/_transition.scss",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9275,
+						"buffer_size": 265,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								537,
-								537
+								183,
+								183
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"syntax": "Packages/Text/Plain text.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/scss/components/_document.scss",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 781,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								621,
+								621
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 310.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 6,
@@ -1315,7 +1351,7 @@
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 88.0
+		"height": 56.0
 	},
 	"save_all_on_build": true,
 	"select_file":

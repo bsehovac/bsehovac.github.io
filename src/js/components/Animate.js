@@ -1,50 +1,47 @@
 class Animate {
 
-  constructor( cube, title ) {
+  constructor( cube, title, time ) {
 
     this.cube = cube;
     this.title = title;
+    this.time = time;
     this.tweens = {};
 
-  }
+    this.title.querySelectorAll('span').forEach( span => {
 
-  titleIn( text, callback ) {
+      const spanText = span.innerHTML;
+      span.innerHTML = '';
 
-    const letters = [];
+      spanText.split( '' ).forEach( letter => {
 
-    this.title.innerHTML = '';
+        const i = document.createElement( 'i' );
+        i.innerHTML = letter;
+        i.style.opacity = 0;
+        span.appendChild( i );
 
-    text.split( '' ).forEach( letter => {
-
-      const span = document.createElement( 'span' );
-      span.innerHTML = letter;
-      span.style.opacity = 0;
-      this.title.appendChild( span );
-      letters.push( span );
+      } );
 
     } );
 
-    this.tweens.title = TweenMax.staggerFromTo( letters, 0.4,
-      { opacity: 0, rotationY: 90 },
-      { opacity: 1, rotationY: 0, ease: Sine.easeOut, onComplete: callback },
-    0.05 );
+    this.title.style.opacity = 1;
+
+  }
+
+  titleIn( callback ) {
+
+    this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.8,
+      { opacity: 0, rotationY: -90 },
+      { opacity: 1, rotationY: 0, ease: Sine.easeOut },
+    0.05, callback );
 
   }
 
   titleOut( callback ) {
 
-    const letters = [];
-
-    this.title.querySelectorAll( 'span' ).forEach( span => {
-
-      letters.push( span );
-
-    } );
-
-    this.tweens.title = TweenMax.staggerFromTo( letters, 0.4,
+    this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.4,
       { opacity: 1, rotationY: 0 },
-      { opacity: 0, rotationY: -90, ease: Sine.easeOut, onComplete: callback },
-    0.05 );
+      { opacity: 0, rotationY: 90, ease: Sine.easeIn },
+    0.05, callback );
 
   }
 
@@ -63,11 +60,11 @@ class Animate {
 
     TweenMax.to( shadow.material, 1.5, { opacity: 0.5, ease: Power1.easeOut, delay: 1 } ); 
     TweenMax.to( cube.rotation, 2.5, { x: 0, y: 0, ease: Power1.easeOut } ); 
-    TweenMax.to( cube.position, 2.5, { x: 0, y: -0.1, z: 0, ease: Power1.easeOut, onComplete: () => { 
+    TweenMax.to( cube.position, 2.5, { x: 0, y: - 0.1, z: 0, ease: Power1.easeOut, onComplete: () => { 
      
       tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
-        { y: -0.1 }, 
-        { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+        { y: - 0.1 }, 
+        { y: + 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
       ); 
      
       tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
@@ -78,39 +75,6 @@ class Animate {
       callback();
 
     } } ); 
-
-  }
-
-  gameStop() {
-
-    const cube = this.cube.object;
-    const shadow = this.cube.shadow;
-    const tweens = this.tweens;
-    const camera = this.cube.world.camera;
-    const zoomDuration = 0.5;
-
-    tweens.cameraZoom = TweenMax.to( camera, zoomDuration, { zoom: 0.8, ease: Sine.easeInOut, onUpdate: () => {
-
-       camera.updateProjectionMatrix();
-
-    }, onComplete: () => {
-
-      tweens.cube = TweenMax.to( cube.position, 0.75, { y: -0.1, ease: Sine.easeOut } );
-      tweens.shadow = TweenMax.to( shadow.material, 0.75, { opacity: 0.5, ease: Sine.easeOut, onComplete: () => {
-
-        tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
-          { y: -0.1 }, 
-          { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-        );
-
-        tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
-          { opacity: 0.5 }, 
-          { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-        ); 
-
-      } } );
-
-    } } );
 
   }
 
@@ -154,7 +118,7 @@ class Animate {
 
         matrix.makeRotationY( value.delta );
         camera.position.applyMatrix4( matrix );
-        camera.lookAt( this.cube.world.scene.position );
+        camera.lookAt( this.cube.world.cameraOffset );
 
       } } );
 
@@ -170,27 +134,70 @@ class Animate {
 
   }
 
-  audioIn( sound ) {
+  gameStop() {
 
-    sound.play();
+    const cube = this.cube.object;
+    const shadow = this.cube.shadow;
+    const tweens = this.tweens;
+    const camera = this.cube.world.camera;
+    const zoomDuration = 0.5;
 
-    const currentVolume = { volume: 0 }
+    tweens.cameraZoom = TweenMax.to( camera, zoomDuration, { zoom: 0.8, ease: Sine.easeInOut, onUpdate: () => {
 
-    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0.5, ease: Sine.easeOut, onUpdate: () => {
+       camera.updateProjectionMatrix();
 
-      sound.setVolume( volumeTween.target.volume );
+    }, onComplete: () => {
+
+      tweens.cube = TweenMax.to( cube.position, 0.75, { y: -0.1, ease: Sine.easeOut } );
+      tweens.shadow = TweenMax.to( shadow.material, 0.75, { opacity: 0.5, ease: Sine.easeOut, onComplete: () => {
+
+        tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
+          { y: -0.1 }, 
+          { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+        );
+
+        tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
+          { opacity: 0.5 }, 
+          { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+        ); 
+
+      } } );
 
     } } );
 
   }
 
-  audioOut( sound ) {
+  audioIn( audio ) {
 
-    const currentVolume = { volume: sound.getVolume() }
+    if ( !audio.musicOn ) return;
+
+    const sound = audio.music;
+
+    const currentVolume = { volume: 0 };
+
+    sound.play();
+
+    if ( this.tweens.volumeTween ) this.tweens.volumeTween.kill();
+
+    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0.5, ease: Sine.easeOut, onUpdate: () => {
+
+      sound.setVolume( this.tweens.volumeTween.target.volume );
+
+    } } );
+
+  }
+
+  audioOut( audio ) {
+
+    const sound = audio.music;
+
+    const currentVolume = { volume: sound.getVolume() };
+
+    if ( this.tweens.volumeTween ) this.tweens.volumeTween.kill();
 
     this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0, ease: Sine.easeOut, onUpdate: () => {
 
-      sound.setVolume( volumeTween.target.volume );
+      sound.setVolume( this.tweens.volumeTween.target.volume );
 
     }, onComplete: () => {
 

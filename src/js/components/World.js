@@ -11,6 +11,7 @@ class World {
 		this.container.appendChild( this.renderer.domElement );
 
 		this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
+		this.cameraOffset = new THREE.Vector3( 0, 0.15, 0 );
 
 		this.onAnimate = () => {};
 		this.onResize = () => {};
@@ -82,8 +83,8 @@ class World {
 
 	  distance /= 2.1;
 
-		this.camera.position.set( distance, distance, distance );
-		this.camera.lookAt( new THREE.Vector3() );
+		this.camera.position.set( distance, distance, distance);
+		this.camera.lookAt( this.cameraOffset );
 		this.camera.updateProjectionMatrix();
 
 	}

@@ -36,7 +36,7 @@ function Init() {
   const start = document.querySelector( '.ui__button--start' );
   const homeButton = document.querySelector( '.ui__icon--home' );
   const audioButton = document.querySelector( '.ui__icon--audio' );
-  const time = document.querySelector( '.ui__time' );
+  const time = document.querySelector( '.ui__timer' );
   const moves = document.querySelector( '.ui__moves' );
   const undo = document.querySelector( '.ui__undo' );
 
@@ -46,7 +46,7 @@ function Init() {
   const cube = new RUBIK.Cube( 3 );
   const controls = new RUBIK.Controls( cube );
   const timer = new RUBIK.Timer( world, time );
-  const animate = new RUBIK.Animate( cube, title );
+  const animate = new RUBIK.Animate( cube, title, time );
   const audio = new RUBIK.Audio( audioButton, animate );
 
   world.addCube( cube );
@@ -69,8 +69,9 @@ function Init() {
 
   animate.dropAndFloat( () => {
 
+    animate.titleIn( () => {} );
+
     ui.classList.add('in-menu');
-    animate.titleIn( 'THE CUBE', () => {} );
 
   } );;
 
@@ -78,50 +79,42 @@ function Init() {
 
   start.onclick = function ( event ) {
 
-    animate.titleOut( () => {} );
+    if ( audio.musicOn ) animate.audioIn( audio );
 
     gameStarted = true;
 
-    if ( audio.musicOn ) animate.audioIn( audio.music );
+    const scramble = ( gameSaved ) ? null : new RUBIK.Scramble( cube, scrambleLength );
 
-    if ( gameSaved ) {
+    ui.classList.remove('in-menu');
 
-      animate.gameStart( () => {
+    animate.titleOut( () => {} );
 
-        title.classList.add( 'is-timer' );
-        animate.titleIn( timer.convert( timer.deltaTime ), () => {
+    animate.gameStart( () => {
 
-          timer.start( true );
-
-        } );
-
-        controls.disabled = false;
-
-      }, 0 );
-
-    } else {
-
-      const scramble = new RUBIK.Scramble( cube, scrambleLength );
-
-      animate.gameStart( () => {
+      if ( !gameSaved ) {
 
         controls.scrambleCube( scramble, function () {
 
-          title.classList.add( 'is-timer' );
-          animate.titleIn( timer.convert( timer.deltaTime ), () => {
+          ui.classList.add('in-game');
 
-            timer.start( true );
-            
-          } );
+          timer.start( false );
 
           cube.saveState();
+
           controls.disabled = false;
 
         } );
 
-      }, scramble.converted.length * controls.options.scrambleSpeed );
+      } else {
 
-    }
+        ui.classList.add('in-game');
+        timer.start( true );
+
+      }
+
+      controls.disabled = false;
+
+    }, ( gameSaved ) ? 0 : scramble.converted.length * controls.options.scrambleSpeed );
 
   };
 
@@ -133,7 +126,7 @@ function Init() {
 
   controls.onMove = function ( data ) {
 
-    moves.innerHTML = data.length;
+    // moves.innerHTML = data.length;
     if ( audio.musicOn ) audio.click.play();
 
   };
@@ -152,14 +145,9 @@ function Init() {
 
     timer.stop();
     animate.gameStop();
-    animate.audioIn( audio.music );
+    animate.audioIn( audio );
 
-    animate.titleOut( () => {
-
-      title.classList.remove( 'is-timer' );
-      animate.titleIn( timer.convert( timer.deltaTime ), () => {} );
-
-    } );
+    animate.titleIn( () => {} );
 
   }
 
@@ -177,7 +165,7 @@ function Init() {
 
     timer.stop();
     animate.gameStop();
-    animate.audioIn( audio.music );
+    animate.audioIn( audio );
 
     animate.titleOut( () => {
 
@@ -187,6 +175,13 @@ function Init() {
     } );
 
   };
+
+  window.world = world;
+  window.cube = cube;
+  window.controls = controls;
+  window.timer = timer;
+  window.animate = animate;
+  window.audio = audio;
 
 };
 

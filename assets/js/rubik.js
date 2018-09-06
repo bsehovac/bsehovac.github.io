@@ -17,6 +17,7 @@
 			this.container.appendChild( this.renderer.domElement );
 
 			this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
+			this.cameraOffset = new THREE.Vector3( 0, 0.15, 0 );
 
 			this.onAnimate = () => {};
 			this.onResize = () => {};
@@ -88,8 +89,8 @@
 
 		  distance /= 2.1;
 
-			this.camera.position.set( distance, distance, distance );
-			this.camera.lookAt( new THREE.Vector3() );
+			this.camera.position.set( distance, distance, distance);
+			this.camera.lookAt( this.cameraOffset );
 			this.camera.updateProjectionMatrix();
 
 		}
@@ -1696,7 +1697,7 @@
 
 		start( continueGame ) {
 
-			this.startTime = ( continueGame ) ? Date.now() - this.deltaTime : Date.now();
+			this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
 			this.deltaTime = 0;
 
 			this.world.onAnimate = () => {
@@ -1734,51 +1735,48 @@
 
 	class Animate {
 
-	  constructor( cube, title ) {
+	  constructor( cube, title, time ) {
 
 	    this.cube = cube;
 	    this.title = title;
+	    this.time = time;
 	    this.tweens = {};
 
-	  }
+	    this.title.querySelectorAll('span').forEach( span => {
 
-	  titleIn( text, callback ) {
+	      const spanText = span.innerHTML;
+	      span.innerHTML = '';
 
-	    const letters = [];
+	      spanText.split( '' ).forEach( letter => {
 
-	    this.title.innerHTML = '';
+	        const i = document.createElement( 'i' );
+	        i.innerHTML = letter;
+	        i.style.opacity = 0;
+	        span.appendChild( i );
 
-	    text.split( '' ).forEach( letter => {
-
-	      const span = document.createElement( 'span' );
-	      span.innerHTML = letter;
-	      span.style.opacity = 0;
-	      this.title.appendChild( span );
-	      letters.push( span );
+	      } );
 
 	    } );
 
-	    this.tweens.title = TweenMax.staggerFromTo( letters, 0.4,
-	      { opacity: 0, rotationY: 90 },
-	      { opacity: 1, rotationY: 0, ease: Sine.easeOut, onComplete: callback },
-	    0.05 );
+	    this.title.style.opacity = 1;
+
+	  }
+
+	  titleIn( callback ) {
+
+	    this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.8,
+	      { opacity: 0, rotationY: -90 },
+	      { opacity: 1, rotationY: 0, ease: Sine.easeOut },
+	    0.05, callback );
 
 	  }
 
 	  titleOut( callback ) {
 
-	    const letters = [];
-
-	    this.title.querySelectorAll( 'span' ).forEach( span => {
-
-	      letters.push( span );
-
-	    } );
-
-	    this.tweens.title = TweenMax.staggerFromTo( letters, 0.4,
+	    this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.4,
 	      { opacity: 1, rotationY: 0 },
-	      { opacity: 0, rotationY: -90, ease: Sine.easeOut, onComplete: callback },
-	    0.05 );
+	      { opacity: 0, rotationY: 90, ease: Sine.easeIn },
+	    0.05, callback );
 
 	  }
 
@@ -1797,11 +1795,11 @@
 
 	    TweenMax.to( shadow.material, 1.5, { opacity: 0.5, ease: Power1.easeOut, delay: 1 } ); 
 	    TweenMax.to( cube.rotation, 2.5, { x: 0, y: 0, ease: Power1.easeOut } ); 
-	    TweenMax.to( cube.position, 2.5, { x: 0, y: -0.1, z: 0, ease: Power1.easeOut, onComplete: () => { 
+	    TweenMax.to( cube.position, 2.5, { x: 0, y: - 0.1, z: 0, ease: Power1.easeOut, onComplete: () => { 
 	     
 	      tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
-	        { y: -0.1 }, 
-	        { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+	        { y: - 0.1 }, 
+	        { y: + 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
 	      ); 
 	     
 	      tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
@@ -1812,39 +1810,6 @@
 	      callback();
 
 	    } } ); 
-
-	  }
-
-	  gameStop() {
-
-	    const cube = this.cube.object;
-	    const shadow = this.cube.shadow;
-	    const tweens = this.tweens;
-	    const camera = this.cube.world.camera;
-	    const zoomDuration = 0.5;
-
-	    tweens.cameraZoom = TweenMax.to( camera, zoomDuration, { zoom: 0.8, ease: Sine.easeInOut, onUpdate: () => {
-
-	       camera.updateProjectionMatrix();
-
-	    }, onComplete: () => {
-
-	      tweens.cube = TweenMax.to( cube.position, 0.75, { y: -0.1, ease: Sine.easeOut } );
-	      tweens.shadow = TweenMax.to( shadow.material, 0.75, { opacity: 0.5, ease: Sine.easeOut, onComplete: () => {
-
-	        tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
-	          { y: -0.1 }, 
-	          { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-	        );
-
-	        tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
-	          { opacity: 0.5 }, 
-	          { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-	        ); 
-
-	      } } );
-
-	    } } );
 
 	  }
 
@@ -1888,7 +1853,7 @@
 
 	        matrix.makeRotationY( value.delta );
 	        camera.position.applyMatrix4( matrix );
-	        camera.lookAt( this.cube.world.scene.position );
+	        camera.lookAt( this.cube.world.cameraOffset );
 
 	      } } );
 
@@ -1904,27 +1869,70 @@
 
 	  }
 
-	  audioIn( sound ) {
+	  gameStop() {
 
-	    sound.play();
+	    const cube = this.cube.object;
+	    const shadow = this.cube.shadow;
+	    const tweens = this.tweens;
+	    const camera = this.cube.world.camera;
+	    const zoomDuration = 0.5;
 
-	    const currentVolume = { volume: 0 };
+	    tweens.cameraZoom = TweenMax.to( camera, zoomDuration, { zoom: 0.8, ease: Sine.easeInOut, onUpdate: () => {
 
-	    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0.5, ease: Sine.easeOut, onUpdate: () => {
+	       camera.updateProjectionMatrix();
 
-	      sound.setVolume( volumeTween.target.volume );
+	    }, onComplete: () => {
+
+	      tweens.cube = TweenMax.to( cube.position, 0.75, { y: -0.1, ease: Sine.easeOut } );
+	      tweens.shadow = TweenMax.to( shadow.material, 0.75, { opacity: 0.5, ease: Sine.easeOut, onComplete: () => {
+
+	        tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
+	          { y: -0.1 }, 
+	          { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+	        );
+
+	        tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
+	          { opacity: 0.5 }, 
+	          { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+	        ); 
+
+	      } } );
 
 	    } } );
 
 	  }
 
-	  audioOut( sound ) {
+	  audioIn( audio ) {
+
+	    if ( !audio.musicOn ) return;
+
+	    const sound = audio.music;
+
+	    const currentVolume = { volume: 0 };
+
+	    sound.play();
+
+	    if ( this.tweens.volumeTween ) this.tweens.volumeTween.kill();
+
+	    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0.5, ease: Sine.easeOut, onUpdate: () => {
+
+	      sound.setVolume( this.tweens.volumeTween.target.volume );
+
+	    } } );
+
+	  }
+
+	  audioOut( audio ) {
+
+	    const sound = audio.music;
 
 	    const currentVolume = { volume: sound.getVolume() };
 
+	    if ( this.tweens.volumeTween ) this.tweens.volumeTween.kill();
+
 	    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0, ease: Sine.easeOut, onUpdate: () => {
 
-	      sound.setVolume( volumeTween.target.volume );
+	      sound.setVolume( this.tweens.volumeTween.target.volume );
 
 	    }, onComplete: () => {
 
@@ -2050,7 +2058,7 @@
 	  const start = document.querySelector( '.ui__button--start' );
 	  const homeButton = document.querySelector( '.ui__icon--home' );
 	  const audioButton = document.querySelector( '.ui__icon--audio' );
-	  const time = document.querySelector( '.ui__time' );
+	  const time = document.querySelector( '.ui__timer' );
 	  const moves = document.querySelector( '.ui__moves' );
 	  const undo = document.querySelector( '.ui__undo' );
 
@@ -2060,7 +2068,7 @@
 	  const cube = new RUBIK.Cube( 3 );
 	  const controls = new RUBIK.Controls( cube );
 	  const timer = new RUBIK.Timer( world, time );
-	  const animate = new RUBIK.Animate( cube, title );
+	  const animate = new RUBIK.Animate( cube, title, time );
 	  const audio = new RUBIK.Audio( audioButton, animate );
 
 	  world.addCube( cube );
@@ -2082,56 +2090,49 @@
 
 	  animate.dropAndFloat( () => {
 
+	    animate.titleIn( () => {} );
+
 	    ui.classList.add('in-menu');
-	    animate.titleIn( 'THE CUBE', () => {} );
 
 	  } );
 	  // BUTTON LISTENERS
 
 	  start.onclick = function ( event ) {
 
+	    if ( audio.musicOn ) animate.audioIn( audio );
+
+	    const scramble = ( gameSaved ) ? null : new RUBIK.Scramble( cube, scrambleLength );
+
+	    ui.classList.remove('in-menu');
+
 	    animate.titleOut( () => {} );
 
-	    if ( audio.musicOn ) animate.audioIn( audio.music );
+	    animate.gameStart( () => {
 
-	    if ( gameSaved ) {
-
-	      animate.gameStart( () => {
-
-	        title.classList.add( 'is-timer' );
-	        animate.titleIn( timer.convert( timer.deltaTime ), () => {
-
-	          timer.start( true );
-
-	        } );
-
-	        controls.disabled = false;
-
-	      }, 0 );
-
-	    } else {
-
-	      const scramble = new RUBIK.Scramble( cube, scrambleLength );
-
-	      animate.gameStart( () => {
+	      if ( !gameSaved ) {
 
 	        controls.scrambleCube( scramble, function () {
 
-	          title.classList.add( 'is-timer' );
-	          animate.titleIn( timer.convert( timer.deltaTime ), () => {
+	          ui.classList.add('in-game');
 
-	            timer.start( true );
-	            
-	          } );
+	          timer.start( false );
 
 	          cube.saveState();
+
 	          controls.disabled = false;
 
 	        } );
 
-	      }, scramble.converted.length * controls.options.scrambleSpeed );
+	      } else {
 
-	    }
+	        ui.classList.add('in-game');
+	        timer.start( true );
+
+	      }
+
+	      controls.disabled = false;
+
+	    }, ( gameSaved ) ? 0 : scramble.converted.length * controls.options.scrambleSpeed );
 
 	  };
 
@@ -2143,7 +2144,7 @@
 
 	  controls.onMove = function ( data ) {
 
-	    moves.innerHTML = data.length;
+	    // moves.innerHTML = data.length;
 	    if ( audio.musicOn ) audio.click.play();
 
 	  };
@@ -2161,14 +2162,9 @@
 
 	    timer.stop();
 	    animate.gameStop();
-	    animate.audioIn( audio.music );
+	    animate.audioIn( audio );
 
-	    animate.titleOut( () => {
-
-	      title.classList.remove( 'is-timer' );
-	      animate.titleIn( timer.convert( timer.deltaTime ), () => {} );
-
-	    } );
+	    animate.titleIn( () => {} );
 
 	  };
 
@@ -2185,7 +2181,7 @@
 
 	    timer.stop();
 	    animate.gameStop();
-	    animate.audioIn( audio.music );
+	    animate.audioIn( audio );
 
 	    animate.titleOut( () => {
 
@@ -2195,6 +2191,13 @@
 	    } );
 
 	  };
+
+	  window.world = world;
+	  window.cube = cube;
+	  window.controls = controls;
+	  window.timer = timer;
+	  window.animate = animate;
+	  window.audio = audio;
 
 	}
 

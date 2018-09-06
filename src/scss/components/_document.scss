@@ -27,5 +27,14 @@ html {
 
 body {
   color: #070d15;
-  background-image: linear-gradient(to bottom, #fdfbfb 60%, #e1e5eb 100%);
+  background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%);
+}
+
+button {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border-radius: 0;
+  border-width: 0;
 }
