@@ -13,8 +13,6 @@ class Audio {
     this.musicOn = localStorage.getItem( 'music' );
     this.musicOn = ( this.musicOn == null ) ? false : ( ( this.musicOn == 'true' ) ? true : false );
 
-    this.button.classList[ this.musicOn ? 'add' : 'remove' ]('is-active');
-
     const audioLoader = new THREE.AudioLoader();
 
     audioLoader.load( 'assets/sounds/music.mp3', buffer => {
@@ -25,7 +23,7 @@ class Audio {
 
       if ( this.musicOn ) {
 
-        this.animate.audioIn( this.music );
+        this.animate.audioIn( this );
 
       }
 
@@ -43,13 +41,13 @@ class Audio {
 
       this.musicOn = !this.musicOn;
 
-      if ( this.musicOn ) {
+      if ( this.musicOn && !this.button.gameStarted ) {
 
-        this.animate.audioIn( this.music );
+        this.animate.audioIn( this );
 
       } else {
 
-        this.animate.audioOut( this.music );
+        this.animate.audioOut( this );
 
       }
 

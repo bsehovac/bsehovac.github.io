@@ -62,6 +62,7 @@ function Init() {
 
   let gameSaved = cube.loadState();
   let gameStarted = false;
+  audioButton.gameStarted = false;
 
   start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
 
@@ -79,9 +80,10 @@ function Init() {
 
   start.onclick = function ( event ) {
 
-    if ( audio.musicOn ) animate.audioIn( audio );
+    if ( audio.musicOn ) animate.audioOut( audio );
 
     gameStarted = true;
+    audioButton.gameStarted = true;
 
     const scramble = ( gameSaved ) ? null : new RUBIK.Scramble( cube, scrambleLength );
 
@@ -89,7 +91,7 @@ function Init() {
 
     animate.titleOut( () => {} );
 
-    animate.gameStart( () => {
+    animate.game( () => {
 
       if ( !gameSaved ) {
 
@@ -114,7 +116,7 @@ function Init() {
 
       controls.disabled = false;
 
-    }, ( gameSaved ) ? 0 : scramble.converted.length * controls.options.scrambleSpeed );
+    }, ( gameSaved ) ? 0 : scramble.converted.length * controls.options.scrambleSpeed, true );
 
   };
 
@@ -137,6 +139,7 @@ function Init() {
 
     gameSaved = true;
     gameStarted = false;
+    audioButton.gameStarted = false;
 
     start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
 
@@ -144,7 +147,7 @@ function Init() {
     ui.classList.add('in-menu');
 
     timer.stop();
-    animate.gameStop();
+    animate.game( () => {}, 0, false );
     animate.audioIn( audio );
 
     animate.titleIn( () => {} );
@@ -157,6 +160,7 @@ function Init() {
     
     gameSaved = false;
     gameStarted = false;
+    audioButton.gameStarted = false;
 
     start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
 
@@ -164,7 +168,7 @@ function Init() {
     ui.classList.add('in-menu');
 
     timer.stop();
-    animate.gameStop();
+    animate.game( () => {}, 0, false );
     animate.audioIn( audio );
 
     animate.titleOut( () => {

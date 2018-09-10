@@ -15,6 +15,9 @@ class Timer {
 		this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
 		this.deltaTime = 0;
 
+		this.seconds = 0;
+		this.minutes = 0;
+
 		this.world.onAnimate = () => {
 
 			this.currentTime = Date.now();
@@ -39,10 +42,14 @@ class Timer {
 	convert( time ) {
 
 		// const millis = parseInt( ( time % 1000 ) / 100 );
-		const seconds = parseInt( ( time / 1000 ) % 60 );
-		const minutes = parseInt( ( time / ( 1000 * 60 ) ) /*% 60*/ );
+		const oldSeconds = this.seconds;
 
-		return minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds; // + '.' + millis;
+		this.seconds = parseInt( ( time / 1000 ) % 60 );
+		this.minutes = parseInt( ( time / ( 1000 * 60 ) ) /*% 60*/ );
+
+		if ( oldSeconds !== this.seconds ) localStorage.setItem( 'gameTime', JSON.stringify( time ) );
+
+		return this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds; // + '.' + millis;
 
 	}
 

@@ -58,16 +58,29 @@
 
 		createLights() {
 
+			// const lights = this.lights = [
+
+			// 	new THREE.AmbientLight( 0xffffff, 1.65 ),
+			// 	new THREE.DirectionalLight( 0xffffff, 0.2 ),
+			// 	new THREE.DirectionalLight( 0xffffff, 0.4 ),
+
+			// ];
+
+			// lights[1].position.set( -1, -1,  1 );
+			// lights[2].position.set( -1,  1, -1 );
+
+			// this.scene.add( lights[0] );
+			// this.scene.add( lights[1] );
+			// this.scene.add( lights[2] );
+
 			const lights = this.lights = [
-
-				new THREE.AmbientLight( 0xffffff, 1.65 ),
-				new THREE.DirectionalLight( 0xffffff, 0.2 ),
-				new THREE.DirectionalLight( 0xffffff, 0.4 ),
-
+				new THREE.AmbientLight( 0xffffff, 1.25 ),
+				new THREE.DirectionalLight( 0xffffff, 0.65 ),
+				new THREE.DirectionalLight( 0xffffff, 0.65 ),
 			];
 
-			lights[1].position.set( -1, -1,  1 );
-			lights[2].position.set( -1,  1, -1 );
+			lights[1].position.set( 0.3, 1,  0.6 );
+			lights[2].position.set( -0.3, -1,  -0.6 );
 
 			this.scene.add( lights[0] );
 			this.scene.add( lights[1] );
@@ -141,8 +154,6 @@
 	    this.musicOn = localStorage.getItem( 'music' );
 	    this.musicOn = ( this.musicOn == null ) ? false : ( ( this.musicOn == 'true' ) ? true : false );
 
-	    this.button.classList[ this.musicOn ? 'add' : 'remove' ]('is-active');
-
 	    const audioLoader = new THREE.AudioLoader();
 
 	    audioLoader.load( 'assets/sounds/music.mp3', buffer => {
@@ -153,7 +164,7 @@
 
 	      if ( this.musicOn ) {
 
-	        this.animate.audioIn( this.music );
+	        this.animate.audioIn( this );
 
 	      }
 
@@ -171,13 +182,13 @@
 
 	      this.musicOn = !this.musicOn;
 
-	      if ( this.musicOn ) {
+	      if ( this.musicOn && !this.button.gameStarted ) {
 
-	        this.animate.audioIn( this.music );
+	        this.animate.audioIn( this );
 
 	      } else {
 
-	        this.animate.audioOut( this.music );
+	        this.animate.audioOut( this );
 
 	      }
 
@@ -913,7 +924,8 @@
 			if ( !gameInProgress ) return false;
 
 			const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
-			const gameData = JSON.parse( localStorage.getItem( 'gameData' ) );
+			const gameMoves = JSON.parse( localStorage.getItem( 'gameMoves' ) );
+			const gameTime = JSON.parse( localStorage.getItem( 'gameTime' ) );
 
 			this.pieces.forEach( piece => {
 
@@ -928,7 +940,7 @@
 			} );
 
 			this.controls.rearrangePieces();
-			this.controls.moves = gameData.moves;
+			this.controls.moves = gameMoves;
 
 			this.controls.moves.forEach( move => {
 
@@ -937,7 +949,7 @@
 
 			} );
 
-			this.world.timer.deltaTime = gameData.time;
+			this.world.timer.deltaTime = gameTime;
 
 			return gameInProgress; 
 
@@ -953,11 +965,6 @@
 				rotations: [],
 			};
 
-			const gameData = {
-				moves: controls.moves,
-				time: timer.deltaTime,
-			};
-
 			this.pieces.forEach( piece => {
 
 				cubeData.names.push( piece.name );
@@ -968,7 +975,8 @@
 
 			localStorage.setItem( 'gameInProgress', 'yes' );
 			localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
-			localStorage.setItem( 'gameData', JSON.stringify( gameData ) );
+			localStorage.setItem( 'gameMoves', JSON.stringify( controls.moves ) );
+			localStorage.setItem( 'gameTime', JSON.stringify( timer.deltaTime ) );
 
 		}
 
@@ -1248,8 +1256,7 @@
 			let move = null;
 
 			if ( new THREE.Vector3().equals( angle ) ) return;
-
-			window.dbg = this.moves;
+			if ( layer.toString() == this.cube.layers.a.toString() ) return;
 
 			if (
 				this.moves.length > 0 &&
@@ -1497,13 +1504,9 @@
 				scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
 				this.scramble = scramble;
 
-			} else {
-
-				scramble = this.scramble;
-
 			}
 
-			const converted = scramble.converted;
+			const converted = this.scramble.converted;
 			const move = converted[ 0 ];
 			const layer = this.cube.layers[ move.layer ][ move.row ];
 			const rotation = new THREE.Vector3();
@@ -1518,10 +1521,11 @@
 				if ( converted.length > 0 ) {
 
 					this.scrambleCube();
+					this.onMove();
 
 				} else {
 
-					scramble.callback();
+					this.scramble.callback();
 					this.scramble = null;
 
 				}
@@ -1645,6 +1649,9 @@
 			this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
 			this.deltaTime = 0;
 
+			this.seconds = 0;
+			this.minutes = 0;
+
 			this.world.onAnimate = () => {
 
 				this.currentTime = Date.now();
@@ -1669,10 +1676,14 @@
 		convert( time ) {
 
 			// const millis = parseInt( ( time % 1000 ) / 100 );
-			const seconds = parseInt( ( time / 1000 ) % 60 );
-			const minutes = parseInt( ( time / ( 1000 * 60 ) ) /*% 60*/ );
+			const oldSeconds = this.seconds;
 
-			return minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds; // + '.' + millis;
+			this.seconds = parseInt( ( time / 1000 ) % 60 );
+			this.minutes = parseInt( ( time / ( 1000 * 60 ) ) /*% 60*/ );
+
+			if ( oldSeconds !== this.seconds ) localStorage.setItem( 'gameTime', JSON.stringify( time ) );
+
+			return this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds; // + '.' + millis;
 
 		}
 
@@ -1758,7 +1769,7 @@
 
 	  }
 
-	  gameStart( callback, time ) {
+	  game( callback, time, start ) {
 
 	    const cube = this.cube.object;
 	    const shadow = this.cube.shadow;
@@ -1769,71 +1780,14 @@
 	    tweens.cube.kill();
 	    tweens.shadow.kill();
 
-	    tweens.cube = TweenMax.to( cube.position, zoomDuration, { y: 0, ease: Sine.easeInOut } );
-	    tweens.shadow = TweenMax.to( shadow.material, zoomDuration, { opacity: 0.4, ease: Sine.easeInOut, onComplete: () => {
+	    if ( !start ) {
 
-	      callback();
-
-	    } } );
-
-	    if ( time > 0 ) {
-
-	      const div = document.createElement( 'div' );
-	      const value = { old: 0, current: 0, delta: 0 };
-	      const matrix = new THREE.Matrix4();
-	      const duration = time + zoomDuration;
-	      const rotations = Math.min( Math.round( duration / 2 ), 1 ) * 2;
-
-	      tweens.cameraZoom = TweenMax.to( camera, duration, { zoom: 1, ease: Sine.easeInOut, onUpdate: () => {
-
-	        camera.updateProjectionMatrix();
-
-	      } } );
-
-	      tweens.cameraRotation = TweenMax.to( div, duration, { x: Math.PI * rotations, ease: Sine.easeInOut, onUpdate: () => {
-
-	        value.current = this.tweens.cameraRotation.target._gsTransform.x;
-	        value.delta = value.current - value.old;
-	        value.old = value.current * 1;
-
-	        matrix.makeRotationY( value.delta );
-	        camera.position.applyMatrix4( matrix );
-	        camera.lookAt( this.cube.world.cameraOffset );
-
-	      } } );
-
-	    } else {
-
-	      tweens.cameraZoom = TweenMax.to( camera, zoomDuration, { zoom: 1, ease: Sine.easeInOut, onUpdate: () => {
-
-	         camera.updateProjectionMatrix();
-
-	      } } );
-
-	    }
-
-	  }
-
-	  gameStop() {
-
-	    const cube = this.cube.object;
-	    const shadow = this.cube.shadow;
-	    const tweens = this.tweens;
-	    const camera = this.cube.world.camera;
-	    const zoomDuration = 0.5;
-
-	    tweens.cameraZoom = TweenMax.to( camera, zoomDuration, { zoom: 0.8, ease: Sine.easeInOut, onUpdate: () => {
-
-	       camera.updateProjectionMatrix();
-
-	    }, onComplete: () => {
-
-	      tweens.cube = TweenMax.to( cube.position, 0.75, { y: -0.1, ease: Sine.easeOut } );
+	      tweens.cube = TweenMax.to( cube.position, 0.75, { y: 0.1, ease: Sine.easeOut } );
 	      tweens.shadow = TweenMax.to( shadow.material, 0.75, { opacity: 0.5, ease: Sine.easeOut, onComplete: () => {
 
 	        tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
-	          { y: -0.1 }, 
-	          { y: 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
+	          { y: 0.1 }, 
+	          { y: -0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
 	        );
 
 	        tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
@@ -1842,6 +1796,46 @@
 	        ); 
 
 	      } } );
+
+	    } else {
+
+	      tweens.cube = TweenMax.to( cube.position, zoomDuration, { y: 0, ease: Sine.easeInOut } );
+	      tweens.shadow = TweenMax.to( shadow.material, zoomDuration, { opacity: 0.4, ease: Sine.easeInOut, onComplete: () => {
+
+	        if ( time != 0 ) callback();
+
+	      } } );
+
+	    }
+
+	    const duration =  ( time > 0 ) ? time + zoomDuration : zoomDuration * 2;
+	    const rotations = ( time > 0 ) ? Math.min( Math.round( duration / 2 ), 1 ) * 2 : 2;
+
+	    const div = document.createElement( 'div' );
+	    const value = { old: 0, current: 0, delta: 0 };
+	    const matrix = new THREE.Matrix4();
+
+	    const cameraZoom = ( start ) ? 0.95 : 0.8;
+
+	    tweens.cameraZoom = TweenMax.to( camera, duration, { zoom: cameraZoom, ease: Sine.easeInOut, onUpdate: () => {
+
+	      camera.updateProjectionMatrix();
+
+	    } } );
+
+	    tweens.cameraRotation = TweenMax.to( div, duration, { x: Math.PI * rotations, ease: Sine.easeInOut, onUpdate: () => {
+
+	      value.current = this.tweens.cameraRotation.target._gsTransform.x;
+	      value.delta = value.current - value.old;
+	      value.old = value.current * 1;
+
+	      matrix.makeRotationY( value.delta );
+	      camera.position.applyMatrix4( matrix );
+	      camera.lookAt( this.cube.world.cameraOffset );
+
+	    }, onComplete: () => {
+
+	      if ( time == 0 ) callback();
 
 	    } } );
 
@@ -1862,6 +1856,8 @@
 	    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0.5, ease: Sine.easeOut, onUpdate: () => {
 
 	      sound.setVolume( this.tweens.volumeTween.target.volume );
+
+	      audio.button.classList[ sound.isPlaying ? 'add' : 'remove' ]('is-active');
 
 	    } } );
 
@@ -2028,6 +2024,7 @@
 	  // LOAD GAME
 
 	  let gameSaved = cube.loadState();
+	  audioButton.gameStarted = false;
 
 	  start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
 
@@ -2044,7 +2041,8 @@
 
 	  start.onclick = function ( event ) {
 
-	    if ( audio.musicOn ) animate.audioIn( audio );
+	    if ( audio.musicOn ) animate.audioOut( audio );
+	    audioButton.gameStarted = true;
 
 	    const scramble = ( gameSaved ) ? null : new RUBIK.Scramble( cube, scrambleLength );
 
@@ -2052,7 +2050,7 @@
 
 	    animate.titleOut( () => {} );
 
-	    animate.gameStart( () => {
+	    animate.game( () => {
 
 	      if ( !gameSaved ) {
 
@@ -2077,7 +2075,7 @@
 
 	      controls.disabled = false;
 
-	    }, ( gameSaved ) ? 0 : scramble.converted.length * controls.options.scrambleSpeed );
+	    }, ( gameSaved ) ? 0 : scramble.converted.length * controls.options.scrambleSpeed, true );
 
 	  };
 
@@ -2099,6 +2097,7 @@
 	    controls.disabled = true;
 
 	    gameSaved = true;
+	    audioButton.gameStarted = false;
 
 	    start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
 
@@ -2106,7 +2105,7 @@
 	    ui.classList.add('in-menu');
 
 	    timer.stop();
-	    animate.gameStop();
+	    animate.game( () => {}, 0, false );
 	    animate.audioIn( audio );
 
 	    animate.titleIn( () => {} );
@@ -2118,6 +2117,7 @@
 	    controls.disabled = true;
 	    
 	    gameSaved = false;
+	    audioButton.gameStarted = false;
 
 	    start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
 
@@ -2125,7 +2125,7 @@
 	    ui.classList.add('in-menu');
 
 	    timer.stop();
-	    animate.gameStop();
+	    animate.game( () => {}, 0, false );
 	    animate.audioIn( audio );
 
 	    animate.titleOut( () => {

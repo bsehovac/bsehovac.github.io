@@ -134,7 +134,8 @@ class Cube {
 		if ( !gameInProgress ) return false;
 
 		const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
-		const gameData = JSON.parse( localStorage.getItem( 'gameData' ) );
+		const gameMoves = JSON.parse( localStorage.getItem( 'gameMoves' ) );
+		const gameTime = JSON.parse( localStorage.getItem( 'gameTime' ) );
 
 		this.pieces.forEach( piece => {
 
@@ -149,7 +150,7 @@ class Cube {
 		} );
 
 		this.controls.rearrangePieces();
-		this.controls.moves = gameData.moves;
+		this.controls.moves = gameMoves;
 
 		this.controls.moves.forEach( move => {
 
@@ -158,7 +159,7 @@ class Cube {
 
 		} );
 
-		this.world.timer.deltaTime = gameData.time;
+		this.world.timer.deltaTime = gameTime;
 
 		return gameInProgress; 
 
@@ -176,11 +177,6 @@ class Cube {
 			rotations: [],
 		};
 
-		const gameData = {
-			moves: controls.moves,
-			time: timer.deltaTime,
-		};
-
 		this.pieces.forEach( piece => {
 
 			cubeData.names.push( piece.name );
@@ -191,7 +187,8 @@ class Cube {
 
 		localStorage.setItem( 'gameInProgress', 'yes' );
 		localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
-		localStorage.setItem( 'gameData', JSON.stringify( gameData ) );
+		localStorage.setItem( 'gameMoves', JSON.stringify( controls.moves ) );
+		localStorage.setItem( 'gameTime', JSON.stringify( timer.deltaTime ) );
 
 	}
 

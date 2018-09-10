@@ -52,16 +52,29 @@ class World {
 
 	createLights() {
 
+		// const lights = this.lights = [
+
+		// 	new THREE.AmbientLight( 0xffffff, 1.65 ),
+		// 	new THREE.DirectionalLight( 0xffffff, 0.2 ),
+		// 	new THREE.DirectionalLight( 0xffffff, 0.4 ),
+
+		// ];
+
+		// lights[1].position.set( -1, -1,  1 );
+		// lights[2].position.set( -1,  1, -1 );
+
+		// this.scene.add( lights[0] );
+		// this.scene.add( lights[1] );
+		// this.scene.add( lights[2] );
+
 		const lights = this.lights = [
-
-			new THREE.AmbientLight( 0xffffff, 1.65 ),
-			new THREE.DirectionalLight( 0xffffff, 0.2 ),
-			new THREE.DirectionalLight( 0xffffff, 0.4 ),
-
+			new THREE.AmbientLight( 0xffffff, 1.25 ),
+			new THREE.DirectionalLight( 0xffffff, 0.65 ),
+			new THREE.DirectionalLight( 0xffffff, 0.65 ),
 		];
 
-		lights[1].position.set( -1, -1,  1 );
-		lights[2].position.set( -1,  1, -1 );
+		lights[1].position.set( 0.3, 1,  0.6 );
+		lights[2].position.set( -0.3, -1,  -0.6 );
 
 		this.scene.add( lights[0] );
 		this.scene.add( lights[1] );

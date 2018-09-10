@@ -140,8 +140,7 @@ class Controls {
 		let move = null;
 
 		if ( new THREE.Vector3().equals( angle ) ) return;
-
-		window.dbg = this.moves;
+		if ( layer.toString() == this.cube.layers.a.toString() ) return;
 
 		if (
 			this.moves.length > 0 &&
@@ -389,13 +388,9 @@ class Controls {
 			scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
 			this.scramble = scramble;
 
-		} else {
-
-			scramble = this.scramble;
-
 		}
 
-		const converted = scramble.converted;
+		const converted = this.scramble.converted;
 		const move = converted[ 0 ];
 		const layer = this.cube.layers[ move.layer ][ move.row ];
 		const rotation = new THREE.Vector3();
@@ -413,7 +408,7 @@ class Controls {
 
 			} else {
 
-				scramble.callback();
+				this.scramble.callback();
 				this.scramble = null;
 
 			}
