@@ -519,6 +519,24 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "src/js/components/World.js",
+			"settings":
+			{
+				"buffer_size": 3101,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/plugins/BlurShader.js",
+			"settings":
+			{
+				"buffer_size": 3592,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Libsass",
 	"build_system_choices":
@@ -653,12 +671,16 @@
 		"/Users/boris/Documents/bsehovac.github.io",
 		"/Users/boris/Documents/bsehovac.github.io/src",
 		"/Users/boris/Documents/bsehovac.github.io/src/js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components"
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/plugins"
 	],
 	"file_history":
 	[
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Init.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/World-Backup.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/plugins/EffectComposer.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/plugins/BlurShader.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Controls.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Init.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Timer.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_document.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/mixins/_transition.scss",
@@ -781,10 +803,7 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/components/Controls.js",
 		"/Library/WebServer/Documents/Localhost/cube.local/init.js",
 		"/Library/WebServer/Documents/Localhost/cube.local/index.php",
-		"/Library/WebServer/Documents/Localhost/cube.local/styles.css",
-		"/Library/WebServer/Documents/Localhost/cube.local/src/components/CubePieces.js",
-		"/Library/WebServer/Documents/Localhost/cube.local/src/components/Game.js",
-		"/Library/WebServer/Documents/Localhost/cube.local/src/components/CubePieces-TEST.js"
+		"/Library/WebServer/Documents/Localhost/cube.local/styles.css"
 	],
 	"find":
 	{
@@ -823,6 +842,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"this.draggable.onDrag",
 			"rotateLayer",
 			"animate.audio",
 			"console",
@@ -949,8 +969,7 @@
 			"callbacks",
 			"roundVectorDirection",
 			"source",
-			"eachArray",
-			"for"
+			"eachArray"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -985,8 +1004,70 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "src/js/components/World.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3101,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								390,
+								390
+							]
+						],
+						"settings":
+						{
+							"open_with_edit": true,
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 178.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/js/components/plugins/BlurShader.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3592,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								509,
+								509
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 488.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
 			]
 		}
 	],

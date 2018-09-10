@@ -98,7 +98,7 @@ class Controls {
 
 				if ( Math.abs( this.drag.deltaAngle[ this.drag.axis.group ] ) > Math.PI / 4 ) this.draggable.onEnd();
 
-			} else if ( this.drag.rotation == null && position.delta.length() > options.dragDelta ) {
+			} else if ( this.drag.rotation == null && position.delta.length() > this.options.dragDelta ) {
 
 				this.getLayerAndAxis( position );
 
@@ -111,10 +111,10 @@ class Controls {
 			if ( ! this.drag.active ) return;
 			this.drag.active = false;
 
-			const angle = roundVectorAngle( this.drag.deltaAngle, options.minimumRotationAngle );
+			const angle = roundVectorAngle( this.drag.deltaAngle, this.options.minimumRotationAngle );
 			const layer = this.drag.layer;
 
-			this.rotateLayer( angle, options.animationSpeed, true, () => {
+			this.rotateLayer( angle, this.options.animationSpeed, true, () => {
 
 				this.addMove( angle, layer );
 				this.checkIsSolved();
@@ -157,7 +157,7 @@ class Controls {
 
 		}
 
-		this.onMove( { moves, move, length: this.moves.length } );
+		this.onMove( { moves: this.moves, move: move, length: this.moves.length } );
 
 	}
 
@@ -174,7 +174,7 @@ class Controls {
 			this.rotateLayer( angle, this.options.animationSpeed, true, () => {
 
 				this.moves.pop();
-				this.onMove( { moves, move, length: this.moves.length } );
+				this.onMove( { moves: this.moves, move: move, length: this.moves.length } );
 
 			} );
 
