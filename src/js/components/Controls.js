@@ -23,7 +23,7 @@ class Controls {
 			new THREE.PlaneGeometry( 2, 2 ),
 			new THREE.MeshBasicMaterial( { depthWrite: false, side: THREE.DoubleSide, transparent: true, opacity: 0 } )
 		);
-		helper.position.set( 0, 0, 0 );
+		this.helper.position.set( 0, 0, 0 );
 
 		this.moves = [];
 
@@ -196,7 +196,7 @@ class Controls {
 			z: angle.z,
 			ease: Back.easeOut.config( bounce ),
 			onUpdate: this.rotateBounce( angle, bounce ),
-			onComplete() {
+			onComplete: () => {
 
 				this.cube.object.rotation.set( 0, 0, 0 );
 				this.deselectLayer( this.drag.layer );
