@@ -831,6 +831,7 @@
 
 			this.generateLayers();
 			this.generateShadow();
+			this.generateSolvedStates();
 
 		}
 
@@ -919,39 +920,47 @@
 
 		loadState() {
 
-			const gameInProgress = localStorage.getItem( 'gameInProgress' ) == 'yes';
+			try {
 
-			if ( !gameInProgress ) return false;
+				const gameInProgress = localStorage.getItem( 'gameInProgress' ) == 'yes';
 
-			const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
-			const gameMoves = JSON.parse( localStorage.getItem( 'gameMoves' ) );
-			const gameTime = JSON.parse( localStorage.getItem( 'gameTime' ) );
+				if ( !gameInProgress ) throw new Error();
 
-			this.pieces.forEach( piece => {
+				const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
+				const gameMoves = JSON.parse( localStorage.getItem( 'gameMoves' ) );
+				const gameTime = localStorage.getItem( 'gameTime' );
 
-				const index = cubeData.names.indexOf( piece.name );
+				this.pieces.forEach( piece => {
 
-				const position = cubeData.positions[index];
-				const rotation = cubeData.rotations[index];
+					const index = cubeData.names.indexOf( piece.name );
 
-				piece.position.set( position.x, position.y, position.z );
-				piece.rotation.set( rotation.x, rotation.y, rotation.z );
+					const position = cubeData.positions[index];
+					const rotation = cubeData.rotations[index];
 
-			} );
+					piece.position.set( position.x, position.y, position.z );
+					piece.rotation.set( rotation.x, rotation.y, rotation.z );
 
-			this.controls.rearrangePieces();
-			this.controls.moves = gameMoves;
+				} );
 
-			this.controls.moves.forEach( move => {
+				this.controls.rearrangePieces();
+				this.controls.moves = gameMoves;
 
-				const angle = move[0];
-				move[0] = new THREE.Vector3( angle.x, angle.y, angle.z );
+				this.controls.moves.forEach( move => {
 
-			} );
+					const angle = move[0];
+					move[0] = new THREE.Vector3( angle.x, angle.y, angle.z );
 
-			this.world.timer.deltaTime = gameTime;
+				} );
 
-			return gameInProgress; 
+				this.world.timer.deltaTime = gameTime;
+
+				return gameInProgress;
+
+			} catch( e ) {
+
+				return false;
+
+			}
 
 		}
 
@@ -976,7 +985,47 @@
 			localStorage.setItem( 'gameInProgress', 'yes' );
 			localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
 			localStorage.setItem( 'gameMoves', JSON.stringify( controls.moves ) );
-			localStorage.setItem( 'gameTime', JSON.stringify( timer.deltaTime ) );
+			localStorage.setItem( 'gameTime', timer.deltaTime );
+
+		}
+
+		clearState() {
+
+			localStorage.removeItem( 'gameInProgress' );
+			localStorage.removeItem( 'cubeData' );
+			localStorage.removeItem( 'gameMoves' );
+			localStorage.removeItem( 'gameTime' );
+
+		}
+
+		generateSolvedStates() {
+
+			this.solvedStates = [
+			  [6, 15, 24, 3, 12, 21, 0, 9, 18, 7, 16, 25, 4, 13, 22, 1, 10, 19, 8, 17, 26, 5, 14, 23, 2, 11, 20].toString(),
+			  [8, 7, 6, 5, 4, 3, 2, 1, 0, 17, 16, 15, 14, 13, 12, 11, 10, 9, 26, 25, 24, 23, 22, 21, 20, 19, 18].toString(),
+			  [26, 17, 8, 23, 14, 5, 20, 11, 2, 25, 16, 7, 22, 13, 4, 19, 10, 1, 24, 15, 6, 21, 12, 3, 18, 9, 0].toString(),
+			  [24, 25, 26, 21, 22, 23, 18, 19, 20, 15, 16, 17, 12, 13, 14, 9, 10, 11, 6, 7, 8, 3, 4, 5, 0, 1, 2].toString(),
+			  [18, 21, 24, 19, 22, 25, 20, 23, 26, 9, 12, 15, 10, 13, 16, 11, 14, 17, 0, 3, 6, 1, 4, 7, 2, 5, 8].toString(),
+			  [24, 15, 6, 25, 16, 7, 26, 17, 8, 21, 12, 3, 22, 13, 4, 23, 14, 5, 18, 9, 0, 19, 10, 1, 20, 11, 2].toString(),
+			  [6, 3, 0, 7, 4, 1, 8, 5, 2, 15, 12, 9, 16, 13, 10, 17, 14, 11, 24, 21, 18, 25, 22, 19, 26, 23, 20].toString(),
+			  [0, 9, 18, 1, 10, 19, 2, 11, 20, 3, 12, 21, 4, 13, 22, 5, 14, 23, 6, 15, 24, 7, 16, 25, 8, 17, 26].toString(),
+			  [2, 1, 0, 11, 10, 9, 20, 19, 18, 5, 4, 3, 14, 13, 12, 23, 22, 21, 8, 7, 6, 17, 16, 15, 26, 25, 24].toString(),
+			  [0, 3, 6, 9, 12, 15, 18, 21, 24, 1, 4, 7, 10, 13, 16, 19, 22, 25, 2, 5, 8, 11, 14, 17, 20, 23, 26].toString(),
+			  [6, 7, 8, 15, 16, 17, 24, 25, 26, 3, 4, 5, 12, 13, 14, 21, 22, 23, 0, 1, 2, 9, 10, 11, 18, 19, 20].toString(),
+			  [8, 5, 2, 17, 14, 11, 26, 23, 20, 7, 4, 1, 16, 13, 10, 25, 22, 19, 6, 3, 0, 15, 12, 9, 24, 21, 18].toString(),
+			  [2, 5, 8, 1, 4, 7, 0, 3, 6, 11, 14, 17, 10, 13, 16, 9, 12, 15, 20, 23, 26, 19, 22, 25, 18, 21, 24].toString(),
+			  [8, 17, 26, 7, 16, 25, 6, 15, 24, 5, 14, 23, 4, 13, 22, 3, 12, 21, 2, 11, 20, 1, 10, 19, 0, 9, 18].toString(),
+			  [26, 23, 20, 25, 22, 19, 24, 21, 18, 17, 14, 11, 16, 13, 10, 15, 12, 9, 8, 5, 2, 7, 4, 1, 6, 3, 0].toString(),
+			  [20, 11, 2, 19, 10, 1, 18, 9, 0, 23, 14, 5, 22, 13, 4, 21, 12, 3, 26, 17, 8, 25, 16, 7, 24, 15, 6].toString(),
+			  [18, 19, 20, 9, 10, 11, 0, 1, 2, 21, 22, 23, 12, 13, 14, 3, 4, 5, 24, 25, 26, 15, 16, 17, 6, 7, 8].toString(),
+			  [20, 23, 26, 11, 14, 17, 2, 5, 8, 19, 22, 25, 10, 13, 16, 1, 4, 7, 18, 21, 24, 9, 12, 15, 0, 3, 6].toString(),
+			  [26, 25, 24, 17, 16, 15, 8, 7, 6, 23, 22, 21, 14, 13, 12, 5, 4, 3, 20, 19, 18, 11, 10, 9, 2, 1, 0].toString(),
+			  [24, 21, 18, 15, 12, 9, 6, 3, 0, 25, 22, 19, 16, 13, 10, 7, 4, 1, 26, 23, 20, 17, 14, 11, 8, 5, 2].toString(),
+			  [2, 11, 20, 5, 14, 23, 8, 17, 26, 1, 10, 19, 4, 13, 22, 7, 16, 25, 0, 9, 18, 3, 12, 21, 6, 15, 24].toString(),
+			  [20, 19, 18, 23, 22, 21, 26, 25, 24, 11, 10, 9, 14, 13, 12, 17, 16, 15, 2, 1, 0, 5, 4, 3, 8, 7, 6].toString(),
+			  [18, 9, 0, 21, 12, 3, 24, 15, 6, 19, 10, 1, 22, 13, 4, 25, 16, 7, 20, 11, 2, 23, 14, 5, 26, 17, 8].toString(),
+			  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].toString(),
+			];
 
 		}
 
@@ -1472,15 +1521,12 @@
 
 		checkIsSolved() {
 
-			let solved = true;
+			if ( cube.solvedStates.indexOf( cube.pieces.map( piece => piece.name ).toString() ) > -1 ) {
 
-			this.cube.pieces.forEach( ( piece, i ) => {
+				this.onSolved();
+				cube.clearState();
 
-				if ( piece != this.cube.origin[ i ] ) solved = false;
-
-			} );
-
-			if ( solved ) this.onSolved();
+			}
 
 		}
 
@@ -1521,7 +1567,6 @@
 				if ( converted.length > 0 ) {
 
 					this.scrambleCube();
-					this.onMove();
 
 				} else {
 
@@ -1723,7 +1768,7 @@
 	    this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.8,
 	      { opacity: 0, rotationY: -90 },
 	      { opacity: 1, rotationY: 0, ease: Sine.easeOut },
-	    0.05, callback );
+	    0.05, () => { if ( typeof callback === 'function') callback(); } );
 
 	  }
 
@@ -1732,7 +1777,7 @@
 	    this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.4,
 	      { opacity: 1, rotationY: 0 },
 	      { opacity: 0, rotationY: 90, ease: Sine.easeIn },
-	    0.05, callback );
+	    0.05, () => { if ( typeof callback === 'function') callback(); } );
 
 	  }
 
@@ -1989,7 +2034,7 @@
 
 	  // SET OPTIONS
 
-	  const scrambleLength = 20;
+	  const scrambleLength = 1;
 
 	  // SELECT DOM ELEMENTS
 
@@ -2123,6 +2168,8 @@
 
 	    ui.classList.remove('in-game');
 	    ui.classList.add('in-menu');
+
+	    console.log( timer.deltaTime );
 
 	    timer.stop();
 	    animate.game( () => {}, 0, false );

@@ -32,7 +32,7 @@ class Animate {
     this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.8,
       { opacity: 0, rotationY: -90 },
       { opacity: 1, rotationY: 0, ease: Sine.easeOut },
-    0.05, callback );
+    0.05, () => { if ( typeof callback === 'function') callback(); } );
 
   }
 
@@ -41,7 +41,7 @@ class Animate {
     this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.4,
       { opacity: 1, rotationY: 0 },
       { opacity: 0, rotationY: 90, ease: Sine.easeIn },
-    0.05, callback );
+    0.05, () => { if ( typeof callback === 'function') callback(); } );
 
   }
 

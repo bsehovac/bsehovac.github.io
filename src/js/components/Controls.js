@@ -356,15 +356,12 @@ class Controls {
 
 	checkIsSolved() {
 
-		let solved = true;
+		if ( cube.solvedStates.indexOf( cube.pieces.map( piece => piece.name ).toString() ) > -1 ) {
 
-		this.cube.pieces.forEach( ( piece, i ) => {
+			this.onSolved();
+			cube.clearState();
 
-			if ( piece != this.cube.origin[ i ] ) solved = false;
-
-		} );
-
-		if ( solved ) this.onSolved();
+		}
 
 	}
 

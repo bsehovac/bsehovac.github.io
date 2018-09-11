@@ -26,7 +26,7 @@ function Init() {
 
   // SET OPTIONS
 
-  const scrambleLength = 20;
+  const scrambleLength = 1;
 
   // SELECT DOM ELEMENTS
 
@@ -166,6 +166,8 @@ function Init() {
 
     ui.classList.remove('in-game');
     ui.classList.add('in-menu');
+
+    console.log( timer.deltaTime );
 
     timer.stop();
     animate.game( () => {}, 0, false );
