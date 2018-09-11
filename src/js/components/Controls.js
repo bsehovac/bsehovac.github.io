@@ -45,7 +45,7 @@ class Controls {
 			},
 		};
 
-		this.draggable = new Draggable( { useVector: THREE.Vector2, invertY: true} );
+		this.draggable = new Draggable( { useVector: THREE.Vector2, invertY: true } );
 
 		this.disabled = false;
 		this.world = null;
@@ -64,7 +64,7 @@ class Controls {
 			this.drag.rotation = null;
 			this.drag.active = true;
 
-			const intersects = this.getIntersect( position.start, cube.edges, true );
+			const intersects = this.getIntersect( position.start, this.cube.edges, true );
 
 			if ( intersects.length > 0 ) {
 
@@ -213,7 +213,7 @@ class Controls {
 		if ( this.drag.layer.toString() == this.cube.layers.a.toString() ) return () => {};
 
 		const axis = Object.keys( angle ).reduce( ( a, b ) =>
-			Math.abs( angle[ a ] ) > Math.abs( angle[ b ] ) ? a : b 
+			Math.abs( angle[ a ] ) > Math.abs( angle[ b ] ) ? a : b
 		);
 
 		const cubeRotation = this.cube.object.rotation[ axis ] * 1;
@@ -237,7 +237,7 @@ class Controls {
 
 				const bounceValue = ( angle[ axis ] - this.group.rotation[ axis ] ) * - 1;
 
-				cube.object.rotation[ axis ] = cubeRotation + bounceValue;
+				this.cube.object.rotation[ axis ] = cubeRotation + bounceValue;
 
 			}
 
@@ -271,8 +271,8 @@ class Controls {
 
 			Object.keys( layers ).forEach( key => {
 
-		    if ( layers[ key ].includes( pieceIndex ) )
-		    	this.selectLayer( layers[ key ] );
+				if ( layers[ key ].includes( pieceIndex ) )
+					this.selectLayer( layers[ key ] );
 
 			} );
 
@@ -356,10 +356,10 @@ class Controls {
 
 	checkIsSolved() {
 
-		if ( cube.solvedStates.indexOf( cube.pieces.map( piece => piece.name ).toString() ) > -1 ) {
+		if ( this.cube.solvedStates.indexOf( this.cube.pieces.map( piece => piece.name ).toString() ) > - 1 ) {
 
 			this.onSolved();
-			cube.clearState();
+			this.cube.clearState();
 
 		}
 
@@ -418,31 +418,31 @@ class Controls {
 
 function roundAngle( angle, minimum ) {
 
-  const round = Math.PI / 2;
+	const round = Math.PI / 2;
 
-  if ( angle == 0 ) return 0;
+	if ( angle == 0 ) return 0;
 
-  if ( minimum !== false ) {
+	if ( minimum !== false ) {
 
-    if ( Math.abs( angle ) < round * minimum ) return 0;
+		if ( Math.abs( angle ) < round * minimum ) return 0;
 
-    if ( Math.abs( angle ) < round ) return Math.sign( angle ) * round;
+		if ( Math.abs( angle ) < round ) return Math.sign( angle ) * round;
 
-  }
+	}
 
-  return Math.round( angle / round ) * round;
+	return Math.round( angle / round ) * round;
 
 }
 
 function roundVectorAngle( angle, minimum ) {
 
-  angle.set(
-    roundAngle( angle.x, minimum ),
-    roundAngle( angle.y, minimum ),
-    roundAngle( angle.z, minimum )
-  );
+	angle.set(
+		roundAngle( angle.x, minimum ),
+		roundAngle( angle.y, minimum ),
+		roundAngle( angle.z, minimum )
+	);
 
-  return angle;
+	return angle;
 
 }
 

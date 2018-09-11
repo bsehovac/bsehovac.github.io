@@ -26,7 +26,7 @@ function Init() {
 
   // SET OPTIONS
 
-  const scrambleLength = 1;
+  const scrambleLength = 20;
 
   // SELECT DOM ELEMENTS
 

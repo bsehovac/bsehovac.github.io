@@ -140,6 +140,8 @@ class Cube {
 			const gameMoves = JSON.parse( localStorage.getItem( 'gameMoves' ) );
 			const gameTime = localStorage.getItem( 'gameTime' );
 
+			if ( !cubeData || !gameMoves || !gameTime ) throw new Error();
+
 			this.pieces.forEach( piece => {
 
 				const index = cubeData.names.indexOf( piece.name );
