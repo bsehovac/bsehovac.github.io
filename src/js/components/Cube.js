@@ -6,7 +6,7 @@ class Cube {
 
 		size = ( typeof size !== 'undefined' ) ? size : 3;
 
-		options = Object.assign( {
+		this.options = Object.assign( {
 			colors: {
 				right: 0x41aac8, // blue
 				left: 0x82ca38, // green
@@ -18,26 +18,24 @@ class Cube {
 			},
 		}, options || {} );
 
-		const positions = this.generatePositions( size );
-		const object = new THREE.Object3D();
-		const geometry = new CubePieces( size, positions, options.colors );
+		this.positions = this.generatePositions( size );
+		this.object = new THREE.Object3D();
+		this.holder = new THREE.Object3D();
+		this.holder.add( this.object );
+		this.origin = [];
 
-		const origin = [];
+		const geometry = new CubePieces( size, this.positions, this.options.colors );
 
 		geometry.pieces.forEach( piece => {
 
-			object.add( piece );
-			origin.push( piece );
+			this.object.add( piece );
+			this.origin.push( piece );
 
 		} );
 
 		this.size = size;
-		this.colors = options.colors;
-		this.object = object;
 		this.pieces = geometry.pieces;
 		this.edges = geometry.edges;
-		this.origin = origin;
-		this.positions = positions;
 
 		this.generateLayers();
 		this.generateShadow();

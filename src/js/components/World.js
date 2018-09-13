@@ -107,7 +107,7 @@ class World {
 		cube.world = this;
 		this.cube = cube;
 
-		this.scene.add( cube.object );
+		this.scene.add( cube.holder );
 		this.scene.add( cube.shadow );
 
 	}
