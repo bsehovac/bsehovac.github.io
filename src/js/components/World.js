@@ -107,7 +107,7 @@ class World {
 		cube.world = this;
 		this.cube = cube;
 
-		this.scene.add( cube.holder );
+		this.scene.add( cube.object );
 		this.scene.add( cube.shadow );
 
 	}
@@ -127,6 +127,7 @@ class World {
 		this.controls = controls;
 
 		this.scene.add( controls.helper );
+		this.scene.add( controls.group );
 		controls.draggable.init( this.container );
 
 	}

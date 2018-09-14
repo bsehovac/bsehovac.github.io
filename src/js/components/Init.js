@@ -1,8 +1,5 @@
 function Init() {
 
-  window.addEventListener( 'touchmove', function () {} );
-  document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
-
   // CONVERT SVG ICONS
 
   const svgIcons = new RUBIK.SvgIcons( {
@@ -53,28 +50,28 @@ function Init() {
   world.addControls( controls );
   world.addAudio( audio );
 
-  world.camera.zoom = 0.8;
-  world.camera.updateProjectionMatrix();
+  // world.camera.zoom = 0.8;
+  // world.camera.updateProjectionMatrix();
 
-  controls.disabled = true;
+  // controls.disabled = true;
 
   // LOAD GAME
 
-  let gameSaved = cube.loadState();
-  let gameStarted = false;
-  audioButton.gameStarted = false;
+  // let gameSaved = cube.loadState();
+  // let gameStarted = false;
+  // audioButton.gameStarted = false;
 
-  start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
+  // start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
 
   // START GAME
 
-  animate.dropAndFloat( () => {
+  // animate.dropAndFloat( () => {
 
-    animate.titleIn( () => {} );
+  //   animate.titleIn( () => {} );
 
-    ui.classList.add('in-menu');
+  //   ui.classList.add('in-menu');
 
-  } );;
+  // } );
 
   // BUTTON LISTENERS
 

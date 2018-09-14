@@ -20,8 +20,6 @@ class Cube {
 
 		this.positions = this.generatePositions( size );
 		this.object = new THREE.Object3D();
-		this.holder = new THREE.Object3D();
-		this.holder.add( this.object );
 		this.origin = [];
 
 		const geometry = new CubePieces( size, this.positions, this.options.colors );
