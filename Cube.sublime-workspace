@@ -4,6 +4,58 @@
 		"selected_items":
 		[
 			[
+				"Vec",
+				"Vector3"
+			],
+			[
+				"mult",
+				"multiplyScalar"
+			],
+			[
+				"mome",
+				"momentum"
+			],
+			[
+				"po",
+				"points"
+			],
+			[
+				"point",
+				"points"
+			],
+			[
+				"piece",
+				"piecePosition"
+			],
+			[
+				"posi",
+				"position"
+			],
+			[
+				"conve",
+				"convertVectorToScreen"
+			],
+			[
+				"delta",
+				"deltaAngle"
+			],
+			[
+				"angl",
+				"angleFix"
+			],
+			[
+				"an",
+				"angleFix"
+			],
+			[
+				"pos",
+				"positions"
+			],
+			[
+				"roun",
+				"roundAngle"
+			],
+			[
 				"star",
 				"startQuaternion"
 			],
@@ -14,10 +66,6 @@
 			[
 				"que",
 				"quaternion"
-			],
-			[
-				"Vec",
-				"Vector3"
 			],
 			[
 				"anima",
@@ -48,10 +96,6 @@
 				"musicSound"
 			],
 			[
-				"pos",
-				"pointer-events"
-			],
-			[
 				"spee",
 				"scrambleSpeed"
 			],
@@ -76,10 +120,6 @@
 				"scrambleSpeed"
 			],
 			[
-				"roun",
-				"roundVectorAngle"
-			],
-			[
 				"lowPo",
 				"LowPolyGeometry"
 			],
@@ -94,10 +134,6 @@
 			[
 				"dis",
 				"distanceFix"
-			],
-			[
-				"delta",
-				"deltaAngle"
 			],
 			[
 				"inte",
@@ -122,10 +158,6 @@
 			[
 				"get",
 				"getVectorMaxAxis"
-			],
-			[
-				"conve",
-				"convert"
 			],
 			[
 				"mous",
@@ -156,10 +188,6 @@
 				"rndArrayValue"
 			],
 			[
-				"po",
-				"positions"
-			],
-			[
 				"anim",
 				"animateLayerRotation"
 			],
@@ -186,10 +214,6 @@
 			[
 				"vec",
 				"vector3"
-			],
-			[
-				"posi",
-				"position"
 			],
 			[
 				"close",
@@ -298,10 +322,6 @@
 			[
 				"EDGE",
 				"EDGE_OFFSET"
-			],
-			[
-				"piece",
-				"pieceMaterial"
 			],
 			[
 				"pieed",
@@ -494,54 +514,51 @@
 			[
 				"_bu",
 				"_buffersData"
-			],
-			[
-				"st",
-				"style\tTag"
-			],
-			[
-				"text",
-				"texture"
-			],
-			[
-				"offse",
-				"offsetWidth"
-			],
-			[
-				"re",
-				"Renderer"
-			],
-			[
-				"ver",
-				"vertexShader"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "test.html",
-			"settings":
-			{
-				"buffer_size": 3787,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "src/js/components/Controls.js",
 			"settings":
 			{
-				"buffer_size": 13189,
+				"buffer_size": 11744,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/js/components/Draggable.js",
+			"file": "test.html",
 			"settings":
 			{
-				"buffer_size": 3693,
+				"buffer_size": 6354,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 3522,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/World.js",
+			"settings":
+			{
+				"buffer_size": 2828,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/bsehovac/Documents/_desktop backup/Weight Diary/assets/scripts.js",
+			"settings":
+			{
+				"buffer_size": 4272,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -677,15 +694,22 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/boris/Documents/bsehovac.github.io",
-		"/Users/boris/Documents/bsehovac.github.io/assets",
-		"/Users/boris/Documents/bsehovac.github.io/assets/js",
-		"/Users/boris/Documents/bsehovac.github.io/src",
-		"/Users/boris/Documents/bsehovac.github.io/src/js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components"
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io"
 	],
 	"file_history":
 	[
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/assets/js/three.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Draggable.js",
+		"/Users/bsehovac/Documents/_desktop backup/Weight Diary/assets/scripts.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/World.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/ControlsWOrking.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Cube.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/test.html",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Scramble.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/drag.html",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_fonts.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/World.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Cube.js",
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.rubik.js",
@@ -694,13 +718,9 @@
 		"/Users/boris/Documents/bsehovac.github.io/assets/js/three.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Init.js",
 		"/Users/boris/Documents/bsehovac.github.io/index.html",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Cube.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Init.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Animate.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Audio.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/World.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Timer.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/plugins/Shaders.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/plugins/ShaderPass.js",
@@ -740,7 +760,6 @@
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/CubePieces.js",
 		"/Users/bsehovac/Documents/Windows 7/Windows 7/rubik/svgs/music.svg",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Rubik.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Draggable.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_transition.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Icons.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_document.scss",
@@ -806,14 +825,7 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/helpers/ArrayHelpers.js",
 		"/Users/boris/Documents/bsehovac.github.io/package.json",
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.three.js",
-		"/Users/boris/Documents/bsehovac.github.io/build/three.js",
-		"/Users/boris/Documents/bsehovac.github.io/build/rubik.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/three/cameras/PerspectiveCamera.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/CubePieces.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/components/helpers/TouchEvents.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/components/Cube.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/components/CubePieces.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/components/Game.js"
+		"/Users/boris/Documents/bsehovac.github.io/build/three.js"
 	],
 	"find":
 	{
@@ -854,6 +866,86 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"getIntersect",
+			"rotateOn",
+			"init",
+			"getCurrentIntersectposition",
+			"( position )",
+			"convertIntersect",
+			"helper",
+			"getIntersect",
+			"getInte",
+			"getIntersect",
+			"ff",
+			"aa",
+			"ff",
+			"event, ",
+			"position.deltaTotal",
+			"deltaTotal",
+			"deltaCurrent",
+			"deltaFix",
+			"deltas",
+			"getMomentum",
+			"getMome",
+			"convertIntersect",
+			"getMomentumPoint",
+			"addMomentumPoint",
+			"getCurrentIntersect",
+			"convertIntersect",
+			"getCurrentIntersect",
+			"cube.object.add",
+			"onEnd",
+			"deltaTotal",
+			"event, po",
+			"this.getPo",
+			"getCurrentPosition",
+			"raf",
+			"caf",
+			"deltaTotal",
+			"this.triggers",
+			"this.triggers.drag",
+			"this.triggers.start",
+			"bounce",
+			"rotateOn",
+			"addMove",
+			"getLayer",
+			"rotateOnWorldAxis",
+			"console.l",
+			"checkIsSolved",
+			"check",
+			"cube.pieces",
+			"snapRotation",
+			".drag.rotation",
+			"drag.rotation",
+			"getCurrentIntersect",
+			"this.drag.normal",
+			"onUpda",
+			"startRotation",
+			"getCurrentIntersect",
+			"getIntersectEnd",
+			"getIntersectE",
+			"getIntersect(",
+			"getIntersect",
+			"scrambleCube",
+			"convertVectorToScreen",
+			"roundAngle",
+			"keyMax",
+			"snapRotation",
+			"selectLayer(",
+			"this.selectLayer",
+			"intersects[ 0 ].point",
+			"this.intersect.start",
+			"this.rotation",
+			"selectLayer",
+			"THISGROUPO",
+			"THISCUBEOBJECT",
+			"this.cube.object",
+			"this.group",
+			"positions",
+			"roundAngle",
+			"snapRotation",
+			"roundVectorAngle",
+			"console",
 			"rotateLayer",
 			"this.cube.group",
 			"selectLayer",
@@ -901,87 +993,7 @@
 			"-button",
 			"main__",
 			"ui__",
-			"function",
-			"roundAngle",
-			"world.",
-			"functio",
-			"scramble",
-			"timer.start",
-			"timer.continue",
-			"draggable",
-			"window.document",
-			"iconClass",
-			"each",
-			"functio",
-			"mouseMove",
-			"invertY",
-			"function",
-			"draggable.",
-			"this",
-			"cube.",
-			"cube",
-			"function",
-			"checkIsSolved",
-			"solved",
-			"complete",
-			"console",
-			"deselectLayer",
-			"rearrangePieces",
-			"saveState",
-			".saveState()",
-			"saveState",
-			"scramble",
-			".scram",
-			"rotateLayer",
-			".rotateLa",
-			"saveSta",
-			"console",
-			"onMove",
-			"console",
-			"pointer-e",
-			"color",
-			"sounds",
-			"Audio",
-			"AudioLoader",
-			"sliceGeometry",
-			"options",
-			"scramble",
-			"/font/",
-			"THREE.WebGLRenderTarget",
-			"build/t/",
-			"build/t",
-			"light",
-			"canvas",
-			"console",
-			"Object.keys",
-			"roundedBoxGeometry",
-			"RoundedBoxGeometry",
-			"game",
-			"Game",
-			"game",
-			"Game",
-			"init",
-			"touchEvents",
-			"init",
-			"game",
-			"roundVectorAngle",
-			"roundAngle",
-			"roundVectorAngle",
-			"Object.assign",
-			"drag.direction",
-			"drag.deltaAngle",
-			"closestAngle",
-			"roundVector",
-			"roundVectorDirection",
-			"getVectorMaxAxis",
-			"extendObject",
-			"randomObjectKey",
-			"randomArrayValue",
-			"eachObject",
-			"element",
-			"init",
-			"touchEvents.init",
-			"TouchEvents"
+			"function"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -989,6 +1001,29 @@
 		"regex": false,
 		"replace_history":
 		[
+			"position",
+			"aa",
+			"33",
+			"aa",
+			"",
+			"position.drag",
+			"drag",
+			"delta",
+			"drag",
+			"getPositionCurrent",
+			"window.requestAnimationFrame",
+			"window.cancelAnimationFrame",
+			"this.drag",
+			"this.drag.move",
+			"this.drag.start",
+			"getCurrentIntersect",
+			"this.intersect.start",
+			"this.drag.start",
+			"this.group",
+			"this.cube.object",
+			"THISGROUPO",
+			"THISGROUP",
+			"THISCUBEOBJECT",
 			"this.group",
 			"this.cube.group",
 			"direction",
@@ -1025,54 +1060,24 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "test.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3787,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2141,
-								2141
-							]
-						],
-						"settings":
-						{
-							"open_with_edit": true,
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"word_wrap": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 542.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "src/js/components/Controls.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 13189,
+						"buffer_size": 11744,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10238,
-								10238
+								7089,
+								7332
 							]
 						],
 						"settings":
@@ -1081,27 +1086,116 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 6647.0,
+						"translation.y": 5896.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "src/js/components/Draggable.js",
+					"buffer": 1,
+					"file": "test.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3693,
+						"buffer_size": 6354,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3463,
-								3463
+								6328,
+								288
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "index.html",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 3522,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1061.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/js/components/World.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2828,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2723,
+								2723
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2349.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/Users/bsehovac/Documents/_desktop backup/Weight Diary/assets/scripts.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4272,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2624,
+								2425
 							]
 						],
 						"settings":
@@ -1111,10 +1205,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1731.0,
+						"translation.y": 1823.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -1122,7 +1216,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 27.0
+		"height": 30.0
 	},
 	"input":
 	{

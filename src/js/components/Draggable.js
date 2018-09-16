@@ -1,100 +1,83 @@
 class Draggable {
 
-  constructor( options ) {
+  constructor() {
 
     window.addEventListener( 'touchmove', function () {} );
     document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
 
-    this.options = Object.assign( {
-      vector: false,
-      mouseMove: false,
-    }, options || {} );
-
-    this.position = ( typeof this.options.vector === 'function' ) ? {
-      start: new this.options.vector(),
-      current: new this.options.vector(),
-      deltaTotal: new this.options.vector(),
-      deltaCurrent: new this.options.vector(),
-    } : {
-      start: { x: 0, y: 0 },
-      current: { x: 0, y: 0 },
-      deltaTotal: { x: 0, y: 0 },
-      deltaCurrent: { x: 0, y: 0 },
+    this.position = {
+      start: new THREE.Vector2(),
+      current: new THREE.Vector2(),
+      delta: new THREE.Vector2(),
+      drag: new THREE.Vector2(),
+      old: new THREE.Vector2(),
+      // momentum: new THREE.Vector2(),
     };
 
+    // this.momentumPoints = [];
     this.element = null;
     this.touch = null;
-    this.onStart = () => {};
-    this.onDrag = () => {};
-    this.onEnd = () => {};
-    this.onMove = () => {};
 
-    this.createTriggers();
-
-    return this;
-
-  }
-
-  createTriggers() {
-
-    this.triggers = {
+    this.drag = {
 
       start: ( event ) => {
 
         if ( event.type == 'mousedown' && event.which != 1 ) return;
         if ( event.type == 'touchstart' && event.touches.length > 1 ) return;
-        this.getPosition( event, this.position.start );
-        this.getPosition( event, this.position.current );
+
+        this.getPositionCurrent( event );
+        this.position.start = this.position.current.clone();
+        this.position.delta.set( 0, 0 );
+        this.position.drag.set( 0, 0 );
+        // this.position.momentum.set( 0, 0 );
         this.touch = ( event.type == 'touchstart' );
-        this.onStart( event, this.position, this.touch );
-        window.addEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.triggers.drag, false );
-        window.addEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.triggers.end, false );
 
-      },
+        this.onDragStart( this.position );
 
-      drag: ( event ) => {
-
-        const old = this.position.current.clone();
-        this.getPosition( event, this.position.current );
-        this.position.deltaTotal = this.position.current.clone().sub( this.position.start );
-        this.position.deltaCurrent = this.position.current.clone().sub( old );
-        this.onDrag( event, this.position, this.touch );
-
-      },
-
-      end: ( event ) => {
-
-        this.getPosition( event, this.position.current );
-        this.onEnd( event, this.position, this.touch );
-        window.removeEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.triggers.drag, false );
-        window.removeEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.triggers.end, false );
+        window.addEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.drag.move, false );
+        window.addEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.drag.end, false );
 
       },
 
       move: ( event ) => {
 
-        this.getPosition( event, this.position.current );
-        this.onMove( event, this.position, false );
+        this.position.old = this.position.current.clone();
+        this.getPositionCurrent( event );
+        this.position.delta = this.position.current.clone().sub( this.position.old );
+        this.position.drag = this.position.current.clone().sub( this.position.start );
+        // this.addMomentumPoint( this.position.delta );
+
+        this.onDragMove( this.position );
+
+      },
+
+      end: ( event ) => {
+
+        this.getPositionCurrent( event );
+        // this.getMomentum();
+
+        this.onDragEnd( this.position );
+
+        window.removeEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.drag.move, false );
+        window.removeEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.drag.end, false );
 
       },
 
     };
 
+    this.onDragStart = () => {};
+    this.onDragMove = () => {};
+    this.onDragEnd = () => {};
+
+    return this;
+
   }
 
   init( element ) {
 
-    this.element = ( typeof element === 'string' )
-      ? document.querySelector( element )
-      : element;
-
-    element.addEventListener( 'touchstart', this.triggers.start, false );
-    element.addEventListener( 'mousedown', this.triggers.start, false );
-
-    if ( this.options.mouseMove )
-      element.addEventListener( 'mousemove', this.triggers.move, false );
-
     this.element = element;
+    this.element.addEventListener( 'touchstart', this.drag.start, false );
+    this.element.addEventListener( 'mousedown', this.drag.start, false );
 
     return this;
 
@@ -102,33 +85,60 @@ class Draggable {
 
   dispose() {
 
-    this.element.removeEventListener( 'touchstart', this.triggers.start, false );
-    this.element.removeEventListener( 'mousedown', this.triggers.start, false );
-
-    if ( this.options.mouseMove )
-      this.element.removeEventListener( 'mousemove', this.triggers.start, false );
+    this.element.removeEventListener( 'touchstart', this.drag.start, false );
+    this.element.removeEventListener( 'mousedown', this.drag.start, false );
 
     return this;
 
   }
 
-  getPosition( event, position ) {
+  getPositionCurrent( event ) {
 
-    const dragEvent = event.touches ? ( event.touches[ 0 ] || event.changedTouches[ 0 ] ) : event;
+    const dragEvent = event.touches
+      ? ( event.touches[ 0 ] || event.changedTouches[ 0 ] )
+      : event;
 
-    position.x = dragEvent.pageX;
-    position.y = dragEvent.pageY;
+    this.position.current.set( dragEvent.pageX, dragEvent.pageY );
 
   }
 
   convertPosition( position ) {
 
-    position.x = ( position.x / this.element.offsetWidth ) * 2 - 1,
+    position.x = ( position.x / this.element.offsetWidth ) * 2 - 1;
     position.y = ( position.y / this.element.offsetHeight ) * 2 - 1;
 
     return position;
 
   }
+
+  // addMomentumPoint( delta ) {
+
+  //   const time = Date.now();
+
+  //   while ( this.momentumPoints.length > 0 ) {
+
+  //     if ( time - this.momentumPoints[0].time <= 200 ) break;
+  //     this.momentumPoints.shift();
+
+  //   }
+
+  //   if ( delta !== false ) this.momentumPoints.push( { delta, time } );
+
+  // }
+
+  // getMomentum() {
+
+  //   const points = this.momentumPoints.length;
+
+  //   this.addMomentumPoint( false );
+
+  //   this.momentumPoints.forEach( ( point, index ) => {
+
+  //     this.position.momentum.add( point.delta.multiplyScalar( index / points ) )
+
+  //   } );
+
+  // }
 
 }
 

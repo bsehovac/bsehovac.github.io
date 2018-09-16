@@ -39,6 +39,7 @@ class World {
 
 		const animate = () => {
 
+			stats.end();
 			this.renderer.render( this.scene, this.camera );
 			this.onAnimate();
 
