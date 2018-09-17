@@ -19,6 +19,8 @@ class World {
 		this.stage = { width: 2, height: 3 };
 		this.fov = 10;
 
+		this.raycaster = new THREE.Raycaster();
+
 		this.createLights();
 
 		const resize = e => {
@@ -105,31 +107,32 @@ class World {
 
 	addCube( cube ) {
 
-		cube.world = this;
 		this.cube = cube;
+		this.cube.world = this;
 
-		this.scene.add( cube.object );
-		this.scene.add( cube.shadow );
-
-	}
-
-	addAudio( audio ) {
-
-		audio.world = this;
-		this.audio = audio;
-
-		this.camera.add( audio.listener );
+		// this.scene.add( this.cube.object );
+		this.scene.add( this.cube.shadow );
 
 	}
+
+	// addAudio( audio ) {
+
+	// 	this.audio = audio;
+	// 	this.audio.world = this;
+
+	// 	this.camera.add( this.audio.listener );
+
+	// }
 
 	addControls( controls ) {
 
-		controls.world = this;
 		this.controls = controls;
+		this.controls.world = this;
 
-		this.scene.add( controls.helper );
-		this.scene.add( controls.group );
-		controls.draggable.init( this.container );
+		this.scene.add( this.controls.object );
+    this.scene.add( this.controls.object.plane );
+
+		this.controls.draggable.init( this.container );
 
 	}
 

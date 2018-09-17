@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"co",
+				"constructor"
+			],
+			[
+				"pro",
+				"progress"
+			],
+			[
+				"Dra",
+				"DragControls"
+			],
+			[
+				"nor",
+				"normalVector"
+			],
+			[
 				"Vec",
 				"Vector3"
 			],
@@ -498,41 +514,16 @@
 			[
 				"parti",
 				"particles"
-			],
-			[
-				"par",
-				"particle"
-			],
-			[
-				"part",
-				"particleSystem"
-			],
-			[
-				"cle",
-				"clearColor"
-			],
-			[
-				"_bu",
-				"_buffersData"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "src/js/components/Controls.js",
-			"settings":
-			{
-				"buffer_size": 11744,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "test.html",
 			"settings":
 			{
-				"buffer_size": 6354,
+				"buffer_size": 8717,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -541,7 +532,44 @@
 			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 3522,
+				"buffer_size": 3588,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/Game.js",
+			"settings":
+			{
+				"buffer_size": 308,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/Controls.js",
+			"settings":
+			{
+				"buffer_size": 4560,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/Tween.js",
+			"settings":
+			{
+				"buffer_size": 2409,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/Draggable.js",
+			"settings":
+			{
+				"buffer_size": 3582,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
@@ -549,16 +577,7 @@
 			"file": "src/js/components/World.js",
 			"settings":
 			{
-				"buffer_size": 2828,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/Users/bsehovac/Documents/_desktop backup/Weight Diary/assets/scripts.js",
-			"settings":
-			{
-				"buffer_size": 4272,
+				"buffer_size": 2944,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -694,13 +713,24 @@
 	},
 	"expanded_folders":
 	[
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io"
+		"/Users/boris/Documents/bsehovac.github.io",
+		"/Users/boris/Documents/bsehovac.github.io/src",
+		"/Users/boris/Documents/bsehovac.github.io/src/js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components"
 	],
 	"file_history":
 	[
+		"/Users/boris/Documents/bsehovac.github.io/src/js/Rubik.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Animate.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/AnimateOld.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Controls.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/DragControls.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/ControlsOld.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/DraggableOld.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/World.js",
+		"/Users/bsehovac/Documents/_desktop backup/Weight Diary/assets/scripts.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/assets/js/three.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Draggable.js",
-		"/Users/bsehovac/Documents/_desktop backup/Weight Diary/assets/scripts.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/World.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/ControlsWOrking.js",
@@ -710,11 +740,9 @@
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/drag.html",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_fonts.scss",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/World.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Cube.js",
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Draggable.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Controls.js",
 		"/Users/boris/Documents/bsehovac.github.io/assets/js/three.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Init.js",
 		"/Users/boris/Documents/bsehovac.github.io/index.html",
@@ -733,12 +761,10 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_document.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/mixins/_transition.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_ui.scss",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Animate.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_button-reset.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_game.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_ui.scss",
 		"/Users/boris/Documents/2amigos-site/frontend/web/src/js/components/ajax-form.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/Rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Audio.js",
 		"/Users/boris/Desktop/error.html",
 		"/Users/boris/Documents/bitpasha/bp-public-site/.git/config",
@@ -821,11 +847,7 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/helpers/VectorHelpers.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/three/math/Vector3.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/helpers/TouchEvents.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/TouchEvents",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/helpers/ArrayHelpers.js",
-		"/Users/boris/Documents/bsehovac.github.io/package.json",
-		"/Users/boris/Documents/bsehovac.github.io/rollup.config.three.js",
-		"/Users/boris/Documents/bsehovac.github.io/build/three.js"
+		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/TouchEvents"
 	],
 	"find":
 	{
@@ -863,9 +885,19 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"console",
+			"getLargesAxis",
+			"this.helper",
+			"scene.add",
+			"attac",
+			"getInte",
+			"getIntersect",
+			"console",
+			"Draggable",
+			"addmome",
 			"getIntersect",
 			"rotateOn",
 			"init",
@@ -983,17 +1015,7 @@
 			"audioOut",
 			"animate.game",
 			"RenderPass",
-			"this.draggable.onDrag",
-			"rotateLayer",
-			"animate.audio",
-			"console",
-			"transition",
-			"fade",
-			"sound",
-			"-button",
-			"main__",
-			"ui__",
-			"function"
+			"this.draggable.onDrag"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1001,6 +1023,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"this",
 			"position",
 			"aa",
 			"33",
@@ -1060,53 +1083,24 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 4,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/js/components/Controls.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 11744,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								7089,
-								7332
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 5896.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "test.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6354,
+						"buffer_size": 8717,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6328,
-								288
+								8674,
+								8684
 							]
 						],
 						"settings":
@@ -1119,24 +1113,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 1,
 					"file": "index.html",
-					"semi_transient": true,
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3522,
+						"buffer_size": 3588,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								3557,
+								3557
 							]
 						],
 						"settings":
@@ -1146,56 +1140,56 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1061.0,
+						"translation.y": 731.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "src/js/components/World.js",
+					"buffer": 2,
+					"file": "src/js/components/Game.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2828,
+						"buffer_size": 308,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2723,
-								2723
+								283,
+								283
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"open_with_edit": true,
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 2349.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "/Users/bsehovac/Documents/_desktop backup/Weight Diary/assets/scripts.js",
+					"buffer": 3,
+					"file": "src/js/components/Controls.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4272,
+						"buffer_size": 4560,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2624,
-								2425
+								485,
+								485
 							]
 						],
 						"settings":
@@ -1205,10 +1199,99 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1823.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/js/components/Tween.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2409,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1549,
+								1549
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/js/components/Draggable.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3582,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2132,
+								2132
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/js/components/World.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2944,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2475,
+								2475
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 812.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -1216,7 +1299,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 30.0
+		"height": 27.0
 	},
 	"input":
 	{
