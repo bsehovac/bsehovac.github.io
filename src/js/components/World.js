@@ -103,6 +103,8 @@ class World {
 		this.camera.lookAt( this.cameraOffset );
 		this.camera.updateProjectionMatrix();
 
+		// this.worldHeight = 2 * Math.tan( fovRad / 2 ) * Math.abs( this.camera.position.z );
+
 	}
 
 	addCube( cube ) {
@@ -110,7 +112,7 @@ class World {
 		this.cube = cube;
 		this.cube.world = this;
 
-		// this.scene.add( this.cube.object );
+		this.scene.add( this.cube.object );
 		this.scene.add( this.cube.shadow );
 
 	}

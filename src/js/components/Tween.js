@@ -1,36 +1,63 @@
 class Tween {
 
-  constructor() {
+  constructor( options ) {
 
-    this.animations = [];
+    this.target = options.target || null;
+    this.duration = options.duration || 500;
+    this.delay = options.delay || 0;
+    this.easing = options.easing || 'linear';
+    this.from = options.from || {};
+    this.to = options.to || null;
+    this.onComplete = options.onComplete || ( () => {} );
+    this.onUpdate = options.onUpdate || ( () => {} );
 
+    this.start = Date.now();
+    this.progress = 0;
     this.animate = null;
+    this.values = [];
 
-    this.animation = () => {
+    if ( Object.keys( this.from ).length < 1 )
+      Object.keys( this.to ).forEach( key => { this.from[ key ] = this.target[ key ]; } );
 
-      if ( this.animations.length == 0 ) return;
+    Object.keys( this.to ).forEach( key => { this.values.push( key ) } );
 
-      const now = Date.now();
+    this.animate = window.requestAnimationFrame( () => this.update() );
 
-      this.animations.forEach( animation => animation.update( now, this.constructor.Easings[ animation.easing ] ) );
-
-      this.animate = window.requestAnimationFrame( () => this.animation() );
-
-    }
+    return this;
 
   }
 
-  to( target, duration, options ) {
+  kill() {
 
-    const animation = new this.constructor.Animation( target, duration, options, this.animations );
+    window.cancelAnimationFrame( this.animate );
 
-    this.animations.push( animation );
+  }
 
-    if ( this.animate !== null ) return animation;
+  update() {
 
-    this.animation();
+    this.progress = ( Date.now() - this.start ) / this.duration;
 
-    return animation;
+    if ( this.progress >= 1 ) this.progress = 1;
+
+    const current = this.constructor.Easings[ this.easing ]( this.progress );
+
+    this.values.forEach( key => {
+
+      this.target[ key ] = this.from[ key ] + ( this.to[ key ] - this.from[ key ] ) * current;
+
+    } );
+
+    this.onUpdate( current );
+
+    if ( this.progress == 1 ) {
+
+      this.onComplete();
+
+    } else {
+
+      this.animate = window.requestAnimationFrame( () => this.update() );
+
+    }
 
   }
 
@@ -38,66 +65,33 @@ class Tween {
 
 Tween.Easings = {
 
-  linear: function (t) { return t },
-  easeInQuad: function (t) { return t*t },
-  easeOutQuad: function (t) { return t*(2-t) },
-  easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
-  easeInCubic: function (t) { return t*t*t },
-  easeOutCubic: function (t) { return (--t)*t*t+1 },
-  easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
-  easeInQuart: function (t) { return t*t*t*t },
-  easeOutQuart: function (t) { return 1-(--t)*t*t*t },
-  easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
-  easeInQuint: function (t) { return t*t*t*t*t },
-  easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
-  easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
+  linear: t => { return t; },
+  easeInQuad: t => { return t * t; },
+  easeOutQuad: t => { return t * ( 2 - t ); },
+  easeInOutQuad: t => { return t < .5 ? 2 * t * t : - 1 + ( 4 - 2 * t ) * t; },
+  easeInCubic: t => { return t * t * t; },
+  easeOutCubic: t => { return ( -- t ) * t * t + 1; },
+  easeInOutCubic: t => { return t < .5 ? 4 * t * t * t : ( t - 1 ) * ( 2 * t - 2 ) * ( 2 * t - 2 ) + 1; },
+  easeInQuart: t => { return t * t * t * t; },
+  easeOutQuart: t => { return 1 - ( -- t ) * t * t * t; },
+  easeInOutQuart: t => { return t < .5 ? 8 * t * t * t * t : 1 - 8 * ( -- t ) * t * t * t; },
+  easeInQuint: t => { return t * t * t * t * t; },
+  easeOutQuint: t => { return 1 + ( -- t ) * t * t * t * t; },
+  easeInOutQuint: t => { return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * ( -- t ) * t * t * t * t; },
+  easeInBack: t => { return t * t * ( ( 1.2 + 1 ) * t - 1.2 ); },
+  easeOutBack: t => { return -- t * t * ( ( 1.2 + 1 ) * t + 1.2 ) + 1; },
+  easeInOutBack: t => { return ( t *= 2 ) < 1 ? t * t * ( ( 2.6 + 1 ) * t - 2.6 ) * .5 : .5 * ( ( t -= 2 ) * t * ( ( 2.6 + 1 ) * t + 2.6 ) + 2 ); },
 
-}
+};
 
-Tween.Animation = class {
+export { Tween };
 
-  constructor( target, duration, options, animations ) {
-
-    this.target = target || null;
-    this.duration = duration;
-    this.start = Date.now();
-    this.progress = 0;
-    this.easing = options.easing || 'easeInOutQuad';
-    this.animations = animations;
-
-    console.log( this.easing );
-
-    this.onComplete = options.onComplete || ( () => {} );
-    this.onUpdate = options.onUpdate || ( () => {} );
-
-    delete options.easing;
-    delete options.onComplete;
-    delete options.onUpdate;
-
-    this.values = options;
-
+/*
+tween = new RUBIK.Tween({
+  target: { x: 0, y: 0 },
+  to: { x: 1, y: 1 },
+  onUpdate: progress => {
+    console.log( progress )
   }
-
-  update( now, easing ) {
-
-    this.progress = ( now - this.start ) / this.duration;
-
-    if ( this.progress >= 1 ) {
-
-      this.progress = 1;
-      this.onUpdate( easing( this.progress ) );
-      this.onComplete( 1 );
-
-      this.animations.splice( this.animations.indexOf( this ), 1 );
-
-    } else {
-
-      this.onUpdate( easing( this.progress ) );
-
-    }
-
-  }
-
-}
-
-// export { Tween };
+});
+*/

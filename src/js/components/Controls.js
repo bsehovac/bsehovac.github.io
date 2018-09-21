@@ -108,11 +108,11 @@ class Controls {
 
         if ( this.drag.type == 'layer' ) { 
 
-          this.object.rotateOnAxis( this.drag.axis, this.drag.delta[ this.drag.direction ] );
+          this.object.rotateOnAxis( this.drag.axis, this.drag.delta[ this.drag.direction ] * 2 );
 
         } else {
 
-          this.object.rotateOnWorldAxis( this.drag.axis, this.drag.delta[ this.drag.direction ] );
+          this.object.rotateOnWorldAxis( this.drag.axis, this.drag.delta[ this.drag.direction ] * 2 );
 
         }
 
