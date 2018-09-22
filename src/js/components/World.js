@@ -11,15 +11,13 @@ class World {
 		this.container.appendChild( this.renderer.domElement );
 
 		this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
-		this.cameraOffset = new THREE.Vector3( 0, 0.15, 0 );
+		// this.cameraOffset = new THREE.Vector3( 0, 0.15, 0 );
 
 		this.onAnimate = () => {};
 		this.onResize = () => {};
 
 		this.stage = { width: 2, height: 3 };
 		this.fov = 10;
-
-		this.raycaster = new THREE.Raycaster();
 
 		this.createLights();
 
@@ -100,7 +98,7 @@ class World {
 	  distance /= 2.1;
 
 		this.camera.position.set( distance, distance, distance);
-		this.camera.lookAt( this.cameraOffset );
+		this.camera.lookAt( this.scene.position );
 		this.camera.updateProjectionMatrix();
 
 		// this.worldHeight = 2 * Math.tan( fovRad / 2 ) * Math.abs( this.camera.position.z );
@@ -131,8 +129,9 @@ class World {
 		this.controls = controls;
 		this.controls.world = this;
 
-		this.scene.add( this.controls.object );
-    this.scene.add( this.controls.object.plane );
+		// this.scene.add( this.controls.object );
+    this.scene.add( this.controls.helper );
+    this.scene.add( this.controls.edges );
 
 		this.controls.draggable.init( this.container );
 

@@ -6,15 +6,15 @@ class Draggable {
     document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
 
     this.position = {
-      start: new THREE.Vector2(),
+      // start: new THREE.Vector2(),
       current: new THREE.Vector2(),
-      delta: new THREE.Vector2(),
-      drag: new THREE.Vector2(),
-      old: new THREE.Vector2(),
-      momentum: new THREE.Vector2(),
+      // delta: new THREE.Vector2(),
+      // drag: new THREE.Vector2(),
+      // old: new THREE.Vector2(),
+      // momentum: new THREE.Vector2(),
     };
 
-    this.momentum = [];
+    // this.momentum = [];
     this.element = null;
     this.touch = null;
 
@@ -26,10 +26,10 @@ class Draggable {
         if ( event.type == 'touchstart' && event.touches.length > 1 ) return;
 
         this.getPositionCurrent( event );
-        this.position.start = this.position.current.clone();
-        this.position.delta.set( 0, 0 );
-        this.position.drag.set( 0, 0 );
-        this.position.momentum.set( 0, 0 );
+        // this.position.start = this.position.current.clone();
+        // this.position.delta.set( 0, 0 );
+        // this.position.drag.set( 0, 0 );
+        // this.position.momentum.set( 0, 0 );
         this.touch = ( event.type == 'touchstart' );
 
         this.onDragStart( this.position );
@@ -41,11 +41,11 @@ class Draggable {
 
       move: ( event ) => {
 
-        this.position.old = this.position.current.clone();
+        // this.position.old = this.position.current.clone();
         this.getPositionCurrent( event );
-        this.position.delta = this.position.current.clone().sub( this.position.old );
-        this.position.drag = this.position.current.clone().sub( this.position.start );
-        this.addMomentumPoint( this.position.delta );
+        // this.position.delta = this.position.current.clone().sub( this.position.old );
+        // this.position.drag = this.position.current.clone().sub( this.position.start );
+        // this.addMomentumPoint( this.position.delta );
 
         this.onDragMove( this.position );
 
@@ -54,7 +54,7 @@ class Draggable {
       end: ( event ) => {
 
         this.getPositionCurrent( event );
-        this.getMomentum();
+        // this.getMomentum();
 
         this.onDragEnd( this.position );
 
@@ -111,37 +111,37 @@ class Draggable {
 
   }
 
-  addMomentumPoint( delta ) {
+  // addMomentumPoint( delta ) {
 
-    const time = Date.now();
+  //   const time = Date.now();
 
-    while ( this.momentum.length > 0 ) {
+  //   while ( this.momentum.length > 0 ) {
 
-      if ( time - this.momentum[0].time <= 200 ) break;
-      this.momentum.shift();
+  //     if ( time - this.momentum[0].time <= 200 ) break;
+  //     this.momentum.shift();
 
-    }
+  //   }
 
-    if ( delta !== false ) this.momentum.push( { delta, time } );
+  //   if ( delta !== false ) this.momentum.push( { delta, time } );
 
-  }
+  // }
 
-  getMomentum() {
+  // getMomentum() {
 
-    const points = this.momentum.length;
-    const momentum = new THREE.Vector2();
+  //   const points = this.momentum.length;
+  //   const momentum = new THREE.Vector2();
 
-    this.addMomentumPoint( false );
+  //   this.addMomentumPoint( false );
 
-    this.momentum.forEach( ( point, index ) => {
+  //   this.momentum.forEach( ( point, index ) => {
 
-      momentum.add( point.delta.multiplyScalar( index / points ) )
+  //     momentum.add( point.delta.multiplyScalar( index / points ) )
 
-    } );
+  //   } );
 
-    return momentum;
+  //   return momentum;
 
-  }
+  // }
 
 }
 

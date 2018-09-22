@@ -21,11 +21,6 @@ function CubePieces( size, positions, colors ) {
 		} )
 	);
 
-	const helper = new THREE.Mesh(
-		new THREE.PlaneGeometry( pieceSize, pieceSize, pieceSize ),
-		new THREE.MeshBasicMaterial( { depthWrite: false, side: THREE.DoubleSide, transparent: true, opacity: 0 } )
-	);
-
 	const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
 	const edgeMaterial = new THREE.MeshStandardMaterial( {
 		color: colors.piece,
@@ -38,6 +33,7 @@ function CubePieces( size, positions, colors ) {
 
 		const piece = new THREE.Object3D();
 		const pieceCube = pieceMesh.clone();
+		const edges = [];
 
 		piece.position.copy( position.clone().divideScalar( size ) );
 		piece.add( pieceCube );
@@ -46,18 +42,19 @@ function CubePieces( size, positions, colors ) {
 		position.edges.forEach( position => {
 
 			const edge = createEdge( position );
-			const edgeHelper = createEdgeHelper( edge );
-
-			piece.add( edge, edgeHelper );
+			piece.add( edge );
+			edges.push( [ 'left', 'right', 'bottom', 'top', 'back', 'front' ][ position ] );
 
 		} );
+
+		piece.userData.edges = edges;
+		piece.userData.cube = pieceCube;
 
 		pieces.push( piece );
 
 	} );
 
-	this.pieces = pieces;
-	this.edges = edges;
+	return pieces;
 
 	function createEdge( position ) {
 
@@ -83,19 +80,6 @@ function CubePieces( size, positions, colors ) {
 		edge.scale.set( edgeScale, edgeScale, edgeScale );
 
 		return edge;
-
-	}
-
-	function createEdgeHelper( edge ) {
-
-		const edgeHelper = helper.clone();
-
-		edgeHelper.position.copy( edge.position );
-		edgeHelper.rotation.copy( edge.rotation );
-
-		edges.push( edgeHelper );
-
-		return edgeHelper;
 
 	}
 

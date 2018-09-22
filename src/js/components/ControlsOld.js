@@ -391,7 +391,7 @@ class Controls {
 
 	}
 
-	getLayerposition {
+	getLayer() {
 
 		const layer = [];
 		let axis;

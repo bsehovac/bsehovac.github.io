@@ -18,22 +18,21 @@ class Cube {
 			},
 		}, options || {} );
 
-		this.positions = this.generatePositions( size );
 		this.object = new THREE.Object3D();
-		this.origin = [];
+		this.cubes = [];
 
-		const geometry = new CubePieces( size, this.positions, this.options.colors );
+		const positions = this.generatePositions( size );
+		const pieces = CubePieces( size, positions, this.options.colors );
 
-		geometry.pieces.forEach( piece => {
+		pieces.forEach( piece => {
 
+			this.cubes.push( piece.userData.cube );
 			this.object.add( piece );
-			this.origin.push( piece.position.clone().multiplyScalar( size ).round() );
 
 		} );
 
 		this.size = size;
-		this.pieces = geometry.pieces;
-		this.edges = geometry.edges;
+		this.pieces = pieces;
 
 		this.generateShadow();
 

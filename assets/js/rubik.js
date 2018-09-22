@@ -17,15 +17,13 @@
 			this.container.appendChild( this.renderer.domElement );
 
 			this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
-			this.cameraOffset = new THREE.Vector3( 0, 0.15, 0 );
+			// this.cameraOffset = new THREE.Vector3( 0, 0.15, 0 );
 
 			this.onAnimate = () => {};
 			this.onResize = () => {};
 
 			this.stage = { width: 2, height: 3 };
 			this.fov = 10;
-
-			this.raycaster = new THREE.Raycaster();
 
 			this.createLights();
 
@@ -106,8 +104,10 @@
 		  distance /= 2.1;
 
 			this.camera.position.set( distance, distance, distance);
-			this.camera.lookAt( this.cameraOffset );
+			this.camera.lookAt( this.scene.position );
 			this.camera.updateProjectionMatrix();
+
+			// this.worldHeight = 2 * Math.tan( fovRad / 2 ) * Math.abs( this.camera.position.z );
 
 		}
 
@@ -116,7 +116,7 @@
 			this.cube = cube;
 			this.cube.world = this;
 
-			// this.scene.add( this.cube.object );
+			this.scene.add( this.cube.object );
 			this.scene.add( this.cube.shadow );
 
 		}
@@ -135,8 +135,9 @@
 			this.controls = controls;
 			this.controls.world = this;
 
-			this.scene.add( this.controls.object );
-	    this.scene.add( this.controls.object.plane );
+			// this.scene.add( this.controls.object );
+	    this.scene.add( this.controls.helper );
+	    this.scene.add( this.controls.edges );
 
 			this.controls.draggable.init( this.container );
 
@@ -677,7 +678,6 @@
 	function CubePieces( size, positions, colors ) {
 
 		const pieces = [];
-		const edges = [];
 
 		const edgeScale = 0.85;
 		const edgeRoundness = 0.1;
@@ -695,11 +695,6 @@
 			} )
 		);
 
-		const helper = new THREE.Mesh(
-			new THREE.PlaneGeometry( pieceSize, pieceSize, pieceSize ),
-			new THREE.MeshBasicMaterial( { depthWrite: false, side: THREE.DoubleSide, transparent: true, opacity: 0 } )
-		);
-
 		const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
 		const edgeMaterial = new THREE.MeshStandardMaterial( {
 			color: colors.piece,
@@ -712,6 +707,7 @@
 
 			const piece = new THREE.Object3D();
 			const pieceCube = pieceMesh.clone();
+			const edges = [];
 
 			piece.position.copy( position.clone().divideScalar( size ) );
 			piece.add( pieceCube );
@@ -720,18 +716,19 @@
 			position.edges.forEach( position => {
 
 				const edge = createEdge( position );
-				const edgeHelper = createEdgeHelper( edge );
-
-				piece.add( edge, edgeHelper );
+				piece.add( edge );
+				edges.push( [ 'left', 'right', 'bottom', 'top', 'back', 'front' ][ position ] );
 
 			} );
+
+			piece.userData.edges = edges;
+			piece.userData.cube = pieceCube;
 
 			pieces.push( piece );
 
 		} );
 
-		this.pieces = pieces;
-		this.edges = edges;
+		return pieces;
 
 		function createEdge( position ) {
 
@@ -757,19 +754,6 @@
 			edge.scale.set( edgeScale, edgeScale, edgeScale );
 
 			return edge;
-
-		}
-
-		function createEdgeHelper( edge ) {
-
-			const edgeHelper = helper.clone();
-
-			edgeHelper.position.copy( edge.position );
-			edgeHelper.rotation.copy( edge.rotation );
-
-			edges.push( edgeHelper );
-
-			return edgeHelper;
 
 		}
 
@@ -813,22 +797,21 @@
 				},
 			}, options || {} );
 
-			this.positions = this.generatePositions( size );
 			this.object = new THREE.Object3D();
-			this.origin = [];
+			this.cubes = [];
 
-			const geometry = new CubePieces( size, this.positions, this.options.colors );
+			const positions = this.generatePositions( size );
+			const pieces = CubePieces( size, positions, this.options.colors );
 
-			geometry.pieces.forEach( piece => {
+			pieces.forEach( piece => {
 
+				this.cubes.push( piece.userData.cube );
 				this.object.add( piece );
-				this.origin.push( piece.position.clone().multiplyScalar( size ).round() );
 
 			} );
 
 			this.size = size;
-			this.pieces = geometry.pieces;
-			this.edges = geometry.edges;
+			this.pieces = pieces;
 
 			this.generateShadow();
 
@@ -983,15 +966,15 @@
 	    document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
 
 	    this.position = {
-	      start: new THREE.Vector2(),
+	      // start: new THREE.Vector2(),
 	      current: new THREE.Vector2(),
-	      delta: new THREE.Vector2(),
-	      drag: new THREE.Vector2(),
-	      old: new THREE.Vector2(),
-	      momentum: new THREE.Vector2(),
+	      // delta: new THREE.Vector2(),
+	      // drag: new THREE.Vector2(),
+	      // old: new THREE.Vector2(),
+	      // momentum: new THREE.Vector2(),
 	    };
 
-	    this.momentum = [];
+	    // this.momentum = [];
 	    this.element = null;
 	    this.touch = null;
 
@@ -1003,10 +986,10 @@
 	        if ( event.type == 'touchstart' && event.touches.length > 1 ) return;
 
 	        this.getPositionCurrent( event );
-	        this.position.start = this.position.current.clone();
-	        this.position.delta.set( 0, 0 );
-	        this.position.drag.set( 0, 0 );
-	        this.position.momentum.set( 0, 0 );
+	        // this.position.start = this.position.current.clone();
+	        // this.position.delta.set( 0, 0 );
+	        // this.position.drag.set( 0, 0 );
+	        // this.position.momentum.set( 0, 0 );
 	        this.touch = ( event.type == 'touchstart' );
 
 	        this.onDragStart( this.position );
@@ -1018,11 +1001,11 @@
 
 	      move: ( event ) => {
 
-	        this.position.old = this.position.current.clone();
+	        // this.position.old = this.position.current.clone();
 	        this.getPositionCurrent( event );
-	        this.position.delta = this.position.current.clone().sub( this.position.old );
-	        this.position.drag = this.position.current.clone().sub( this.position.start );
-	        this.addMomentumPoint( this.position.delta );
+	        // this.position.delta = this.position.current.clone().sub( this.position.old );
+	        // this.position.drag = this.position.current.clone().sub( this.position.start );
+	        // this.addMomentumPoint( this.position.delta );
 
 	        this.onDragMove( this.position );
 
@@ -1031,7 +1014,7 @@
 	      end: ( event ) => {
 
 	        this.getPositionCurrent( event );
-	        this.getMomentum();
+	        // this.getMomentum();
 
 	        this.onDragEnd( this.position );
 
@@ -1088,16 +1071,536 @@
 
 	  }
 
+	  // addMomentumPoint( delta ) {
+
+	  //   const time = Date.now();
+
+	  //   while ( this.momentum.length > 0 ) {
+
+	  //     if ( time - this.momentum[0].time <= 200 ) break;
+	  //     this.momentum.shift();
+
+	  //   }
+
+	  //   if ( delta !== false ) this.momentum.push( { delta, time } );
+
+	  // }
+
+	  // getMomentum() {
+
+	  //   const points = this.momentum.length;
+	  //   const momentum = new THREE.Vector2();
+
+	  //   this.addMomentumPoint( false );
+
+	  //   this.momentum.forEach( ( point, index ) => {
+
+	  //     momentum.add( point.delta.multiplyScalar( index / points ) )
+
+	  //   } );
+
+	  //   return momentum;
+
+	  // }
+
+	}
+
+	class Controls {
+
+	  constructor( cube, options ) {
+
+	    this.options = Object.assign( {
+	      animationSpeed: 300,
+	      animationEasing: 'swingTo', // easeOutExpo
+	      scrambleSpeed: 100,
+	      scrambleEasing: 'easeOutQuart',
+	    }, options || {} );
+
+	    this.cube = cube;
+	    this.draggable = new Draggable();
+	    this.raycaster = new THREE.Raycaster();
+
+	    this.group = new THREE.Object3D();
+	    this.cube.object.add( this.group );
+
+	    this.helper = new THREE.Mesh(
+	      new THREE.PlaneBufferGeometry( 200, 200 ),
+	      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } )
+	    );
+
+	    this.edges = new THREE.Mesh(
+	      new THREE.BoxBufferGeometry( 0.95, 0.95, 0.95 ),
+	      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0xff0033 } )
+	    );
+
+	    this.onSolved = () => { console.log( 'solved' ); };
+	    this.onMove = () => {};
+
+	    this.drag = {};
+	    this.momentum = [];
+	    this.moves = [];
+
+	    this.disabled = false;
+	    this.scramble = null;
+	    this.state = 'still';
+
+	    this.draggable.onDragStart = position => {
+
+	      if ( this.state !== 'still' || this.disabled || this.scramble !== null ) return;
+
+	      const edgeIntersect = this.getIntersect( position.current, this.edges, false );
+
+	      if ( edgeIntersect !== false ) {
+
+	        this.drag.normal = edgeIntersect.face.normal.round();
+	        this.drag.type = 'layer';
+
+	        this.attach( this.helper, this.cube.object );
+
+	        this.helper.rotation.set( 0, 0, 0 );
+	        this.helper.position.set( 0, 0, 0 );
+	        this.helper.lookAt( this.drag.normal );
+	        this.helper.translateZ( 0.5 );
+	        this.helper.updateMatrixWorld();
+
+	        this.detach( this.helper, this.cube.object );
+
+	        this.drag.intersect = this.getIntersect( position.current, this.cube.cubes, true );
+
+	      } else {
+
+	        this.drag.normal = new THREE.Vector3( 0, 0, 1 );
+	        this.drag.type = 'cube';
+
+	        this.helper.position.set( 0, 0, 0 );
+	        this.helper.rotation.set( 0, Math.PI / 4, 0 );
+	        this.helper.updateMatrixWorld();
+
+	      }
+
+	      const planeIntersect = this.getIntersect( position.current, this.helper, false ).point;
+
+	      this.drag.current = this.helper.worldToLocal( planeIntersect );
+	      this.drag.total = new THREE.Vector3();
+	      this.drag.axis = null;
+	      this.drag.delta = null;
+	      this.drag.angle = 0;
+	      this.state = 'dragging';
+
+	    };
+
+	    this.draggable.onDragMove = position => {
+
+	      if ( this.state !== 'dragging' || this.disabled || this.scramble !== null ) return;
+
+	      const planeIntersect = this.getIntersect( position.current, this.helper, false );
+	      if ( planeIntersect === false ) return;
+
+	      const point = this.helper.worldToLocal( planeIntersect.point.clone() );
+
+	      this.drag.delta = point.clone().sub( this.drag.current ).setZ( 0 );
+	      this.drag.total.add( this.drag.delta );
+	      this.drag.current = point;
+	      this.addMomentumPoint( this.drag.delta );
+
+	      if ( this.drag.axis === null && this.drag.total.length() > 0.05 ) {
+
+	        this.drag.direction = this.getMainAxis( this.drag.total );
+
+	        if ( this.drag.type === 'layer' ) {
+
+	          const direction = new THREE.Vector3();
+	          direction[ this.drag.direction ] = 1;
+
+	          const worldDirection = this.helper.localToWorld( direction ).sub( this.helper.position );
+	          const objectDirection = this.edges.worldToLocal( worldDirection ).round();
+
+	          this.drag.axis = objectDirection.cross( this.drag.normal ).negate();
+
+	          this.selectLayer( this.getLayer() );
+
+	        } else {
+
+	          const axis = ( this.drag.direction != 'x' )
+	            ? ( ( this.drag.direction == 'y' && position.current.x > this.world.width / 2 ) ? 'z' : 'x' )
+	            : 'y';
+
+	          this.drag.axis = new THREE.Vector3();
+	          this.drag.axis[ axis ] = 1 * ( ( axis == 'x' ) ? - 1 : 1 );
+
+	        }
+
+	      } else if ( this.drag.axis !== null ) {
+
+	        const rotation = this.drag.delta[ this.drag.direction ];// * 2.25;
+
+	        if ( this.drag.type === 'layer' ) { 
+
+	          this.group.rotateOnAxis( this.drag.axis, rotation );
+	          this.drag.angle += rotation;
+
+	        } else {
+
+	          this.edges.rotateOnWorldAxis( this.drag.axis, rotation );
+	          this.cube.object.rotation.copy( this.edges.rotation );
+	          this.drag.angle += rotation;
+
+	        }
+
+	      }
+
+	    };
+
+	    this.draggable.onDragEnd = position => {
+
+	      if ( this.state !== 'dragging' || this.disabled || this.scramble !== null ) return;
+
+	      this.state = 'rotating';
+
+	      const momentum = this.getMomentum()[ this.drag.direction ];
+	      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this.drag.angle ) < Math.PI / 2 );
+
+	      const angle = flip
+	        ? this.roundAngle( this.drag.angle + Math.sign( this.drag.angle ) * ( Math.PI / 4 ) )
+	        : this.roundAngle( this.drag.angle );
+
+	      const delta = angle - this.drag.angle;
+
+	      if ( this.drag.type === 'layer' ) {
+
+	        this.rotateLayer( delta, false, layer => {
+
+	          this.addMove( angle, layer );
+	          this.checkIsSolved();
+	          this.state = 'still';
+
+	        } );
+
+	      } else {
+
+	        this.rotateCube( delta, () => {
+
+	          this.drag.active = false;
+	          this.state = 'still';
+
+	        } );
+
+	      }
+
+	    };
+
+	  }
+
+	  rotateLayer( rotation, scramble, callback ) {
+
+	    const bounceCube = this.bounceCube();
+
+	    new RUBIK.Tween( {
+	      duration: this.options[ scramble ? 'scrambleSpeed' : 'animationSpeed' ],
+	      easing: this.options[ scramble ? 'scrambleEasing' : 'animationEasing' ],
+	      onUpdate: tween => {
+
+	        let deltaAngle = tween.delta * rotation;
+	        this.group.rotateOnAxis( this.drag.axis, deltaAngle );
+	        bounceCube( tween.progress, deltaAngle, rotation );
+
+	      },
+	      onComplete: () => {
+
+	        this.cube.object.rotation.setFromVector3( this.snapRotation( this.cube.object.rotation.toVector3() ) );
+	        this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
+
+	        callback( this.drag.layer );
+
+	        this.deselectLayer( this.drag.layer );
+
+	      },
+	    } );
+
+	  }
+
+	  bounceCube() {
+
+	    let fixDelta = true;
+
+	    return ( progress, delta, rotation ) => {
+
+	        if ( progress >= 1 ) {
+
+	          if ( fixDelta ) {
+
+	            delta = ( progress - 1 ) * rotation;
+	            fixDelta = false;
+
+	          }
+
+	          this.cube.object.rotateOnWorldAxis( this.drag.axis, delta );
+
+	        }
+
+	    }
+
+	  }
+
+	  rotateCube( rotation, callback ) {
+
+	    new RUBIK.Tween( {
+	      duration: this.options.animationSpeed,
+	      easing: this.options.animationEasing,
+	      onUpdate: tween => {
+
+	        this.edges.rotateOnWorldAxis( this.drag.axis, tween.delta * rotation );
+	        this.cube.object.rotation.copy( this.edges.rotation );
+
+	      },
+	      onComplete: () => {
+
+	        this.edges.rotation.setFromVector3( this.snapRotation( this.edges.rotation.toVector3() ) );
+	        this.cube.object.rotation.copy( this.edges.rotation );
+	        callback();
+
+	      },
+	    } );
+
+	  }
+
+	  addMove( angle, layer ) {
+
+	    let move = null;
+
+	    if ( angle == 0 ) return;
+
+	    if (
+	      this.moves.length > 0 &&
+	      this.moves[ this.moves.length - 1 ][ 0 ] * -1 == angle
+	    ) {
+
+	      this.moves.pop();
+
+	    } else {
+
+	      move = [ angle, layer ];
+	      this.moves.push( move );
+
+	    }
+
+	    this.onMove( { moves: this.moves, move: move, length: this.moves.length } );
+
+	  }
+
+	  undoMove() {
+
+	    if ( this.moves.length > 0 ) {
+
+	      const move = this.moves[ this.moves.length - 1 ];
+	      const angle = move[ 0 ] * -1;
+	      const layer = move[ 1 ];
+
+	      this.selectLayer( layer );
+
+	      this.rotateLayer( angle, false, () => {
+
+	        this.moves.pop();
+	        this.onMove( { moves: this.moves, move: move, length: this.moves.length } );
+
+	      } );
+
+	    }
+
+	  }
+
+	  checkIsSolved() {
+
+	    let solved = true;
+	    const layers = { R: [], L: [], U: [], D: [], F: [], B: [] };
+
+	    game.cube.pieces.forEach( ( piece, index ) => {
+
+	      const position = this.getPiecePosition( piece );
+
+	      if ( position.x == -1 ) layers.L.push( piece );
+	      else if ( position.x == 1 ) layers.R.push( piece );
+
+	      if ( position.y == -1 ) layers.D.push( piece );
+	      else if ( position.y == 1 ) layers.U.push( piece );
+
+	      if ( position.z == -1 ) layers.B.push( piece );
+	      else if ( position.z == 1 ) layers.F.push( piece );
+
+	    } );
+
+	    Object.keys( layers ).forEach( key => {
+
+	      const edges = layers[ key ].map( piece => piece.userData.edges );
+
+	      if ( edges.shift().filter( v => {
+
+	        return edges.every( a => { return a.indexOf( v ) !== -1 } )
+
+	      } ).length < 1 ) solved = false;
+
+	    } );
+
+	    if ( solved ) {
+
+	        this.onSolved();
+	        //this.cube.clearState();
+
+	    }
+
+	  }
+
+	  selectLayer( layer ) {
+
+	    this.group.rotation.set( 0, 0, 0 );
+	    this.movePieces( layer, this.cube.object, this.group );
+	    this.drag.layer = layer;
+
+	  }
+
+	  deselectLayer( layer ) {
+
+	    this.movePieces( layer, this.group, this.cube.object );
+	    this.drag.layer = null;
+
+	  }
+
+	  movePieces( layer, from, to ) {
+
+	    from.updateMatrixWorld();
+	    to.updateMatrixWorld();
+
+	    layer.forEach( index => {
+
+	      const piece = this.cube.pieces[ index ];
+
+	      piece.applyMatrix( from.matrixWorld );
+	      from.remove( piece );
+	      piece.applyMatrix( new THREE.Matrix4().getInverse( to.matrixWorld ) );
+	      to.add( piece );
+
+	    } );
+
+	  }
+
+	  getLayer( position ) {
+
+	    const layer = [];
+	    let axis;
+
+	    if ( typeof position === 'undefined' ) {
+
+	      axis = this.getMainAxis( this.drag.axis );
+	      position = this.getPiecePosition( this.drag.intersect.object );
+
+	    } else {
+
+	      axis = this.getMainAxis( position );
+
+	    }
+
+	    this.cube.pieces.forEach( piece => {
+
+	      const piecePosition = this.getPiecePosition( piece );
+
+	      if ( piecePosition[ axis ] == position[ axis ] ) layer.push( piece.name );
+
+	    } );
+
+	    return layer;
+
+	  }
+
+	  getPiecePosition( piece ) {
+
+	    let position = new THREE.Vector3()
+	      .setFromMatrixPosition( piece.matrixWorld )
+	      .multiplyScalar( this.cube.size );
+
+	    return this.cube.object.worldToLocal( position ).round();
+
+	  }
+
+	  scrambleCube( scramble, callback ) {
+
+	    if ( this.scramble == null ) {
+
+	      this.scramble = scramble;
+	      this.scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
+
+	    }
+
+	    const converted = this.scramble.converted;
+	    const move = converted[ 0 ];
+	    const layer = this.getLayer( move.position );
+
+	    this.drag.axis = new THREE.Vector3();
+	    this.drag.axis[ move.axis ] = 1;
+
+	    this.selectLayer( layer );
+	    this.rotateLayer( move.angle, true, () => {
+
+	      converted.shift();
+
+	      if ( converted.length > 0 ) {
+
+	        this.scrambleCube();
+
+	      } else {
+
+	        this.scramble.callback();
+	        this.scramble = null;
+
+	      }
+
+	    } );
+
+	  }
+
+	  getIntersect( position, object, multiple ) {
+
+	    this.raycaster.setFromCamera(
+	      this.draggable.convertPosition( position.clone() ),
+	      this.world.camera
+	    );
+
+	    const intersect = ( multiple )
+	      ? this.raycaster.intersectObjects( object )
+	      : this.raycaster.intersectObject( object );
+
+	    return ( intersect.length > 0 ) ? intersect[ 0 ] : false;
+
+	  }
+
+	  getMainAxis( vector ) {
+
+	    return Object.keys( vector ).reduce(
+	      ( a, b ) => Math.abs( vector[ a ] ) > Math.abs( vector[ b ] ) ? a : b
+	    );
+
+	  }
+
+	  detach( child, parent ) {
+
+	    child.applyMatrix( parent.matrixWorld );
+	    parent.remove( child );
+	    this.world.scene.add( child );
+
+	  }
+
+	  attach( child, parent ) {
+
+	    child.applyMatrix( new THREE.Matrix4().getInverse( parent.matrixWorld ) );
+	    this.world.scene.remove( child );
+	    parent.add( child );
+
+	  }
+
 	  addMomentumPoint( delta ) {
 
 	    const time = Date.now();
 
-	    while ( this.momentum.length > 0 ) {
-
-	      if ( time - this.momentum[0].time <= 200 ) break;
-	      this.momentum.shift();
-
-	    }
+	    this.momentum = this.momentum.filter( moment => time - moment.time < 500 );
 
 	    if ( delta !== false ) this.momentum.push( { delta, time } );
 
@@ -1120,169 +1623,20 @@
 
 	  }
 
-	}
+	  roundAngle( angle ) {
 
-	class Controls {
+	    const round = Math.PI / 2;
+	    return Math.sign( angle ) * Math.round( Math.abs( angle) / round ) * round;
 
-	  constructor( cube, options ) {
+	  }
 
-	    this.object = new THREE.Object3D();
+	  snapRotation( angle ) {
 
-	    this.object.plane = new THREE.Mesh(
-	      new THREE.PlaneBufferGeometry( 200, 200 ),
-	      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0.2, color: 0x0033ff } )
+	    return angle.set(
+	      this.roundAngle( angle.x ),
+	      this.roundAngle( angle.y ),
+	      this.roundAngle( angle.z )
 	    );
-
-	    this.object.cube = new THREE.Mesh(
-	      new THREE.BoxBufferGeometry( 1, 1, 1 ),
-	      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0.2, color: 0x888888 } )
-	    );
-
-	    this.object.plane.name = 'Plane Helper';
-	    this.object.cube.name = 'Cube Helper';
-
-	    this.object.group = new THREE.Object3D();
-	    this.object.add( this.object.group );
-	    this.object.add( this.object.cube );
-
-	    this.cube = cube;
-
-	    this.drag = {};
-
-	    this.draggable = new Draggable();
-
-	    this.draggable.onDragStart = position => {
-
-	      const cubeIntersect = this.getIntersect( position.current, this.object.cube );
-
-	      if ( cubeIntersect !== false ) {
-
-	        this.drag.normal = cubeIntersect.face.normal;
-	        this.drag.type = 'layer';
-
-	        this.attach( this.object.plane, this.object.cube );
-
-	        this.object.plane.rotation.set( 0, 0, 0 );
-	        this.object.plane.position.set( 0, 0, 0 );
-	        this.object.plane.lookAt( this.drag.normal );
-	        this.object.plane.translateZ( 0.5 );
-	        this.object.plane.updateMatrixWorld();
-
-	        this.detach( this.object.plane, this.object.cube );
-
-	      } else {
-
-	        this.drag.normal = new THREE.Vector3( 0, 0, 1 );
-	        this.drag.type = 'cube';
-
-	        this.object.plane.position.set( 0, 0, 0 );
-	        this.object.plane.rotation.set( 0, Math.PI / 4, 0 );
-	        this.object.plane.updateMatrixWorld();
-
-	      }
-
-	      const planeIntersect = this.getIntersect( position.current, this.object.plane ).point;
-
-	      this.drag.current = this.object.plane.worldToLocal( planeIntersect );
-	      this.drag.total = new THREE.Vector3();
-	      this.drag.axis = null;
-	      this.drag.delta = null;
-
-	    };
-
-	    this.draggable.onDragMove = position => {
-
-	      const planeIntersect = this.getIntersect( position.current, this.object.plane );
-	      if ( planeIntersect === false ) return;
-
-	      const point = this.object.plane.worldToLocal( planeIntersect.point.clone() );
-
-	      this.drag.delta = point.clone().sub( this.drag.current ).setZ( 0 );
-	      this.drag.total.add( this.drag.delta );
-	      this.drag.current = point;
-
-	      if ( this.drag.axis === null && this.drag.total.length() > 0.1 ) {
-
-	        this.drag.direction = this.getLargesAxis( this.drag.total );
-
-	        if ( this.drag.type === 'layer' ) {
-
-	          const direction = new THREE.Vector3();
-	          direction[ this.drag.direction ] = 1;
-
-	          const worldDirection = this.object.plane.localToWorld( direction ).sub( this.object.plane.position );
-	          const objectDirection = this.object.worldToLocal( worldDirection ).round();
-
-	          this.drag.axis = objectDirection.cross( this.drag.normal ).negate();
-
-	        } else {
-
-	          const axis = ( this.drag.direction != 'x' )
-	            ? ( ( this.drag.direction == 'y' && position.current.x > this.world.width / 2 ) ? 'z' : 'x' )
-	            : 'y';
-
-	          this.drag.axis = new THREE.Vector3();
-	          this.drag.axis[ axis ] = 1 * ( ( axis == 'x' ) ? - 1 : 1 );
-
-	        }
-
-	      } else if ( this.drag.axis !== null ) {
-
-	        if ( this.drag.type == 'layer' ) { 
-
-	          this.object.rotateOnAxis( this.drag.axis, this.drag.delta[ this.drag.direction ] );
-
-	        } else {
-
-	          this.object.rotateOnWorldAxis( this.drag.axis, this.drag.delta[ this.drag.direction ] );
-
-	        }
-
-	      }
-
-	    };
-
-	    this.draggable.onDragEnd = position => {
-
-
-	    };
-
-	  }
-
-	  // Helpers
-
-	  getIntersect( position, object ) {
-
-	    this.world.raycaster.setFromCamera(
-	      this.draggable.convertPosition( position.clone() ),
-	      this.world.camera
-	    );
-
-	    const intersect = this.world.raycaster.intersectObject( object );
-
-	    return ( intersect.length > 0 ) ? intersect[ 0 ] : false;
-
-	  }
-
-	  getLargesAxis( vector ) {
-
-	    return Object.keys( vector ).reduce( ( a, b ) => Math.abs( vector[ a ] ) > Math.abs( vector[ b ] ) ? a : b );
-
-	  }
-
-	  detach( child, parent ) {
-
-	    child.applyMatrix( parent.matrixWorld );
-	    parent.remove( child );
-	    this.world.scene.add( child );
-
-	  }
-
-	  attach( child, parent ) {
-
-	    child.applyMatrix( new THREE.Matrix4().getInverse( parent.matrixWorld ) );
-	    this.world.scene.remove( child );
-	    parent.add( child );
 
 	  }
 
@@ -1334,7 +1688,6 @@
 				const modifier = move.charAt( 1 );
 
 				const axis = { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face ];
-
 				const row = { D: -1, U: 1, L: -1, R: 1, F: 1, B: -1 }[ face ];
 
 				const position = new THREE.Vector3();
@@ -1608,6 +1961,256 @@
 
 	}
 
+	class Tween {
+
+	  constructor( options ) {
+
+	    this.target = options.target || null;
+	    this.duration = options.duration || 500;
+	    this.delay = options.delay || 0;
+	    this.easing = this.constructor.Easings[ options.easing || 'linear' ];
+	    this.from = options.from || {};
+	    this.to = options.to || null;
+	    this.onComplete = options.onComplete || ( () => {} );
+	    this.onUpdate = options.onUpdate || ( () => {} );
+
+	    this.start = Date.now();
+	    this.progress = 0;
+	    this.delta = 0;
+	    this.animate = null;
+	    this.values = [];
+
+	    if ( this.target !== null && this.to !== null ) {
+
+	      if ( Object.keys( this.from ).length < 1 ) {
+
+	        Object.keys( this.to ).forEach( key => { this.from[ key ] = this.target[ key ]; } );
+
+	      }
+
+	      Object.keys( this.to ).forEach( key => { this.values.push( key ); } );
+
+	    }
+
+	    this.animate = window.requestAnimationFrame( () => this.update() );
+
+	    return this;
+
+	  }
+
+	  kill() {
+
+	    window.cancelAnimationFrame( this.animate );
+
+	  }
+
+	  update() {
+
+	    const old = this.progress * 1;
+	    let progress = ( Date.now() - this.start ) / this.duration;
+	    if ( progress > 1 ) progress = 1;
+
+	    this.progress = this.easing( progress );
+	    this.delta = this.progress - old;
+
+	    this.values.forEach( key => {
+
+	      this.target[ key ] = this.from[ key ] + ( this.to[ key ] - this.from[ key ] ) * this.progress;
+
+	    } );
+
+	    this.onUpdate( this );
+
+	    if ( this.progress == 1 ) this.onComplete( this );
+	    else this.animate = window.requestAnimationFrame( () => this.update() );
+
+	  }
+
+	}
+
+	Tween.Easings = {
+
+	  linear: p => p,
+
+	  easeInQuad: p => {
+	    return Math.pow(p, 2);
+	  },
+
+	  easeOutQuad: p => {
+	    return -(Math.pow((p-1), 2) -1);
+	  },
+
+	  easeInOutQuad: p => {
+	    if ((p/=0.5) < 1) return 0.5*Math.pow(p,2);
+	    return -0.5 * ((p-=2)*p - 2);
+	  },
+
+	  easeInCubic: p => {
+	    return Math.pow(p, 3);
+	  },
+
+	  easeOutCubic: p => {
+	    return (Math.pow((p-1), 3) +1);
+	  },
+
+	  easeInOutCubic: p => {
+	    if ((p/=0.5) < 1) return 0.5*Math.pow(p,3);
+	    return 0.5 * (Math.pow((p-2),3) + 2);
+	  },
+
+	  easeInQuart: p => {
+	    return Math.pow(p, 4);
+	  },
+
+	  easeOutQuart: p => {
+	    return -(Math.pow((p-1), 4) -1);
+	  },
+
+	  easeInOutQuart: p => {
+	    if ((p/=0.5) < 1) return 0.5*Math.pow(p,4);
+	    return -0.5 * ((p-=2)*Math.pow(p,3) - 2);
+	  },
+
+	  easeInQuint: p => {
+	    return Math.pow(p, 5);
+	  },
+
+	  easeOutQuint: p => {
+	    return (Math.pow((p-1), 5) +1);
+	  },
+
+	  easeInOutQuint: p => {
+	    if ((p/=0.5) < 1) return 0.5*Math.pow(p,5);
+	    return 0.5 * (Math.pow((p-2),5) + 2);
+	  },
+
+	  easeInSine: p => {
+	    return -Math.cos(p * (Math.PI/2)) + 1;
+	  },
+
+	  easeOutSine: p => {
+	    return Math.sin(p * (Math.PI/2));
+	  },
+
+	  easeInOutSine: p => {
+	    return (-0.5 * (Math.cos(Math.PI*p) -1));
+	  },
+
+	  easeInExpo: p => {
+	    return (p===0) ? 0 : Math.pow(2, 10 * (p - 1));
+	  },
+
+	  easeOutExpo: p => {
+	    return (p===1) ? 1 : -Math.pow(2, -10 * p) + 1;
+	  },
+
+	  easeInOutExpo: p => {
+	    if(p===0) return 0;
+	    if(p===1) return 1;
+	    if((p/=0.5) < 1) return 0.5 * Math.pow(2,10 * (p-1));
+	    return 0.5 * (-Math.pow(2, -10 * --p) + 2);
+	  },
+
+	  easeInCirc: p => {
+	    return -(Math.sqrt(1 - (p*p)) - 1);
+	  },
+
+	  easeOutCirc: p => {
+	    return Math.sqrt(1 - Math.pow((p-1), 2));
+	  },
+
+	  easeInOutCirc: p => {
+	    if((p/=0.5) < 1) return -0.5 * (Math.sqrt(1 - p*p) - 1);
+	    return 0.5 * (Math.sqrt(1 - (p-=2)*p) + 1);
+	  },
+
+	  swingFromTo: p => {
+	    var s = 1.70158;
+	    return ((p/=0.5) < 1) ? 0.5*(p*p*(((s*=(1.525))+1)*p - s)) :
+	    0.5*((p-=2)*p*(((s*=(1.525))+1)*p + s) + 2);
+	  },
+
+	  swingFrom: p => {
+	    var s = 1.70158;
+	    return p*p*((s+1)*p - s);
+	  },
+
+	  swingTo: p => {
+	    var s = 1.70158;
+	    return (p-=1)*p*((s+1)*p + s) + 1;
+	  },
+
+	  // easeOutBounce: p => {
+	  //   if ((p) < (1/2.75)) {
+	  //     return (7.5625*p*p);
+	  //   } else if (p < (2/2.75)) {
+	  //     return (7.5625*(p-=(1.5/2.75))*p + 0.75);
+	  //   } else if (p < (2.5/2.75)) {
+	  //     return (7.5625*(p-=(2.25/2.75))*p + 0.9375);
+	  //   } else {
+	  //     return (7.5625*(p-=(2.625/2.75))*p + 0.984375);
+	  //   }
+	  // },
+
+	  // easeInBack: p => {
+	  //   var s = 1.70158;
+	  //   return (p)*p*((s+1)*p - s);
+	  // },
+
+	  // easeOutBack: p => {
+	  //   var s = 1.70158;
+	  //   return (p=p-1)*p*((s+1)*p + s) + 1;
+	  // },
+
+	  // easeInOutBack: p => {
+	  //   var s = 1.70158;
+	  //   if((p/=0.5) < 1) return 0.5*(p*p*(((s*=(1.525))+1)*p -s));
+	  //   return 0.5*((p-=2)*p*(((s*=(1.525))+1)*p +s) +2);
+	  // },
+
+	  // elastic: p => {
+	  //   return -1 * Math.pow(4,-8*p) * Math.sin((p*6-1)*(2*Math.PI)/2) + 1;
+	  // },
+
+	  // bounce: p => {
+	  //   if (p < (1/2.75)) {
+	  //     return (7.5625*p*p);
+	  //   } else if (p < (2/2.75)) {
+	  //     return (7.5625*(p-=(1.5/2.75))*p + 0.75);
+	  //   } else if (p < (2.5/2.75)) {
+	  //     return (7.5625*(p-=(2.25/2.75))*p + 0.9375);
+	  //   } else {
+	  //     return (7.5625*(p-=(2.625/2.75))*p + 0.984375);
+	  //   }
+	  // },
+
+	  // bouncePast: p => {
+	  //   if (p < (1/2.75)) {
+	  //     return (7.5625*p*p);
+	  //   } else if (p < (2/2.75)) {
+	  //     return 2 - (7.5625*(p-=(1.5/2.75))*p + 0.75);
+	  //   } else if (p < (2.5/2.75)) {
+	  //     return 2 - (7.5625*(p-=(2.25/2.75))*p + 0.9375);
+	  //   } else {
+	  //     return 2 - (7.5625*(p-=(2.625/2.75))*p + 0.984375);
+	  //   }
+	  // },
+
+	  // easeFromTo: p => {
+	  //   if ((p/=0.5) < 1) return 0.5*Math.pow(p,4);
+	  //   return -0.5 * ((p-=2)*Math.pow(p,3) - 2);
+	  // },
+
+	  // easeFrom: p => {
+	  //   return Math.pow(p,4);
+	  // },
+
+	  // easeTo: p => {
+	  //   return Math.pow(p,0.25);
+	  // },
+
+	};
+
 	class SvgIcons {
 
 		constructor( options ) {
@@ -1699,6 +2302,7 @@
 
 	  start() {
 
+
 	  }
 
 	}
@@ -1712,6 +2316,7 @@
 	exports.Scramble = Scramble;
 	exports.Timer = Timer;
 	exports.Animate = Animate;
+	exports.Tween = Tween;
 	exports.SvgIcons = SvgIcons;
 	exports.Game = Game;
 

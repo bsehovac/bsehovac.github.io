@@ -44,7 +44,6 @@ class Scramble {
 			const modifier = move.charAt( 1 );
 
 			const axis = { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face ];
-
 			const row = { D: -1, U: 1, L: -1, R: 1, F: 1, B: -1 }[ face ];
 
 			const position = new THREE.Vector3();
