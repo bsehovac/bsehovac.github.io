@@ -6,9 +6,10 @@
 
 	class World {
 
-		constructor( container ) {
+		constructor( container, options ) {
 
 			this.container = container;
+			this.options = options;
 
 			this.scene = new THREE.Scene();
 
@@ -17,7 +18,6 @@
 			this.container.appendChild( this.renderer.domElement );
 
 			this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
-			// this.cameraOffset = new THREE.Vector3( 0, 0.15, 0 );
 
 			this.onAnimate = () => {};
 			this.onResize = () => {};
@@ -45,7 +45,6 @@
 
 			const animate = () => {
 
-				stats.end();
 				this.renderer.render( this.scene, this.camera );
 				this.onAnimate();
 
@@ -59,33 +58,21 @@
 
 		createLights() {
 
-			// const lights = this.lights = [
+			this.lights = {
+				holder:  new THREE.Object3D,
+				ambient: new THREE.AmbientLight( 0xffffff, 1.25 ),
+				front:   new THREE.DirectionalLight( 0xffffff, 0.65 ),
+				back:    new THREE.DirectionalLight( 0xffffff, 0.35 ),
+			};
 
-			// 	new THREE.AmbientLight( 0xffffff, 1.65 ),
-			// 	new THREE.DirectionalLight( 0xffffff, 0.2 ),
-			// 	new THREE.DirectionalLight( 0xffffff, 0.4 ),
+			this.lights.front.position.set( 0.3, 1,  0.6 );
+			this.lights.back.position.set( -0.3, -1,  -0.6 );
 
-			// ];
+			this.lights.holder.add( this.lights.ambient );
+			this.lights.holder.add( this.lights.front );
+			this.lights.holder.add( this.lights.back );
 
-			// lights[1].position.set( -1, -1,  1 );
-			// lights[2].position.set( -1,  1, -1 );
-
-			// this.scene.add( lights[0] );
-			// this.scene.add( lights[1] );
-			// this.scene.add( lights[2] );
-
-			const lights = this.lights = [
-				new THREE.AmbientLight( 0xffffff, 1.25 ),
-				new THREE.DirectionalLight( 0xffffff, 0.65 ),
-				new THREE.DirectionalLight( 0xffffff, 0.65 ),
-			];
-
-			lights[1].position.set( 0.3, 1,  0.6 );
-			lights[2].position.set( -0.3, -1,  -0.6 );
-
-			this.scene.add( lights[0] );
-			this.scene.add( lights[1] );
-			this.scene.add( lights[2] );
+			this.scene.add( this.lights.holder );
 
 		}
 
@@ -101,13 +88,11 @@
 				? ( this.stage.height / 2 ) / Math.tan( fovRad / 2 )
 				: ( this.stage.width / this.camera.aspect ) / ( 2 * Math.tan( fovRad / 2 ) );
 
-		  distance /= 2.1;
+		  distance *= 0.5;
 
 			this.camera.position.set( distance, distance, distance);
 			this.camera.lookAt( this.scene.position );
 			this.camera.updateProjectionMatrix();
-
-			// this.worldHeight = 2 * Math.tan( fovRad / 2 ) * Math.abs( this.camera.position.z );
 
 		}
 
@@ -116,7 +101,7 @@
 			this.cube = cube;
 			this.cube.world = this;
 
-			this.scene.add( this.cube.object );
+			this.scene.add( this.cube.holder );
 			this.scene.add( this.cube.shadow );
 
 		}
@@ -135,76 +120,12 @@
 			this.controls = controls;
 			this.controls.world = this;
 
-			// this.scene.add( this.controls.object );
-	    this.scene.add( this.controls.helper );
 	    this.scene.add( this.controls.edges );
+	    this.scene.add( this.controls.helper );
 
 			this.controls.draggable.init( this.container );
 
 		}
-
-	}
-
-	class Audio {
-
-	  constructor( button, animate ) {
-
-	    this.button = button;
-	    this.animate = animate;
-
-	    this.listener = new THREE.AudioListener();
-
-	    this.music = new THREE.Audio( this.listener );
-	    this.click = new THREE.Audio( this.listener );
-
-	    this.musicOn = localStorage.getItem( 'music' );
-	    this.musicOn = ( this.musicOn == null ) ? false : ( ( this.musicOn == 'true' ) ? true : false );
-
-	    const audioLoader = new THREE.AudioLoader();
-
-	    audioLoader.load( 'assets/sounds/music.mp3', buffer => {
-
-	      this.music.setBuffer( buffer );
-	      this.music.setLoop( true );
-	      this.music.setVolume( 0.5 );
-
-	      if ( this.musicOn ) {
-
-	        this.animate.audioIn( this );
-
-	      }
-
-	    });
-
-	    audioLoader.load( 'assets/sounds/click.mp3', buffer => {
-
-	      this.click.setBuffer( buffer );
-	      this.click.setLoop( false );
-	      this.click.setVolume( 0.5 );
-
-	    });
-
-	    this.button.addEventListener( 'click', () => {
-
-	      this.musicOn = !this.musicOn;
-
-	      if ( this.musicOn && !this.button.gameStarted ) {
-
-	        this.animate.audioIn( this );
-
-	      } else {
-
-	        this.animate.audioOut( this );
-
-	      }
-
-	      this.button.classList[ this.musicOn ? 'add' : 'remove' ]('is-active');
-
-	      localStorage.setItem( 'music', this.musicOn );
-
-	    }, false );
-
-	  }
 
 	}
 
@@ -787,17 +708,23 @@
 
 			this.options = Object.assign( {
 				colors: {
-					right: 0x41aac8, // blue
-					left: 0x82ca38, // green
-					top: 0xfff7ff, // white
-					bottom: 0xffef48, // yellow
-					front: 0xef3923, // red
-					back: 0xff8c0a, // orange
-					piece: 0x08101a, // black
+					right: 0x41aac8,
+					left: 0x82ca38,
+					top: 0xfff7ff,
+					bottom: 0xffef48,
+					front: 0xef3923,
+					back: 0xff8c0a,
+					piece: 0x08101a,
 				},
 			}, options || {} );
 
+			this.holder = new THREE.Object3D();
 			this.object = new THREE.Object3D();
+			this.animator = new THREE.Object3D();
+
+			this.holder.add( this.animator );
+			this.animator.add( this.object );
+
 			this.cubes = [];
 
 			const positions = this.generatePositions( size );
@@ -861,8 +788,9 @@
 			const shadowGeometry = new THREE.PlaneGeometry( 2, 2 );
 			const shadowMaterial = new THREE.MeshBasicMaterial( {
 				depthWrite: true,
+				// color: 0x00ff33,
 				transparent: true,
-				opacity: 0.45,
+				opacity: 0.4,
 				map: new THREE.TextureLoader().load( shadowTexure )
 			} );
 
@@ -900,7 +828,6 @@
 
 				} );
 
-				this.controls.rearrangePieces();
 				this.controls.moves = gameMoves;
 
 				this.controls.moves.forEach( move => {
@@ -1110,13 +1037,14 @@
 	  constructor( cube, options ) {
 
 	    this.options = Object.assign( {
-	      animationSpeed: 300,
-	      animationEasing: 'swingTo', // easeOutExpo
-	      scrambleSpeed: 100,
-	      scrambleEasing: 'easeOutQuart',
+	      flipSpeed: 300,
+	      flipEasing: 'swingTo', // easeOutExpo
+	      scrambleSpeed: 150,
+	      scrambleEasing: 'easeOutExpo', // easeOutQuart
 	    }, options || {} );
 
 	    this.cube = cube;
+	    this.cube.controls = this;
 	    this.draggable = new Draggable();
 	    this.raycaster = new THREE.Raycaster();
 
@@ -1124,16 +1052,18 @@
 	    this.cube.object.add( this.group );
 
 	    this.helper = new THREE.Mesh(
-	      new THREE.PlaneBufferGeometry( 200, 200 ),
+	      new THREE.PlaneBufferGeometry( 20, 20 ),
 	      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } )
 	    );
+
+	    this.helper.rotation.set( 0, Math.PI / 4, 0 );
 
 	    this.edges = new THREE.Mesh(
 	      new THREE.BoxBufferGeometry( 0.95, 0.95, 0.95 ),
 	      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0xff0033 } )
 	    );
 
-	    this.onSolved = () => { console.log( 'solved' ); };
+	    this.onSolved = () => {};
 	    this.onMove = () => {};
 
 	    this.drag = {};
@@ -1185,13 +1115,13 @@
 	      this.drag.axis = null;
 	      this.drag.delta = null;
 	      this.drag.angle = 0;
-	      this.state = 'dragging';
+	      this.state = 'preparing';
 
 	    };
 
 	    this.draggable.onDragMove = position => {
 
-	      if ( this.state !== 'dragging' || this.disabled || this.scramble !== null ) return;
+	      if ( ( this.state !== 'preparing' && this.state !== 'rotating' ) || this.disabled || this.scramble !== null ) return;
 
 	      const planeIntersect = this.getIntersect( position.current, this.helper, false );
 	      if ( planeIntersect === false ) return;
@@ -1230,6 +1160,8 @@
 
 	        }
 
+	        this.state = 'rotating';
+
 	      } else if ( this.drag.axis !== null ) {
 
 	        const rotation = this.drag.delta[ this.drag.direction ];// * 2.25;
@@ -1253,9 +1185,9 @@
 
 	    this.draggable.onDragEnd = position => {
 
-	      if ( this.state !== 'dragging' || this.disabled || this.scramble !== null ) return;
+	      if ( this.state !== 'rotating' || this.disabled || this.scramble !== null ) return;
 
-	      this.state = 'rotating';
+	      this.state = 'finishing';
 
 	      const momentum = this.getMomentum()[ this.drag.direction ];
 	      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this.drag.angle ) < Math.PI / 2 );
@@ -1295,9 +1227,9 @@
 
 	    const bounceCube = this.bounceCube();
 
-	    new RUBIK.Tween( {
-	      duration: this.options[ scramble ? 'scrambleSpeed' : 'animationSpeed' ],
-	      easing: this.options[ scramble ? 'scrambleEasing' : 'animationEasing' ],
+	    this.rotationTween = new RUBIK.Tween( {
+	      duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
+	      easing: this.options[ scramble ? 'scrambleEasing' : 'flipEasing' ],
 	      onUpdate: tween => {
 
 	        let deltaAngle = tween.delta * rotation;
@@ -1307,12 +1239,14 @@
 	      },
 	      onComplete: () => {
 
+	        const layer = this.drag.layer.slice( 0 );
+
 	        this.cube.object.rotation.setFromVector3( this.snapRotation( this.cube.object.rotation.toVector3() ) );
 	        this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
-
-	        callback( this.drag.layer );
-
 	        this.deselectLayer( this.drag.layer );
+	        this.cube.saveState();
+
+	        callback( layer );
 
 	      },
 	    } );
@@ -1334,7 +1268,7 @@
 
 	          }
 
-	          this.cube.object.rotateOnWorldAxis( this.drag.axis, delta );
+	          this.cube.object.rotateOnAxis( this.drag.axis, delta );
 
 	        }
 
@@ -1344,9 +1278,9 @@
 
 	  rotateCube( rotation, callback ) {
 
-	    new RUBIK.Tween( {
-	      duration: this.options.animationSpeed,
-	      easing: this.options.animationEasing,
+	    this.rotationTween = new RUBIK.Tween( {
+	      duration: this.options.flipSpeed,
+	      easing: this.options.flipEasing,
 	      onUpdate: tween => {
 
 	        this.edges.rotateOnWorldAxis( this.drag.axis, tween.delta * rotation );
@@ -1708,259 +1642,6 @@
 
 	}
 
-	class Timer {
-
-		constructor( world, element ) {
-
-			this.element = element;
-			this.startTime = null;
-
-			this.world = world;
-			world.timer = this;
-
-		}
-
-		start( continueGame ) {
-
-			this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
-			this.deltaTime = 0;
-
-			this.seconds = 0;
-			this.minutes = 0;
-
-			this.world.onAnimate = () => {
-
-				this.currentTime = Date.now();
-				this.deltaTime = this.currentTime - this.startTime;
-				this.element.innerHTML = this.convert( this.deltaTime );
-
-			};
-
-		}
-
-		stop() {
-
-			this.currentTime = Date.now();
-			this.deltaTime = this.currentTime - this.startTime;
-
-			world.onAnimate = () => {};
-
-			return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
-
-		}
-
-		convert( time ) {
-
-			// const millis = parseInt( ( time % 1000 ) / 100 );
-			const oldSeconds = this.seconds;
-
-			this.seconds = parseInt( ( time / 1000 ) % 60 );
-			this.minutes = parseInt( ( time / ( 1000 * 60 ) ) /*% 60*/ );
-
-			if ( oldSeconds !== this.seconds ) localStorage.setItem( 'gameTime', JSON.stringify( time ) );
-
-			return this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds; // + '.' + millis;
-
-		}
-
-	}
-
-	class Animate {
-
-	  constructor( cube, title, time ) {
-
-	    this.cube = cube;
-	    this.title = title;
-	    this.time = time;
-	    this.tweens = {};
-
-	    this.title.querySelectorAll('span').forEach( span => {
-
-	      const spanText = span.innerHTML;
-	      span.innerHTML = '';
-
-	      spanText.split( '' ).forEach( letter => {
-
-	        const i = document.createElement( 'i' );
-	        i.innerHTML = letter;
-	        i.style.opacity = 0;
-	        span.appendChild( i );
-
-	      } );
-
-	    } );
-
-	    this.title.style.opacity = 1;
-
-	  }
-
-	  titleIn( callback ) {
-
-	    this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.8,
-	      { opacity: 0, rotationY: -90 },
-	      { opacity: 1, rotationY: 0, ease: Sine.easeOut },
-	    0.05, () => { if ( typeof callback === 'function') callback(); } );
-
-	  }
-
-	  titleOut( callback ) {
-
-	    this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.4,
-	      { opacity: 1, rotationY: 0 },
-	      { opacity: 0, rotationY: 90, ease: Sine.easeIn },
-	    0.05, () => { if ( typeof callback === 'function') callback(); } );
-
-	  }
-
-	  dropAndFloat( callback ) {
-
-	    const cube = this.cube.object;
-	    const shadow = this.cube.shadow;
-	    const tweens = this.tweens;
-
-	    cube.position.y = 4; 
-	    cube.position.x = -2; 
-	    cube.position.z = -2; 
-	    cube.rotation.x = Math.PI/4;
-	    // cube.rotation.y = Math.PI/6;
-	    shadow.material.opacity = 0;
-
-	    TweenMax.to( shadow.material, 1.5, { opacity: 0.5, ease: Power1.easeOut, delay: 1 } ); 
-	    TweenMax.to( cube.rotation, 2.5, { x: 0, y: 0, ease: Power1.easeOut } ); 
-	    TweenMax.to( cube.position, 2.5, { x: 0, y: - 0.1, z: 0, ease: Power1.easeOut, onComplete: () => { 
-	     
-	      tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
-	        { y: - 0.1 }, 
-	        { y: + 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-	      ); 
-	     
-	      tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
-	        { opacity: 0.5 }, 
-	        { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-	      ); 
-
-	      callback();
-
-	    } } ); 
-
-	  }
-
-	  game( callback, time, start ) {
-
-	    const cube = this.cube.object;
-	    const shadow = this.cube.shadow;
-	    const camera = this.cube.world.camera;
-	    const tweens = this.tweens;
-	    const zoomDuration = 0.5;
-
-	    tweens.cube.kill();
-	    tweens.shadow.kill();
-
-	    if ( !start ) {
-
-	      tweens.cube = TweenMax.to( cube.position, 0.75, { y: 0.1, ease: Sine.easeOut } );
-	      tweens.shadow = TweenMax.to( shadow.material, 0.75, { opacity: 0.5, ease: Sine.easeOut, onComplete: () => {
-
-	        tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
-	          { y: 0.1 }, 
-	          { y: -0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-	        );
-
-	        tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
-	          { opacity: 0.5 }, 
-	          { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-	        ); 
-
-	      } } );
-
-	    } else {
-
-	      tweens.cube = TweenMax.to( cube.position, zoomDuration, { y: 0, ease: Sine.easeInOut } );
-	      tweens.shadow = TweenMax.to( shadow.material, zoomDuration, { opacity: 0.4, ease: Sine.easeInOut, onComplete: () => {
-
-	        if ( time != 0 ) callback();
-
-	      } } );
-
-	    }
-
-	    const duration =  ( time > 0 ) ? time + zoomDuration : zoomDuration * 2;
-	    const rotations = ( time > 0 ) ? Math.min( Math.round( duration / 2 ), 1 ) * 2 : 2;
-
-	    const div = document.createElement( 'div' );
-	    const value = { old: 0, current: 0, delta: 0 };
-	    const matrix = new THREE.Matrix4();
-
-	    const cameraZoom = ( start ) ? 0.95 : 0.8;
-
-	    tweens.cameraZoom = TweenMax.to( camera, duration, { zoom: cameraZoom, ease: Sine.easeInOut, onUpdate: () => {
-
-	      camera.updateProjectionMatrix();
-
-	    } } );
-
-	    tweens.cameraRotation = TweenMax.to( div, duration, { x: Math.PI * rotations, ease: Sine.easeInOut, onUpdate: () => {
-
-	      value.current = this.tweens.cameraRotation.target._gsTransform.x;
-	      value.delta = value.current - value.old;
-	      value.old = value.current * 1;
-
-	      matrix.makeRotationY( value.delta );
-	      camera.position.applyMatrix4( matrix );
-	      camera.lookAt( this.cube.world.cameraOffset );
-
-	    }, onComplete: () => {
-
-	      if ( time == 0 ) callback();
-
-	    } } );
-
-	  }
-
-	  audioIn( audio ) {
-
-	    if ( !audio.musicOn ) return;
-
-	    const sound = audio.music;
-
-	    const currentVolume = { volume: 0 };
-
-	    sound.play();
-
-	    if ( this.tweens.volumeTween ) this.tweens.volumeTween.kill();
-
-	    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0.5, ease: Sine.easeOut, onUpdate: () => {
-
-	      sound.setVolume( this.tweens.volumeTween.target.volume );
-
-	      audio.button.classList[ sound.isPlaying ? 'add' : 'remove' ]('is-active');
-
-	    } } );
-
-	  }
-
-	  audioOut( audio ) {
-
-	    const sound = audio.music;
-
-	    const currentVolume = { volume: sound.getVolume() };
-
-	    if ( this.tweens.volumeTween ) this.tweens.volumeTween.kill();
-
-	    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0, ease: Sine.easeOut, onUpdate: () => {
-
-	      sound.setVolume( this.tweens.volumeTween.target.volume );
-
-	    }, onComplete: () => {
-
-	      sound.pause();
-
-	    } } );
-
-	  }
-
-	}
-
 	class Tween {
 
 	  constructor( options ) {
@@ -1973,12 +1654,14 @@
 	    this.to = options.to || null;
 	    this.onComplete = options.onComplete || ( () => {} );
 	    this.onUpdate = options.onUpdate || ( () => {} );
+	    this.yoyo = options.yoyo || null;
 
-	    this.start = Date.now();
 	    this.progress = 0;
 	    this.delta = 0;
 	    this.animate = null;
 	    this.values = [];
+
+	    if ( this.yoyo != null ) this.yoyo = false;
 
 	    if ( this.target !== null && this.to !== null ) {
 
@@ -1992,7 +1675,12 @@
 
 	    }
 
-	    this.animate = window.requestAnimationFrame( () => this.update() );
+	    setTimeout( () => {
+
+	      this.start = performance.now();
+	      this.animate = requestAnimationFrame( () => this.update() );
+
+	    }, this.delay );
 
 	    return this;
 
@@ -2000,17 +1688,26 @@
 
 	  kill() {
 
-	    window.cancelAnimationFrame( this.animate );
+	    cancelAnimationFrame( this.animate );
 
 	  }
 
 	  update() {
 
+	    const now = performance.now();
 	    const old = this.progress * 1;
-	    let progress = ( Date.now() - this.start ) / this.duration;
-	    if ( progress > 1 ) progress = 1;
+	    const delta = now - this.start;
 
-	    this.progress = this.easing( progress );
+	    let progress = delta / this.duration;
+
+	    if ( this.yoyo == true ) progress = 1 - progress;
+
+	    if ( this.yoyo == null && delta > this.duration - 1000 / 60 ) progress = 1;
+
+	    if ( progress >= 1 ) { progress = 1; this.progress = 1; }
+	    else if ( progress <= 0 ) { progress = 0; this.progress = 0; }
+	    else this.progress = this.easing( progress );
+
 	    this.delta = this.progress - old;
 
 	    this.values.forEach( key => {
@@ -2021,8 +1718,23 @@
 
 	    this.onUpdate( this );
 
-	    if ( this.progress == 1 ) this.onComplete( this );
-	    else this.animate = window.requestAnimationFrame( () => this.update() );
+	    if ( progress == 1 || progress == 0 ) {
+
+	      if ( this.yoyo != null ) {
+
+	        this.yoyo = ! this.yoyo;
+	        this.start = now;
+
+	      } else {
+
+	        this.onComplete( this );
+	        return;
+
+	      }
+
+	    }
+
+	    this.animate = window.requestAnimationFrame( () => this.update() );
 
 	  }
 
@@ -2211,6 +1923,441 @@
 
 	};
 
+	class Animations {
+
+	  constructor( game ) {
+
+	    this.data = {};
+	    this.tweens = {};
+	    this.game = game;
+
+	    this.data.cubeY = -0.2;
+	    this.data.floatScale = 1;
+	    this.data.cameraZoom = 0.85;
+
+	  }
+
+	  title( show, timeout ) {
+
+	    if ( typeof this.data.titleLetters == 'undefined' ) {
+
+	      this.data.titleLetters = [];
+
+	      this.game.dom.title.querySelectorAll( 'span' ).forEach( span => {
+
+	        const spanText = span.innerHTML;
+	        span.innerHTML = '';
+
+	        spanText.split( '' ).forEach( letter => {
+
+	          const i = document.createElement( 'i' );
+	          i.innerHTML = letter;
+	          i.style.opacity = 0;
+	          span.appendChild( i );
+	          this.data.titleLetters.push( i );
+
+	        } );
+
+	      } );
+
+	      this.game.dom.title.style.opacity = 1;
+	      this.tweens.title = [];
+
+	    }
+
+	    setTimeout( () => {
+
+	      if ( show ) setTimeout( () => { this.game.dom.main.style.pointerEvents = 'all'; }, 600 );
+	      else this.game.dom.main.style.pointerEvents = 'none';
+
+	      this.data.titleLetters.forEach( ( letter, index ) => {
+
+	        this.tweens.title[ index ] = new RUBIK.Tween( {
+	          duration: ( show ) ? 800 : 400,
+	          delay: index * 50,
+	          easing: 'easeOutSine',
+	          onUpdate: tween => {
+
+	            const rotation = ( ( show ) ? - 80 : 0 ) + 80 * tween.progress;
+	            letter.style.transform = 'rotateY(' + rotation + 'deg)';
+	            letter.style.opacity = ( show ) ? tween.progress : 1 - tween.progress;
+
+	          },
+	        } );
+
+	      } );
+
+	      if ( typeof this.tweens.start !== 'undefined' ) this.tweens.start.kill();
+
+	      this.tweens.start = new RUBIK.Tween( {
+	        duration: 400,
+	        easing: 'easeOutSine',
+	        onUpdate: tween => {
+
+	          this.game.dom.start.style.opacity = ( show ) ? tween.progress : 1 - tween.progress;
+
+	        },
+	        onComplete: () => {
+
+	          if ( show ) this.tweens.start = new RUBIK.Tween( {
+	            duration: 800,
+	            easing: 'easeInOutSine',
+	            yoyo: true,
+	            onUpdate: tween => {
+
+	              this.game.dom.start.style.opacity = 1 - tween.progress;
+
+	            },
+	          } );
+
+	        },
+	      } );
+
+	    }, timeout );
+
+	  }
+
+	  timer( show, timeout ) {
+
+	    this.data.timerLetters = [];
+
+	    const timerText = this.game.dom.timer.innerHTML;
+	    this.game.dom.timer.innerHTML = '';
+
+	    timerText.split( '' ).forEach( letter => {
+
+	      const i = document.createElement( 'i' );
+	      i.innerHTML = letter;
+	      i.style.opacity = ( show ) ? 0 : 1;
+	      this.game.dom.timer.appendChild( i );
+	      this.data.timerLetters.push( i );
+
+	    } );
+
+	    this.game.dom.timer.style.opacity = 1;
+
+	    this.tweens.timer = [];
+
+	    setTimeout( () => {
+
+	      this.data.timerLetters.forEach( ( letter, index ) => {
+
+	        this.tweens.timer[ index ] = new RUBIK.Tween( {
+	          duration: ( show ) ? 800 : 400,
+	          delay: index * 50,
+	          easing: 'easeOutSine',
+	          onUpdate: tween => {
+
+	            const rotation = ( ( show ) ? - 80 : 0 ) + 80 * tween.progress;
+	            letter.style.transform = 'rotateY(' + rotation + 'deg)';
+	            letter.style.opacity = ( show ) ? tween.progress : 1 - tween.progress;
+
+	          },
+	        } );
+
+	      } );
+
+	    }, timeout );
+
+	  }
+
+	  drop() {
+
+	    this.game.controls.disabled = true;
+	    this.data.floatScale = 1;
+	    this.data.cubeY = -0.2;
+
+	    this.game.cube.object.position.y = this.data.cubeY;
+	    this.game.controls.edges.position.y = this.data.cubeY;
+	    this.game.cube.animator.position.set( -2, 4, -2 );
+	    this.game.cube.animator.rotation.x = - Math.PI / 4;
+	    this.game.cube.shadow.material.opacity = 0;
+	    this.game.world.camera.zoom = this.data.cameraZoom;
+	    this.game.world.camera.updateProjectionMatrix();
+
+	    this.tweens.drop = new RUBIK.Tween( {
+	      target: this.game.cube.animator.position,
+	      duration: 2500,
+	      easing: 'easeOutCubic',
+	      to: { x: 0, y: - 0.1 * this.data.floatScale, z: 0 },
+	      onUpdate: () => { this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5; },
+	      onComplete: () => { this.float( true ); },
+	    } );
+
+	    this.tweens.rotate = new RUBIK.Tween( {
+	      target: this.game.cube.animator.rotation,
+	      duration: 2500,
+	      easing: 'easeOutCubic',
+	      to: { x: 0 },
+	    } );
+
+	    setTimeout( () => { this.title( true ); }, 2000 );
+
+	  }
+
+	  float( drop ) {
+
+	    if ( typeof this.data.floatScale == 'undefined' ) this.data.floatScale = 1;
+
+	    if ( drop ) {
+
+	      this.tweens.float = new RUBIK.Tween( {
+	        duration: 2500,
+	        easing: 'easeInOutSine',
+	        yoyo: true,
+	        onUpdate: tween => {
+
+	          this.game.cube.animator.position.y = - 0.1 * this.data.floatScale + tween.progress * 0.2 * this.data.floatScale;
+	          this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
+
+	        },
+	      } );
+
+	    } else {
+
+	      this.tweens.float = new RUBIK.Tween( {
+	        duration: 2500 / 2,
+	        easing: 'easeOutSine',
+	        onUpdate: tween => {
+
+	          this.game.cube.animator.position.y = tween.progress * - 0.1 * this.data.floatScale;
+	          this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
+
+	        },
+	        onComplete: () => { this.float( true ); },
+	      } );
+
+	    }
+
+	  }
+
+	  zoom( game, time, callback ) {
+
+	    const floatScale = ( game ) ? 0.25 : 1;
+	    const zoom = ( game ) ? 1 : this.data.cameraZoom;
+	    const cubeY = ( game ) ? 0 : this.data.cubeY;
+	    const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
+	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
+	    const easing = ( time > 0 ) ? 'easeInOutQuad' : 'easeInOutCubic';
+
+	    this.tweens.scale = new RUBIK.Tween( {
+	      target: this.data,
+	      duration: duration,
+	      easing: easing,
+	      to: { floatScale: floatScale },
+	    } );
+
+	    // this.tweens.cubeY = new RUBIK.Tween( {
+	    //   target: this.game.cube.object.position,
+	    //   duration: duration,
+	    //   easing: easing,
+	    //   to: { y: cubeY },
+	    // } );
+
+	    this.tweens.zoom = new RUBIK.Tween( {
+	      target: this.game.world.camera,
+	      duration: duration,
+	      easing: easing,
+	      to: { zoom: zoom },
+	      onUpdate: () => { this.game.world.camera.updateProjectionMatrix(); },
+	    } );
+
+	    this.tweens.rotate = new RUBIK.Tween( {
+	      target: this.game.cube.animator.rotation,
+	      duration: duration,
+	      easing: easing,
+	      to: { y: - Math.PI * 2 * rotations },
+	      onComplete: () => { this.game.cube.animator.rotation.y = 0; callback(); },
+	    } );
+
+	  }
+	  
+	}
+
+	class Timer {
+
+		constructor( world, element ) {
+
+			this.element = element;
+			this.startTime = null;
+
+			this.world = world;
+			world.timer = this;
+
+		}
+
+		start( continueGame ) {
+
+			this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
+			this.deltaTime = 0;
+			this.converted = this.convert( this.deltaTime );
+
+			this.world.onAnimate = () => {
+
+				const old = this.converted;
+
+				this.currentTime = Date.now();
+				this.deltaTime = this.currentTime - this.startTime;
+				this.converted = this.convert( this.deltaTime );
+
+				if ( this.converted != old ) {
+
+					localStorage.setItem( 'gameTime', JSON.stringify( this.deltaTime ) );
+					this.element.innerHTML = this.converted;
+
+				}
+
+			};
+
+		}
+
+		stop() {
+
+			this.currentTime = Date.now();
+			this.deltaTime = this.currentTime - this.startTime;
+
+			this.world.onAnimate = () => {};
+
+			return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
+
+		}
+
+		convert( time ) {
+
+			this.seconds = parseInt( ( time / 1000 ) % 60 );
+			this.minutes = parseInt( ( time / ( 1000 * 60 ) ) /*% 60*/ );
+
+			const print = this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
+
+			return print.replace( /0/g, 'o' );
+
+		}
+
+	}
+
+	class Game {
+
+	  constructor( container ) {
+
+	    this.dom = {
+	      container: document.querySelector( '.game' ),
+	      main: document.querySelector( '.ui__main' ),
+	      title: document.querySelector( '.ui__title' ),
+	      start: document.querySelector( '.ui__start' ),
+	      timer: document.querySelector( '.ui__timer' ),
+	      buttons: {
+	        settings: document.querySelector( '.ui__icon--settings' ),
+	        // audio: document.querySelector( '.ui__icon--audio' ),
+	        // home: document.querySelector( '.ui__icon--home' ),
+	      }
+	    };
+
+	    this.options = {
+	      cubeSize: 3,
+	      scrambleLength: 20,
+	    };
+
+	    this.world = new RUBIK.World( this.dom.container, this.options );
+	    this.cube = new RUBIK.Cube( this.options.cubeSize );
+	    this.controls = new RUBIK.Controls( this.cube, this.options );
+	    this.animation = new RUBIK.Animations( this );
+	    this.audio = new RUBIK.Audio( /*this.dom.buttons.audio*/ );
+	    this.timer = new RUBIK.Timer( this.world, this.dom.timer );
+	    this.icons = new RUBIK.SvgIcons( { observer: false, convert: true } );
+
+	    this.world.addCube( this.cube );
+	    this.world.addControls( this.controls );
+	    this.initDoupleTap();
+
+	    this.saved = this.cube.loadState();
+	    this.playing = false;
+
+	    this.animation.drop();
+
+	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
+	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
+
+	    this.dom.buttons.settings.onclick = e => {
+
+	      e.stopPropagation();
+	      if ( this.playing ) this.pause();
+
+	    };
+
+	  }
+
+	  start() {
+	    let duration = 0;
+
+	    if ( ! this.saved ) {
+
+	      this.dom.timer.innerHTML = 'o:oo';
+
+	      const scramble = new RUBIK.Scramble( this.cube, this.options.scrambleLength );
+	      duration = scramble.converted.length * this.controls.options.scrambleSpeed;
+	      this.controls.scrambleCube( scramble, () => { this.saved = true; } );
+
+	    } else {
+
+	      this.dom.timer.innerHTML = this.timer.convert( this.world.timer.deltaTime );
+
+	    }
+
+	    this.animation.title( false, 0 );
+	    this.animation.timer( true, 600 );
+
+	    this.animation.zoom( true, duration, () => {
+
+	      this.playing = true;
+	      this.controls.disabled = false;
+	      this.timer.start( this.saved );
+
+	    } );
+
+	  }
+
+	  pause() {
+
+	    this.playing = false;
+	    this.timer.stop();
+	    this.controls.disabled = true;
+
+	    this.animation.title( true, 600 );
+	    this.animation.timer( false, 0 );
+
+	    this.animation.zoom( false, 0, () => {} );
+
+	  }
+
+	  initDoupleTap() {
+
+	    let tappedTwice = false;
+
+	    const tapHandler = event => {
+
+	      if ( event.target !== this.dom.main ) return;
+
+	      event.preventDefault();
+
+	      if ( ! tappedTwice ) {
+
+	          tappedTwice = true;
+	          setTimeout( () => { tappedTwice = false; }, 300 );
+	          return false;
+
+	      }
+
+	      this.start();
+
+	    };
+
+	    this.dom.main.addEventListener( 'click', tapHandler, false );
+	    this.dom.main.addEventListener( 'touchstart', tapHandler, false );
+
+	  }
+
+	}
+
 	class SvgIcons {
 
 		constructor( options ) {
@@ -2218,15 +2365,14 @@
 			options = Object.assign( {
 				tagName: 'icon',
 				className: 'icon',
-				icons: {},
 				styles: true,
-				observe: true,
-				convert: false,
+				observe: false,
+				convert: true,
 			}, options || {} );
 
 			this.tagName = options.tagName;
 			this.className = options.className;
-			this.icons = options.icons;
+			this.icons = this.constructor.icons;
 
 			this.svgTag = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
 			this.svgTag.setAttribute( 'class', this.className );
@@ -2287,38 +2433,94 @@
 
 	}
 
-	class Game {
+	SvgIcons.icons = {
+	  'audio': {
+	    viewbox: '0 0 26712 21370',
+	    content: '<g fill="currentColor"><path d="M11966 392l-4951 4950 -5680 0c-738,0 -1336,598 -1336,1336l0 8014c0,737 598,1336 1336,1336l5680 0 4951 4950c836,836 2280,249 2280,-944l0 -18696c0,-1194 -1445,-1780 -2280,-944z"/><path d="M18823 6407c-644,-352 -1457,-120 -1815,526 -356,646 -120,1458 526,1815 718,394 1165,1137 1165,1937 0,800 -446,1543 -1164,1937 -646,357 -882,1169 -526,1815 358,649 1171,879 1815,526 1571,-865 2547,-2504 2547,-4278 0,-1774 -976,-3413 -2548,-4277l0 0z"/><path d="M26712 10685c0,-3535 -1784,-6786 -4773,-8695 -623,-397 -1449,-213 -1843,415 -395,628 -210,1459 412,1857 2212,1413 3533,3814 3533,6423 0,2609 -1321,5010 -3533,6423 -623,397 -807,1228 -412,1856 362,577 1175,843 1843,415 2989,-1909 4773,-5159 4773,-8695z"/></g>',
+	  },
+	  'settings': {
+	    viewbox: '0 0 512 512',
+	    content: '<path fill="currentColor" d="M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z" class=""></path>',
+	  },
+	  'home': {
+	    viewbox: '0 0 576 512',
+	    content: '<path fill="currentColor" d="M488 312.7V456c0 13.3-10.7 24-24 24H348c-6.6 0-12-5.4-12-12V356c0-6.6-5.4-12-12-12h-72c-6.6 0-12 5.4-12 12v112c0 6.6-5.4 12-12 12H112c-13.3 0-24-10.7-24-24V312.7c0-3.6 1.6-7 4.4-9.3l188-154.8c4.4-3.6 10.8-3.6 15.3 0l188 154.8c2.7 2.3 4.3 5.7 4.3 9.3zm83.6-60.9L488 182.9V44.4c0-6.6-5.4-12-12-12h-56c-6.6 0-12 5.4-12 12V117l-89.5-73.7c-17.7-14.6-43.3-14.6-61 0L4.4 251.8c-5.1 4.2-5.8 11.8-1.6 16.9l25.5 31c4.2 5.1 11.8 5.8 16.9 1.6l235.2-193.7c4.4-3.6 10.8-3.6 15.3 0l235.2 193.7c5.1 4.2 12.7 3.5 16.9-1.6l25.5-31c4.2-5.2 3.4-12.7-1.7-16.9z" class=""></path>',
+	  },
+	};
 
-	  constructor( container ) {
+	class Audio {
 
-	    this.world = new RUBIK.World( container );
-	    this.cube = new RUBIK.Cube( 3 );
-	    this.controls = new RUBIK.Controls( this.cube );
+	  constructor( /*button, animate*/ ) {
 
-	    this.world.addCube( this.cube );
-	    this.world.addControls( this.controls );
+	    // this.button = button;
+	    // this.animate = animate;
 
-	  }
+	    const listener = new THREE.AudioListener();
+	    const audioLoader = new THREE.AudioLoader();
 
-	  start() {
+	    this.musicOn = localStorage.getItem( 'music' );
+	    this.musicOn = ( this.musicOn == null ) ? true : ( ( this.musicOn == 'true' ) ? true : false );
 
+	    // this.music = new THREE.Audio( listener );
+
+	    // audioLoader.load( 'assets/sounds/music.mp3', buffer => {
+
+	    //   this.music.setBuffer( buffer );
+	    //   this.music.setLoop( true );
+	    //   this.music.setVolume( 0.5 );
+
+	    //   if ( this.musicOn ) {
+
+	    //     this.animate.audioIn( this );
+
+	    //   }
+
+	    // });
+
+	    this.click = new THREE.Audio( listener );
+
+	    audioLoader.load( 'assets/sounds/click.mp3', buffer => {
+
+	      this.click.setBuffer( buffer );
+	      this.click.setLoop( false );
+	      this.click.setVolume( 0.1 );
+
+	    });
+
+	    // this.button.addEventListener( 'click', () => {
+
+	    //   this.musicOn = !this.musicOn;
+
+	    //   if ( this.musicOn && !this.button.gameStarted ) {
+
+	    //     this.animate.audioIn( this );
+
+	    //   } else {
+
+	    //     this.animate.audioOut( this );
+
+	    //   }
+
+	    //   this.button.classList[ this.musicOn ? 'add' : 'remove' ]('is-active');
+
+	    //   localStorage.setItem( 'music', this.musicOn );
+
+	    // }, false );
 
 	  }
 
 	}
 
-	// export { Shatter } from './components/Shatter.js';
-
 	exports.World = World;
-	exports.Audio = Audio;
 	exports.Cube = Cube;
 	exports.Controls = Controls;
 	exports.Scramble = Scramble;
-	exports.Timer = Timer;
-	exports.Animate = Animate;
 	exports.Tween = Tween;
-	exports.SvgIcons = SvgIcons;
+	exports.Animations = Animations;
+	exports.Timer = Timer;
 	exports.Game = Game;
+	exports.SvgIcons = SvgIcons;
+	exports.Audio = Audio;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

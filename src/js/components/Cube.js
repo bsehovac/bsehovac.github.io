@@ -8,17 +8,23 @@ class Cube {
 
 		this.options = Object.assign( {
 			colors: {
-				right: 0x41aac8, // blue
-				left: 0x82ca38, // green
-				top: 0xfff7ff, // white
-				bottom: 0xffef48, // yellow
-				front: 0xef3923, // red
-				back: 0xff8c0a, // orange
-				piece: 0x08101a, // black
+				right: 0x41aac8,
+				left: 0x82ca38,
+				top: 0xfff7ff,
+				bottom: 0xffef48,
+				front: 0xef3923,
+				back: 0xff8c0a,
+				piece: 0x08101a,
 			},
 		}, options || {} );
 
+		this.holder = new THREE.Object3D();
 		this.object = new THREE.Object3D();
+		this.animator = new THREE.Object3D();
+
+		this.holder.add( this.animator );
+		this.animator.add( this.object );
+
 		this.cubes = [];
 
 		const positions = this.generatePositions( size );
@@ -82,8 +88,9 @@ class Cube {
 		const shadowGeometry = new THREE.PlaneGeometry( 2, 2 );
 		const shadowMaterial = new THREE.MeshBasicMaterial( {
 			depthWrite: true,
+			// color: 0x00ff33,
 			transparent: true,
-			opacity: 0.45,
+			opacity: 0.4,
 			map: new THREE.TextureLoader().load( shadowTexure )
 		} );
 
@@ -121,7 +128,6 @@ class Cube {
 
 			} );
 
-			this.controls.rearrangePieces();
 			this.controls.moves = gameMoves;
 
 			this.controls.moves.forEach( move => {

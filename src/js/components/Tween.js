@@ -10,12 +10,14 @@ class Tween {
     this.to = options.to || null;
     this.onComplete = options.onComplete || ( () => {} );
     this.onUpdate = options.onUpdate || ( () => {} );
+    this.yoyo = options.yoyo || null;
 
-    this.start = Date.now();
     this.progress = 0;
     this.delta = 0;
     this.animate = null;
     this.values = [];
+
+    if ( this.yoyo != null ) this.yoyo = false;
 
     if ( this.target !== null && this.to !== null ) {
 
@@ -29,7 +31,12 @@ class Tween {
 
     }
 
-    this.animate = window.requestAnimationFrame( () => this.update() );
+    setTimeout( () => {
+
+      this.start = performance.now();
+      this.animate = requestAnimationFrame( () => this.update() );
+
+    }, this.delay );
 
     return this;
 
@@ -37,17 +44,26 @@ class Tween {
 
   kill() {
 
-    window.cancelAnimationFrame( this.animate );
+    cancelAnimationFrame( this.animate );
 
   }
 
   update() {
 
+    const now = performance.now();
     const old = this.progress * 1;
-    let progress = ( Date.now() - this.start ) / this.duration;
-    if ( progress > 1 ) progress = 1;
+    const delta = now - this.start;
 
-    this.progress = this.easing( progress );
+    let progress = delta / this.duration;
+
+    if ( this.yoyo == true ) progress = 1 - progress;
+
+    if ( this.yoyo == null && delta > this.duration - 1000 / 60 ) progress = 1;
+
+    if ( progress >= 1 ) { progress = 1; this.progress = 1; }
+    else if ( progress <= 0 ) { progress = 0; this.progress = 0; }
+    else this.progress = this.easing( progress );
+
     this.delta = this.progress - old;
 
     this.values.forEach( key => {
@@ -58,8 +74,23 @@ class Tween {
 
     this.onUpdate( this );
 
-    if ( this.progress == 1 ) this.onComplete( this );
-    else this.animate = window.requestAnimationFrame( () => this.update() );
+    if ( progress == 1 || progress == 0 ) {
+
+      if ( this.yoyo != null ) {
+
+        this.yoyo = ! this.yoyo;
+        this.start = now;
+
+      } else {
+
+        this.onComplete( this );
+        return;
+
+      }
+
+    }
+
+    this.animate = window.requestAnimationFrame( () => this.update() );
 
   }
 

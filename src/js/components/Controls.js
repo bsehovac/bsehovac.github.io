@@ -5,13 +5,14 @@ class Controls {
   constructor( cube, options ) {
 
     this.options = Object.assign( {
-      animationSpeed: 300,
-      animationEasing: 'swingTo', // easeOutExpo
-      scrambleSpeed: 100,
-      scrambleEasing: 'easeOutQuart',
+      flipSpeed: 300,
+      flipEasing: 'swingTo', // easeOutExpo
+      scrambleSpeed: 150,
+      scrambleEasing: 'easeOutExpo', // easeOutQuart
     }, options || {} );
 
     this.cube = cube;
+    this.cube.controls = this;
     this.draggable = new Draggable();
     this.raycaster = new THREE.Raycaster();
 
@@ -19,16 +20,18 @@ class Controls {
     this.cube.object.add( this.group );
 
     this.helper = new THREE.Mesh(
-      new THREE.PlaneBufferGeometry( 200, 200 ),
+      new THREE.PlaneBufferGeometry( 20, 20 ),
       new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } )
     );
+
+    this.helper.rotation.set( 0, Math.PI / 4, 0 );
 
     this.edges = new THREE.Mesh(
       new THREE.BoxBufferGeometry( 0.95, 0.95, 0.95 ),
       new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0xff0033 } )
     );
 
-    this.onSolved = () => { console.log( 'solved' ) };
+    this.onSolved = () => {};
     this.onMove = () => {};
 
     this.drag = {};
@@ -80,13 +83,13 @@ class Controls {
       this.drag.axis = null;
       this.drag.delta = null;
       this.drag.angle = 0;
-      this.state = 'dragging';
+      this.state = 'preparing';
 
     };
 
     this.draggable.onDragMove = position => {
 
-      if ( this.state !== 'dragging' || this.disabled || this.scramble !== null ) return;
+      if ( ( this.state !== 'preparing' && this.state !== 'rotating' ) || this.disabled || this.scramble !== null ) return;
 
       const planeIntersect = this.getIntersect( position.current, this.helper, false );
       if ( planeIntersect === false ) return;
@@ -125,6 +128,8 @@ class Controls {
 
         }
 
+        this.state = 'rotating';
+
       } else if ( this.drag.axis !== null ) {
 
         const rotation = this.drag.delta[ this.drag.direction ];// * 2.25;
@@ -148,9 +153,9 @@ class Controls {
 
     this.draggable.onDragEnd = position => {
 
-      if ( this.state !== 'dragging' || this.disabled || this.scramble !== null ) return;
+      if ( this.state !== 'rotating' || this.disabled || this.scramble !== null ) return;
 
-      this.state = 'rotating';
+      this.state = 'finishing';
 
       const momentum = this.getMomentum()[ this.drag.direction ];
       const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this.drag.angle ) < Math.PI / 2 );
@@ -190,9 +195,9 @@ class Controls {
 
     const bounceCube = this.bounceCube();
 
-    new RUBIK.Tween( {
-      duration: this.options[ scramble ? 'scrambleSpeed' : 'animationSpeed' ],
-      easing: this.options[ scramble ? 'scrambleEasing' : 'animationEasing' ],
+    this.rotationTween = new RUBIK.Tween( {
+      duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
+      easing: this.options[ scramble ? 'scrambleEasing' : 'flipEasing' ],
       onUpdate: tween => {
 
         let deltaAngle = tween.delta * rotation;
@@ -202,12 +207,14 @@ class Controls {
       },
       onComplete: () => {
 
+        const layer = this.drag.layer.slice( 0 );
+
         this.cube.object.rotation.setFromVector3( this.snapRotation( this.cube.object.rotation.toVector3() ) );
         this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
-
-        callback( this.drag.layer );
-
         this.deselectLayer( this.drag.layer );
+        this.cube.saveState();
+
+        callback( layer );
 
       },
     } );
@@ -229,7 +236,7 @@ class Controls {
 
           }
 
-          this.cube.object.rotateOnWorldAxis( this.drag.axis, delta );
+          this.cube.object.rotateOnAxis( this.drag.axis, delta );
 
         }
 
@@ -239,9 +246,9 @@ class Controls {
 
   rotateCube( rotation, callback ) {
 
-    new RUBIK.Tween( {
-      duration: this.options.animationSpeed,
-      easing: this.options.animationEasing,
+    this.rotationTween = new RUBIK.Tween( {
+      duration: this.options.flipSpeed,
+      easing: this.options.flipEasing,
       onUpdate: tween => {
 
         this.edges.rotateOnWorldAxis( this.drag.axis, tween.delta * rotation );
