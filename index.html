@@ -17,29 +17,29 @@
       <div class="ui__main">
 
         <h1 class="ui__title">
-          <span>THE</span>
-          <span>CUBE</span>
+          <span>the</span>
+          <span>cube</span>
         </h1>
 
-        <button class="ui__button ui__button--start">
-          Start
-        </button>
+        <span class="ui__start">
+          double tap to start
+        </span>
 
-        <button class="ui__icon ui__icon--audio">
+        <div class="ui__timer">
+          o:oo
+        </div>
+
+        <!-- <button class="ui__icon ui__icon--audio">
           <icon audio />
-        </button>
+        </button> -->
 
         <button class="ui__icon ui__icon--settings">
           <icon settings />
         </button>
 
-        <button class="ui__icon ui__icon--home">
+        <!-- <button class="ui__icon ui__icon--home">
           <icon home />
-        </button>
-
-        <div class="ui__timer">
-          0:00
-        </div>
+        </button> -->
 
         <!-- <div class="ui__moves" id="moves">
           0:00
@@ -51,15 +51,18 @@
 
       </div>
 
-      <div class="ui__preferences"></div>
+      <div class="ui__preferences">
+        
+        
+        
+      </div>
 
     </div>
 
     <script src="assets/js/three.js"></script>
-    <script src="assets/js/tweenmax.js"></script>
     <script src="assets/js/rubik.js"></script>
 
-    <script>RUBIK.Init();</script>
+    <script>const game = new RUBIK.Game();</script>
 
   </body>
 </html>

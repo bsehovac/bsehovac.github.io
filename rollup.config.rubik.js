@@ -13,5 +13,6 @@ export default {
       name: 'RUBIK',
       file: './assets/js/rubik.js',
       indent: '\t',
+      sourceMap: false,
   },
 };

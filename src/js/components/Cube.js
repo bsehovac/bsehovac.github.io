@@ -6,68 +6,41 @@ class Cube {
 
 		size = ( typeof size !== 'undefined' ) ? size : 3;
 
-		options = Object.assign( {
+		this.options = Object.assign( {
 			colors: {
-				right: 0x41aac8, // blue
-				left: 0x82ca38, // green
-				top: 0xfff7ff, // white
-				bottom: 0xffef48, // yellow
-				front: 0xef3923, // red
-				back: 0xff8c0a, // orange
-				piece: 0x08101a, // black
+				right: 0x41aac8,
+				left: 0x82ca38,
+				top: 0xfff7ff,
+				bottom: 0xffef48,
+				front: 0xef3923,
+				back: 0xff8c0a,
+				piece: 0x08101a,
 			},
 		}, options || {} );
 
+		this.holder = new THREE.Object3D();
+		this.object = new THREE.Object3D();
+		this.animator = new THREE.Object3D();
+
+		this.holder.add( this.animator );
+		this.animator.add( this.object );
+
+		this.cubes = [];
+
 		const positions = this.generatePositions( size );
-		const object = new THREE.Object3D();
-		const geometry = new CubePieces( size, positions, options.colors );
+		const pieces = CubePieces( size, positions, this.options.colors );
 
-		const origin = [];
+		pieces.forEach( piece => {
 
-		geometry.pieces.forEach( piece => {
-
-			object.add( piece );
-			origin.push( piece );
+			this.cubes.push( piece.userData.cube );
+			this.object.add( piece );
 
 		} );
 
 		this.size = size;
-		this.colors = options.colors;
-		this.object = object;
-		this.pieces = geometry.pieces;
-		this.edges = geometry.edges;
-		this.origin = origin;
-		this.positions = positions;
+		this.pieces = pieces;
 
-		this.generateLayers();
 		this.generateShadow();
-		this.generateSolvedStates()
-
-	}
-
-	generateLayers() {
-
-		const size = this.size;
-		const layers = { a: [], x: [], y: [], z: [] };
-
-		for ( let i = 0, piecesPerFace = size * size; i < size; i ++ ) {
-
-			layers.y[ i ] = [];
-			layers.x[ i ] = [];
-			layers.z[ i ] = [];
-
-			for ( let j = 0; j < piecesPerFace; j ++ ) {
-
-				layers.a.push( j + i * piecesPerFace );
-				layers.y[ i ].push( j + piecesPerFace * i );
-				layers.z[ i ].push( j * 3 + i );
-				layers.x[ i ].push( Math.floor( j / size ) * piecesPerFace + i * size + j % size );
-
-			}
-
-		}
-
-		this.layers = layers;
 
 	}
 
@@ -115,8 +88,9 @@ class Cube {
 		const shadowGeometry = new THREE.PlaneGeometry( 2, 2 );
 		const shadowMaterial = new THREE.MeshBasicMaterial( {
 			depthWrite: true,
+			// color: 0x00ff33,
 			transparent: true,
-			opacity: 0.45,
+			opacity: 0.4,
 			map: new THREE.TextureLoader().load( shadowTexure )
 		} );
 
@@ -154,7 +128,6 @@ class Cube {
 
 			} );
 
-			this.controls.rearrangePieces();
 			this.controls.moves = gameMoves;
 
 			this.controls.moves.forEach( move => {
@@ -209,37 +182,6 @@ class Cube {
 		localStorage.removeItem( 'cubeData' );
 		localStorage.removeItem( 'gameMoves' );
 		localStorage.removeItem( 'gameTime' );
-
-	}
-
-	generateSolvedStates() {
-
-		this.solvedStates = [
-		  [6, 15, 24, 3, 12, 21, 0, 9, 18, 7, 16, 25, 4, 13, 22, 1, 10, 19, 8, 17, 26, 5, 14, 23, 2, 11, 20].toString(),
-		  [8, 7, 6, 5, 4, 3, 2, 1, 0, 17, 16, 15, 14, 13, 12, 11, 10, 9, 26, 25, 24, 23, 22, 21, 20, 19, 18].toString(),
-		  [26, 17, 8, 23, 14, 5, 20, 11, 2, 25, 16, 7, 22, 13, 4, 19, 10, 1, 24, 15, 6, 21, 12, 3, 18, 9, 0].toString(),
-		  [24, 25, 26, 21, 22, 23, 18, 19, 20, 15, 16, 17, 12, 13, 14, 9, 10, 11, 6, 7, 8, 3, 4, 5, 0, 1, 2].toString(),
-		  [18, 21, 24, 19, 22, 25, 20, 23, 26, 9, 12, 15, 10, 13, 16, 11, 14, 17, 0, 3, 6, 1, 4, 7, 2, 5, 8].toString(),
-		  [24, 15, 6, 25, 16, 7, 26, 17, 8, 21, 12, 3, 22, 13, 4, 23, 14, 5, 18, 9, 0, 19, 10, 1, 20, 11, 2].toString(),
-		  [6, 3, 0, 7, 4, 1, 8, 5, 2, 15, 12, 9, 16, 13, 10, 17, 14, 11, 24, 21, 18, 25, 22, 19, 26, 23, 20].toString(),
-		  [0, 9, 18, 1, 10, 19, 2, 11, 20, 3, 12, 21, 4, 13, 22, 5, 14, 23, 6, 15, 24, 7, 16, 25, 8, 17, 26].toString(),
-		  [2, 1, 0, 11, 10, 9, 20, 19, 18, 5, 4, 3, 14, 13, 12, 23, 22, 21, 8, 7, 6, 17, 16, 15, 26, 25, 24].toString(),
-		  [0, 3, 6, 9, 12, 15, 18, 21, 24, 1, 4, 7, 10, 13, 16, 19, 22, 25, 2, 5, 8, 11, 14, 17, 20, 23, 26].toString(),
-		  [6, 7, 8, 15, 16, 17, 24, 25, 26, 3, 4, 5, 12, 13, 14, 21, 22, 23, 0, 1, 2, 9, 10, 11, 18, 19, 20].toString(),
-		  [8, 5, 2, 17, 14, 11, 26, 23, 20, 7, 4, 1, 16, 13, 10, 25, 22, 19, 6, 3, 0, 15, 12, 9, 24, 21, 18].toString(),
-		  [2, 5, 8, 1, 4, 7, 0, 3, 6, 11, 14, 17, 10, 13, 16, 9, 12, 15, 20, 23, 26, 19, 22, 25, 18, 21, 24].toString(),
-		  [8, 17, 26, 7, 16, 25, 6, 15, 24, 5, 14, 23, 4, 13, 22, 3, 12, 21, 2, 11, 20, 1, 10, 19, 0, 9, 18].toString(),
-		  [26, 23, 20, 25, 22, 19, 24, 21, 18, 17, 14, 11, 16, 13, 10, 15, 12, 9, 8, 5, 2, 7, 4, 1, 6, 3, 0].toString(),
-		  [20, 11, 2, 19, 10, 1, 18, 9, 0, 23, 14, 5, 22, 13, 4, 21, 12, 3, 26, 17, 8, 25, 16, 7, 24, 15, 6].toString(),
-		  [18, 19, 20, 9, 10, 11, 0, 1, 2, 21, 22, 23, 12, 13, 14, 3, 4, 5, 24, 25, 26, 15, 16, 17, 6, 7, 8].toString(),
-		  [20, 23, 26, 11, 14, 17, 2, 5, 8, 19, 22, 25, 10, 13, 16, 1, 4, 7, 18, 21, 24, 9, 12, 15, 0, 3, 6].toString(),
-		  [26, 25, 24, 17, 16, 15, 8, 7, 6, 23, 22, 21, 14, 13, 12, 5, 4, 3, 20, 19, 18, 11, 10, 9, 2, 1, 0].toString(),
-		  [24, 21, 18, 15, 12, 9, 6, 3, 0, 25, 22, 19, 16, 13, 10, 7, 4, 1, 26, 23, 20, 17, 14, 11, 8, 5, 2].toString(),
-		  [2, 11, 20, 5, 14, 23, 8, 17, 26, 1, 10, 19, 4, 13, 22, 7, 16, 25, 0, 9, 18, 3, 12, 21, 6, 15, 24].toString(),
-		  [20, 19, 18, 23, 22, 21, 26, 25, 24, 11, 10, 9, 14, 13, 12, 17, 16, 15, 2, 1, 0, 5, 4, 3, 8, 7, 6].toString(),
-		  [18, 9, 0, 21, 12, 3, 24, 15, 6, 19, 10, 1, 22, 13, 4, 25, 16, 7, 20, 11, 2, 23, 14, 5, 26, 17, 8].toString(),
-		  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].toString(),
-		];
 
 	}
 

@@ -1,8 +1,9 @@
 class World {
 
-	constructor( container ) {
+	constructor( container, options ) {
 
 		this.container = container;
+		this.options = options;
 
 		this.scene = new THREE.Scene();
 
@@ -11,7 +12,6 @@ class World {
 		this.container.appendChild( this.renderer.domElement );
 
 		this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
-		this.cameraOffset = new THREE.Vector3( 0, 0.15, 0 );
 
 		this.onAnimate = () => {};
 		this.onResize = () => {};
@@ -52,33 +52,21 @@ class World {
 
 	createLights() {
 
-		// const lights = this.lights = [
+		this.lights = {
+			holder:  new THREE.Object3D,
+			ambient: new THREE.AmbientLight( 0xffffff, 1.25 ),
+			front:   new THREE.DirectionalLight( 0xffffff, 0.65 ),
+			back:    new THREE.DirectionalLight( 0xffffff, 0.35 ),
+		};
 
-		// 	new THREE.AmbientLight( 0xffffff, 1.65 ),
-		// 	new THREE.DirectionalLight( 0xffffff, 0.2 ),
-		// 	new THREE.DirectionalLight( 0xffffff, 0.4 ),
+		this.lights.front.position.set( 0.3, 1,  0.6 );
+		this.lights.back.position.set( -0.3, -1,  -0.6 );
 
-		// ];
+		this.lights.holder.add( this.lights.ambient );
+		this.lights.holder.add( this.lights.front );
+		this.lights.holder.add( this.lights.back );
 
-		// lights[1].position.set( -1, -1,  1 );
-		// lights[2].position.set( -1,  1, -1 );
-
-		// this.scene.add( lights[0] );
-		// this.scene.add( lights[1] );
-		// this.scene.add( lights[2] );
-
-		const lights = this.lights = [
-			new THREE.AmbientLight( 0xffffff, 1.25 ),
-			new THREE.DirectionalLight( 0xffffff, 0.65 ),
-			new THREE.DirectionalLight( 0xffffff, 0.65 ),
-		];
-
-		lights[1].position.set( 0.3, 1,  0.6 );
-		lights[2].position.set( -0.3, -1,  -0.6 );
-
-		this.scene.add( lights[0] );
-		this.scene.add( lights[1] );
-		this.scene.add( lights[2] );
+		this.scene.add( this.lights.holder );
 
 	}
 
@@ -94,40 +82,42 @@ class World {
 			? ( this.stage.height / 2 ) / Math.tan( fovRad / 2 )
 			: ( this.stage.width / this.camera.aspect ) / ( 2 * Math.tan( fovRad / 2 ) );
 
-	  distance /= 2.1;
+	  distance *= 0.5;
 
 		this.camera.position.set( distance, distance, distance);
-		this.camera.lookAt( this.cameraOffset );
+		this.camera.lookAt( this.scene.position );
 		this.camera.updateProjectionMatrix();
 
 	}
 
 	addCube( cube ) {
 
-		cube.world = this;
 		this.cube = cube;
+		this.cube.world = this;
 
-		this.scene.add( cube.object );
-		this.scene.add( cube.shadow );
-
-	}
-
-	addAudio( audio ) {
-
-		audio.world = this;
-		this.audio = audio;
-
-		this.camera.add( audio.listener );
+		this.scene.add( this.cube.holder );
+		this.scene.add( this.cube.shadow );
 
 	}
+
+	// addAudio( audio ) {
+
+	// 	this.audio = audio;
+	// 	this.audio.world = this;
+
+	// 	this.camera.add( this.audio.listener );
+
+	// }
 
 	addControls( controls ) {
 
-		controls.world = this;
 		this.controls = controls;
+		this.controls.world = this;
 
-		this.scene.add( controls.helper );
-		controls.draggable.init( this.container );
+    this.scene.add( this.controls.edges );
+    this.scene.add( this.controls.helper );
+
+		this.controls.draggable.init( this.container );
 
 	}
 

@@ -6,9 +6,10 @@
 
 	class World {
 
-		constructor( container ) {
+		constructor( container, options ) {
 
 			this.container = container;
+			this.options = options;
 
 			this.scene = new THREE.Scene();
 
@@ -17,7 +18,6 @@
 			this.container.appendChild( this.renderer.domElement );
 
 			this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
-			this.cameraOffset = new THREE.Vector3( 0, 0.15, 0 );
 
 			this.onAnimate = () => {};
 			this.onResize = () => {};
@@ -58,33 +58,21 @@
 
 		createLights() {
 
-			// const lights = this.lights = [
+			this.lights = {
+				holder:  new THREE.Object3D,
+				ambient: new THREE.AmbientLight( 0xffffff, 1.25 ),
+				front:   new THREE.DirectionalLight( 0xffffff, 0.65 ),
+				back:    new THREE.DirectionalLight( 0xffffff, 0.35 ),
+			};
 
-			// 	new THREE.AmbientLight( 0xffffff, 1.65 ),
-			// 	new THREE.DirectionalLight( 0xffffff, 0.2 ),
-			// 	new THREE.DirectionalLight( 0xffffff, 0.4 ),
+			this.lights.front.position.set( 0.3, 1,  0.6 );
+			this.lights.back.position.set( -0.3, -1,  -0.6 );
 
-			// ];
+			this.lights.holder.add( this.lights.ambient );
+			this.lights.holder.add( this.lights.front );
+			this.lights.holder.add( this.lights.back );
 
-			// lights[1].position.set( -1, -1,  1 );
-			// lights[2].position.set( -1,  1, -1 );
-
-			// this.scene.add( lights[0] );
-			// this.scene.add( lights[1] );
-			// this.scene.add( lights[2] );
-
-			const lights = this.lights = [
-				new THREE.AmbientLight( 0xffffff, 1.25 ),
-				new THREE.DirectionalLight( 0xffffff, 0.65 ),
-				new THREE.DirectionalLight( 0xffffff, 0.65 ),
-			];
-
-			lights[1].position.set( 0.3, 1,  0.6 );
-			lights[2].position.set( -0.3, -1,  -0.6 );
-
-			this.scene.add( lights[0] );
-			this.scene.add( lights[1] );
-			this.scene.add( lights[2] );
+			this.scene.add( this.lights.holder );
 
 		}
 
@@ -100,105 +88,44 @@
 				? ( this.stage.height / 2 ) / Math.tan( fovRad / 2 )
 				: ( this.stage.width / this.camera.aspect ) / ( 2 * Math.tan( fovRad / 2 ) );
 
-		  distance /= 2.1;
+		  distance *= 0.5;
 
 			this.camera.position.set( distance, distance, distance);
-			this.camera.lookAt( this.cameraOffset );
+			this.camera.lookAt( this.scene.position );
 			this.camera.updateProjectionMatrix();
 
 		}
 
 		addCube( cube ) {
 
-			cube.world = this;
 			this.cube = cube;
+			this.cube.world = this;
 
-			this.scene.add( cube.object );
-			this.scene.add( cube.shadow );
-
-		}
-
-		addAudio( audio ) {
-
-			audio.world = this;
-			this.audio = audio;
-
-			this.camera.add( audio.listener );
+			this.scene.add( this.cube.holder );
+			this.scene.add( this.cube.shadow );
 
 		}
+
+		// addAudio( audio ) {
+
+		// 	this.audio = audio;
+		// 	this.audio.world = this;
+
+		// 	this.camera.add( this.audio.listener );
+
+		// }
 
 		addControls( controls ) {
 
-			controls.world = this;
 			this.controls = controls;
+			this.controls.world = this;
 
-			this.scene.add( controls.helper );
-			controls.draggable.init( this.container );
+	    this.scene.add( this.controls.edges );
+	    this.scene.add( this.controls.helper );
+
+			this.controls.draggable.init( this.container );
 
 		}
-
-	}
-
-	class Audio {
-
-	  constructor( button, animate ) {
-
-	    this.button = button;
-	    this.animate = animate;
-
-	    this.listener = new THREE.AudioListener();
-
-	    this.music = new THREE.Audio( this.listener );
-	    this.click = new THREE.Audio( this.listener );
-
-	    this.musicOn = localStorage.getItem( 'music' );
-	    this.musicOn = ( this.musicOn == null ) ? false : ( ( this.musicOn == 'true' ) ? true : false );
-
-	    const audioLoader = new THREE.AudioLoader();
-
-	    audioLoader.load( 'assets/sounds/music.mp3', buffer => {
-
-	      this.music.setBuffer( buffer );
-	      this.music.setLoop( true );
-	      this.music.setVolume( 0.5 );
-
-	      if ( this.musicOn ) {
-
-	        this.animate.audioIn( this );
-
-	      }
-
-	    });
-
-	    audioLoader.load( 'assets/sounds/click.mp3', buffer => {
-
-	      this.click.setBuffer( buffer );
-	      this.click.setLoop( false );
-	      this.click.setVolume( 0.5 );
-
-	    });
-
-	    this.button.addEventListener( 'click', () => {
-
-	      this.musicOn = !this.musicOn;
-
-	      if ( this.musicOn && !this.button.gameStarted ) {
-
-	        this.animate.audioIn( this );
-
-	      } else {
-
-	        this.animate.audioOut( this );
-
-	      }
-
-	      this.button.classList[ this.musicOn ? 'add' : 'remove' ]('is-active');
-
-	      localStorage.setItem( 'music', this.musicOn );
-
-	    }, false );
-
-	  }
 
 	}
 
@@ -672,7 +599,6 @@
 	function CubePieces( size, positions, colors ) {
 
 		const pieces = [];
-		const edges = [];
 
 		const edgeScale = 0.85;
 		const edgeRoundness = 0.1;
@@ -690,11 +616,6 @@
 			} )
 		);
 
-		const helper = new THREE.Mesh(
-			new THREE.PlaneGeometry( pieceSize, pieceSize, pieceSize ),
-			new THREE.MeshBasicMaterial( { depthWrite: false, side: THREE.DoubleSide, transparent: true, opacity: 0 } )
-		);
-
 		const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
 		const edgeMaterial = new THREE.MeshStandardMaterial( {
 			color: colors.piece,
@@ -707,6 +628,7 @@
 
 			const piece = new THREE.Object3D();
 			const pieceCube = pieceMesh.clone();
+			const edges = [];
 
 			piece.position.copy( position.clone().divideScalar( size ) );
 			piece.add( pieceCube );
@@ -715,18 +637,19 @@
 			position.edges.forEach( position => {
 
 				const edge = createEdge( position );
-				const edgeHelper = createEdgeHelper( edge );
-
-				piece.add( edge, edgeHelper );
+				piece.add( edge );
+				edges.push( [ 'left', 'right', 'bottom', 'top', 'back', 'front' ][ position ] );
 
 			} );
+
+			piece.userData.edges = edges;
+			piece.userData.cube = pieceCube;
 
 			pieces.push( piece );
 
 		} );
 
-		this.pieces = pieces;
-		this.edges = edges;
+		return pieces;
 
 		function createEdge( position ) {
 
@@ -752,19 +675,6 @@
 			edge.scale.set( edgeScale, edgeScale, edgeScale );
 
 			return edge;
-
-		}
-
-		function createEdgeHelper( edge ) {
-
-			const edgeHelper = helper.clone();
-
-			edgeHelper.position.copy( edge.position );
-			edgeHelper.rotation.copy( edge.rotation );
-
-			edges.push( edgeHelper );
-
-			return edgeHelper;
 
 		}
 
@@ -796,68 +706,41 @@
 
 			size = ( typeof size !== 'undefined' ) ? size : 3;
 
-			options = Object.assign( {
+			this.options = Object.assign( {
 				colors: {
-					right: 0x41aac8, // blue
-					left: 0x82ca38, // green
-					top: 0xfff7ff, // white
-					bottom: 0xffef48, // yellow
-					front: 0xef3923, // red
-					back: 0xff8c0a, // orange
-					piece: 0x08101a, // black
+					right: 0x41aac8,
+					left: 0x82ca38,
+					top: 0xfff7ff,
+					bottom: 0xffef48,
+					front: 0xef3923,
+					back: 0xff8c0a,
+					piece: 0x08101a,
 				},
 			}, options || {} );
 
+			this.holder = new THREE.Object3D();
+			this.object = new THREE.Object3D();
+			this.animator = new THREE.Object3D();
+
+			this.holder.add( this.animator );
+			this.animator.add( this.object );
+
+			this.cubes = [];
+
 			const positions = this.generatePositions( size );
-			const object = new THREE.Object3D();
-			const geometry = new CubePieces( size, positions, options.colors );
+			const pieces = CubePieces( size, positions, this.options.colors );
 
-			const origin = [];
+			pieces.forEach( piece => {
 
-			geometry.pieces.forEach( piece => {
-
-				object.add( piece );
-				origin.push( piece );
+				this.cubes.push( piece.userData.cube );
+				this.object.add( piece );
 
 			} );
 
 			this.size = size;
-			this.colors = options.colors;
-			this.object = object;
-			this.pieces = geometry.pieces;
-			this.edges = geometry.edges;
-			this.origin = origin;
-			this.positions = positions;
+			this.pieces = pieces;
 
-			this.generateLayers();
 			this.generateShadow();
-			this.generateSolvedStates();
-
-		}
-
-		generateLayers() {
-
-			const size = this.size;
-			const layers = { a: [], x: [], y: [], z: [] };
-
-			for ( let i = 0, piecesPerFace = size * size; i < size; i ++ ) {
-
-				layers.y[ i ] = [];
-				layers.x[ i ] = [];
-				layers.z[ i ] = [];
-
-				for ( let j = 0; j < piecesPerFace; j ++ ) {
-
-					layers.a.push( j + i * piecesPerFace );
-					layers.y[ i ].push( j + piecesPerFace * i );
-					layers.z[ i ].push( j * 3 + i );
-					layers.x[ i ].push( Math.floor( j / size ) * piecesPerFace + i * size + j % size );
-
-				}
-
-			}
-
-			this.layers = layers;
 
 		}
 
@@ -905,8 +788,9 @@
 			const shadowGeometry = new THREE.PlaneGeometry( 2, 2 );
 			const shadowMaterial = new THREE.MeshBasicMaterial( {
 				depthWrite: true,
+				// color: 0x00ff33,
 				transparent: true,
-				opacity: 0.45,
+				opacity: 0.4,
 				map: new THREE.TextureLoader().load( shadowTexure )
 			} );
 
@@ -944,7 +828,6 @@
 
 				} );
 
-				this.controls.rearrangePieces();
 				this.controls.moves = gameMoves;
 
 				this.controls.moves.forEach( move => {
@@ -1000,128 +883,88 @@
 
 		}
 
-		generateSolvedStates() {
-
-			this.solvedStates = [
-			  [6, 15, 24, 3, 12, 21, 0, 9, 18, 7, 16, 25, 4, 13, 22, 1, 10, 19, 8, 17, 26, 5, 14, 23, 2, 11, 20].toString(),
-			  [8, 7, 6, 5, 4, 3, 2, 1, 0, 17, 16, 15, 14, 13, 12, 11, 10, 9, 26, 25, 24, 23, 22, 21, 20, 19, 18].toString(),
-			  [26, 17, 8, 23, 14, 5, 20, 11, 2, 25, 16, 7, 22, 13, 4, 19, 10, 1, 24, 15, 6, 21, 12, 3, 18, 9, 0].toString(),
-			  [24, 25, 26, 21, 22, 23, 18, 19, 20, 15, 16, 17, 12, 13, 14, 9, 10, 11, 6, 7, 8, 3, 4, 5, 0, 1, 2].toString(),
-			  [18, 21, 24, 19, 22, 25, 20, 23, 26, 9, 12, 15, 10, 13, 16, 11, 14, 17, 0, 3, 6, 1, 4, 7, 2, 5, 8].toString(),
-			  [24, 15, 6, 25, 16, 7, 26, 17, 8, 21, 12, 3, 22, 13, 4, 23, 14, 5, 18, 9, 0, 19, 10, 1, 20, 11, 2].toString(),
-			  [6, 3, 0, 7, 4, 1, 8, 5, 2, 15, 12, 9, 16, 13, 10, 17, 14, 11, 24, 21, 18, 25, 22, 19, 26, 23, 20].toString(),
-			  [0, 9, 18, 1, 10, 19, 2, 11, 20, 3, 12, 21, 4, 13, 22, 5, 14, 23, 6, 15, 24, 7, 16, 25, 8, 17, 26].toString(),
-			  [2, 1, 0, 11, 10, 9, 20, 19, 18, 5, 4, 3, 14, 13, 12, 23, 22, 21, 8, 7, 6, 17, 16, 15, 26, 25, 24].toString(),
-			  [0, 3, 6, 9, 12, 15, 18, 21, 24, 1, 4, 7, 10, 13, 16, 19, 22, 25, 2, 5, 8, 11, 14, 17, 20, 23, 26].toString(),
-			  [6, 7, 8, 15, 16, 17, 24, 25, 26, 3, 4, 5, 12, 13, 14, 21, 22, 23, 0, 1, 2, 9, 10, 11, 18, 19, 20].toString(),
-			  [8, 5, 2, 17, 14, 11, 26, 23, 20, 7, 4, 1, 16, 13, 10, 25, 22, 19, 6, 3, 0, 15, 12, 9, 24, 21, 18].toString(),
-			  [2, 5, 8, 1, 4, 7, 0, 3, 6, 11, 14, 17, 10, 13, 16, 9, 12, 15, 20, 23, 26, 19, 22, 25, 18, 21, 24].toString(),
-			  [8, 17, 26, 7, 16, 25, 6, 15, 24, 5, 14, 23, 4, 13, 22, 3, 12, 21, 2, 11, 20, 1, 10, 19, 0, 9, 18].toString(),
-			  [26, 23, 20, 25, 22, 19, 24, 21, 18, 17, 14, 11, 16, 13, 10, 15, 12, 9, 8, 5, 2, 7, 4, 1, 6, 3, 0].toString(),
-			  [20, 11, 2, 19, 10, 1, 18, 9, 0, 23, 14, 5, 22, 13, 4, 21, 12, 3, 26, 17, 8, 25, 16, 7, 24, 15, 6].toString(),
-			  [18, 19, 20, 9, 10, 11, 0, 1, 2, 21, 22, 23, 12, 13, 14, 3, 4, 5, 24, 25, 26, 15, 16, 17, 6, 7, 8].toString(),
-			  [20, 23, 26, 11, 14, 17, 2, 5, 8, 19, 22, 25, 10, 13, 16, 1, 4, 7, 18, 21, 24, 9, 12, 15, 0, 3, 6].toString(),
-			  [26, 25, 24, 17, 16, 15, 8, 7, 6, 23, 22, 21, 14, 13, 12, 5, 4, 3, 20, 19, 18, 11, 10, 9, 2, 1, 0].toString(),
-			  [24, 21, 18, 15, 12, 9, 6, 3, 0, 25, 22, 19, 16, 13, 10, 7, 4, 1, 26, 23, 20, 17, 14, 11, 8, 5, 2].toString(),
-			  [2, 11, 20, 5, 14, 23, 8, 17, 26, 1, 10, 19, 4, 13, 22, 7, 16, 25, 0, 9, 18, 3, 12, 21, 6, 15, 24].toString(),
-			  [20, 19, 18, 23, 22, 21, 26, 25, 24, 11, 10, 9, 14, 13, 12, 17, 16, 15, 2, 1, 0, 5, 4, 3, 8, 7, 6].toString(),
-			  [18, 9, 0, 21, 12, 3, 24, 15, 6, 19, 10, 1, 22, 13, 4, 25, 16, 7, 20, 11, 2, 23, 14, 5, 26, 17, 8].toString(),
-			  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].toString(),
-			];
-
-		}
-
 	}
 
 	class Draggable {
 
-	  constructor( options ) {
+	  constructor( element ) {
 
-	    this.options = Object.assign( {
-	      useVector: false,
-	      invertY: false,
-	      mouseMove: false,
-	    }, options || {} );
+	    window.addEventListener( 'touchmove', function () {} );
+	    document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
 
-	    this.position = ( typeof this.options.useVector === 'function' ) ? {
-	      start: new this.options.useVector(),
-	      current: new this.options.useVector(),
-	      delta: new this.options.useVector(),
-	    } : {
-	      start: { x: 0, y: 0 },
-	      current: { x: 0, y: 0 },
-	      delta: { x: 0, y: 0 },
+	    this.position = {
+	      // start: new THREE.Vector2(),
+	      current: new THREE.Vector2(),
+	      // delta: new THREE.Vector2(),
+	      // drag: new THREE.Vector2(),
+	      // old: new THREE.Vector2(),
+	      // momentum: new THREE.Vector2(),
 	    };
 
+	    // this.momentum = [];
 	    this.element = null;
 	    this.touch = null;
-	    this.onStart = () => {};
-	    this.onDrag = () => {};
-	    this.onEnd = () => {};
-	    this.onMove = () => {};
 
-	    this.createTriggers();
-
-	    return this;
-
-	  }
-
-	  createTriggers() {
-
-	    this.triggers = {
+	    this.drag = {
 
 	      start: ( event ) => {
 
 	        if ( event.type == 'mousedown' && event.which != 1 ) return;
 	        if ( event.type == 'touchstart' && event.touches.length > 1 ) return;
-	        this.getPosition( event, 'start' );
+
+	        this.getPositionCurrent( event );
+	        // this.position.start = this.position.current.clone();
+	        // this.position.delta.set( 0, 0 );
+	        // this.position.drag.set( 0, 0 );
+	        // this.position.momentum.set( 0, 0 );
 	        this.touch = ( event.type == 'touchstart' );
-	        this.onStart( event, this.position, this.touch );
-	        window.addEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.triggers.drag, false );
-	        window.addEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.triggers.end, false );
 
-	      },
+	        this.onDragStart( this.position );
 
-	      drag: ( event ) => {
-
-	        this.getPosition( event, 'current' );
-	        this.onDrag( event, this.position, this.touch );
-
-	      },
-
-	      end: ( event ) => {
-
-	        this.getPosition( event, 'current' );
-	        this.onEnd( event, this.position, this.touch );
-	        window.removeEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.triggers.drag, false );
-	        window.removeEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.triggers.end, false );
+	        window.addEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.drag.move, false );
+	        window.addEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.drag.end, false );
 
 	      },
 
 	      move: ( event ) => {
 
-	        this.getPosition( event, 'current' );
-	        this.onMove( event, this.position, false );
+	        // this.position.old = this.position.current.clone();
+	        this.getPositionCurrent( event );
+	        // this.position.delta = this.position.current.clone().sub( this.position.old );
+	        // this.position.drag = this.position.current.clone().sub( this.position.start );
+	        // this.addMomentumPoint( this.position.delta );
+
+	        this.onDragMove( this.position );
+
+	      },
+
+	      end: ( event ) => {
+
+	        this.getPositionCurrent( event );
+	        // this.getMomentum();
+
+	        this.onDragEnd( this.position );
+
+	        window.removeEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.drag.move, false );
+	        window.removeEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.drag.end, false );
 
 	      },
 
 	    };
 
+	    this.onDragStart = () => {};
+	    this.onDragMove = () => {};
+	    this.onDragEnd = () => {};
+
+	    return this;
+
 	  }
 
 	  init( element ) {
 
-	    this.element = ( typeof element === 'string' )
-	      ? document.querySelector( element )
-	      : element;
-
-	    element.addEventListener( 'touchstart', this.triggers.start, false );
-	    element.addEventListener( 'mousedown', this.triggers.start, false );
-
-	    if ( this.options.mouseMove )
-	      element.addEventListener( 'mousemove', this.triggers.move, false );
-
 	    this.element = element;
+	    this.element.addEventListener( 'touchstart', this.drag.start, false );
+	    this.element.addEventListener( 'mousedown', this.drag.start, false );
 
 	    return this;
 
@@ -1129,487 +972,607 @@
 
 	  dispose() {
 
-	    this.element.removeEventListener( 'touchstart', this.triggers.start, false );
-	    this.element.removeEventListener( 'mousedown', this.triggers.start, false );
-
-	    if ( this.options.mouseMove )
-	      this.element.removeEventListener( 'mousemove', this.triggers.start, false );
+	    this.element.removeEventListener( 'touchstart', this.drag.start, false );
+	    this.element.removeEventListener( 'mousedown', this.drag.start, false );
 
 	    return this;
 
 	  }
 
-	  getPosition( event, type ) {
+	  getPositionCurrent( event ) {
 
-	    const offset = this.element.getBoundingClientRect();
-	    const dragEvent = event.touches ? ( event.touches[ 0 ] || event.changedTouches[ 0 ] ) : event;
+	    const dragEvent = event.touches
+	      ? ( event.touches[ 0 ] || event.changedTouches[ 0 ] )
+	      : event;
 
-	    this.position[ type ].x = dragEvent.pageX - offset.left;
-	    this.position[ type ].y = dragEvent.pageY - offset.top;
-
-	    if ( type == 'current' ) {
-
-	      this.position.delta.x = this.position.current.x - this.position.start.x;
-	      this.position.delta.y = ( this.position.current.y - this.position.start.y ) * ( this.options.invertY ? - 1 : 1 );
-
-	    }
+	    this.position.current.set( dragEvent.pageX, dragEvent.pageY );
 
 	  }
 
 	  convertPosition( position ) {
 
-	    position.x = ( position.x / this.element.offsetWidth ) * 2 - 1,
-	    position.y = ( position.y / this.element.offsetHeight ) * 2 - 1;
+	    position.x = ( position.x / this.element.offsetWidth ) * 2 - 1;
+	    position.y = - ( ( position.y / this.element.offsetHeight ) * 2 - 1 );
 
 	    return position;
 
 	  }
 
+	  // addMomentumPoint( delta ) {
+
+	  //   const time = Date.now();
+
+	  //   while ( this.momentum.length > 0 ) {
+
+	  //     if ( time - this.momentum[0].time <= 200 ) break;
+	  //     this.momentum.shift();
+
+	  //   }
+
+	  //   if ( delta !== false ) this.momentum.push( { delta, time } );
+
+	  // }
+
+	  // getMomentum() {
+
+	  //   const points = this.momentum.length;
+	  //   const momentum = new THREE.Vector2();
+
+	  //   this.addMomentumPoint( false );
+
+	  //   this.momentum.forEach( ( point, index ) => {
+
+	  //     momentum.add( point.delta.multiplyScalar( index / points ) )
+
+	  //   } );
+
+	  //   return momentum;
+
+	  // }
+
 	}
 
 	class Controls {
 
-		constructor( cube, options ) {
+	  constructor( cube, options ) {
 
-			this.options = Object.assign( {
-				animationSpeed: 0.15,
-				animationBounce: 1.75,
-				scrambleSpeed: 0.1,
-				scrambleBounce: 0,
-				minimumRotationAngle: Math.PI / 12, // 15deg
-				dragDelta: 20,
-			}, options || {} );
+	    this.options = Object.assign( {
+	      flipSpeed: 300,
+	      flipEasing: 'swingTo', // easeOutExpo
+	      scrambleSpeed: 150,
+	      scrambleEasing: 'easeOutExpo', // easeOutQuart
+	    }, options || {} );
 
-			this.raycaster = new THREE.Raycaster();
-			this.rotation = new THREE.Vector3();
+	    this.cube = cube;
+	    this.cube.controls = this;
+	    this.draggable = new Draggable();
+	    this.raycaster = new THREE.Raycaster();
 
-			this.group = new THREE.Object3D();
-			cube.object.add( this.group );
+	    this.group = new THREE.Object3D();
+	    this.cube.object.add( this.group );
 
-			this.helper = new THREE.Mesh(
-				new THREE.PlaneGeometry( 2, 2 ),
-				new THREE.MeshBasicMaterial( { depthWrite: false, side: THREE.DoubleSide, transparent: true, opacity: 0 } )
-			);
-			this.helper.position.set( 0, 0, 0 );
+	    this.helper = new THREE.Mesh(
+	      new THREE.PlaneBufferGeometry( 20, 20 ),
+	      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } )
+	    );
 
-			this.moves = [];
+	    this.helper.rotation.set( 0, Math.PI / 4, 0 );
 
-			this.intersect = {
-				piece: null,
-				start: null,
-			};
+	    this.edges = new THREE.Mesh(
+	      new THREE.BoxBufferGeometry( 0.95, 0.95, 0.95 ),
+	      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0xff0033 } )
+	    );
 
-			this.drag = {
-				active: false, // drag is active
-				layer: null, // drag selected layer
-				direction: null, // drag direction - temp between start and drag
-				rotation: null, // drag rotation axis
-				type: null, // drag type cube or layer
-				deltaAngle: new THREE.Vector3(),
-				axis: {
-					group: null,
-					mouse: null,
-				},
-			};
+	    this.onSolved = () => {};
+	    this.onMove = () => {};
 
-			this.draggable = new Draggable( { useVector: THREE.Vector2, invertY: true } );
+	    this.drag = {};
+	    this.momentum = [];
+	    this.moves = [];
 
-			this.disabled = false;
-			this.world = null;
-			this.cube = cube;
-			this.scramble = null;
+	    this.disabled = false;
+	    this.scramble = null;
+	    this.state = 'still';
 
-			this.onSolved = () => {};
-			this.onMove = () => {};
+	    this.draggable.onDragStart = position => {
 
-			cube.controls = this;
+	      if ( this.state !== 'still' || this.disabled || this.scramble !== null ) return;
 
-			this.draggable.onStart = ( event, position ) => {
+	      const edgeIntersect = this.getIntersect( position.current, this.edges, false );
 
-				if ( this.drag.active || this.drag.rotation != null || this.disabled || this.scramble !== null ) return;
+	      if ( edgeIntersect !== false ) {
 
-				this.drag.rotation = null;
-				this.drag.active = true;
+	        this.drag.normal = edgeIntersect.face.normal.round();
+	        this.drag.type = 'layer';
 
-				const intersects = this.getIntersect( position.start, this.cube.edges, true );
+	        this.attach( this.helper, this.cube.object );
 
-				if ( intersects.length > 0 ) {
+	        this.helper.rotation.set( 0, 0, 0 );
+	        this.helper.position.set( 0, 0, 0 );
+	        this.helper.lookAt( this.drag.normal );
+	        this.helper.translateZ( 0.5 );
+	        this.helper.updateMatrixWorld();
 
-					this.intersect.piece = intersects[ 0 ].object.parent;
-					this.intersect.start = intersects[ 0 ].point;
-					this.drag.direction = new THREE.Vector3();
-					this.drag.direction[ Object.keys( this.intersect.start ).reduce( ( a, b ) =>
-						Math.abs( this.intersect.start[ a ] ) > Math.abs( this.intersect.start[ b ] ) ? a : b
-					) ] = 1;
-					this.helper.position.set( this.intersect.start.x, this.intersect.start.y, this.intersect.start.z );
-					this.helper.rotation.set( this.drag.direction.y * Math.PI / 2, this.drag.direction.x * Math.PI / 2, this.drag.direction.z * Math.PI / 2 );
+	        this.detach( this.helper, this.cube.object );
 
-					this.drag.type = 'layer';
+	        this.drag.intersect = this.getIntersect( position.current, this.cube.cubes, true );
 
-				} else {
+	      } else {
 
-					this.drag.type = 'cube';
+	        this.drag.normal = new THREE.Vector3( 0, 0, 1 );
+	        this.drag.type = 'cube';
 
-				}
+	        this.helper.position.set( 0, 0, 0 );
+	        this.helper.rotation.set( 0, Math.PI / 4, 0 );
+	        this.helper.updateMatrixWorld();
 
-			};
+	      }
 
-			this.draggable.onDrag = ( event, position ) => {
+	      const planeIntersect = this.getIntersect( position.current, this.helper, false ).point;
 
-				if ( ! this.drag.active ) return;
+	      this.drag.current = this.helper.worldToLocal( planeIntersect );
+	      this.drag.total = new THREE.Vector3();
+	      this.drag.axis = null;
+	      this.drag.delta = null;
+	      this.drag.angle = 0;
+	      this.state = 'preparing';
 
-				if ( this.drag.rotation != null ) {
+	    };
 
-					this.group.rotation[ this.drag.axis.group ] = position.delta[ this.drag.axis.mouse ] / 100 * ( ( this.drag.rotation == 'y' ) ? - 1 : 1 );
-					this.drag.deltaAngle = this.group.rotation.toVector3();
+	    this.draggable.onDragMove = position => {
 
-					if ( Math.abs( this.drag.deltaAngle[ this.drag.axis.group ] ) > Math.PI / 4 ) this.draggable.onEnd();
+	      if ( ( this.state !== 'preparing' && this.state !== 'rotating' ) || this.disabled || this.scramble !== null ) return;
 
-				} else if ( this.drag.rotation == null && position.delta.length() > this.options.dragDelta ) {
+	      const planeIntersect = this.getIntersect( position.current, this.helper, false );
+	      if ( planeIntersect === false ) return;
 
-					this.getLayerAndAxis( position );
+	      const point = this.helper.worldToLocal( planeIntersect.point.clone() );
 
-				}
+	      this.drag.delta = point.clone().sub( this.drag.current ).setZ( 0 );
+	      this.drag.total.add( this.drag.delta );
+	      this.drag.current = point;
+	      this.addMomentumPoint( this.drag.delta );
 
-			};
+	      if ( this.drag.axis === null && this.drag.total.length() > 0.05 ) {
 
-			this.draggable.onEnd = ( event, position ) => {
+	        this.drag.direction = this.getMainAxis( this.drag.total );
 
-				if ( ! this.drag.active ) return;
-				this.drag.active = false;
+	        if ( this.drag.type === 'layer' ) {
 
-				const angle = roundVectorAngle( this.drag.deltaAngle, this.options.minimumRotationAngle );
-				const layer = this.drag.layer;
+	          const direction = new THREE.Vector3();
+	          direction[ this.drag.direction ] = 1;
 
-				this.rotateLayer( angle, this.options.animationSpeed, true, () => {
+	          const worldDirection = this.helper.localToWorld( direction ).sub( this.helper.position );
+	          const objectDirection = this.edges.worldToLocal( worldDirection ).round();
 
-					this.addMove( angle, layer );
-					this.checkIsSolved();
+	          this.drag.axis = objectDirection.cross( this.drag.normal ).negate();
 
-				} );
+	          this.selectLayer( this.getLayer() );
 
-			};
+	        } else {
 
-			return this;
+	          const axis = ( this.drag.direction != 'x' )
+	            ? ( ( this.drag.direction == 'y' && position.current.x > this.world.width / 2 ) ? 'z' : 'x' )
+	            : 'y';
 
-		}
+	          this.drag.axis = new THREE.Vector3();
+	          this.drag.axis[ axis ] = 1 * ( ( axis == 'x' ) ? - 1 : 1 );
 
-		disable() {
+	        }
 
-			this.draggable.dispose();
+	        this.state = 'rotating';
 
-			return this;
+	      } else if ( this.drag.axis !== null ) {
 
-		}
+	        const rotation = this.drag.delta[ this.drag.direction ];// * 2.25;
 
-		addMove( angle, layer ) {
+	        if ( this.drag.type === 'layer' ) { 
 
-			let move = null;
+	          this.group.rotateOnAxis( this.drag.axis, rotation );
+	          this.drag.angle += rotation;
 
-			if ( new THREE.Vector3().equals( angle ) ) return;
-			if ( layer.toString() == this.cube.layers.a.toString() ) return;
+	        } else {
 
-			if (
-				this.moves.length > 0 &&
-				this.moves[ this.moves.length - 1 ][ 0 ].clone().multiplyScalar( - 1 ).equals( angle )
-			) {
+	          this.edges.rotateOnWorldAxis( this.drag.axis, rotation );
+	          this.cube.object.rotation.copy( this.edges.rotation );
+	          this.drag.angle += rotation;
 
-				this.moves.pop();
+	        }
 
-			} else {
+	      }
 
-				move = [ angle, layer ];
-				this.moves.push( move );
+	    };
 
-			}
+	    this.draggable.onDragEnd = position => {
 
-			this.onMove( { moves: this.moves, move: move, length: this.moves.length } );
+	      if ( this.state !== 'rotating' || this.disabled || this.scramble !== null ) return;
 
-		}
+	      this.state = 'finishing';
 
-		undo() {
+	      const momentum = this.getMomentum()[ this.drag.direction ];
+	      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this.drag.angle ) < Math.PI / 2 );
 
-			if ( this.moves.length > 0 ) {
+	      const angle = flip
+	        ? this.roundAngle( this.drag.angle + Math.sign( this.drag.angle ) * ( Math.PI / 4 ) )
+	        : this.roundAngle( this.drag.angle );
 
-				const move = this.moves[ this.moves.length - 1 ];
-				const angle = move[ 0 ].multiplyScalar( - 1 );
-				const layer = move[ 1 ];
+	      const delta = angle - this.drag.angle;
 
-				this.selectLayer( layer );
+	      if ( this.drag.type === 'layer' ) {
 
-				this.rotateLayer( angle, this.options.animationSpeed, true, () => {
+	        this.rotateLayer( delta, false, layer => {
 
-					this.moves.pop();
-					this.onMove( { moves: this.moves, move: move, length: this.moves.length } );
+	          this.addMove( angle, layer );
+	          this.checkIsSolved();
+	          this.state = 'still';
 
-				} );
+	        } );
 
-			}
+	      } else {
 
-		}
+	        this.rotateCube( delta, () => {
 
-		rotateLayer( angle, speed, flip, callback ) {
+	          this.drag.active = false;
+	          this.state = 'still';
 
-			const bounce = ( flip )
-				? this.options.animationBounce
-				: this.options.scrambleBounce;
+	        } );
 
-			if ( this.drag.layer == null ) return;
+	      }
 
-			TweenMax.to( this.group.rotation, speed, {
-				x: angle.x,
-				y: angle.y,
-				z: angle.z,
-				ease: Back.easeOut.config( bounce ),
-				onUpdate: this.rotateBounce( angle, bounce ),
-				onComplete: () => {
+	    };
 
-					this.cube.object.rotation.set( 0, 0, 0 );
-					this.deselectLayer( this.drag.layer );
-					if ( typeof callback === 'function' ) callback();
+	  }
 
-				},
-			} );
+	  rotateLayer( rotation, scramble, callback ) {
 
-		}
+	    const bounceCube = this.bounceCube();
 
-		rotateBounce( angle, bounce ) {
+	    this.rotationTween = new RUBIK.Tween( {
+	      duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
+	      easing: this.options[ scramble ? 'scrambleEasing' : 'flipEasing' ],
+	      onUpdate: tween => {
 
-			if ( bounce == 0 ) return () => {};
-			if ( angle.equals( new THREE.Vector3() ) ) return () => {};
-			if ( this.drag.layer.toString() == this.cube.layers.a.toString() ) return () => {};
+	        let deltaAngle = tween.delta * rotation;
+	        this.group.rotateOnAxis( this.drag.axis, deltaAngle );
+	        bounceCube( tween.progress, deltaAngle, rotation );
 
-			const axis = Object.keys( angle ).reduce( ( a, b ) =>
-				Math.abs( angle[ a ] ) > Math.abs( angle[ b ] ) ? a : b
-			);
+	      },
+	      onComplete: () => {
 
-			const cubeRotation = this.cube.object.rotation[ axis ] * 1;
-			let bounceStarted = false;
+	        const layer = this.drag.layer.slice( 0 );
 
-			return () => {
+	        this.cube.object.rotation.setFromVector3( this.snapRotation( this.cube.object.rotation.toVector3() ) );
+	        this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
+	        this.deselectLayer( this.drag.layer );
+	        this.cube.saveState();
 
-				if ( ! bounceStarted ) {
+	        callback( layer );
 
-					if ( this.group.rotation[ axis ] / angle[ axis ] < 1 ) {
+	      },
+	    } );
 
-						return;
+	  }
 
-					} else {
+	  bounceCube() {
 
-						bounceStarted = true;
+	    let fixDelta = true;
 
-					}
+	    return ( progress, delta, rotation ) => {
 
-				} else {
+	        if ( progress >= 1 ) {
 
-					const bounceValue = ( angle[ axis ] - this.group.rotation[ axis ] ) * - 1;
+	          if ( fixDelta ) {
 
-					this.cube.object.rotation[ axis ] = cubeRotation + bounceValue;
+	            delta = ( progress - 1 ) * rotation;
+	            fixDelta = false;
 
-				}
+	          }
 
-			};
+	          this.cube.object.rotateOnAxis( this.drag.axis, delta );
 
-		}
+	        }
 
-		getLayerAndAxis( position ) {
+	    }
 
-			if ( this.drag.type == 'layer' ) {
+	  }
 
-				const pieceIndex = this.cube.pieces.indexOf( this.intersect.piece );
-				const intersects = this.getIntersect( position.current, this.helper, false );
+	  rotateCube( rotation, callback ) {
 
-				if ( intersects.length == 0 ) return;
-				const intersectHelper = intersects[ 0 ].point;
+	    this.rotationTween = new RUBIK.Tween( {
+	      duration: this.options.flipSpeed,
+	      easing: this.options.flipEasing,
+	      onUpdate: tween => {
 
-				const normalX = [ 'x', 'z' ][ this.drag.direction.x ];
-				const normalY = [ 'y', 'z' ][ this.drag.direction.y ];
+	        this.edges.rotateOnWorldAxis( this.drag.axis, tween.delta * rotation );
+	        this.cube.object.rotation.copy( this.edges.rotation );
 
-				const vs = new THREE.Vector2( this.intersect.start[ normalX ] * 1, this.intersect.start[ normalY ] * 1 );
-				const ve = new THREE.Vector2( intersectHelper[ normalX ] * 1, intersectHelper[ normalY ] * 1 );
+	      },
+	      onComplete: () => {
 
-				let angle = Math.round( ve.sub( vs ).angle() / ( Math.PI / 2 ) ) * ( Math.PI / 2 ) / ( Math.PI * 2 );
+	        this.edges.rotation.setFromVector3( this.snapRotation( this.edges.rotation.toVector3() ) );
+	        this.cube.object.rotation.copy( this.edges.rotation );
+	        callback();
 
-				this.drag.rotation = ( angle == 0.25 || angle == 0.75 )
-					? [ 'y', 'z' ][ this.drag.direction.x ]
-					: [ 'x', 'z' ][ this.drag.direction.y ];
+	      },
+	    } );
 
-				const layers = this.cube.layers[ this.drag.rotation ];
+	  }
 
-				Object.keys( layers ).forEach( key => {
+	  addMove( angle, layer ) {
 
-					if ( layers[ key ].includes( pieceIndex ) )
-						this.selectLayer( layers[ key ] );
+	    let move = null;
 
-				} );
+	    if ( angle == 0 ) return;
 
-			} else if ( this.drag.type == 'cube' ) {
+	    if (
+	      this.moves.length > 0 &&
+	      this.moves[ this.moves.length - 1 ][ 0 ] * -1 == angle
+	    ) {
 
-				let angle = roundAngle( position.delta.angle(), false ) / ( Math.PI * 2 );
+	      this.moves.pop();
 
-				this.drag.rotation = ( angle == 0.25 || angle == 0.75 )
-					? ( ( position.start.x > this.world.width * 0.5 ) ? 'z' : 'y' )
-					: 'x';
+	    } else {
 
-				this.selectLayer( this.cube.layers.a );
+	      move = [ angle, layer ];
+	      this.moves.push( move );
 
-			}
+	    }
 
-			this.drag.axis.group = { x: 'y', y: 'x', z: 'z' }[ this.drag.rotation ];
-			this.drag.axis.mouse = { x: 'x', y: 'y', z: 'y' }[ this.drag.rotation ];
+	    this.onMove( { moves: this.moves, move: move, length: this.moves.length } );
 
-		}
+	  }
 
-		selectLayer( layer ) {
+	  undoMove() {
 
-			this.group.rotation.set( 0, 0, 0 );
-			this.group.updateMatrixWorld();
+	    if ( this.moves.length > 0 ) {
 
-			layer.forEach( index => {
+	      const move = this.moves[ this.moves.length - 1 ];
+	      const angle = move[ 0 ] * -1;
+	      const layer = move[ 1 ];
 
-				this.cube.pieces[ index ].applyMatrix( new THREE.Matrix4().getInverse( this.group.matrixWorld ) );
-				this.cube.object.remove( this.cube.pieces[ index ] );
-				this.group.add( this.cube.pieces[ index ] );
+	      this.selectLayer( layer );
 
-			} );
+	      this.rotateLayer( angle, false, () => {
 
-			this.drag.layer = layer;
+	        this.moves.pop();
+	        this.onMove( { moves: this.moves, move: move, length: this.moves.length } );
 
-		}
+	      } );
 
-		deselectLayer( layer ) {
+	    }
 
-			this.group.updateMatrixWorld();
+	  }
 
-			layer.forEach( index => {
+	  checkIsSolved() {
 
-				this.cube.pieces[ index ].applyMatrix( this.group.matrixWorld );
-				this.group.remove( this.cube.pieces[ index ] );
-				this.cube.object.add( this.cube.pieces[ index ] );
+	    let solved = true;
+	    const layers = { R: [], L: [], U: [], D: [], F: [], B: [] };
 
-			} );
+	    game.cube.pieces.forEach( ( piece, index ) => {
 
-			this.rearrangePieces();
-			if ( this.scramble === null ) this.cube.saveState();
+	      const position = this.getPiecePosition( piece );
 
-		}
+	      if ( position.x == -1 ) layers.L.push( piece );
+	      else if ( position.x == 1 ) layers.R.push( piece );
 
-		rearrangePieces() {
+	      if ( position.y == -1 ) layers.D.push( piece );
+	      else if ( position.y == 1 ) layers.U.push( piece );
 
-			const newPositions = [];
-			const newPieces = [];
+	      if ( position.z == -1 ) layers.B.push( piece );
+	      else if ( position.z == 1 ) layers.F.push( piece );
 
-			this.cube.pieces.forEach( piece => {
+	    } );
 
-				piece.position.multiplyScalar( this.cube.size ).round().divideScalar( this.cube.size );
-				roundVectorAngle( piece.rotation, false );
-				newPositions.push( piece.position.clone().multiplyScalar( this.cube.size ).round().toArray().toString() );
+	    Object.keys( layers ).forEach( key => {
 
-			} );
+	      const edges = layers[ key ].map( piece => piece.userData.edges );
 
-			this.cube.pieces.forEach( ( piece, i ) => {
+	      if ( edges.shift().filter( v => {
 
-				const index = newPositions.indexOf( this.cube.positions[ i ].toArray().toString() );
-				newPieces[ i ] = this.cube.pieces[ index ];
+	        return edges.every( a => { return a.indexOf( v ) !== -1 } )
 
-			} );
+	      } ).length < 1 ) solved = false;
 
-			this.cube.pieces = newPieces;
+	    } );
 
-			this.drag.layer = null;
-			this.drag.rotation = null;
+	    if ( solved ) {
 
-		}
+	        this.onSolved();
+	        //this.cube.clearState();
 
-		checkIsSolved() {
+	    }
 
-			if ( this.cube.solvedStates.indexOf( this.cube.pieces.map( piece => piece.name ).toString() ) > - 1 ) {
+	  }
 
-				this.onSolved();
-				this.cube.clearState();
+	  selectLayer( layer ) {
 
-			}
+	    this.group.rotation.set( 0, 0, 0 );
+	    this.movePieces( layer, this.cube.object, this.group );
+	    this.drag.layer = layer;
 
-		}
+	  }
 
-		getIntersect( position, object, multiple ) {
+	  deselectLayer( layer ) {
 
-			const convertedPosition = this.draggable.convertPosition( position.clone() );
-			convertedPosition.y *= - 1;
+	    this.movePieces( layer, this.group, this.cube.object );
+	    this.drag.layer = null;
 
-			this.raycaster.setFromCamera( convertedPosition, this.world.camera );
+	  }
 
-			return ( multiple )
-				? this.raycaster.intersectObjects( object )
-				: this.raycaster.intersectObject( object );
+	  movePieces( layer, from, to ) {
 
-		}
+	    from.updateMatrixWorld();
+	    to.updateMatrixWorld();
 
-		scrambleCube( scramble, callback ) {
+	    layer.forEach( index => {
 
-			if ( this.scramble == null ) {
+	      const piece = this.cube.pieces[ index ];
 
-				scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
-				this.scramble = scramble;
+	      piece.applyMatrix( from.matrixWorld );
+	      from.remove( piece );
+	      piece.applyMatrix( new THREE.Matrix4().getInverse( to.matrixWorld ) );
+	      to.add( piece );
 
-			}
+	    } );
 
-			const converted = this.scramble.converted;
-			const move = converted[ 0 ];
-			const layer = this.cube.layers[ move.layer ][ move.row ];
-			const rotation = new THREE.Vector3();
+	  }
 
-			rotation[ move.axis ] = move.angle;
+	  getLayer( position ) {
 
-			this.selectLayer( layer );
-			this.rotateLayer( rotation, this.options.scrambleSpeed, false, () => {
+	    const layer = [];
+	    let axis;
 
-				converted.shift();
+	    if ( typeof position === 'undefined' ) {
 
-				if ( converted.length > 0 ) {
+	      axis = this.getMainAxis( this.drag.axis );
+	      position = this.getPiecePosition( this.drag.intersect.object );
 
-					this.scrambleCube();
+	    } else {
 
-				} else {
+	      axis = this.getMainAxis( position );
 
-					this.scramble.callback();
-					this.scramble = null;
+	    }
 
-				}
+	    this.cube.pieces.forEach( piece => {
 
-			} );
+	      const piecePosition = this.getPiecePosition( piece );
 
-		}
+	      if ( piecePosition[ axis ] == position[ axis ] ) layer.push( piece.name );
 
-	}
+	    } );
 
-	function roundAngle( angle, minimum ) {
+	    return layer;
 
-		const round = Math.PI / 2;
+	  }
 
-		if ( angle == 0 ) return 0;
+	  getPiecePosition( piece ) {
 
-		if ( minimum !== false ) {
+	    let position = new THREE.Vector3()
+	      .setFromMatrixPosition( piece.matrixWorld )
+	      .multiplyScalar( this.cube.size );
 
-			if ( Math.abs( angle ) < round * minimum ) return 0;
+	    return this.cube.object.worldToLocal( position ).round();
 
-			if ( Math.abs( angle ) < round ) return Math.sign( angle ) * round;
+	  }
 
-		}
+	  scrambleCube( scramble, callback ) {
 
-		return Math.round( angle / round ) * round;
+	    if ( this.scramble == null ) {
 
-	}
+	      this.scramble = scramble;
+	      this.scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
 
-	function roundVectorAngle( angle, minimum ) {
+	    }
 
-		angle.set(
-			roundAngle( angle.x, minimum ),
-			roundAngle( angle.y, minimum ),
-			roundAngle( angle.z, minimum )
-		);
+	    const converted = this.scramble.converted;
+	    const move = converted[ 0 ];
+	    const layer = this.getLayer( move.position );
 
-		return angle;
+	    this.drag.axis = new THREE.Vector3();
+	    this.drag.axis[ move.axis ] = 1;
+
+	    this.selectLayer( layer );
+	    this.rotateLayer( move.angle, true, () => {
+
+	      converted.shift();
+
+	      if ( converted.length > 0 ) {
+
+	        this.scrambleCube();
+
+	      } else {
+
+	        this.scramble.callback();
+	        this.scramble = null;
+
+	      }
+
+	    } );
+
+	  }
+
+	  getIntersect( position, object, multiple ) {
+
+	    this.raycaster.setFromCamera(
+	      this.draggable.convertPosition( position.clone() ),
+	      this.world.camera
+	    );
+
+	    const intersect = ( multiple )
+	      ? this.raycaster.intersectObjects( object )
+	      : this.raycaster.intersectObject( object );
+
+	    return ( intersect.length > 0 ) ? intersect[ 0 ] : false;
+
+	  }
+
+	  getMainAxis( vector ) {
+
+	    return Object.keys( vector ).reduce(
+	      ( a, b ) => Math.abs( vector[ a ] ) > Math.abs( vector[ b ] ) ? a : b
+	    );
+
+	  }
+
+	  detach( child, parent ) {
+
+	    child.applyMatrix( parent.matrixWorld );
+	    parent.remove( child );
+	    this.world.scene.add( child );
+
+	  }
+
+	  attach( child, parent ) {
+
+	    child.applyMatrix( new THREE.Matrix4().getInverse( parent.matrixWorld ) );
+	    this.world.scene.remove( child );
+	    parent.add( child );
+
+	  }
+
+	  addMomentumPoint( delta ) {
+
+	    const time = Date.now();
+
+	    this.momentum = this.momentum.filter( moment => time - moment.time < 500 );
+
+	    if ( delta !== false ) this.momentum.push( { delta, time } );
+
+	  }
+
+	  getMomentum() {
+
+	    const points = this.momentum.length;
+	    const momentum = new THREE.Vector2();
+
+	    this.addMomentumPoint( false );
+
+	    this.momentum.forEach( ( point, index ) => {
+
+	      momentum.add( point.delta.multiplyScalar( index / points ) );
+
+	    } );
+
+	    return momentum;
+
+	  }
+
+	  roundAngle( angle ) {
+
+	    const round = Math.PI / 2;
+	    return Math.sign( angle ) * Math.round( Math.abs( angle) / round ) * round;
+
+	  }
+
+	  snapRotation( angle ) {
+
+	    return angle.set(
+	      this.roundAngle( angle.x ),
+	      this.roundAngle( angle.y ),
+	      this.roundAngle( angle.z )
+	    );
+
+	  }
 
 	}
 
@@ -1659,14 +1622,14 @@
 				const modifier = move.charAt( 1 );
 
 				const axis = { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face ];
-				const row = { D: 0, U: 2, L: 0, R: 2, B: 0, F: 2 }[ face ];
-				const layer = { x: 'y', y: 'x', z: 'z' }[ axis ];
+				const row = { D: -1, U: 1, L: -1, R: 1, F: 1, B: -1 }[ face ];
 
-				const angle = ( Math.PI / 2 )
-					* ( ( row == 2 ) ? - 1 : 1 )
-					* ( ( modifier == "'" ) ? - 1 : 1 );
+				const position = new THREE.Vector3();
+				position[ { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face ] ] = row;
 
-				const convertedMove = { layer, row, axis, angle, name: move };
+				const angle = ( Math.PI / 2 ) * - row * ( ( modifier == "'" ) ? - 1 : 1 );
+
+				const convertedMove = { position, axis, angle, name: move };
 
 				this.converted.push( convertedMove );
 				if ( modifier == "2" ) this.converted.push( convertedMove );
@@ -1677,6 +1640,538 @@
 
 		}
 
+	}
+
+	class Tween {
+
+	  constructor( options ) {
+
+	    this.target = options.target || null;
+	    this.duration = options.duration || 500;
+	    this.delay = options.delay || 0;
+	    this.easing = this.constructor.Easings[ options.easing || 'linear' ];
+	    this.from = options.from || {};
+	    this.to = options.to || null;
+	    this.onComplete = options.onComplete || ( () => {} );
+	    this.onUpdate = options.onUpdate || ( () => {} );
+	    this.yoyo = options.yoyo || null;
+
+	    this.progress = 0;
+	    this.delta = 0;
+	    this.animate = null;
+	    this.values = [];
+
+	    if ( this.yoyo != null ) this.yoyo = false;
+
+	    if ( this.target !== null && this.to !== null ) {
+
+	      if ( Object.keys( this.from ).length < 1 ) {
+
+	        Object.keys( this.to ).forEach( key => { this.from[ key ] = this.target[ key ]; } );
+
+	      }
+
+	      Object.keys( this.to ).forEach( key => { this.values.push( key ); } );
+
+	    }
+
+	    setTimeout( () => {
+
+	      this.start = performance.now();
+	      this.animate = requestAnimationFrame( () => this.update() );
+
+	    }, this.delay );
+
+	    return this;
+
+	  }
+
+	  kill() {
+
+	    cancelAnimationFrame( this.animate );
+
+	  }
+
+	  update() {
+
+	    const now = performance.now();
+	    const old = this.progress * 1;
+	    const delta = now - this.start;
+
+	    let progress = delta / this.duration;
+
+	    if ( this.yoyo == true ) progress = 1 - progress;
+
+	    if ( this.yoyo == null && delta > this.duration - 1000 / 60 ) progress = 1;
+
+	    if ( progress >= 1 ) { progress = 1; this.progress = 1; }
+	    else if ( progress <= 0 ) { progress = 0; this.progress = 0; }
+	    else this.progress = this.easing( progress );
+
+	    this.delta = this.progress - old;
+
+	    this.values.forEach( key => {
+
+	      this.target[ key ] = this.from[ key ] + ( this.to[ key ] - this.from[ key ] ) * this.progress;
+
+	    } );
+
+	    this.onUpdate( this );
+
+	    if ( progress == 1 || progress == 0 ) {
+
+	      if ( this.yoyo != null ) {
+
+	        this.yoyo = ! this.yoyo;
+	        this.start = now;
+
+	      } else {
+
+	        this.onComplete( this );
+	        return;
+
+	      }
+
+	    }
+
+	    this.animate = window.requestAnimationFrame( () => this.update() );
+
+	  }
+
+	}
+
+	Tween.Easings = {
+
+	  linear: p => p,
+
+	  easeInQuad: p => {
+	    return Math.pow(p, 2);
+	  },
+
+	  easeOutQuad: p => {
+	    return -(Math.pow((p-1), 2) -1);
+	  },
+
+	  easeInOutQuad: p => {
+	    if ((p/=0.5) < 1) return 0.5*Math.pow(p,2);
+	    return -0.5 * ((p-=2)*p - 2);
+	  },
+
+	  easeInCubic: p => {
+	    return Math.pow(p, 3);
+	  },
+
+	  easeOutCubic: p => {
+	    return (Math.pow((p-1), 3) +1);
+	  },
+
+	  easeInOutCubic: p => {
+	    if ((p/=0.5) < 1) return 0.5*Math.pow(p,3);
+	    return 0.5 * (Math.pow((p-2),3) + 2);
+	  },
+
+	  easeInQuart: p => {
+	    return Math.pow(p, 4);
+	  },
+
+	  easeOutQuart: p => {
+	    return -(Math.pow((p-1), 4) -1);
+	  },
+
+	  easeInOutQuart: p => {
+	    if ((p/=0.5) < 1) return 0.5*Math.pow(p,4);
+	    return -0.5 * ((p-=2)*Math.pow(p,3) - 2);
+	  },
+
+	  easeInQuint: p => {
+	    return Math.pow(p, 5);
+	  },
+
+	  easeOutQuint: p => {
+	    return (Math.pow((p-1), 5) +1);
+	  },
+
+	  easeInOutQuint: p => {
+	    if ((p/=0.5) < 1) return 0.5*Math.pow(p,5);
+	    return 0.5 * (Math.pow((p-2),5) + 2);
+	  },
+
+	  easeInSine: p => {
+	    return -Math.cos(p * (Math.PI/2)) + 1;
+	  },
+
+	  easeOutSine: p => {
+	    return Math.sin(p * (Math.PI/2));
+	  },
+
+	  easeInOutSine: p => {
+	    return (-0.5 * (Math.cos(Math.PI*p) -1));
+	  },
+
+	  easeInExpo: p => {
+	    return (p===0) ? 0 : Math.pow(2, 10 * (p - 1));
+	  },
+
+	  easeOutExpo: p => {
+	    return (p===1) ? 1 : -Math.pow(2, -10 * p) + 1;
+	  },
+
+	  easeInOutExpo: p => {
+	    if(p===0) return 0;
+	    if(p===1) return 1;
+	    if((p/=0.5) < 1) return 0.5 * Math.pow(2,10 * (p-1));
+	    return 0.5 * (-Math.pow(2, -10 * --p) + 2);
+	  },
+
+	  easeInCirc: p => {
+	    return -(Math.sqrt(1 - (p*p)) - 1);
+	  },
+
+	  easeOutCirc: p => {
+	    return Math.sqrt(1 - Math.pow((p-1), 2));
+	  },
+
+	  easeInOutCirc: p => {
+	    if((p/=0.5) < 1) return -0.5 * (Math.sqrt(1 - p*p) - 1);
+	    return 0.5 * (Math.sqrt(1 - (p-=2)*p) + 1);
+	  },
+
+	  swingFromTo: p => {
+	    var s = 1.70158;
+	    return ((p/=0.5) < 1) ? 0.5*(p*p*(((s*=(1.525))+1)*p - s)) :
+	    0.5*((p-=2)*p*(((s*=(1.525))+1)*p + s) + 2);
+	  },
+
+	  swingFrom: p => {
+	    var s = 1.70158;
+	    return p*p*((s+1)*p - s);
+	  },
+
+	  swingTo: p => {
+	    var s = 1.70158;
+	    return (p-=1)*p*((s+1)*p + s) + 1;
+	  },
+
+	  // easeOutBounce: p => {
+	  //   if ((p) < (1/2.75)) {
+	  //     return (7.5625*p*p);
+	  //   } else if (p < (2/2.75)) {
+	  //     return (7.5625*(p-=(1.5/2.75))*p + 0.75);
+	  //   } else if (p < (2.5/2.75)) {
+	  //     return (7.5625*(p-=(2.25/2.75))*p + 0.9375);
+	  //   } else {
+	  //     return (7.5625*(p-=(2.625/2.75))*p + 0.984375);
+	  //   }
+	  // },
+
+	  // easeInBack: p => {
+	  //   var s = 1.70158;
+	  //   return (p)*p*((s+1)*p - s);
+	  // },
+
+	  // easeOutBack: p => {
+	  //   var s = 1.70158;
+	  //   return (p=p-1)*p*((s+1)*p + s) + 1;
+	  // },
+
+	  // easeInOutBack: p => {
+	  //   var s = 1.70158;
+	  //   if((p/=0.5) < 1) return 0.5*(p*p*(((s*=(1.525))+1)*p -s));
+	  //   return 0.5*((p-=2)*p*(((s*=(1.525))+1)*p +s) +2);
+	  // },
+
+	  // elastic: p => {
+	  //   return -1 * Math.pow(4,-8*p) * Math.sin((p*6-1)*(2*Math.PI)/2) + 1;
+	  // },
+
+	  // bounce: p => {
+	  //   if (p < (1/2.75)) {
+	  //     return (7.5625*p*p);
+	  //   } else if (p < (2/2.75)) {
+	  //     return (7.5625*(p-=(1.5/2.75))*p + 0.75);
+	  //   } else if (p < (2.5/2.75)) {
+	  //     return (7.5625*(p-=(2.25/2.75))*p + 0.9375);
+	  //   } else {
+	  //     return (7.5625*(p-=(2.625/2.75))*p + 0.984375);
+	  //   }
+	  // },
+
+	  // bouncePast: p => {
+	  //   if (p < (1/2.75)) {
+	  //     return (7.5625*p*p);
+	  //   } else if (p < (2/2.75)) {
+	  //     return 2 - (7.5625*(p-=(1.5/2.75))*p + 0.75);
+	  //   } else if (p < (2.5/2.75)) {
+	  //     return 2 - (7.5625*(p-=(2.25/2.75))*p + 0.9375);
+	  //   } else {
+	  //     return 2 - (7.5625*(p-=(2.625/2.75))*p + 0.984375);
+	  //   }
+	  // },
+
+	  // easeFromTo: p => {
+	  //   if ((p/=0.5) < 1) return 0.5*Math.pow(p,4);
+	  //   return -0.5 * ((p-=2)*Math.pow(p,3) - 2);
+	  // },
+
+	  // easeFrom: p => {
+	  //   return Math.pow(p,4);
+	  // },
+
+	  // easeTo: p => {
+	  //   return Math.pow(p,0.25);
+	  // },
+
+	};
+
+	class Animations {
+
+	  constructor( game ) {
+
+	    this.data = {};
+	    this.tweens = {};
+	    this.game = game;
+
+	    this.data.cubeY = -0.2;
+	    this.data.floatScale = 1;
+	    this.data.cameraZoom = 0.85;
+
+	  }
+
+	  title( show, timeout ) {
+
+	    if ( typeof this.data.titleLetters == 'undefined' ) {
+
+	      this.data.titleLetters = [];
+
+	      this.game.dom.title.querySelectorAll( 'span' ).forEach( span => {
+
+	        const spanText = span.innerHTML;
+	        span.innerHTML = '';
+
+	        spanText.split( '' ).forEach( letter => {
+
+	          const i = document.createElement( 'i' );
+	          i.innerHTML = letter;
+	          i.style.opacity = 0;
+	          span.appendChild( i );
+	          this.data.titleLetters.push( i );
+
+	        } );
+
+	      } );
+
+	      this.game.dom.title.style.opacity = 1;
+	      this.tweens.title = [];
+
+	    }
+
+	    setTimeout( () => {
+
+	      if ( show ) setTimeout( () => { this.game.dom.main.style.pointerEvents = 'all'; }, 600 );
+	      else this.game.dom.main.style.pointerEvents = 'none';
+
+	      this.data.titleLetters.forEach( ( letter, index ) => {
+
+	        this.tweens.title[ index ] = new RUBIK.Tween( {
+	          duration: ( show ) ? 800 : 400,
+	          delay: index * 50,
+	          easing: 'easeOutSine',
+	          onUpdate: tween => {
+
+	            const rotation = ( ( show ) ? - 80 : 0 ) + 80 * tween.progress;
+	            letter.style.transform = 'rotateY(' + rotation + 'deg)';
+	            letter.style.opacity = ( show ) ? tween.progress : 1 - tween.progress;
+
+	          },
+	        } );
+
+	      } );
+
+	      if ( typeof this.tweens.start !== 'undefined' ) this.tweens.start.kill();
+
+	      this.tweens.start = new RUBIK.Tween( {
+	        duration: 400,
+	        easing: 'easeOutSine',
+	        onUpdate: tween => {
+
+	          this.game.dom.start.style.opacity = ( show ) ? tween.progress : 1 - tween.progress;
+
+	        },
+	        onComplete: () => {
+
+	          if ( show ) this.tweens.start = new RUBIK.Tween( {
+	            duration: 800,
+	            easing: 'easeInOutSine',
+	            yoyo: true,
+	            onUpdate: tween => {
+
+	              this.game.dom.start.style.opacity = 1 - tween.progress;
+
+	            },
+	          } );
+
+	        },
+	      } );
+
+	    }, timeout );
+
+	  }
+
+	  timer( show, timeout ) {
+
+	    this.data.timerLetters = [];
+
+	    const timerText = this.game.dom.timer.innerHTML;
+	    this.game.dom.timer.innerHTML = '';
+
+	    timerText.split( '' ).forEach( letter => {
+
+	      const i = document.createElement( 'i' );
+	      i.innerHTML = letter;
+	      i.style.opacity = ( show ) ? 0 : 1;
+	      this.game.dom.timer.appendChild( i );
+	      this.data.timerLetters.push( i );
+
+	    } );
+
+	    this.game.dom.timer.style.opacity = 1;
+
+	    this.tweens.timer = [];
+
+	    setTimeout( () => {
+
+	      this.data.timerLetters.forEach( ( letter, index ) => {
+
+	        this.tweens.timer[ index ] = new RUBIK.Tween( {
+	          duration: ( show ) ? 800 : 400,
+	          delay: index * 50,
+	          easing: 'easeOutSine',
+	          onUpdate: tween => {
+
+	            const rotation = ( ( show ) ? - 80 : 0 ) + 80 * tween.progress;
+	            letter.style.transform = 'rotateY(' + rotation + 'deg)';
+	            letter.style.opacity = ( show ) ? tween.progress : 1 - tween.progress;
+
+	          },
+	        } );
+
+	      } );
+
+	    }, timeout );
+
+	  }
+
+	  drop() {
+
+	    this.game.controls.disabled = true;
+	    this.data.floatScale = 1;
+	    this.data.cubeY = -0.2;
+
+	    this.game.cube.object.position.y = this.data.cubeY;
+	    this.game.controls.edges.position.y = this.data.cubeY;
+	    this.game.cube.animator.position.set( -2, 4, -2 );
+	    this.game.cube.animator.rotation.x = - Math.PI / 4;
+	    this.game.cube.shadow.material.opacity = 0;
+	    this.game.world.camera.zoom = this.data.cameraZoom;
+	    this.game.world.camera.updateProjectionMatrix();
+
+	    this.tweens.drop = new RUBIK.Tween( {
+	      target: this.game.cube.animator.position,
+	      duration: 2500,
+	      easing: 'easeOutCubic',
+	      to: { x: 0, y: - 0.1 * this.data.floatScale, z: 0 },
+	      onUpdate: () => { this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5; },
+	      onComplete: () => { this.float( true ); },
+	    } );
+
+	    this.tweens.rotate = new RUBIK.Tween( {
+	      target: this.game.cube.animator.rotation,
+	      duration: 2500,
+	      easing: 'easeOutCubic',
+	      to: { x: 0 },
+	    } );
+
+	    setTimeout( () => { this.title( true ); }, 2000 );
+
+	  }
+
+	  float( drop ) {
+
+	    if ( typeof this.data.floatScale == 'undefined' ) this.data.floatScale = 1;
+
+	    if ( drop ) {
+
+	      this.tweens.float = new RUBIK.Tween( {
+	        duration: 2500,
+	        easing: 'easeInOutSine',
+	        yoyo: true,
+	        onUpdate: tween => {
+
+	          this.game.cube.animator.position.y = - 0.1 * this.data.floatScale + tween.progress * 0.2 * this.data.floatScale;
+	          this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
+
+	        },
+	      } );
+
+	    } else {
+
+	      this.tweens.float = new RUBIK.Tween( {
+	        duration: 2500 / 2,
+	        easing: 'easeOutSine',
+	        onUpdate: tween => {
+
+	          this.game.cube.animator.position.y = tween.progress * - 0.1 * this.data.floatScale;
+	          this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
+
+	        },
+	        onComplete: () => { this.float( true ); },
+	      } );
+
+	    }
+
+	  }
+
+	  zoom( game, time, callback ) {
+
+	    const floatScale = ( game ) ? 0.25 : 1;
+	    const zoom = ( game ) ? 1 : this.data.cameraZoom;
+	    const cubeY = ( game ) ? 0 : this.data.cubeY;
+	    const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
+	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
+	    const easing = ( time > 0 ) ? 'easeInOutQuad' : 'easeInOutCubic';
+
+	    this.tweens.scale = new RUBIK.Tween( {
+	      target: this.data,
+	      duration: duration,
+	      easing: easing,
+	      to: { floatScale: floatScale },
+	    } );
+
+	    // this.tweens.cubeY = new RUBIK.Tween( {
+	    //   target: this.game.cube.object.position,
+	    //   duration: duration,
+	    //   easing: easing,
+	    //   to: { y: cubeY },
+	    // } );
+
+	    this.tweens.zoom = new RUBIK.Tween( {
+	      target: this.game.world.camera,
+	      duration: duration,
+	      easing: easing,
+	      to: { zoom: zoom },
+	      onUpdate: () => { this.game.world.camera.updateProjectionMatrix(); },
+	    } );
+
+	    this.tweens.rotate = new RUBIK.Tween( {
+	      target: this.game.cube.animator.rotation,
+	      duration: duration,
+	      easing: easing,
+	      to: { y: - Math.PI * 2 * rotations },
+	      onComplete: () => { this.game.cube.animator.rotation.y = 0; callback(); },
+	    } );
+
+	  }
+	  
 	}
 
 	class Timer {
@@ -1695,15 +2190,22 @@
 
 			this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
 			this.deltaTime = 0;
-
-			this.seconds = 0;
-			this.minutes = 0;
+			this.converted = this.convert( this.deltaTime );
 
 			this.world.onAnimate = () => {
 
+				const old = this.converted;
+
 				this.currentTime = Date.now();
 				this.deltaTime = this.currentTime - this.startTime;
-				this.element.innerHTML = this.convert( this.deltaTime );
+				this.converted = this.convert( this.deltaTime );
+
+				if ( this.converted != old ) {
+
+					localStorage.setItem( 'gameTime', JSON.stringify( this.deltaTime ) );
+					this.element.innerHTML = this.converted;
+
+				}
 
 			};
 
@@ -1714,7 +2216,7 @@
 			this.currentTime = Date.now();
 			this.deltaTime = this.currentTime - this.startTime;
 
-			world.onAnimate = () => {};
+			this.world.onAnimate = () => {};
 
 			return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 
@@ -1722,211 +2224,135 @@
 
 		convert( time ) {
 
-			// const millis = parseInt( ( time % 1000 ) / 100 );
-			const oldSeconds = this.seconds;
-
 			this.seconds = parseInt( ( time / 1000 ) % 60 );
 			this.minutes = parseInt( ( time / ( 1000 * 60 ) ) /*% 60*/ );
 
-			if ( oldSeconds !== this.seconds ) localStorage.setItem( 'gameTime', JSON.stringify( time ) );
+			const print = this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
 
-			return this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds; // + '.' + millis;
+			return print.replace( /0/g, 'o' );
 
 		}
 
 	}
 
-	class Animate {
+	class Game {
 
-	  constructor( cube, title, time ) {
+	  constructor( container ) {
 
-	    this.cube = cube;
-	    this.title = title;
-	    this.time = time;
-	    this.tweens = {};
+	    this.dom = {
+	      container: document.querySelector( '.game' ),
+	      main: document.querySelector( '.ui__main' ),
+	      title: document.querySelector( '.ui__title' ),
+	      start: document.querySelector( '.ui__start' ),
+	      timer: document.querySelector( '.ui__timer' ),
+	      buttons: {
+	        settings: document.querySelector( '.ui__icon--settings' ),
+	        // audio: document.querySelector( '.ui__icon--audio' ),
+	        // home: document.querySelector( '.ui__icon--home' ),
+	      }
+	    };
 
-	    this.title.querySelectorAll('span').forEach( span => {
+	    this.options = {
+	      cubeSize: 3,
+	      scrambleLength: 20,
+	    };
 
-	      const spanText = span.innerHTML;
-	      span.innerHTML = '';
+	    this.world = new RUBIK.World( this.dom.container, this.options );
+	    this.cube = new RUBIK.Cube( this.options.cubeSize );
+	    this.controls = new RUBIK.Controls( this.cube, this.options );
+	    this.animation = new RUBIK.Animations( this );
+	    this.audio = new RUBIK.Audio( /*this.dom.buttons.audio*/ );
+	    this.timer = new RUBIK.Timer( this.world, this.dom.timer );
+	    this.icons = new RUBIK.SvgIcons( { observer: false, convert: true } );
 
-	      spanText.split( '' ).forEach( letter => {
+	    this.world.addCube( this.cube );
+	    this.world.addControls( this.controls );
+	    this.initDoupleTap();
 
-	        const i = document.createElement( 'i' );
-	        i.innerHTML = letter;
-	        i.style.opacity = 0;
-	        span.appendChild( i );
+	    this.saved = this.cube.loadState();
+	    this.playing = false;
 
-	      } );
+	    this.animation.drop();
 
-	    } );
+	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
+	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
 
-	    this.title.style.opacity = 1;
+	    this.dom.buttons.settings.onclick = e => {
 
-	  }
+	      e.stopPropagation();
+	      if ( this.playing ) this.pause();
 
-	  titleIn( callback ) {
-
-	    this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.8,
-	      { opacity: 0, rotationY: -90 },
-	      { opacity: 1, rotationY: 0, ease: Sine.easeOut },
-	    0.05, () => { if ( typeof callback === 'function') callback(); } );
-
-	  }
-
-	  titleOut( callback ) {
-
-	    this.tweens.title = TweenMax.staggerFromTo( this.title.querySelectorAll( 'i' ), 0.4,
-	      { opacity: 1, rotationY: 0 },
-	      { opacity: 0, rotationY: 90, ease: Sine.easeIn },
-	    0.05, () => { if ( typeof callback === 'function') callback(); } );
-
-	  }
-
-	  dropAndFloat( callback ) {
-
-	    const cube = this.cube.object;
-	    const shadow = this.cube.shadow;
-	    const tweens = this.tweens;
-
-	    cube.position.y = 4; 
-	    cube.position.x = -2; 
-	    cube.position.z = -2; 
-	    cube.rotation.x = Math.PI/4;
-	    // cube.rotation.y = Math.PI/6;
-	    shadow.material.opacity = 0;
-
-	    TweenMax.to( shadow.material, 1.5, { opacity: 0.5, ease: Power1.easeOut, delay: 1 } ); 
-	    TweenMax.to( cube.rotation, 2.5, { x: 0, y: 0, ease: Power1.easeOut } ); 
-	    TweenMax.to( cube.position, 2.5, { x: 0, y: - 0.1, z: 0, ease: Power1.easeOut, onComplete: () => { 
-	     
-	      tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
-	        { y: - 0.1 }, 
-	        { y: + 0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-	      ); 
-	     
-	      tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
-	        { opacity: 0.5 }, 
-	        { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-	      ); 
-
-	      callback();
-
-	    } } ); 
+	    };
 
 	  }
 
-	  game( callback, time, start ) {
+	  start() {
+	    let duration = 0;
 
-	    const cube = this.cube.object;
-	    const shadow = this.cube.shadow;
-	    const camera = this.cube.world.camera;
-	    const tweens = this.tweens;
-	    const zoomDuration = 0.5;
+	    if ( ! this.saved ) {
 
-	    tweens.cube.kill();
-	    tweens.shadow.kill();
+	      this.dom.timer.innerHTML = 'o:oo';
 
-	    if ( !start ) {
-
-	      tweens.cube = TweenMax.to( cube.position, 0.75, { y: 0.1, ease: Sine.easeOut } );
-	      tweens.shadow = TweenMax.to( shadow.material, 0.75, { opacity: 0.5, ease: Sine.easeOut, onComplete: () => {
-
-	        tweens.cube = TweenMax.fromTo( cube.position, 1.5, 
-	          { y: 0.1 }, 
-	          { y: -0.1, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-	        );
-
-	        tweens.shadow = TweenMax.fromTo( shadow.material, 1.5, 
-	          { opacity: 0.5 }, 
-	          { opacity: 0.3, repeat: -1, yoyo: true, ease: Sine.easeInOut } 
-	        ); 
-
-	      } } );
+	      const scramble = new RUBIK.Scramble( this.cube, this.options.scrambleLength );
+	      duration = scramble.converted.length * this.controls.options.scrambleSpeed;
+	      this.controls.scrambleCube( scramble, () => { this.saved = true; } );
 
 	    } else {
 
-	      tweens.cube = TweenMax.to( cube.position, zoomDuration, { y: 0, ease: Sine.easeInOut } );
-	      tweens.shadow = TweenMax.to( shadow.material, zoomDuration, { opacity: 0.4, ease: Sine.easeInOut, onComplete: () => {
-
-	        if ( time != 0 ) callback();
-
-	      } } );
+	      this.dom.timer.innerHTML = this.timer.convert( this.world.timer.deltaTime );
 
 	    }
 
-	    const duration =  ( time > 0 ) ? time + zoomDuration : zoomDuration * 2;
-	    const rotations = ( time > 0 ) ? Math.min( Math.round( duration / 2 ), 1 ) * 2 : 2;
+	    this.animation.title( false, 0 );
+	    this.animation.timer( true, 600 );
 
-	    const div = document.createElement( 'div' );
-	    const value = { old: 0, current: 0, delta: 0 };
-	    const matrix = new THREE.Matrix4();
+	    this.animation.zoom( true, duration, () => {
 
-	    const cameraZoom = ( start ) ? 0.95 : 0.8;
+	      this.playing = true;
+	      this.controls.disabled = false;
+	      this.timer.start( this.saved );
 
-	    tweens.cameraZoom = TweenMax.to( camera, duration, { zoom: cameraZoom, ease: Sine.easeInOut, onUpdate: () => {
-
-	      camera.updateProjectionMatrix();
-
-	    } } );
-
-	    tweens.cameraRotation = TweenMax.to( div, duration, { x: Math.PI * rotations, ease: Sine.easeInOut, onUpdate: () => {
-
-	      value.current = this.tweens.cameraRotation.target._gsTransform.x;
-	      value.delta = value.current - value.old;
-	      value.old = value.current * 1;
-
-	      matrix.makeRotationY( value.delta );
-	      camera.position.applyMatrix4( matrix );
-	      camera.lookAt( this.cube.world.cameraOffset );
-
-	    }, onComplete: () => {
-
-	      if ( time == 0 ) callback();
-
-	    } } );
+	    } );
 
 	  }
 
-	  audioIn( audio ) {
+	  pause() {
 
-	    if ( !audio.musicOn ) return;
+	    this.playing = false;
+	    this.timer.stop();
+	    this.controls.disabled = true;
 
-	    const sound = audio.music;
+	    this.animation.title( true, 600 );
+	    this.animation.timer( false, 0 );
 
-	    const currentVolume = { volume: 0 };
-
-	    sound.play();
-
-	    if ( this.tweens.volumeTween ) this.tweens.volumeTween.kill();
-
-	    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0.5, ease: Sine.easeOut, onUpdate: () => {
-
-	      sound.setVolume( this.tweens.volumeTween.target.volume );
-
-	      audio.button.classList[ sound.isPlaying ? 'add' : 'remove' ]('is-active');
-
-	    } } );
+	    this.animation.zoom( false, 0, () => {} );
 
 	  }
 
-	  audioOut( audio ) {
+	  initDoupleTap() {
 
-	    const sound = audio.music;
+	    let tappedTwice = false;
 
-	    const currentVolume = { volume: sound.getVolume() };
+	    const tapHandler = event => {
 
-	    if ( this.tweens.volumeTween ) this.tweens.volumeTween.kill();
+	      if ( event.target !== this.dom.main ) return;
 
-	    this.tweens.volumeTween = TweenMax.to( currentVolume, 1, { volume: 0, ease: Sine.easeOut, onUpdate: () => {
+	      event.preventDefault();
 
-	      sound.setVolume( this.tweens.volumeTween.target.volume );
+	      if ( ! tappedTwice ) {
 
-	    }, onComplete: () => {
+	          tappedTwice = true;
+	          setTimeout( () => { tappedTwice = false; }, 300 );
+	          return false;
 
-	      sound.pause();
+	      }
 
-	    } } );
+	      this.start();
+
+	    };
+
+	    this.dom.main.addEventListener( 'click', tapHandler, false );
+	    this.dom.main.addEventListener( 'touchstart', tapHandler, false );
 
 	  }
 
@@ -1939,15 +2365,14 @@
 			options = Object.assign( {
 				tagName: 'icon',
 				className: 'icon',
-				icons: {},
 				styles: true,
-				observe: true,
-				convert: false,
+				observe: false,
+				convert: true,
 			}, options || {} );
 
 			this.tagName = options.tagName;
 			this.className = options.className;
-			this.icons = options.icons;
+			this.icons = this.constructor.icons;
 
 			this.svgTag = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
 			this.svgTag.setAttribute( 'class', this.className );
@@ -2008,204 +2433,94 @@
 
 	}
 
-	function Init() {
+	SvgIcons.icons = {
+	  'audio': {
+	    viewbox: '0 0 26712 21370',
+	    content: '<g fill="currentColor"><path d="M11966 392l-4951 4950 -5680 0c-738,0 -1336,598 -1336,1336l0 8014c0,737 598,1336 1336,1336l5680 0 4951 4950c836,836 2280,249 2280,-944l0 -18696c0,-1194 -1445,-1780 -2280,-944z"/><path d="M18823 6407c-644,-352 -1457,-120 -1815,526 -356,646 -120,1458 526,1815 718,394 1165,1137 1165,1937 0,800 -446,1543 -1164,1937 -646,357 -882,1169 -526,1815 358,649 1171,879 1815,526 1571,-865 2547,-2504 2547,-4278 0,-1774 -976,-3413 -2548,-4277l0 0z"/><path d="M26712 10685c0,-3535 -1784,-6786 -4773,-8695 -623,-397 -1449,-213 -1843,415 -395,628 -210,1459 412,1857 2212,1413 3533,3814 3533,6423 0,2609 -1321,5010 -3533,6423 -623,397 -807,1228 -412,1856 362,577 1175,843 1843,415 2989,-1909 4773,-5159 4773,-8695z"/></g>',
+	  },
+	  'settings': {
+	    viewbox: '0 0 512 512',
+	    content: '<path fill="currentColor" d="M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z" class=""></path>',
+	  },
+	  'home': {
+	    viewbox: '0 0 576 512',
+	    content: '<path fill="currentColor" d="M488 312.7V456c0 13.3-10.7 24-24 24H348c-6.6 0-12-5.4-12-12V356c0-6.6-5.4-12-12-12h-72c-6.6 0-12 5.4-12 12v112c0 6.6-5.4 12-12 12H112c-13.3 0-24-10.7-24-24V312.7c0-3.6 1.6-7 4.4-9.3l188-154.8c4.4-3.6 10.8-3.6 15.3 0l188 154.8c2.7 2.3 4.3 5.7 4.3 9.3zm83.6-60.9L488 182.9V44.4c0-6.6-5.4-12-12-12h-56c-6.6 0-12 5.4-12 12V117l-89.5-73.7c-17.7-14.6-43.3-14.6-61 0L4.4 251.8c-5.1 4.2-5.8 11.8-1.6 16.9l25.5 31c4.2 5.1 11.8 5.8 16.9 1.6l235.2-193.7c4.4-3.6 10.8-3.6 15.3 0l235.2 193.7c5.1 4.2 12.7 3.5 16.9-1.6l25.5-31c4.2-5.2 3.4-12.7-1.7-16.9z" class=""></path>',
+	  },
+	};
 
-	  window.addEventListener( 'touchmove', function () {} );
-	  document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
+	class Audio {
 
-	  // CONVERT SVG ICONS
+	  constructor( /*button, animate*/ ) {
 
-	  const svgIcons = new RUBIK.SvgIcons( {
-	    observer: false,
-	    convert: true,
-	    icons: {
-	      'audio': {
-	        viewbox: '0 0 26712 21370',
-	        content: '<g fill="currentColor"><path d="M11966 392l-4951 4950 -5680 0c-738,0 -1336,598 -1336,1336l0 8014c0,737 598,1336 1336,1336l5680 0 4951 4950c836,836 2280,249 2280,-944l0 -18696c0,-1194 -1445,-1780 -2280,-944z"/><path d="M18823 6407c-644,-352 -1457,-120 -1815,526 -356,646 -120,1458 526,1815 718,394 1165,1137 1165,1937 0,800 -446,1543 -1164,1937 -646,357 -882,1169 -526,1815 358,649 1171,879 1815,526 1571,-865 2547,-2504 2547,-4278 0,-1774 -976,-3413 -2548,-4277l0 0z"/><path d="M26712 10685c0,-3535 -1784,-6786 -4773,-8695 -623,-397 -1449,-213 -1843,415 -395,628 -210,1459 412,1857 2212,1413 3533,3814 3533,6423 0,2609 -1321,5010 -3533,6423 -623,397 -807,1228 -412,1856 362,577 1175,843 1843,415 2989,-1909 4773,-5159 4773,-8695z"/></g>',
-	      },
-	      'settings': {
-	        viewbox: '0 0 512 512',
-	        content: '<path fill="currentColor" d="M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z" class=""></path>',
-	      },
-	      'home': {
-	        viewbox: '0 0 576 512',
-	        content: '<path fill="currentColor" d="M488 312.7V456c0 13.3-10.7 24-24 24H348c-6.6 0-12-5.4-12-12V356c0-6.6-5.4-12-12-12h-72c-6.6 0-12 5.4-12 12v112c0 6.6-5.4 12-12 12H112c-13.3 0-24-10.7-24-24V312.7c0-3.6 1.6-7 4.4-9.3l188-154.8c4.4-3.6 10.8-3.6 15.3 0l188 154.8c2.7 2.3 4.3 5.7 4.3 9.3zm83.6-60.9L488 182.9V44.4c0-6.6-5.4-12-12-12h-56c-6.6 0-12 5.4-12 12V117l-89.5-73.7c-17.7-14.6-43.3-14.6-61 0L4.4 251.8c-5.1 4.2-5.8 11.8-1.6 16.9l25.5 31c4.2 5.1 11.8 5.8 16.9 1.6l235.2-193.7c4.4-3.6 10.8-3.6 15.3 0l235.2 193.7c5.1 4.2 12.7 3.5 16.9-1.6l25.5-31c4.2-5.2 3.4-12.7-1.7-16.9z" class=""></path>',
-	      },
-	    },
-	  } );
+	    // this.button = button;
+	    // this.animate = animate;
 
-	  // SET OPTIONS
+	    const listener = new THREE.AudioListener();
+	    const audioLoader = new THREE.AudioLoader();
 
-	  const scrambleLength = 20;
+	    this.musicOn = localStorage.getItem( 'music' );
+	    this.musicOn = ( this.musicOn == null ) ? true : ( ( this.musicOn == 'true' ) ? true : false );
 
-	  // SELECT DOM ELEMENTS
+	    // this.music = new THREE.Audio( listener );
 
-	  const game = document.querySelector( '.game' );
-	  const ui = document.querySelector( '.ui' );
-	  const title = document.querySelector( '.ui__title' );
-	  const start = document.querySelector( '.ui__button--start' );
-	  const homeButton = document.querySelector( '.ui__icon--home' );
-	  const audioButton = document.querySelector( '.ui__icon--audio' );
-	  const time = document.querySelector( '.ui__timer' );
-	  const moves = document.querySelector( '.ui__moves' );
-	  const undo = document.querySelector( '.ui__undo' );
+	    // audioLoader.load( 'assets/sounds/music.mp3', buffer => {
 
-	  // CREATE RUBIK GAME
+	    //   this.music.setBuffer( buffer );
+	    //   this.music.setLoop( true );
+	    //   this.music.setVolume( 0.5 );
 
-	  const world = new RUBIK.World( game );
-	  const cube = new RUBIK.Cube( 3 );
-	  const controls = new RUBIK.Controls( cube );
-	  const timer = new RUBIK.Timer( world, time );
-	  const animate = new RUBIK.Animate( cube, title, time );
-	  const audio = new RUBIK.Audio( audioButton, animate );
+	    //   if ( this.musicOn ) {
 
-	  world.addCube( cube );
-	  world.addControls( controls );
-	  world.addAudio( audio );
+	    //     this.animate.audioIn( this );
 
-	  world.camera.zoom = 0.8;
-	  world.camera.updateProjectionMatrix();
+	    //   }
 
-	  controls.disabled = true;
+	    // });
 
-	  // LOAD GAME
+	    this.click = new THREE.Audio( listener );
 
-	  let gameSaved = cube.loadState();
-	  audioButton.gameStarted = false;
+	    audioLoader.load( 'assets/sounds/click.mp3', buffer => {
 
-	  start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
+	      this.click.setBuffer( buffer );
+	      this.click.setLoop( false );
+	      this.click.setVolume( 0.1 );
 
-	  // START GAME
+	    });
 
-	  animate.dropAndFloat( () => {
+	    // this.button.addEventListener( 'click', () => {
 
-	    animate.titleIn( () => {} );
+	    //   this.musicOn = !this.musicOn;
 
-	    ui.classList.add('in-menu');
+	    //   if ( this.musicOn && !this.button.gameStarted ) {
 
-	  } );
-	  // BUTTON LISTENERS
+	    //     this.animate.audioIn( this );
 
-	  start.onclick = function ( event ) {
+	    //   } else {
 
-	    if ( audio.musicOn ) animate.audioOut( audio );
-	    audioButton.gameStarted = true;
+	    //     this.animate.audioOut( this );
 
-	    const scramble = ( gameSaved ) ? null : new RUBIK.Scramble( cube, scrambleLength );
+	    //   }
 
-	    ui.classList.remove('in-menu');
+	    //   this.button.classList[ this.musicOn ? 'add' : 'remove' ]('is-active');
 
-	    animate.titleOut( () => {} );
+	    //   localStorage.setItem( 'music', this.musicOn );
 
-	    animate.game( () => {
+	    // }, false );
 
-	      if ( !gameSaved ) {
-
-	        controls.scrambleCube( scramble, function () {
-
-	          ui.classList.add('in-game');
-
-	          timer.start( false );
-
-	          cube.saveState();
-
-	          controls.disabled = false;
-
-	        } );
-
-	      } else {
-
-	        ui.classList.add('in-game');
-	        timer.start( true );
-
-	      }
-
-	      controls.disabled = false;
-
-	    }, ( gameSaved ) ? 0 : scramble.converted.length * controls.options.scrambleSpeed, true );
-
-	  };
-
-	  // undo.onclick = function ( event ) {
-
-	  //   controls.undo();
-
-	  // };
-
-	  controls.onMove = function ( data ) {
-
-	    // moves.innerHTML = data.length;
-	    if ( audio.musicOn ) audio.click.play();
-
-	  };
-
-	  homeButton.onclick = e => {
-
-	    controls.disabled = true;
-
-	    gameSaved = true;
-	    audioButton.gameStarted = false;
-
-	    start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
-
-	    ui.classList.remove('in-game');
-	    ui.classList.add('in-menu');
-
-	    timer.stop();
-	    animate.game( () => {}, 0, false );
-	    animate.audioIn( audio );
-
-	    animate.titleIn( () => {} );
-
-	  };
-
-	  controls.onSolved = function () {
-
-	    controls.disabled = true;
-	    
-	    gameSaved = false;
-	    audioButton.gameStarted = false;
-
-	    start.innerHTML = gameSaved ? 'CONTINUE' : 'NEW GAME';
-
-	    ui.classList.remove('in-game');
-	    ui.classList.add('in-menu');
-
-	    console.log( timer.deltaTime );
-
-	    timer.stop();
-	    animate.game( () => {}, 0, false );
-	    animate.audioIn( audio );
-
-	    animate.titleOut( () => {
-
-	      title.classList.remove( 'is-timer' );
-	      animate.titleIn( timer.convert( timer.deltaTime ), () => {} );
-
-	    } );
-
-	  };
-
-	  window.world = world;
-	  window.cube = cube;
-	  window.controls = controls;
-	  window.timer = timer;
-	  window.animate = animate;
-	  window.audio = audio;
+	  }
 
 	}
 
-	// export { Shatter } from './components/Shatter.js';
-
 	exports.World = World;
-	exports.Audio = Audio;
 	exports.Cube = Cube;
 	exports.Controls = Controls;
 	exports.Scramble = Scramble;
+	exports.Tween = Tween;
+	exports.Animations = Animations;
 	exports.Timer = Timer;
-	exports.Animate = Animate;
+	exports.Game = Game;
 	exports.SvgIcons = SvgIcons;
-	exports.Init = Init;
+	exports.Audio = Audio;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
