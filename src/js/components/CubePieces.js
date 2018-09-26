@@ -5,10 +5,10 @@ function CubePieces( size, positions, colors ) {
 	const pieces = [];
 	const edges = [];
 
-	const edgeScale = 0.85;
-	const edgeRoundness = 0.1;
+	const edgeScale = 0.835;
+	const edgeRoundness = 0.125;
 	const pieceRoundness = 0.1;
-	const edgeDepth = 0.01;
+	const edgeDepth = 0.0125;
 	const pieceSize = 1 / size;
 
 	const pieceMesh = new THREE.Mesh(

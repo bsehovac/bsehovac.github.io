@@ -600,10 +600,10 @@
 
 		const pieces = [];
 
-		const edgeScale = 0.85;
-		const edgeRoundness = 0.1;
+		const edgeScale = 0.835;
+		const edgeRoundness = 0.125;
 		const pieceRoundness = 0.1;
-		const edgeDepth = 0.01;
+		const edgeDepth = 0.0125;
 		const pieceSize = 1 / size;
 
 		const pieceMesh = new THREE.Mesh(
@@ -887,21 +887,27 @@
 
 	class Draggable {
 
-	  constructor( element ) {
+	  constructor( element, options ) {
 
 	    window.addEventListener( 'touchmove', function () {} );
 	    document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
 
 	    this.position = {
-	      // start: new THREE.Vector2(),
 	      current: new THREE.Vector2(),
-	      // delta: new THREE.Vector2(),
-	      // drag: new THREE.Vector2(),
-	      // old: new THREE.Vector2(),
+	      start: new THREE.Vector2(),
+	      delta: new THREE.Vector2(),
+	      old: new THREE.Vector2(),
+	      drag: new THREE.Vector2(),
 	      // momentum: new THREE.Vector2(),
 	    };
 
-	    // this.momentum = [];
+	    this.options = Object.assign( {
+	      calcDelta: false,
+	      // calcMomentum: false,
+	    }, options || {} );
+
+	    // if ( this.options.calcMomentum ) this.options.calcDelta = true;
+
 	    this.element = null;
 	    this.touch = null;
 
@@ -913,10 +919,21 @@
 	        if ( event.type == 'touchstart' && event.touches.length > 1 ) return;
 
 	        this.getPositionCurrent( event );
-	        // this.position.start = this.position.current.clone();
-	        // this.position.delta.set( 0, 0 );
-	        // this.position.drag.set( 0, 0 );
-	        // this.position.momentum.set( 0, 0 );
+
+	        if ( this.options.calcDelta ) {
+
+	          this.position.start = this.position.current.clone();
+	          this.position.delta.set( 0, 0 );
+	          this.position.drag.set( 0, 0 );
+
+	        }
+
+	        // if ( this.options.calcMomentum ) {
+
+	        //     this.position.momentum.set( 0, 0 );
+
+	        // }
+
 	        this.touch = ( event.type == 'touchstart' );
 
 	        this.onDragStart( this.position );
@@ -928,11 +945,26 @@
 
 	      move: ( event ) => {
 
-	        // this.position.old = this.position.current.clone();
+	        if ( this.options.calcDelta ) {
+
+	          this.position.old = this.position.current.clone();
+
+	        }
+
 	        this.getPositionCurrent( event );
-	        // this.position.delta = this.position.current.clone().sub( this.position.old );
-	        // this.position.drag = this.position.current.clone().sub( this.position.start );
-	        // this.addMomentumPoint( this.position.delta );
+
+	        if ( this.options.calcDelta ) {
+
+	          this.position.delta = this.position.current.clone().sub( this.position.old );
+	          this.position.drag = this.position.current.clone().sub( this.position.start );
+
+	        }
+
+	        // if ( this.options.calcMomentum ) {
+
+	        //   this.addMomentumPoint( this.position.delta );
+
+	        // }
 
 	        this.onDragMove( this.position );
 
@@ -941,7 +973,8 @@
 	      end: ( event ) => {
 
 	        this.getPositionCurrent( event );
-	        // this.getMomentum();
+
+	        // if ( this.options.calcMomentum ) this.getMomentum();
 
 	        this.onDragEnd( this.position );
 
@@ -955,6 +988,8 @@
 	    this.onDragStart = () => {};
 	    this.onDragMove = () => {};
 	    this.onDragEnd = () => {};
+
+	    if ( typeof element !== 'undefined' ) this.init( element );
 
 	    return this;
 
@@ -998,37 +1033,37 @@
 
 	  }
 
-	  // addMomentumPoint( delta ) {
+	  addMomentumPoint( delta ) {
 
-	  //   const time = Date.now();
+	    const time = Date.now();
 
-	  //   while ( this.momentum.length > 0 ) {
+	    while ( this.momentum.length > 0 ) {
 
-	  //     if ( time - this.momentum[0].time <= 200 ) break;
-	  //     this.momentum.shift();
+	      if ( time - this.momentum[0].time <= 200 ) break;
+	      this.momentum.shift();
 
-	  //   }
+	    }
 
-	  //   if ( delta !== false ) this.momentum.push( { delta, time } );
+	    if ( delta !== false ) this.momentum.push( { delta, time } );
 
-	  // }
+	  }
 
-	  // getMomentum() {
+	  getMomentum() {
 
-	  //   const points = this.momentum.length;
-	  //   const momentum = new THREE.Vector2();
+	    const points = this.momentum.length;
+	    const momentum = new THREE.Vector2();
 
-	  //   this.addMomentumPoint( false );
+	    this.addMomentumPoint( false );
 
-	  //   this.momentum.forEach( ( point, index ) => {
+	    this.momentum.forEach( ( point, index ) => {
 
-	  //     momentum.add( point.delta.multiplyScalar( index / points ) )
+	      momentum.add( point.delta.multiplyScalar( index / points ) );
 
-	  //   } );
+	    } );
 
-	  //   return momentum;
+	    return momentum;
 
-	  // }
+	  }
 
 	}
 
@@ -1038,7 +1073,7 @@
 
 	    this.options = Object.assign( {
 	      flipSpeed: 300,
-	      flipEasing: 'swingTo', // easeOutExpo
+	      flipBounce: 1.70158,
 	      scrambleSpeed: 150,
 	      scrambleEasing: 'easeOutExpo', // easeOutQuart
 	    }, options || {} );
@@ -1226,10 +1261,16 @@
 	  rotateLayer( rotation, scramble, callback ) {
 
 	    const bounceCube = this.bounceCube();
+	    const easing = scramble
+	      ? this.options.scrambleEasing
+	      : p => {
+	        var s = this.options.flipBounce;
+	        return (p-=1)*p*((s+1)*p + s) + 1;
+	      };
 
 	    this.rotationTween = new RUBIK.Tween( {
 	      duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
-	      easing: this.options[ scramble ? 'scrambleEasing' : 'flipEasing' ],
+	      easing: easing,
 	      onUpdate: tween => {
 
 	        let deltaAngle = tween.delta * rotation;
@@ -1278,9 +1319,14 @@
 
 	  rotateCube( rotation, callback ) {
 
+	    const easing = p => {
+	      var s = this.options.flipBounce;
+	      return (p-=1)*p*((s+1)*p + s) + 1;
+	    };
+
 	    this.rotationTween = new RUBIK.Tween( {
 	      duration: this.options.flipSpeed,
-	      easing: this.options.flipEasing,
+	      easing: easing,
 	      onUpdate: tween => {
 
 	        this.edges.rotateOnWorldAxis( this.drag.axis, tween.delta * rotation );
@@ -1649,12 +1695,17 @@
 	    this.target = options.target || null;
 	    this.duration = options.duration || 500;
 	    this.delay = options.delay || 0;
-	    this.easing = this.constructor.Easings[ options.easing || 'linear' ];
 	    this.from = options.from || {};
 	    this.to = options.to || null;
 	    this.onComplete = options.onComplete || ( () => {} );
 	    this.onUpdate = options.onUpdate || ( () => {} );
 	    this.yoyo = options.yoyo || null;
+
+	    if ( typeof options.easing == 'undefined' ) options.easing = 'linear'; 
+
+	    this.easing = ( typeof options.easing !== 'function' ) 
+	      ? this.constructor.Easings[ options.easing ]
+	      : options.easing;
 
 	    this.progress = 0;
 	    this.delta = 0;
@@ -2245,10 +2296,11 @@
 	      title: document.querySelector( '.ui__title' ),
 	      start: document.querySelector( '.ui__start' ),
 	      timer: document.querySelector( '.ui__timer' ),
+	      preferences: document.querySelector( '.ui__preferences' ),
 	      buttons: {
 	        settings: document.querySelector( '.ui__icon--settings' ),
 	        // audio: document.querySelector( '.ui__icon--audio' ),
-	        // home: document.querySelector( '.ui__icon--home' ),
+	        home: document.querySelector( '.ui__icon--home' ),
 	      }
 	    };
 
@@ -2268,6 +2320,7 @@
 	    this.world.addCube( this.cube );
 	    this.world.addControls( this.controls );
 	    this.initDoupleTap();
+	    this.initPreferences();
 
 	    this.saved = this.cube.loadState();
 	    this.playing = false;
@@ -2280,6 +2333,13 @@
 	    this.dom.buttons.settings.onclick = e => {
 
 	      e.stopPropagation();
+	      this.dom.preferences.classList.toggle( 'is-active' );
+
+	    };
+
+	    this.dom.buttons.home.onclick = e => {
+
+	      e.stopPropagation();
 	      if ( this.playing ) this.pause();
 
 	    };
@@ -2288,6 +2348,8 @@
 
 	  start() {
 	    let duration = 0;
+
+	    this.dom.buttons.home.style.visibility = 'visible';
 
 	    if ( ! this.saved ) {
 
@@ -2317,6 +2379,8 @@
 	  }
 
 	  pause() {
+
+	    this.dom.buttons.home.style.visibility = 'hidden';
 
 	    this.playing = false;
 	    this.timer.stop();
@@ -2353,6 +2417,34 @@
 
 	    this.dom.main.addEventListener( 'click', tapHandler, false );
 	    this.dom.main.addEventListener( 'touchstart', tapHandler, false );
+
+	  }
+
+	  initPreferences() {
+
+	    const flipSpeed = new RUBIK.Range( {
+	      element: '.range[type="speed"]',
+	      handle: '.range__handle',
+	      value: this.controls.options.flipSpeed,
+	      values: [ 100, 300 ],
+	      onUpdate: value => { this.controls.options.flipSpeed = value; }
+	    } );
+
+	    const flipBounce = new RUBIK.Range( {
+	      element: '.range[type="bounce"]',
+	      handle: '.range__handle',
+	      value: this.controls.options.flipBounce,
+	      values: [ 0.1, 2 ],
+	      onUpdate: value => { this.controls.options.flipBounce = value; }
+	    } );
+
+	    const cameraFOV = new RUBIK.Range( {
+	      element: '.range[type="fov"]',
+	      handle: '.range__handle',
+	      value: this.world.fov,
+	      values: [ 2, 45 ],
+	      onUpdate: value => { this.world.fov = value; this.world.updateCamera(); }
+	    } );
 
 	  }
 
@@ -2511,6 +2603,68 @@
 
 	}
 
+	class Range {
+
+	  constructor( options ) {
+
+	    this.element = document.querySelector( options.element );
+	    this.handle = this.element.querySelector( options.handle );
+
+	    this.onUpdate = options.onUpdate;
+
+	    this.value = options.value * 1;
+	    this.min = options.values[0];
+	    this.max = options.values[1];
+	    this.step = options.step || 0;
+
+	    this.value = this.limit( this.value, this.min, this.max );
+	    this.handle.style.left = ( ( this.value - this.min ) / ( this.max - this.min ) * this.element.offsetWidth ) + 'px';
+
+	    this.initDraggable();
+
+	  }
+
+	  initDraggable() {
+
+	    this.draggable = new Draggable( this.handle, { calcDelta: true } );
+
+	    this.draggable.onDragStart = position => {
+
+	      this.element.classList.add( 'is-active' );
+
+	    };
+
+	    this.draggable.onDragMove = position => {
+
+	      let left = this.handle.offsetLeft + this.handle.offsetWidth / 2;
+	      left += position.delta.x;
+	      left = this.limit( left, 0, this.element.offsetWidth );
+
+	      this.handle.style.left = left + 'px';
+	      
+	      this.value = this.min + ( this.max - this.min ) * ( left / this.element.offsetWidth );
+	      this.value = Math.round( this.limit( this.value, this.min, this.max ) );
+
+	      this.onUpdate( this.value );
+
+	    };
+
+	    this.draggable.onDragEnd = position => {
+
+	      this.element.classList.remove( 'is-active' );
+
+	    };
+
+	  }
+
+	  limit( value, min, max ) {
+
+	    return Math.min( Math.max( value, min ), max );
+
+	  }
+
+	}
+
 	exports.World = World;
 	exports.Cube = Cube;
 	exports.Controls = Controls;
@@ -2521,6 +2675,7 @@
 	exports.Game = Game;
 	exports.SvgIcons = SvgIcons;
 	exports.Audio = Audio;
+	exports.Range = Range;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

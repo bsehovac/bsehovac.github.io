@@ -8,3 +8,4 @@ export { Timer } from './components/Timer.js';
 export { Game } from './components/Game.js';
 export { SvgIcons } from './components/SvgIcons.js';
 export { Audio } from './components/Audio.js';
+export { Range } from './components/Range.js';

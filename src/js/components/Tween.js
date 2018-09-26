@@ -5,12 +5,17 @@ class Tween {
     this.target = options.target || null;
     this.duration = options.duration || 500;
     this.delay = options.delay || 0;
-    this.easing = this.constructor.Easings[ options.easing || 'linear' ];
     this.from = options.from || {};
     this.to = options.to || null;
     this.onComplete = options.onComplete || ( () => {} );
     this.onUpdate = options.onUpdate || ( () => {} );
     this.yoyo = options.yoyo || null;
+
+    if ( typeof options.easing == 'undefined' ) options.easing = 'linear'; 
+
+    this.easing = ( typeof options.easing !== 'function' ) 
+      ? this.constructor.Easings[ options.easing ]
+      : options.easing;
 
     this.progress = 0;
     this.delta = 0;

@@ -170,8 +170,8 @@ button {
       left: 4vw; }
     .ui__icon--home {
       bottom: 4vw;
-      left: 4vw;
-      opacity: 0; }
+      right: 4vw;
+      visibility: hidden; }
   .ui__time {
     position: absolute;
     left: 0;
@@ -182,3 +182,34 @@ button {
     opacity: 0; }
   .ui__moves, .ui__undo {
     display: none; }
+  .ui__preferences {
+    top: 15vw;
+    right: 15vw;
+    bottom: 15vw;
+    left: 15vw;
+    pointer-events: none;
+    opacity: 0;
+    position: absolute;
+    z-index: 100;
+    background: rgba(0, 255, 255, 0.1); }
+    .ui__preferences.is-active {
+      opacity: 1;
+      pointer-events: all; }
+
+.range {
+  width: 100%;
+  margin-bottom: 15vw; }
+  .range__track {
+    position: relative;
+    height: 2px;
+    background: #f00; }
+  .range__handle {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    margin-left: -8px;
+    margin-top: -8px;
+    top: 50%;
+    left: 0;
+    background: #00f; }

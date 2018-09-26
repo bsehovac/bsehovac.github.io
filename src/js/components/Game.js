@@ -8,10 +8,11 @@ class Game {
       title: document.querySelector( '.ui__title' ),
       start: document.querySelector( '.ui__start' ),
       timer: document.querySelector( '.ui__timer' ),
+      preferences: document.querySelector( '.ui__preferences' ),
       buttons: {
         settings: document.querySelector( '.ui__icon--settings' ),
         // audio: document.querySelector( '.ui__icon--audio' ),
-        // home: document.querySelector( '.ui__icon--home' ),
+        home: document.querySelector( '.ui__icon--home' ),
       }
     };
 
@@ -31,6 +32,7 @@ class Game {
     this.world.addCube( this.cube );
     this.world.addControls( this.controls );
     this.initDoupleTap();
+    this.initPreferences();
 
     this.saved = this.cube.loadState();
     this.playing = false;
@@ -43,6 +45,13 @@ class Game {
     this.dom.buttons.settings.onclick = e => {
 
       e.stopPropagation();
+      this.dom.preferences.classList.toggle( 'is-active' );
+
+    }
+
+    this.dom.buttons.home.onclick = e => {
+
+      e.stopPropagation();
       if ( this.playing ) this.pause();
 
     }
@@ -53,6 +62,8 @@ class Game {
 
     const start = Date.now();
     let duration = 0;
+
+    this.dom.buttons.home.style.visibility = 'visible';
 
     if ( ! this.saved ) {
 
@@ -82,6 +93,8 @@ class Game {
   }
 
   pause() {
+
+    this.dom.buttons.home.style.visibility = 'hidden';
 
     this.playing = false;
     this.timer.stop();
@@ -118,6 +131,34 @@ class Game {
 
     this.dom.main.addEventListener( 'click', tapHandler, false );
     this.dom.main.addEventListener( 'touchstart', tapHandler, false );
+
+  }
+
+  initPreferences() {
+
+    const flipSpeed = new RUBIK.Range( {
+      element: '.range[type="speed"]',
+      handle: '.range__handle',
+      value: this.controls.options.flipSpeed,
+      values: [ 100, 300 ],
+      onUpdate: value => { this.controls.options.flipSpeed = value; }
+    } );
+
+    const flipBounce = new RUBIK.Range( {
+      element: '.range[type="bounce"]',
+      handle: '.range__handle',
+      value: this.controls.options.flipBounce,
+      values: [ 0.1, 2 ],
+      onUpdate: value => { this.controls.options.flipBounce = value; }
+    } );
+
+    const cameraFOV = new RUBIK.Range( {
+      element: '.range[type="fov"]',
+      handle: '.range__handle',
+      value: this.world.fov,
+      values: [ 2, 45 ],
+      onUpdate: value => { this.world.fov = value; this.world.updateCamera(); }
+    } );
 
   }
 

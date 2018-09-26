@@ -1,0 +1,22 @@
+.range {
+  width: 100%;
+  margin-bottom: 15vw;
+
+  &__track {
+    position: relative;
+    height: 2px;
+    background: #f00;
+  }
+
+  &__handle {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    margin-left: -8px;
+    margin-top: -8px;
+    top: 50%;
+    left: 0;
+    background: #00f;
+  }
+}

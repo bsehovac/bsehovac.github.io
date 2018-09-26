@@ -6,7 +6,7 @@ class Controls {
 
     this.options = Object.assign( {
       flipSpeed: 300,
-      flipEasing: 'swingTo', // easeOutExpo
+      flipBounce: 1.70158,
       scrambleSpeed: 150,
       scrambleEasing: 'easeOutExpo', // easeOutQuart
     }, options || {} );
@@ -194,10 +194,16 @@ class Controls {
   rotateLayer( rotation, scramble, callback ) {
 
     const bounceCube = this.bounceCube();
+    const easing = scramble
+      ? this.options.scrambleEasing
+      : p => {
+        var s = this.options.flipBounce;
+        return (p-=1)*p*((s+1)*p + s) + 1;
+      }
 
     this.rotationTween = new RUBIK.Tween( {
       duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
-      easing: this.options[ scramble ? 'scrambleEasing' : 'flipEasing' ],
+      easing: easing,
       onUpdate: tween => {
 
         let deltaAngle = tween.delta * rotation;
@@ -246,9 +252,14 @@ class Controls {
 
   rotateCube( rotation, callback ) {
 
+    const easing = p => {
+      var s = this.options.flipBounce;
+      return (p-=1)*p*((s+1)*p + s) + 1;
+    };
+
     this.rotationTween = new RUBIK.Tween( {
       duration: this.options.flipSpeed,
-      easing: this.options.flipEasing,
+      easing: easing,
       onUpdate: tween => {
 
         this.edges.rotateOnWorldAxis( this.drag.axis, tween.delta * rotation );
