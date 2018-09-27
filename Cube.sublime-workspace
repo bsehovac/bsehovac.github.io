@@ -519,6 +519,15 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "src/scss/components/_fonts.scss",
+			"settings":
+			{
+				"buffer_size": 11866,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Libsass",
 	"build_system_choices":
@@ -650,6 +659,10 @@
 	},
 	"expanded_folders":
 	[
+		"/Users/boris/Documents/bsehovac.github.io",
+		"/Users/boris/Documents/bsehovac.github.io/src",
+		"/Users/boris/Documents/bsehovac.github.io/src/scss",
+		"/Users/boris/Documents/bsehovac.github.io/src/scss/components"
 	],
 	"file_history":
 	[
@@ -784,7 +797,7 @@
 	],
 	"find":
 	{
-		"height": 54.0
+		"height": 27.0
 	},
 	"find_in_files":
 	{
@@ -1044,8 +1057,37 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "src/scss/components/_fonts.scss",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11866,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								11866,
+								11866
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Sass/Syntaxes/SCSS.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
