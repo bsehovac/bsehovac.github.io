@@ -42,8 +42,8 @@ class Animations {
 
     setTimeout( () => {
 
-      if ( show ) setTimeout( () => { this.game.dom.main.style.pointerEvents = 'all'; }, 600 );
-      else this.game.dom.main.style.pointerEvents = 'none';
+      if ( show ) setTimeout( () => { this.game.dom.main.classList.add( 'is-active' ); }, 600 );
+      else this.game.dom.main.classList.remove( 'is-active' );
 
       this.data.titleLetters.forEach( ( letter, index ) => {
 

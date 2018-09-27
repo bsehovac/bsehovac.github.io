@@ -4,8 +4,8 @@ class Draggable {
 
     if ( typeof window.DraggableDragFix === 'undefined' ) {
 
-      window.addEventListener( 'touchmove', function () {} );
-      document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
+      window.addEventListener( 'touchmove', () => {} );
+      document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
       window.DraggableDragFix = true;
 
     }

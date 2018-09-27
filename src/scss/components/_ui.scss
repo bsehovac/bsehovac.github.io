@@ -8,8 +8,9 @@
   overflow: hidden;
   pointer-events: none;
 
+  &__game,
   &__main,
-  &__options {
+  &__preferences {
     position: absolute;
     left: 0;
     top: 0;
@@ -17,14 +18,30 @@
     height: 100%;
   }
 
-  &__main {
-    z-index: 2;
-    visibility: visible;
+  &__game {
+    overflow: hidden;
+    z-index: 1;
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      // image-rendering: optimizeSpeed;
+      // image-rendering: -moz-crisp-edges;
+      // image-rendering: -webkit-optimize-contrast;
+      // image-rendering: -o-crisp-edges;
+      // image-rendering: pixelated;
+    }
   }
 
-  &__options {
-    z-index: 1;
-    visibility: hidden;
+
+  &__main {
+    z-index: 2;
+    pointer-events: none;
+
+    &.is-active {
+      pointer-events: all;
+    }
   }
 
   &__title {
@@ -32,21 +49,24 @@
     bottom: 75%;
     left: 0;
     width: 100%;
-    font-size: 26vw;
-    line-height: 0.7;
+    font-size: 22vw;
+    line-height: 0.75;
     text-align: center;
-    height: 1em;
+    height: 1.2em;
     letter-spacing: 0.025em;
     perspective: 100vw;
     opacity: 0;
     pointer-events: none;
+    @include breakpoint() {
+      font-size: 22vh * 0.666;
+    }
 
     span {
       display: block;
 
       &:first-child {
         font-size: 0.5em;
-        margin-bottom: 0.075em;
+        margin-bottom: 0.2em;
       }
     }
 
@@ -54,10 +74,6 @@
       transform-origin: 50% 100%;
       display: inline-block;
       white-space: pre;
-    }
-
-    @include breakpoint() {
-      font-size: 26vh * 0.666;
     }
   }
 
@@ -67,12 +83,11 @@
     left: 0;
     width: 100%;
     text-align: center;
-    font-size: 6vw;
+    font-size: 5vw;
     opacity: 0;
     pointer-events: none;
-
     @include breakpoint() {
-      font-size: 6vh * 0.666;
+      font-size: 5vh * 0.666;
     }
   }
 
@@ -82,23 +97,22 @@
     bottom: 75%;
     left: 0;
     width: 100%;
-    font-size: 20vw;
-    line-height: 1.3;
+    font-size: 17vw;
+    line-height: 0.75;
     text-align: center;
     height: 1.3em;
     letter-spacing: -0.025em;
     perspective: 100vw;
     opacity: 0;
     pointer-events: none;
+    @include breakpoint() {
+      font-size: 17vh * 0.666;
+    }
 
     i {
       transform-origin: 50% 100%;
       display: inline-block;
       white-space: pre;
-    }
-
-    @include breakpoint() {
-      font-size: 20vh * 0.666;
     }
   }
 
@@ -107,7 +121,6 @@
     font-size: 6vw;
     opacity: 0.25;
     pointer-events: all;
-
     @include breakpoint() {
       font-size: 6vh * 0.666;
     }
@@ -143,24 +156,14 @@
 
     &--settings {
       bottom: 4vw;
-      left: 4vw;
+      right: 4vw;
     }
 
     &--home {
       bottom: 4vw;
-      right: 4vw;
+      left: 4vw;
       visibility: hidden;
     }
-  }
-
-  &__time {
-    position: absolute;
-    left: 0;
-    bottom: 84%;
-    text-align: center;
-    width: 100%;
-    font-size: 16vw;
-    opacity: 0;
   }
 
   &__moves,
@@ -169,19 +172,37 @@
   }
 
   &__preferences {
-    top: 15vw;
-    right: 15vw;
-    bottom: 15vw;
-    left: 15vw;
+    @include transition(opacity, visibility);
+    @include flexbox-display;
+    @include flexbox-align-items(center);
+    // @include flexbox-justify-content(center);
     pointer-events: none;
     opacity: 0;
-    position: absolute;
-    z-index: 100;
-    background: rgba(#0ff, 0.1);
+    visibility: hidden;
+    z-index: 3;
+    background: rgba(#fff, 0.95);
+    padding: 20vw 0;
+    @include breakpoint() {
+      padding: 20vh * 0.666 0;
+    }
 
     &.is-active {
       opacity: 1;
-      pointer-events: all;
+      visibility: visible;
+    }
+
+    &-holder {
+      @include flexbox-display;
+      @include flexbox-flow(row nowrap);
+      width: 100%;
+    }
+
+    &-inner {
+      @include flexbox-flex(0 0 100%);
+      padding: 0 15vw;
+      @include breakpoint() {
+        padding: 0 15vh * 0.666;
+      }
     }
   }
 }

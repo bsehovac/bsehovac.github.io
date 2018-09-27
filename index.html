@@ -8,21 +8,21 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body style="opacity: 0.05">
-
-    <div class="game"></div>
+  <body>
 
     <div class="ui">
+
+      <div class="ui__game"></div>
 
       <div class="ui__main">
 
         <h1 class="ui__title">
-          <span>the</span>
-          <span>cube</span>
+          <span>The</span>
+          <span>Cube</span>
         </h1>
 
         <span class="ui__start">
-          double tap to start
+          Double Tap to Start
         </span>
 
         <div class="ui__timer">
@@ -52,66 +52,125 @@
       </div>
 
       <div class="ui__preferences">
-        
-        <div class="range" type="speed">
-          <div class="range__label">
-            Flip Speed
-          </div>
-          <div class="range__track">
-            <div class="range__handle"></div>
-          </div>
-          <div class="range__values"></div>
-        </div>
 
-        <div class="range" type="bounce">
-          <div class="range__label">
-            Flip Bounce
-          </div>
-          <div class="range__track">
-            <div class="range__handle"></div>
-          </div>
-          <div class="range__values"></div>
-        </div>
+        <div class="ui__preferences-holder">
 
-        <div class="range" type="fov">
-          <div class="range__label">
-            Perspective
-          </div>
-          <div class="range__track">
-            <div class="range__handle"></div>
-          </div>
-          <div class="range__values"></div>
-        </div>
+          <div class="ui__preferences-inner">
 
-        <div class="range" type="sound">
-          <div class="range__label">
-            Sound Volume
-          </div>
-          <div class="range__track">
-            <div class="range__handle"></div>
-          </div>
-          <div class="range__values"></div>
-        </div>
+            <div class="range" name="scramble">
+              <div class="range__label">
+                Scramble Length
+              </div>
+              <div class="range__track">
+                <div class="range__handle"></div>
+              </div>
+              <div class="range__list">
+                <div>10</div>
+                <div>15</div>
+                <div>20</div>
+                <div>25</div>
+                <div>30</div>
+              </div>
+            </div>
+          
+            <div class="range" name="speed">
+              <div class="range__label">
+                Flip Speed
+              </div>
+              <div class="range__track">
+                <div class="range__handle"></div>
+              </div>
+              <div class="range__list">
+                <div>Slow</div>
+                <div>Fast</div>
+              </div>
+            </div>
 
-        <div class="range" type="music">
-          <div class="range__label">
-            Music Volume
-          </div>
-          <div class="range__track">
-            <div class="range__handle"></div>
-          </div>
-          <div class="range__values"></div>
-        </div>
+            <div class="range" name="bounce">
+              <div class="range__label">
+                Flip Bounce
+              </div>
+              <div class="range__track">
+                <div class="range__handle"></div>
+              </div>
+              <div class="range__list">
+                <div>None</div>
+                <div>Large</div>
+              </div>
+            </div>
 
-        <!-- <div class="range" name="test1">
-          <div class="range__label">
-            Range
+            <div class="range" name="theme">
+              <div class="range__label">
+                Theme
+              </div>
+              <div class="range__track">
+                <div class="range__handle"></div>
+              </div>
+              <div class="range__list">
+                <div>Light</div>
+                <div>Dark</div>
+              </div>
+            </div>
+
           </div>
-          <div class="range__track">
-            <div class="range__handle"></div>
+
+          <div class="ui__preferences-inner">
+
+            <div class="range" name="sound">
+              <div class="range__label">
+                Sound Volume
+              </div>
+              <div class="range__track">
+                <div class="range__handle"></div>
+              </div>
+              <div class="range__list">
+                <div>Low</div>
+                <div>High</div>
+              </div>
+            </div>
+
+            <div class="range" name="music">
+              <div class="range__label">
+                Music Volume
+              </div>
+              <div class="range__track">
+                <div class="range__handle"></div>
+              </div>
+              <div class="range__list">
+                <div>Low</div>
+                <div>High</div>
+              </div>
+            </div>
+
+            <div class="range" name="fov">
+              <div class="range__label">
+                Camera Angle
+              </div>
+              <div class="range__track">
+                <div class="range__handle"></div>
+              </div>
+              <div class="range__list">
+                <div>Ortographic</div>
+                <div>Perspective</div>
+              </div>
+            </div>
+
+            <div class="range" name="graphics">
+              <div class="range__label">
+                Graphics Quality
+              </div>
+              <div class="range__track">
+                <div class="range__handle"></div>
+              </div>
+              <div class="range__list">
+                <div>Low</div>
+                <div>High</div>
+              </div>
+            </div>
+
           </div>
-          <div class="range__list"></div>
-        </div> -->
+
+        </div>
         
       </div>
 

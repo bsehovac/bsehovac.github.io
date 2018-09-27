@@ -850,8 +850,8 @@
 
 	    if ( typeof window.DraggableDragFix === 'undefined' ) {
 
-	      window.addEventListener( 'touchmove', function () {} );
-	      document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
+	      window.addEventListener( 'touchmove', () => {} );
+	      document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
 	      window.DraggableDragFix = true;
 
 	    }
@@ -1235,7 +1235,7 @@
 
 	  rotateLayer( rotation, scramble, callback ) {
 
-	    const bounce = scramble ? this.options.flipBounce : this.options.scrambleBounce;
+	    const bounce = scramble ? this.options.scrambleBounce : this.options.flipBounce;
 	    const easing = p => { return ( p -= 1 ) * p * ( ( bounce + 1 ) * p + bounce ) + 1; };
 	    const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
 
@@ -1989,8 +1989,8 @@
 
 	    setTimeout( () => {
 
-	      if ( show ) setTimeout( () => { this.game.dom.main.style.pointerEvents = 'all'; }, 600 );
-	      else this.game.dom.main.style.pointerEvents = 'none';
+	      if ( show ) setTimeout( () => { this.game.dom.main.classList.add( 'is-active' ); }, 600 );
+	      else this.game.dom.main.classList.remove( 'is-active' );
 
 	      this.data.titleLetters.forEach( ( letter, index ) => {
 
@@ -2262,7 +2262,7 @@
 	  constructor( container ) {
 
 	    this.dom = {
-	      container: document.querySelector( '.game' ),
+	      container: document.querySelector( '.ui__game' ),
 	      main: document.querySelector( '.ui__main' ),
 	      title: document.querySelector( '.ui__title' ),
 	      start: document.querySelector( '.ui__start' ),
@@ -2392,44 +2392,64 @@
 
 	  initPreferences() {
 
-	    const flipSpeed = new RUBIK.Range( {
-	      element: '.range[type="speed"]',
-	      handle: '.range__handle',
+	    this.preferences = {};
+
+	    this.preferences.speed = new RUBIK.Range( 'speed', {
 	      value: this.controls.options.flipSpeed,
-	      values: [ 100, 300 ],
-	      onUpdate: value => { this.controls.options.flipSpeed = value; }
+	      range: [ 300, 100 ],
+	      onUpdate: value => {
+
+	        this.controls.options.flipSpeed = value;
+
+	      }
 	    } );
 
-	    const flipBounce = new RUBIK.Range( {
-	      element: '.range[type="bounce"]',
-	      handle: '.range__handle',
+	    this.preferences.bounce = new RUBIK.Range( 'bounce', {
 	      value: this.controls.options.flipBounce,
-	      values: [ 0.1, 2 ],
-	      onUpdate: value => { this.controls.options.flipBounce = value; }
+	      range: [ 0, 2 ],
+	      onUpdate: value => {
+
+	        this.controls.options.flipBounce = value;
+
+	      }
 	    } );
 
-	    const cameraFOV = new RUBIK.Range( {
-	      element: '.range[type="fov"]',
-	      handle: '.range__handle',
+	    this.preferences.fov = new RUBIK.Range( 'fov', {
 	      value: this.world.fov,
-	      values: [ 2, 45 ],
-	      onUpdate: value => { this.world.fov = value; this.world.updateCamera(); }
+	      range: [ 2, 45 ],
+	      onUpdate: value => {
+
+	        this.world.fov = value;
+	        this.world.updateCamera();
+
+	      },
 	    } );
 
+	    this.preferences.scramble = new RUBIK.Range( 'scramble', {
+	      value: this.options.scrambleLength,
+	      range: [ 10, 30 ],
+	      step: 5,
+	      onUpdate: value => {
 
-	    // SCRAMBLE LENGTH - 10, 15, 20, 25, 30
+	        this.options.scrambleLength = value;
 
-	    // FLIP SPEED - 100-300
+	      },
+	    } );
 
-	    // FLIP BOUNCE - 0-2
+	    this.preferences.graphics = new RUBIK.Range( 'graphics', {
+	      value: 2,
+	      range: [ 1, 2 ],
+	      step: 1,
+	      onUpdate: value => {
 
-	    // CAMERA FOV - 2-45
+	        this.world.renderer.setPixelRatio = ( value == 1 ) ? 1 : window.devicePixelRatio;
+
+	      },
+	    } );
 
 	    // VOLUME - 0-100%
 
 	    // THEME - dark, light, blue, green, orange
-
-	    // ?? GRAPHIC QUALITY - anitaliasing, dpi
 
 	  }
 
@@ -2619,20 +2639,30 @@
 
 	class Range {
 
-	  constructor( options ) {
+	  constructor( name, options ) {
 
-	    this.element = document.querySelector( options.element );
-	    this.handle = this.element.querySelector( options.handle );
+	    options = Object.assign( {
+	      range: [ 0, 1 ],
+	      value: 0,
+	      step: 0,
+	      onUpdate: () => {},
+	      onComplete: () => {},
+	    }, options || {} );
+
+	    this.element = document.querySelector( '.range[name="' + name + '"]' );
+	    this.track = this.element.querySelector( '.range__track' );
+	    this.handle = this.element.querySelector( '.range__handle' );
+
+	    this.value = options.value;
+	    this.min = options.range[0];
+	    this.max = options.range[1];
+	    this.step = options.step;
 
 	    this.onUpdate = options.onUpdate;
+	    this.onComplete = options.onComplete;
 
-	    this.value = options.value * 1;
-	    this.min = options.values[0];
-	    this.max = options.values[1];
-	    this.step = options.step || 0;
-
-	    this.value = this.limit( this.value, this.min, this.max );
-	    this.handle.style.left = ( ( this.value - this.min ) / ( this.max - this.min ) * this.element.offsetWidth ) + 'px';
+	    this.value = this.round( this.limitValue( this.value ) );
+	    this.setHandlePosition();
 
 	    this.initDraggable();
 
@@ -2640,25 +2670,24 @@
 
 	  initDraggable() {
 
+	    let current;
+
 	    this.draggable = new Draggable( this.handle, { calcDelta: true } );
 
 	    this.draggable.onDragStart = position => {
 
+	      current = this.positionFromValue( this.value );
+	      this.handle.style.left = current + 'px';
 	      this.element.classList.add( 'is-active' );
 
 	    };
 
 	    this.draggable.onDragMove = position => {
 
-	      let left = this.handle.offsetLeft + this.handle.offsetWidth / 2;
-	      left += position.delta.x;
-	      left = this.limit( left, 0, this.element.offsetWidth );
-
-	      this.handle.style.left = left + 'px';
+	      current = this.limitPosition( current + position.delta.x );
+	      this.value = this.round( this.valueFromPosition( current ) );
+	      this.setHandlePosition();
 	      
-	      this.value = this.min + ( this.max - this.min ) * ( left / this.element.offsetWidth );
-	      this.value = Math.round( this.limit( this.value, this.min, this.max ) );
-
 	      this.onUpdate( this.value );
 
 	    };
@@ -2666,14 +2695,56 @@
 	    this.draggable.onDragEnd = position => {
 
 	      this.element.classList.remove( 'is-active' );
+	      this.onComplete( this.value );
 
 	    };
 
 	  }
 
-	  limit( value, min, max ) {
+	  round( value ) {
+
+	    if ( this.step < 1 ) return value;
+
+	    return Math.round( ( value - this.min ) / this.step ) * this.step + this.min;
+
+	  }
+
+	  limitValue( value ) {
+
+	    const max = Math.max( this.max, this.min );
+	    const min = Math.min( this.max, this.min );
 
 	    return Math.min( Math.max( value, min ), max );
+
+	  }
+
+	  limitPosition( position ) {
+
+	    return Math.min( Math.max( position, 0 ), this.track.offsetWidth );
+
+	  }
+
+	  percentsFromValue( value ) {
+
+	    return ( value - this.min ) / ( this.max - this.min );
+
+	  }
+
+	  valueFromPosition( position ) {
+
+	    return this.min + ( this.max - this.min ) * ( position / this.track.offsetWidth );
+
+	  }
+
+	  positionFromValue( value ) {
+
+	    return this.percentsFromValue( value ) * this.track.offsetWidth;
+
+	  }
+
+	  setHandlePosition() {
+
+	    this.handle.style.left = this.percentsFromValue( this.value ) * 100 + '%';
 
 	  }
 

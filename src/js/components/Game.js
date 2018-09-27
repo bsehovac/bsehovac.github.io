@@ -3,7 +3,7 @@ class Game {
   constructor( container ) {
 
     this.dom = {
-      container: document.querySelector( '.game' ),
+      container: document.querySelector( '.ui__game' ),
       main: document.querySelector( '.ui__main' ),
       title: document.querySelector( '.ui__title' ),
       start: document.querySelector( '.ui__start' ),
@@ -135,44 +135,64 @@ class Game {
 
   initPreferences() {
 
-    const flipSpeed = new RUBIK.Range( {
-      element: '.range[type="speed"]',
-      handle: '.range__handle',
+    this.preferences = {};
+
+    this.preferences.speed = new RUBIK.Range( 'speed', {
       value: this.controls.options.flipSpeed,
-      values: [ 100, 300 ],
-      onUpdate: value => { this.controls.options.flipSpeed = value; }
+      range: [ 300, 100 ],
+      onUpdate: value => {
+
+        this.controls.options.flipSpeed = value;
+
+      }
     } );
 
-    const flipBounce = new RUBIK.Range( {
-      element: '.range[type="bounce"]',
-      handle: '.range__handle',
+    this.preferences.bounce = new RUBIK.Range( 'bounce', {
       value: this.controls.options.flipBounce,
-      values: [ 0.1, 2 ],
-      onUpdate: value => { this.controls.options.flipBounce = value; }
+      range: [ 0, 2 ],
+      onUpdate: value => {
+
+        this.controls.options.flipBounce = value;
+
+      }
     } );
 
-    const cameraFOV = new RUBIK.Range( {
-      element: '.range[type="fov"]',
-      handle: '.range__handle',
+    this.preferences.fov = new RUBIK.Range( 'fov', {
       value: this.world.fov,
-      values: [ 2, 45 ],
-      onUpdate: value => { this.world.fov = value; this.world.updateCamera(); }
+      range: [ 2, 45 ],
+      onUpdate: value => {
+
+        this.world.fov = value;
+        this.world.updateCamera();
+
+      },
     } );
 
+    this.preferences.scramble = new RUBIK.Range( 'scramble', {
+      value: this.options.scrambleLength,
+      range: [ 10, 30 ],
+      step: 5,
+      onUpdate: value => {
 
-    // SCRAMBLE LENGTH - 10, 15, 20, 25, 30
+        this.options.scrambleLength = value;
 
-    // FLIP SPEED - 100-300
+      },
+    } );
 
-    // FLIP BOUNCE - 0-2
+    this.preferences.graphics = new RUBIK.Range( 'graphics', {
+      value: 2,
+      range: [ 1, 2 ],
+      step: 1,
+      onUpdate: value => {
 
-    // CAMERA FOV - 2-45
+        this.world.renderer.setPixelRatio = ( value == 1 ) ? 1 : window.devicePixelRatio;
+
+      },
+    } );
 
     // VOLUME - 0-100%
 
     // THEME - dark, light, blue, green, orange
-
-    // ?? GRAPHIC QUALITY - anitaliasing, dpi
 
   }
 

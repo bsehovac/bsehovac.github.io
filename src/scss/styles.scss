@@ -1,8 +1,8 @@
 @import "mixins/transition";
 @import "mixins/breakpoint";
+@import "mixins/flexbox";
 
 @import "components/document";
 @import "components/fonts";
-@import "components/game";
-@import "components/ui";
 @import "components/range";
+@import "components/ui";

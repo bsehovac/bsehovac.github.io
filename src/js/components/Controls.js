@@ -204,7 +204,7 @@ class Controls {
 
   rotateLayer( rotation, scramble, callback ) {
 
-    const bounce = scramble ? this.options.flipBounce : this.options.scrambleBounce;
+    const bounce = scramble ? this.options.scrambleBounce : this.options.flipBounce;
     const easing = p => { return ( p -= 1 ) * p * ( ( bounce + 1 ) * p + bounce ) + 1; }
     const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
 

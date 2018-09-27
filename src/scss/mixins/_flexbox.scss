@@ -1,0 +1,138 @@
+// Align content
+@mixin flexbox-align-content($value: stretch) {
+  @if $value == flex-start {
+    -ms-flex-line-pack: start;
+  }
+  @else if $value == flex-end {
+    -ms-flex-line-pack: end;
+  }
+  @else {
+    -ms-flex-line-pack: $value;
+  }
+  -moz-align-content: $value;
+  -webkit-align-content: $value;
+  align-content: $value;
+}
+
+// Align items
+@mixin flexbox-align-items($value: stretch) {
+  @if $value == flex-start {
+    -ms-flex-align: start;
+    -webkit-box-align: start;
+  }
+  @else if $value == flex-end {
+    -ms-flex-align: end;
+    -webkit-box-align: end;
+  }
+  @else {
+    -ms-flex-align: $value;
+    -webkit-box-align: $value;
+  }
+  -moz-align-items: $value;
+  -webkit-align-items: $value;
+  align-items: $value;
+}
+
+// Align self
+@mixin flexbox-align-self($value: auto) {
+  @if $value == flex-start {
+    -ms-flex-item-align: start;
+  }
+  @else if $value == flex-end {
+    -ms-flex-item-align: end;
+  }
+  @else {
+    -ms-flex-item-align: $value;
+  }
+  -moz-align-self: $value;
+  -webkit-align-self: $value;
+  align-self: $value;
+}
+
+// Display
+@mixin flexbox-display {
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+}
+
+// Flex
+@mixin flexbox-flex($fg: 1, $fs: null, $fb: null) {
+  $fg-boxflex: $fg;
+  @if type-of($fg) == "list" {
+    $fg-boxflex: nth($fg, 1);
+  }
+  -moz-box-flex: $fg-boxflex;
+  -moz-flex: $fg $fs $fb;
+  -ms-flex: $fg $fs $fb;
+  -webkit-box-flex: $fg-boxflex;
+  -webkit-flex: $fg $fs $fb;
+  flex: $fg $fs $fb;
+  min-width: 0;
+}
+
+// Flow
+@mixin flexbox-flow($values: (row nowrap)) {
+  -moz-flex-flow: $values;
+  -ms-flex-flow: $values;
+  -webkit-flex-flow: $values;
+  flex-flow: $values;
+}
+
+// Justify content
+@mixin flexbox-justify-content($value: flex-start) {
+  @if $value == flex-start {
+    -ms-flex-pack: start;
+    -webkit-box-pack: start;
+  }
+  @else if $value == flex-end {
+    -ms-flex-pack: end;
+    -webkit-box-pack: end;
+  }
+  @else if $value == space-between {
+    -ms-flex-pack: justify;
+    -webkit-box-pack: justify;
+  }
+  @else if $value == space-around {
+    -ms-flex-pack: distribute;
+  }
+  @else {
+    -ms-flex-pack: $value;
+    -webkit-box-pack: $value;
+  }
+  -moz-justify-content: $value;
+  -webkit-justify-content: $value;
+  justify-content: $value;
+}
+
+// Order
+@mixin flexbox-order($int: 0) {
+  -moz-order: $int;
+  -ms-flex-order: $int;
+  -webkit-box-ordinal-group: $int + 1;
+  -webkit-order: $int;
+  order: $int;
+}
+
+// Shrink
+@mixin flexbox-shrink($int: 1) {
+  -moz-flex-shrink: $int;
+  -ms-flex-negative: $int;
+  -webkit-flex-shrink: $int;
+  flex-shrink: $int;
+}
+
+// Wrap
+@mixin flexbox-wrap($value: nowrap) {
+  @if $value == nowrap {
+    -ms-flex-wrap: none;
+  }
+  @else {
+    -ms-flex-wrap: $value;
+  }
+  -moz-flex-wrap: $value;
+  -webkit-flex-wrap: $value;
+  flex-wrap: $value;
+}
