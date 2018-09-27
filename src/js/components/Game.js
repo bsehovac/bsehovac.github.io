@@ -11,8 +11,9 @@ class Game {
       preferences: document.querySelector( '.ui__preferences' ),
       buttons: {
         settings: document.querySelector( '.ui__icon--settings' ),
-        // audio: document.querySelector( '.ui__icon--audio' ),
         home: document.querySelector( '.ui__icon--home' ),
+        // share: document.querySelector( '.ui__icon--share' ),
+        // about: document.querySelector( '.ui__icon--about' ),
       }
     };
 
@@ -165,3 +166,33 @@ class Game {
 }
 
 export { Game };
+
+
+// new Range( 'test1', {
+//   value: 180,
+//   range: [ 100, 300 ],
+//   step: 200 / 3,
+//   list: {
+//     values: [ 0, 33.33, 66.66, 100 ],
+//     labels: [ '1', '2', '3', '4' ]
+//   },
+//   onUpdate: value => { /*console.log( value );*/ }
+// } );
+
+// new Range( 'test2', {
+//   value: 1.7023,
+//   range: [ 0, 200 ],
+//   step: 50,
+//   list: {
+//     values: [ 0, 100 ],
+//     labels: [ 'fast', 'slow' ]
+//   },
+//   onUpdate: value => { /*console.log( value );*/ }
+// } );
+
+// new Range( 'test3', {
+//   value: 0,
+//   range: [ 1, 5 ],
+//   step: 1,
+//   onUpdate: value => { /*console.log( value ); */ }
+// } );

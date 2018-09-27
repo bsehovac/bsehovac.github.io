@@ -2,8 +2,13 @@ class Draggable {
 
   constructor( element, options ) {
 
-    window.addEventListener( 'touchmove', function () {} );
-    document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
+    if ( typeof window.DraggableDragFix === 'undefined' ) {
+
+      window.addEventListener( 'touchmove', function () {} );
+      document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
+      window.DraggableDragFix = true;
+
+    }
 
     this.position = {
       current: new THREE.Vector2(),
