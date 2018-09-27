@@ -653,13 +653,17 @@
 	],
 	"file_history":
 	[
+		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_document.scss",
+		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_fonts.scss",
+		"/Users/boris/Documents/bsehovac.github.io/src/scss/styles.scss",
+		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_range.scss",
+		"/Users/boris/Desktop/html-boilerplate/src/scss/framework/base/_document.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Controls.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/ControlsTEST.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Game.js",
 		"/Users/boris/Documents/bsehovac.github.io/index.html",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Range.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_ui.scss",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_range.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/CubePieces.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Draggable.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Tween.js",
@@ -714,7 +718,6 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/plugins/EffectComposer.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/plugins/BlurShader.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Timer.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_document.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/mixins/_transition.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_button-reset.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_game.scss",
@@ -723,8 +726,6 @@
 		"/Users/boris/Desktop/error.html",
 		"/Users/boris/Documents/bitpasha/bp-public-site/.git/config",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_game.scss",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_fonts.scss",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/styles.scss",
 		"/Users/boris/Downloads/webfontkit-20180904-092916/stylesheet.css",
 		"/Users/boris/Documents/bsehovac.github.io/assets/js/rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Helpers.js",
@@ -779,8 +780,7 @@
 		"/Applications/MAMP/Localhost/bsehovac.github.io/build/BokehShader.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/plugins/BokehShader.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/Rubik.js",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/plugins/RoundedBoxGeometry.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/rubik/components/plugins/RoundedBoxGeometry.js"
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/plugins/RoundedBoxGeometry.js"
 	],
 	"find":
 	{
@@ -1092,7 +1092,7 @@
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 88.0
+		"height": 50.0
 	},
 	"save_all_on_build": true,
 	"select_file":
