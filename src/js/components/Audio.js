@@ -1,9 +1,8 @@
 class Audio {
 
-  constructor( /*button, animate*/ ) {
+  constructor( game ) {
 
-    // this.button = button;
-    // this.animate = animate;
+    this.game = game;
 
     const listener = new THREE.AudioListener();
     const audioLoader = new THREE.AudioLoader();

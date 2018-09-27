@@ -95,7 +95,7 @@ class Tween {
 
     }
 
-    this.animate = window.requestAnimationFrame( () => this.update() );
+    this.animate = requestAnimationFrame( () => this.update() );
 
   }
 

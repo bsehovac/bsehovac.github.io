@@ -20,18 +20,16 @@ class Game {
     this.options = {
       cubeSize: 3,
       scrambleLength: 20,
-    }
+    };
 
-    this.world = new RUBIK.World( this.dom.container, this.options );
-    this.cube = new RUBIK.Cube( this.options.cubeSize );
-    this.controls = new RUBIK.Controls( this.cube, this.options );
+    this.world = new RUBIK.World( this );
+    this.cube = new RUBIK.Cube( this );
+    this.controls = new RUBIK.Controls( this );
     this.animation = new RUBIK.Animations( this );
-    this.audio = new RUBIK.Audio( /*this.dom.buttons.audio*/ );
-    this.timer = new RUBIK.Timer( this.world, this.dom.timer );
-    this.icons = new RUBIK.SvgIcons( { observer: false, convert: true } );
+    this.audio = new RUBIK.Audio( this );
+    this.timer = new RUBIK.Timer( this );
+    this.icons = new RUBIK.SvgIcons();
 
-    this.world.addCube( this.cube );
-    this.world.addControls( this.controls );
     this.initDoupleTap();
     this.initPreferences();
 
@@ -76,7 +74,7 @@ class Game {
 
     } else {
 
-      this.dom.timer.innerHTML = this.timer.convert( this.world.timer.deltaTime );
+      this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
 
     }
 
@@ -160,6 +158,21 @@ class Game {
       values: [ 2, 45 ],
       onUpdate: value => { this.world.fov = value; this.world.updateCamera(); }
     } );
+
+
+    // SCRAMBLE LENGTH - 10, 15, 20, 25, 30
+
+    // FLIP SPEED - 100-300
+
+    // FLIP BOUNCE - 0-2
+
+    // CAMERA FOV - 2-45
+
+    // VOLUME - 0-100%
+
+    // THEME - dark, light, blue, green, orange
+
+    // ?? GRAPHIC QUALITY - anitaliasing, dpi
 
   }
 

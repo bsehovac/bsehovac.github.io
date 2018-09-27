@@ -1,9 +1,9 @@
 class World {
 
-	constructor( container, options ) {
+	constructor( game ) {
 
-		this.container = container;
-		this.options = options;
+		this.game = game;
+		this.container = this.game.dom.container;
 
 		this.scene = new THREE.Scene();
 
@@ -13,9 +13,6 @@ class World {
 
 		this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
 
-		this.onAnimate = () => {};
-		this.onResize = () => {};
-
 		this.stage = { width: 2, height: 3 };
 		this.fov = 10;
 
@@ -23,13 +20,11 @@ class World {
 
 		const resize = e => {
 
-			this.width = container.offsetWidth;
-			this.height = container.offsetHeight;
+			this.width = this.container.offsetWidth;
+			this.height = this.container.offsetHeight;
 
 			this.renderer.setSize( this.width, this.height );
-
 			this.updateCamera();
-			this.onResize();
 
 		};
 
@@ -40,8 +35,6 @@ class World {
 		const animate = () => {
 
 			this.renderer.render( this.scene, this.camera );
-			this.onAnimate();
-
 			requestAnimationFrame( animate );
 
 		}
@@ -87,37 +80,6 @@ class World {
 		this.camera.position.set( distance, distance, distance);
 		this.camera.lookAt( this.scene.position );
 		this.camera.updateProjectionMatrix();
-
-	}
-
-	addCube( cube ) {
-
-		this.cube = cube;
-		this.cube.world = this;
-
-		this.scene.add( this.cube.holder );
-		this.scene.add( this.cube.shadow );
-
-	}
-
-	// addAudio( audio ) {
-
-	// 	this.audio = audio;
-	// 	this.audio.world = this;
-
-	// 	this.camera.add( this.audio.listener );
-
-	// }
-
-	addControls( controls ) {
-
-		this.controls = controls;
-		this.controls.world = this;
-
-    this.scene.add( this.controls.edges );
-    this.scene.add( this.controls.helper );
-
-		this.controls.draggable.init( this.container );
 
 	}
 

@@ -2,21 +2,20 @@ import { CubePieces } from './CubePieces.js';
 
 class Cube {
 
-	constructor( size, options ) {
+	constructor( game ) {
 
-		size = ( typeof size !== 'undefined' ) ? size : 3;
+		this.game = game;
+		this.size = game.options.cubeSize;
 
-		this.options = Object.assign( {
-			colors: {
-				right: 0x41aac8,
-				left: 0x82ca38,
-				top: 0xfff7ff,
-				bottom: 0xffef48,
-				front: 0xef3923,
-				back: 0xff8c0a,
-				piece: 0x08101a,
-			},
-		}, options || {} );
+		this.colors = {
+			right: 0x41aac8,
+			left: 0x82ca38,
+			top: 0xfff7ff,
+			bottom: 0xffef48,
+			front: 0xef3923,
+			back: 0xff8c0a,
+			piece: 0x08101a,
+		};
 
 		this.holder = new THREE.Object3D();
 		this.object = new THREE.Object3D();
@@ -27,20 +26,20 @@ class Cube {
 
 		this.cubes = [];
 
-		const positions = this.generatePositions( size );
-		const pieces = CubePieces( size, positions, this.options.colors );
+		this.positions = this.generatePositions( this.size );
+		this.pieces = CubePieces( this.size, this.positions, this.colors );
 
-		pieces.forEach( piece => {
+		this.pieces.forEach( piece => {
 
 			this.cubes.push( piece.userData.cube );
 			this.object.add( piece );
 
 		} );
 
-		this.size = size;
-		this.pieces = pieces;
-
 		this.generateShadow();
+
+		this.game.world.scene.add( this.holder );
+		this.game.world.scene.add( this.shadow );
 
 	}
 
@@ -128,16 +127,16 @@ class Cube {
 
 			} );
 
-			this.controls.moves = gameMoves;
+			this.game.controls.moves = gameMoves;
 
-			this.controls.moves.forEach( move => {
+			this.game.controls.moves.forEach( move => {
 
 				const angle = move[0];
 				move[0] = new THREE.Vector3( angle.x, angle.y, angle.z );
 
 			} );
 
-			this.world.timer.deltaTime = gameTime;
+			this.game.timer.deltaTime = gameTime;
 
 			return gameInProgress;
 
@@ -150,10 +149,6 @@ class Cube {
 	}
 
 	saveState() {
-
-		const cube = this;
-		const timer = this.world.timer;
-		const controls = this.controls;
 
 		const cubeData = {
 			names: [],
@@ -171,8 +166,8 @@ class Cube {
 
 		localStorage.setItem( 'gameInProgress', 'yes' );
 		localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
-		localStorage.setItem( 'gameMoves', JSON.stringify( controls.moves ) );
-		localStorage.setItem( 'gameTime', timer.deltaTime );
+		localStorage.setItem( 'gameMoves', JSON.stringify( this.game.controls.moves ) );
+		localStorage.setItem( 'gameTime', this.game.timer.deltaTime );
 
 	}
 
