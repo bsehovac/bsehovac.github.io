@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css?family=Bungee");
+*, *:before, *:after {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  box-sizing: border-box;
+  cursor: inherit;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+  text-transform: uppercase; }
+
+*:focus {
+  outline: none; }
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  height: 100%; }
+
+body {
+  background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%);
+  font-family: 'Bungee', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  color: #070d15;
+  cursor: default;
+  overflow: hidden;
+  height: 100%; }
+
+button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border-radius: 0;
+  border-width: 0; }
+
+.ui {
+  position: positive;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 5rem;
+  pointer-events: none; }
+  .ui__screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; }
+    .ui__screen--game {
+      z-index: 1; }
+    .ui__screen--start {
+      z-index: 2; }
+    .ui__screen--prefs {
+      z-index: 3; }
+    .ui__screen--buttons {
+      z-index: 4; }
+  .ui__text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center; }
+    .ui__text--title {
+      bottom: 75%;
+      font-size: 1em;
+      line-height: 1.75;
+      height: 1em; }
+      .ui__text--title span {
+        display: block; }
+        .ui__text--title span:first-child {
+          font-size: 1em;
+          margin-bottom: 1em; }
+    .ui__text--note {
+      top: 75%;
+      font-size: 1em; }
+    .ui__text--timer {
+      bottom: 75%;
+      font-size: 1em;
+      line-height: 1.75;
+      height: 1em; }
+  .ui__game {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: all; }
+    .ui__game canvas {
+      display: block;
+      width: 100%;
+      height: 100%; }
+  .ui__prefs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 300ms ease, visibility 300ms ease;
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    display: flex;
+    pointer-events: all;
+    padding: 1em 0;
+    opacity: 0;
+    visibility: hidden; }
+    .ui__prefs .ui.prefs {
+      opacity: 1;
+      visibility: visible; }
+    .ui__prefs-holder {
+      margin: auto;
+      width: 1em; }

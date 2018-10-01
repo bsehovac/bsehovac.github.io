@@ -43,26 +43,6 @@ class World {
 
 	}
 
-	createLights() {
-
-		this.lights = {
-			holder:  new THREE.Object3D,
-			ambient: new THREE.AmbientLight( 0xffffff, 1.25 ),
-			front:   new THREE.DirectionalLight( 0xffffff, 0.65 ),
-			back:    new THREE.DirectionalLight( 0xffffff, 0.35 ),
-		};
-
-		this.lights.front.position.set( 0.3, 1,  0.6 );
-		this.lights.back.position.set( -0.3, -1,  -0.6 );
-
-		this.lights.holder.add( this.lights.ambient );
-		this.lights.holder.add( this.lights.front );
-		this.lights.holder.add( this.lights.back );
-
-		this.scene.add( this.lights.holder );
-
-	}
-
 	updateCamera() {
 
 	  this.camera.fov = this.fov;
@@ -80,6 +60,32 @@ class World {
 		this.camera.position.set( distance, distance, distance);
 		this.camera.lookAt( this.scene.position );
 		this.camera.updateProjectionMatrix();
+
+		const docFontSize = ( aspect < this.camera.aspect )
+			? ( this.height / 100 ) * aspect
+			: this.width / 100;
+
+		document.documentElement.style.fontSize = docFontSize + 'px';
+
+	}
+
+	createLights() {
+
+		this.lights = {
+			holder:  new THREE.Object3D,
+			ambient: new THREE.AmbientLight( 0xffffff, 1.25 ),
+			front:   new THREE.DirectionalLight( 0xffffff, 0.65 ),
+			back:    new THREE.DirectionalLight( 0xffffff, 0.35 ),
+		};
+
+		this.lights.front.position.set( 0.3, 1,  0.6 );
+		this.lights.back.position.set( -0.3, -1,  -0.6 );
+
+		this.lights.holder.add( this.lights.ambient );
+		this.lights.holder.add( this.lights.front );
+		this.lights.holder.add( this.lights.back );
+
+		this.scene.add( this.lights.holder );
 
 	}
 

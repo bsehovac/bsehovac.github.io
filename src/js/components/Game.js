@@ -28,10 +28,10 @@ class Game {
     this.animation = new RUBIK.Animations( this );
     this.audio = new RUBIK.Audio( this );
     this.timer = new RUBIK.Timer( this );
+    this.preferences = new RUBIK.Preferences( this );
     this.icons = new RUBIK.SvgIcons();
 
     this.initDoupleTap();
-    this.initPreferences();
 
     this.saved = this.cube.loadState();
     this.playing = false;
@@ -133,99 +133,6 @@ class Game {
 
   }
 
-  initPreferences() {
-
-    this.preferences = {};
-
-    this.preferences.speed = new RUBIK.Range( 'speed', {
-      value: this.controls.options.flipSpeed,
-      range: [ 300, 100 ],
-      onUpdate: value => {
-
-        this.controls.options.flipSpeed = value;
-
-      }
-    } );
-
-    this.preferences.bounce = new RUBIK.Range( 'bounce', {
-      value: this.controls.options.flipBounce,
-      range: [ 0, 2 ],
-      onUpdate: value => {
-
-        this.controls.options.flipBounce = value;
-
-      }
-    } );
-
-    this.preferences.fov = new RUBIK.Range( 'fov', {
-      value: this.world.fov,
-      range: [ 2, 45 ],
-      onUpdate: value => {
-
-        this.world.fov = value;
-        this.world.updateCamera();
-
-      },
-    } );
-
-    this.preferences.scramble = new RUBIK.Range( 'scramble', {
-      value: this.options.scrambleLength,
-      range: [ 10, 30 ],
-      step: 5,
-      onUpdate: value => {
-
-        this.options.scrambleLength = value;
-
-      },
-    } );
-
-    this.preferences.graphics = new RUBIK.Range( 'graphics', {
-      value: 2,
-      range: [ 1, 2 ],
-      step: 1,
-      onUpdate: value => {
-
-        this.world.renderer.setPixelRatio = ( value == 1 ) ? 1 : window.devicePixelRatio;
-
-      },
-    } );
-
-    // VOLUME - 0-100%
-
-    // THEME - dark, light, blue, green, orange
-
-  }
-
 }
 
 export { Game };
-
-
-// new Range( 'test1', {
-//   value: 180,
-//   range: [ 100, 300 ],
-//   step: 200 / 3,
-//   list: {
-//     values: [ 0, 33.33, 66.66, 100 ],
-//     labels: [ '1', '2', '3', '4' ]
-//   },
-//   onUpdate: value => { /*console.log( value );*/ }
-// } );
-
-// new Range( 'test2', {
-//   value: 1.7023,
-//   range: [ 0, 200 ],
-//   step: 50,
-//   list: {
-//     values: [ 0, 100 ],
-//     labels: [ 'fast', 'slow' ]
-//   },
-//   onUpdate: value => { /*console.log( value );*/ }
-// } );
-
-// new Range( 'test3', {
-//   value: 0,
-//   range: [ 1, 5 ],
-//   step: 1,
-//   onUpdate: value => { /*console.log( value ); */ }
-// } );
