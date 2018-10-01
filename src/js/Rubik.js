@@ -1,11 +1,13 @@
 export { World } from './components/World.js';
 export { Cube } from './components/Cube.js';
 export { Controls } from './components/Controls.js';
-export { Scramble } from './components/Scramble.js';
+export { Scrambler } from './components/Scrambler.js';
+export { Solver } from './components/Solver.js';
 export { Tween } from './components/Tween.js';
 export { Animations } from './components/Animations.js';
 export { Timer } from './components/Timer.js';
 export { Game } from './components/Game.js';
 export { SvgIcons } from './components/SvgIcons.js';
 export { Audio } from './components/Audio.js';
+export { Preferences } from './components/Preferences.js';
 export { Range } from './components/Range.js';

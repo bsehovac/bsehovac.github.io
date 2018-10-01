@@ -4,6 +4,34 @@
 		"selected_items":
 		[
 			[
+				"curre",
+				"currentState"
+			],
+			[
+				"posi",
+				"positions"
+			],
+			[
+				"pos",
+				"positions"
+			],
+			[
+				"ve",
+				"vector"
+			],
+			[
+				"conve",
+				"converted"
+			],
+			[
+				"nam",
+				"namesTestArranged"
+			],
+			[
+				"cu",
+				"currentState"
+			],
+			[
 				"wind",
 				"windowAspect"
 			],
@@ -34,10 +62,6 @@
 			[
 				"con",
 				"converted"
-			],
-			[
-				"conve",
-				"convert"
 			],
 			[
 				"cube",
@@ -108,10 +132,6 @@
 				"rotation"
 			],
 			[
-				"pos",
-				"position"
-			],
-			[
 				"piec",
 				"pieceIntersect"
 			],
@@ -154,10 +174,6 @@
 			[
 				"piece",
 				"piecePosition"
-			],
-			[
-				"posi",
-				"position"
 			],
 			[
 				"delta",
@@ -498,32 +514,51 @@
 			[
 				"flx",
 				"flexbox-flow"
-			],
-			[
-				"page",
-				"page__sidebar"
-			],
-			[
-				"paddin",
-				"padding"
-			],
-			[
-				"query",
-				"querySelector"
-			],
-			[
-				"but",
-				"button--color-azure-radiance"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
+			"file": "src/js/components/Cube.js",
+			"settings":
+			{
+				"buffer_size": 25060,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "src/js/components/Game.js",
 			"settings":
 			{
-				"buffer_size": 4768,
+				"buffer_size": 3431,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/CubePieces.js",
+			"settings":
+			{
+				"buffer_size": 2909,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/Controls.js",
+			"settings":
+			{
+				"buffer_size": 13336,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/components/Solver.js",
+			"settings":
+			{
+				"buffer_size": 15143,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -663,13 +698,22 @@
 		"/Users/boris/Documents/bsehovac.github.io/src",
 		"/Users/boris/Documents/bsehovac.github.io/src/js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components",
-		"/Users/boris/Documents/bsehovac.github.io/ui"
+		"/Users/boris/Documents/bsehovac.github.io/ui",
+		"/Users/boris/Documents/bsehovac.github.io/ui/scss"
 	],
 	"file_history":
 	[
-		"/Users/boris/Documents/bsehovac.github.io/ui/scss/components/_ui.scss",
-		"/Users/boris/Documents/bsehovac.github.io/ui/ui.html",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Game.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/Rubik.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Scrambler.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Preferences.js",
 		"/Users/boris/Documents/bsehovac.github.io/index.html",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Cube.js",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/CubePieces.js",
+		"/Users/boris/Downloads/rubiks-solver-master/rubiks.html",
+		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Solve.js",
+		"/Users/boris/Documents/bsehovac.github.io/ui/ui.html",
+		"/Users/boris/Documents/bsehovac.github.io/ui/scss/components/_ui.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/World.js",
 		"/Users/boris/Documents/bsehovac.github.io/ui/scss/styles.scss",
 		"/Users/boris/Documents/bsehovac.github.io/ui/scss/.libsass.json",
@@ -677,7 +721,6 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_ui.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Controls.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Draggable.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Game.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Range.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Animations.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/styles.scss",
@@ -692,9 +735,7 @@
 		"/Users/boris/Desktop/html-boilerplate/src/scss/framework/base/_document.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/ControlsTEST.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Range.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/CubePieces.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Tween.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Cube.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Easing.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Rubik.js",
@@ -719,7 +760,6 @@
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Draggable.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/CubePieces.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/test.html",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/Rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Animate.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/AnimateOld.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/DragControls.js",
@@ -790,15 +830,11 @@
 		"/Applications/MAMP/Localhost/bsehovac.github.io/src/three/Three.js",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/styles.css",
 		"/Applications/MAMP/Localhost/bsehovac.github.io/rollup.config.three.js",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/Controls.js",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/CubePieces.js",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/init.js",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/index.html",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/Timer.js"
+		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/Controls.js"
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 54.0
 	},
 	"find_in_files":
 	{
@@ -841,6 +877,15 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"getId",
+			"getPiecePosition",
+			"checkIs",
+			"scramble",
+			".cubes",
+			"cubes.",
+			"solve",
+			"cubie",
+			"cubicle",
 			"scrambleBounce",
 			"touchmove",
 			"list",
@@ -959,16 +1004,7 @@
 			"convertIntersect",
 			"helper",
 			"getIntersect",
-			"getInte",
-			"getIntersect",
-			"ff",
-			"aa",
-			"ff",
-			"event, ",
-			"position.deltaTotal",
-			"deltaTotal",
-			"deltaCurrent",
-			"deltaFix"
+			"getInte"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1061,24 +1097,53 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 4,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/js/components/Game.js",
+					"file": "src/js/components/Cube.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4768,
+						"buffer_size": 25060,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3232,
-								3232
+								727,
+								733
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/js/components/Game.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3431,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1248,
+								1248
 							]
 						],
 						"settings":
@@ -1088,7 +1153,95 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2446.0,
+						"translation.y": 1029.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/js/components/CubePieces.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2909,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1388,
+								1388
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 463.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/js/components/Controls.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13336,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10917,
+								10917
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 7807.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/js/components/Solver.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15143,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9605,
+								9605
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3009.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

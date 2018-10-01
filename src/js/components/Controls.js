@@ -437,7 +437,7 @@ class Controls {
       .setFromMatrixPosition( piece.matrixWorld )
       .multiplyScalar( this.game.cube.size );
 
-    return this.game.cube.object.worldToLocal( position ).round();
+    return this.game.cube.object.worldToLocal( position.sub( this.game.cube.animator.position ) ).round();
 
   }
 

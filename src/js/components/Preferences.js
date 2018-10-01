@@ -11,43 +11,43 @@ class Preferences {
     // }, false);
 
     this.speed = new RUBIK.Range( 'speed', {
-      value: this.controls.options.flipSpeed,
+      value: game.controls.options.flipSpeed,
       range: [ 300, 100 ],
       onUpdate: value => {
 
-        this.controls.options.flipSpeed = value;
+        game.controls.options.flipSpeed = value;
 
       }
     } );
 
     this.bounce = new RUBIK.Range( 'bounce', {
-      value: this.controls.options.flipBounce,
+      value: game.controls.options.flipBounce,
       range: [ 0, 2 ],
       onUpdate: value => {
 
-        this.controls.options.flipBounce = value;
+        game.controls.options.flipBounce = value;
 
       }
     } );
 
     this.fov = new RUBIK.Range( 'fov', {
-      value: this.world.fov,
+      value: game.world.fov,
       range: [ 2, 45 ],
       onUpdate: value => {
 
-        this.world.fov = value;
-        this.world.updateCamera();
+        game.world.fov = value;
+        game.world.updateCamera();
 
       },
     } );
 
     this.scramble = new RUBIK.Range( 'scramble', {
-      value: this.options.scrambleLength,
+      value: game.options.scrambleLength,
       range: [ 10, 30 ],
       step: 5,
       onUpdate: value => {
 
-        this.options.scrambleLength = value;
+        game.options.scrambleLength = value;
 
       },
     } );
@@ -58,7 +58,7 @@ class Preferences {
       step: 1,
       onUpdate: value => {
 
-        this.world.renderer.setPixelRatio = ( value == 1 ) ? 1 : window.devicePixelRatio;
+        game.world.renderer.setPixelRatio = ( value == 1 ) ? 1 : window.devicePixelRatio;
 
       },
     } );
@@ -70,3 +70,5 @@ class Preferences {
   }
 
 }
+
+export { Preferences };

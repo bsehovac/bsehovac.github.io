@@ -29,31 +29,35 @@ class Game {
     this.audio = new RUBIK.Audio( this );
     this.timer = new RUBIK.Timer( this );
     this.preferences = new RUBIK.Preferences( this );
+    this.solver = new RUBIK.Solver( this );
+    this.scrambler = new RUBIK.Scrambler( this );
     this.icons = new RUBIK.SvgIcons();
 
-    this.initDoupleTap();
+    console.log( this.controls.disabled );
 
-    this.saved = this.cube.loadState();
-    this.playing = false;
+    // this.initDoupleTap();
 
-    this.animation.drop();
+    // this.saved = this.cube.loadState();
+    // this.playing = false;
 
-    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
-    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
+    // this.animation.drop();
 
-    this.dom.buttons.settings.onclick = e => {
+    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
+    // this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
-      e.stopPropagation();
-      this.dom.preferences.classList.toggle( 'is-active' );
+    // this.dom.buttons.settings.onclick = e => {
 
-    }
+    //   e.stopPropagation();
+    //   this.dom.preferences.classList.toggle( 'is-active' );
 
-    this.dom.buttons.home.onclick = e => {
+    // }
 
-      e.stopPropagation();
-      if ( this.playing ) this.pause();
+    // this.dom.buttons.home.onclick = e => {
 
-    }
+    //   e.stopPropagation();
+    //   if ( this.playing ) this.pause();
+
+    // }
 
   }
 
@@ -66,9 +70,9 @@ class Game {
 
     if ( ! this.saved ) {
 
-      this.dom.timer.innerHTML = 'o:oo';
+      this.dom.timer.innerHTML = '0:00';
 
-      const scramble = new RUBIK.Scramble( this.cube, this.options.scrambleLength );
+      const scramble = this.scrambler.generate( this.options.scrambleLength );
       duration = scramble.converted.length * this.controls.options.scrambleSpeed;
       this.controls.scrambleCube( scramble, () => { this.saved = true; } );
 

@@ -25,6 +25,9 @@
 	[
 		{
 			"path": "."
+		},
+		{
+			"path": "/Users/boris/Downloads/rubiks-solver-master"
 		}
 	],
 	"settings":

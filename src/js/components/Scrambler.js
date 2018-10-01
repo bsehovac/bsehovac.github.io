@@ -1,15 +1,21 @@
-class Scramble {
+class Scrambler {
 
-	constructor( cube, times ) {
+	constructor( game ) {
+
+		this.game = game;
+
+	}
+
+	generate( scramble ) {
 
 		let count = 0;
-		const moves = ( typeof times === 'string' ) ? times.split( ' ' ) : [];
+		const moves = ( typeof scramble === 'string' ) ? scramble.split( ' ' ) : [];
 
 		if ( moves.length < 1 ) {
 
 			const faces = 'UDLRFB';
 			const modifiers = [ "", "'", "2" ];
-			const total = ( typeof times === 'undefined' ) ? 25 : times;
+			const total = ( typeof scramble === 'undefined' ) ? 25 : scramble;
 
 			// TODO: Other Cube Sizes Scramble
 
@@ -25,20 +31,20 @@ class Scramble {
 
 		}
 
-		this.callback = () => {};
-		this.moves = moves;
-		this.print = moves.join( ' ' );
-		this.convert();
-
-		return this;
+		return {
+			callback: () => {},
+			moves: moves,
+			print: moves.join( ' ' ),
+			converted: this.convert( moves ),
+		};
 
 	}
 
-	convert() {
+	convert( moves ) {
 
-		this.converted = [];
+		const converted = [];
 
-		this.moves.forEach( move => {
+		moves.forEach( move => {
 
 			const face = move.charAt( 0 );
 			const modifier = move.charAt( 1 );
@@ -53,15 +59,15 @@ class Scramble {
 
 			const convertedMove = { position, axis, angle, name: move };
 
-			this.converted.push( convertedMove );
-			if ( modifier == "2" ) this.converted.push( convertedMove );
+			converted.push( convertedMove );
+			if ( modifier == "2" ) converted.push( convertedMove );
 
 		} );
 
-		return this.converted;
+		return converted;
 
 	}
 
 }
 
-export { Scramble };
+export { Scrambler };

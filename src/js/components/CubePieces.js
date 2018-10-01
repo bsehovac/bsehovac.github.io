@@ -29,21 +29,26 @@ function CubePieces( size, positions, colors ) {
 		metalness: 0.5,
 	} );
 
+	const namesTest = [];
+
 	positions.forEach( ( position, index ) => {
 
 		const piece = new THREE.Object3D();
 		const pieceCube = pieceMesh.clone();
 		const edges = [];
+		// let edgesNames = '';
 
 		piece.position.copy( position.clone().divideScalar( size ) );
 		piece.add( pieceCube );
 		piece.name = index;
+		piece.edgesName = '';
 
 		position.edges.forEach( position => {
 
 			const edge = createEdge( position );
+			edge.userData.name = [ 'L', 'R', 'D', 'U', 'B', 'F' ][ position ];
 			piece.add( edge );
-			edges.push( [ 'left', 'right', 'bottom', 'top', 'back', 'front' ][ position ] );
+			edges.push( edge.userData.name );
 
 		} );
 
