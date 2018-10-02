@@ -17,11 +17,6 @@ class Game {
       }
     };
 
-    this.options = {
-      cubeSize: 3,
-      scrambleLength: 20,
-    };
-
     this.world = new RUBIK.World( this );
     this.cube = new RUBIK.Cube( this );
     this.controls = new RUBIK.Controls( this );
@@ -29,35 +24,32 @@ class Game {
     this.audio = new RUBIK.Audio( this );
     this.timer = new RUBIK.Timer( this );
     this.preferences = new RUBIK.Preferences( this );
-    this.solver = new RUBIK.Solver( this );
     this.scrambler = new RUBIK.Scrambler( this );
     this.icons = new RUBIK.SvgIcons();
 
-    console.log( this.controls.disabled );
+    this.initDoupleTap();
 
-    // this.initDoupleTap();
+    this.saved = this.cube.loadState();
+    this.playing = false;
 
-    // this.saved = this.cube.loadState();
-    // this.playing = false;
+    this.animation.drop();
 
-    // this.animation.drop();
+    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
+    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
-    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
-    // this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
+    this.dom.buttons.settings.onclick = e => {
 
-    // this.dom.buttons.settings.onclick = e => {
+      e.stopPropagation();
+      this.dom.preferences.classList.toggle( 'is-active' );
 
-    //   e.stopPropagation();
-    //   this.dom.preferences.classList.toggle( 'is-active' );
+    }
 
-    // }
+    this.dom.buttons.home.onclick = e => {
 
-    // this.dom.buttons.home.onclick = e => {
+      e.stopPropagation();
+      if ( this.playing ) this.pause();
 
-    //   e.stopPropagation();
-    //   if ( this.playing ) this.pause();
-
-    // }
+    }
 
   }
 
@@ -72,9 +64,9 @@ class Game {
 
       this.dom.timer.innerHTML = '0:00';
 
-      const scramble = this.scrambler.generate( this.options.scrambleLength );
-      duration = scramble.converted.length * this.controls.options.scrambleSpeed;
-      this.controls.scrambleCube( scramble, () => { this.saved = true; } );
+      this.scrambler.scramble();
+      duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
+      this.controls.scrambleCube( () => { this.saved = true; } );
 
     } else {
 

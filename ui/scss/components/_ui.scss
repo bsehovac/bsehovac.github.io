@@ -1,6 +1,5 @@
 .ui {
   @include fullscreen(positive);
-  font-size: 5rem;
   pointer-events: none;
 
   &__screen {
@@ -11,16 +10,12 @@
       z-index: 1;
     }
 
-    &--start {
+    &--menu {
       z-index: 2;
     }
 
     &--prefs {
       z-index: 3;
-    }
-
-    &--buttons {
-      z-index: 4;
     }
   }
 
@@ -77,23 +72,11 @@
 
   &__prefs {
     @include fullscreen;
-    @include transition(opacity, visibility);
-    -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
+    @include transition(background);
     display: flex;
-    pointer-events: all;
-    padding: 1em 0;
-    opacity: 0;
-    visibility: hidden;
-
-    .ui.prefs {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    &-holder {
-      margin: auto;
-      width: 1em;
-    }
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
   }
 }

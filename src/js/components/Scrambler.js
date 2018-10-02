@@ -4,14 +4,20 @@ class Scrambler {
 
 		this.game = game;
 
+		this.scrambleLength = 20;
+
+		this.moves = [];
+		this.conveted = [];
+		this.pring = '';
+
 	}
 
-	generate( scramble ) {
+	scramble( scramble ) {
 
 		let count = 0;
-		const moves = ( typeof scramble === 'string' ) ? scramble.split( ' ' ) : [];
+		this.moves = ( typeof scramble !== 'undefined' ) ? scramble.split( ' ' ) : [];
 
-		if ( moves.length < 1 ) {
+		if ( this.moves.length < 1 ) {
 
 			const faces = 'UDLRFB';
 			const modifiers = [ "", "'", "2" ];
@@ -22,29 +28,28 @@ class Scrambler {
 			while ( count < total ) {
 
 				const move = faces[ Math.floor( Math.random() * 6 ) ] + modifiers[ Math.floor( Math.random() * 3 ) ];
-				if ( count > 0 && move.charAt( 0 ) == moves[ count - 1 ].charAt( 0 ) ) continue;
-				if ( count > 1 && move.charAt( 0 ) == moves[ count - 2 ].charAt( 0 ) ) continue;
-				moves.push( move );
+				if ( count > 0 && move.charAt( 0 ) == this.moves[ count - 1 ].charAt( 0 ) ) continue;
+				if ( count > 1 && move.charAt( 0 ) == this.moves[ count - 2 ].charAt( 0 ) ) continue;
+				this.moves.push( move );
 				count ++;
 
 			}
 
 		}
 
-		return {
-			callback: () => {},
-			moves: moves,
-			print: moves.join( ' ' ),
-			converted: this.convert( moves ),
-		};
+		this.callback = () => {};
+		this.convert();
+		this.print = this.moves.join( ' ' );
+
+		return this;
 
 	}
 
 	convert( moves ) {
 
-		const converted = [];
+		this.convert = [];
 
-		moves.forEach( move => {
+		this.moves.forEach( move => {
 
 			const face = move.charAt( 0 );
 			const modifier = move.charAt( 1 );
@@ -59,12 +64,10 @@ class Scrambler {
 
 			const convertedMove = { position, axis, angle, name: move };
 
-			converted.push( convertedMove );
-			if ( modifier == "2" ) converted.push( convertedMove );
+			this.convert.push( convertedMove );
+			if ( modifier == "2" ) this.convert.push( convertedMove );
 
 		} );
-
-		return converted;
 
 	}
 

@@ -2,7 +2,6 @@ export { World } from './components/World.js';
 export { Cube } from './components/Cube.js';
 export { Controls } from './components/Controls.js';
 export { Scrambler } from './components/Scrambler.js';
-export { Solver } from './components/Solver.js';
 export { Tween } from './components/Tween.js';
 export { Animations } from './components/Animations.js';
 export { Timer } from './components/Timer.js';

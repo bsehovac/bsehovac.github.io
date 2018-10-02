@@ -441,11 +441,11 @@ class Controls {
 
   }
 
-  scrambleCube( scramble, callback ) {
+  scrambleCube( callback ) {
 
     if ( this.scramble == null ) {
 
-      this.scramble = scramble;
+      this.scramble = this.game.scrambler;
       this.scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
 
     }

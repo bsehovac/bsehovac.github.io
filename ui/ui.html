@@ -17,34 +17,105 @@
       <div class="ui__text ui__text--timer"></div>
     </div>
 
-    <div class="ui__screen ui__screen--start">
+    <div class="ui__screen ui__screen--menu">
       <h1 class="ui__text ui__text--title">
-        <span>UI</span>
-        <span>Ratio</span>
+        <span></span>
+        <span></span>
       </h1>
-      <div class="ui__text ui__text--note">Double Tap to Start</div>
+      <div class="ui__text ui__text--note"></div>
     </div>
 
     <div class="ui__screen ui__screen--prefs">
-      <div class="ui__prefs">
-        <div class="ui__prefs-holder">
-          <div class="range"></div>
-          <div class="range"></div>
-          <div class="range"></div>
-          <div class="range"></div>
-          <div class="range"></div>
-          <div class="range"></div>
-          <div class="range"></div>
-          <div class="range"></div>
+      <div class="ui__prefs ui__prefs--controls">
+        <div class="range" name="test">
+          <div class="range__label">
+            Range Input 1
+          </div>
+          <div class="range__track">
+            <div class="range__handle"></div>
+          </div>
+          <div class="range__list">
+            <div>10</div>
+            <div>15</div>
+            <div>20</div>
+            <div>25</div>
+            <div>30</div>
+          </div>
+        </div>
+
+        <div class="range" name="test">
+          <div class="range__label">
+            Range Input 2
+          </div>
+          <div class="range__track">
+            <div class="range__handle"></div>
+          </div>
+          <div class="range__list">
+            <div>10</div>
+            <div>15</div>
+            <div>20</div>
+            <div>25</div>
+            <div>30</div>
+          </div>
+        </div>
+
+        <div class="range" name="test">
+          <div class="range__label">
+            Range Input 3
+          </div>
+          <div class="range__track">
+            <div class="range__handle"></div>
+          </div>
+          <div class="range__list">
+            <div>10</div>
+            <div>15</div>
+            <div>20</div>
+            <div>25</div>
+            <div>30</div>
+          </div>
+        </div>
+
+        <div class="range" name="test">
+          <div class="range__label">
+            Range Input 4
+          </div>
+          <div class="range__track">
+            <div class="range__handle"></div>
+          </div>
+          <div class="range__list">
+            <div>10</div>
+            <div>15</div>
+            <div>20</div>
+            <div>25</div>
+            <div>30</div>
+          </div>
+        </div>
+
+        <div class="range" name="test">
+          <div class="range__label">
+            Range Input 5
+          </div>
+          <div class="range__track">
+            <div class="range__handle"></div>
+          </div>
+          <div class="range__list">
+            <div>10</div>
+            <div>15</div>
+            <div>20</div>
+            <div>25</div>
+            <div>30</div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="ui__screen ui__screen--buttons">
-      <button class="btn btn--position-tr">Stats</button>
-      <button class="btn btn--position-tl">About</button>
-      <button class="btn btn--position-br">Options</button>
-      <button class="btn btn--position-bl">Share</button>
+      <!-- <button class="btn btn--tr">Stats</button>
+      <button class="btn btn--tl">About</button> -->
+      <button class="btn btn--br btn--controls">C</button>
+      <button class="btn btn--bl btn--options">O</button>
+      <button class="btn btn--bl btn--back">B</button>
+      <!-- <button class="btn btn--bl">Share</button> -->
     </div>
 
   </div>
@@ -52,20 +123,24 @@
   <script type="text/javascript">
 
     const appHeight = () => {
-
       const width = document.body.offsetWidth;
       const height = document.body.offsetHeight;
       const fontSize = ( width / height < 2 / 3 ) ? width / 100 : ( height / 100 ) * ( 2 / 3 );
-
       document.documentElement.style.fontSize = fontSize + 'px';
-
-      console.log( width / height, fontSize )
-
     }
-
     window.addEventListener('resize', appHeight);
     appHeight();
 
+    /*
+
+    timer(show/hide, callback);
+    title(show/hide, callback);
+    note(show/hide, callback);
+    button(show/hide, callback);
+    range(show/hide, callback);
+
+    */
+    
   </script>
 
 </body>

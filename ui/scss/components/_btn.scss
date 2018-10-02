@@ -1,0 +1,36 @@
+.btn {
+  @include transition(transform, opacity);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border-radius: 0;
+  border-width: 0;
+  position: absolute;
+  pointer-events: all;
+  opacity: 0;
+
+  &--tr {
+    top: 1em;
+    right: 1em;
+    transform: translate3d(1em, -1em, 0);
+  }
+
+  &--br {
+    bottom: 1em;
+    right: 1em;
+    transform: translate3d(1em, 1em, 0);
+  }
+
+  &--tl {
+    top: 1em;
+    left: 1em;
+    transform: translate3d(-1em, -1em, 0);
+  }
+
+  &--bl {
+    bottom: 1em;
+    left: 1em;
+    transform: translate3d(-1em, 1em, 0);
+  }
+}

@@ -33,7 +33,7 @@ html {
 
 body {
   background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%);
-  font-family: 'Bungee', sans-serif;
+  font-family: 'Helvetica', 'Bungee', sans-serif;
   font-weight: normal;
   font-style: normal;
   line-height: 1;
@@ -41,13 +41,5 @@ body {
   cursor: default;
   overflow: hidden;
   height: 100%;
-}
-
-button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-color: transparent;
-  border-radius: 0;
-  border-width: 0;
+  font-size: 5rem;
 }

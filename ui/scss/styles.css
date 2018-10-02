@@ -27,22 +27,108 @@ html {
 
 body {
   background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%);
-  font-family: 'Bungee', sans-serif;
+  font-family: 'Helvetica', 'Bungee', sans-serif;
   font-weight: normal;
   font-style: normal;
   line-height: 1;
   color: #070d15;
   cursor: default;
   overflow: hidden;
-  height: 100%; }
+  height: 100%;
+  font-size: 5rem; }
 
-button {
+.range {
+  width: 100%;
+  width: 14em; }
+  .range:not(:last-child) {
+    margin-bottom: 2em; }
+  .range__label {
+    position: relative;
+    font-size: 1em;
+    line-height: 0.75em;
+    padding-bottom: 0.4em; }
+  .range__track {
+    position: relative;
+    height: 1em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    z-index: 2; }
+    .range__track:before {
+      content: '';
+      position: absolute;
+      background: rgba(0, 0, 0, 0.2);
+      height: 2px;
+      top: 50%;
+      margin-top: -1px;
+      left: -0.5em;
+      right: -0.5em; }
+  .range__handle {
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 50%;
+    left: 0;
+    cursor: pointer; }
+    .range__handle:before {
+      content: '';
+      transition: transform 300ms;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1em;
+      height: 1em;
+      border-radius: 0.1em;
+      margin-left: -0.5em;
+      margin-top: -0.5em;
+      background: #41aac8;
+      border-radius: 100%; }
+      .range.is-active .range__handle:before {
+        transform: scale(1.25); }
+    .range__handle:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3em;
+      height: 3em;
+      margin-left: -1.5em;
+      margin-top: -1.5em; }
+  .range__list {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    position: relative;
+    padding-top: 0.5em;
+    font-size: 0.6em;
+    color: rgba(0, 0, 0, 0.5); }
+
+.btn {
+  transition: transform 300ms ease, opacity 300ms ease;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   background-color: transparent;
   border-radius: 0;
-  border-width: 0; }
+  border-width: 0;
+  position: absolute;
+  pointer-events: all;
+  opacity: 0; }
+  .btn--tr {
+    top: 1em;
+    right: 1em;
+    transform: translate3d(1em, -1em, 0); }
+  .btn--br {
+    bottom: 1em;
+    right: 1em;
+    transform: translate3d(1em, 1em, 0); }
+  .btn--tl {
+    top: 1em;
+    left: 1em;
+    transform: translate3d(-1em, -1em, 0); }
+  .btn--bl {
+    bottom: 1em;
+    left: 1em;
+    transform: translate3d(-1em, 1em, 0); }
 
 .ui {
   position: positive;
@@ -50,7 +136,6 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  font-size: 5rem;
   pointer-events: none; }
   .ui__screen {
     position: absolute;
@@ -61,12 +146,10 @@ button {
     overflow: hidden; }
     .ui__screen--game {
       z-index: 1; }
-    .ui__screen--start {
+    .ui__screen--menu {
       z-index: 2; }
     .ui__screen--prefs {
       z-index: 3; }
-    .ui__screen--buttons {
-      z-index: 4; }
   .ui__text {
     position: absolute;
     left: 0;
@@ -107,17 +190,9 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    transition: opacity 300ms ease, visibility 300ms ease;
-    -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
+    transition: background 300ms ease;
     display: flex;
-    pointer-events: all;
-    padding: 1em 0;
-    opacity: 0;
-    visibility: hidden; }
-    .ui__prefs .ui.prefs {
-      opacity: 1;
-      visibility: visible; }
-    .ui__prefs-holder {
-      margin: auto;
-      width: 1em; }
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; }
