@@ -2,9 +2,10 @@ class Animations {
 
   constructor( game ) {
 
+    this.game = game;
+
     this.data = {};
     this.tweens = {};
-    this.game = game;
 
     this.data.cubeY = -0.2;
     this.data.floatScale = 1;
@@ -42,8 +43,8 @@ class Animations {
 
     setTimeout( () => {
 
-      if ( show ) setTimeout( () => { this.game.dom.main.classList.add( 'is-active' ); }, 600 );
-      else this.game.dom.main.classList.remove( 'is-active' );
+      if ( show ) setTimeout( () => { this.game.dom.menu.classList.add( 'is-active' ); }, 600 );
+      else this.game.dom.menu.classList.remove( 'is-active' );
 
       this.data.titleLetters.forEach( ( letter, index ) => {
 
@@ -69,7 +70,7 @@ class Animations {
         easing: 'easeOutSine',
         onUpdate: tween => {
 
-          this.game.dom.start.style.opacity = ( show ) ? tween.progress : 1 - tween.progress
+          this.game.dom.note.style.opacity = ( show ) ? tween.progress : 1 - tween.progress
 
         },
         onComplete: () => {
@@ -80,7 +81,7 @@ class Animations {
             yoyo: true,
             onUpdate: tween => {
 
-              this.game.dom.start.style.opacity = 1 - tween.progress;
+              this.game.dom.note.style.opacity = 1 - tween.progress;
 
             },
           } );

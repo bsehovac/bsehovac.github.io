@@ -1,5 +1,41 @@
 import { Draggable } from './Draggable.js';
 
+const RangeHTML = [
+
+  '<div class="range">',
+    '<div class="range__label"></div>',
+    '<div class="range__track">',
+      '<div class="range__handle"></div>',
+    '</div>',
+    '<div class="range__list"></div>',
+  '</div>',
+
+].join( '\n' );
+
+document.querySelectorAll( 'range' ).forEach( el => {
+
+  const temp = document.createElement( 'div' );
+  temp.innerHTML = RangeHTML;
+
+  const range = temp.querySelector( '.range' );
+  const rangeLabel = range.querySelector( '.range__label' );
+  const rangeList = range.querySelector( '.range__list' );
+
+  range.setAttribute( 'name', el.getAttribute( 'name' ) );
+  rangeLabel.innerHTML = el.getAttribute( 'title' );
+
+  el.getAttribute( 'list' ).split( ',' ).forEach( listItemText => {
+
+    const listItem = document.createElement( 'div' );
+    listItem.innerHTML = listItemText;
+    rangeList.appendChild( listItem );
+
+  } );
+
+  el.parentNode.replaceChild( range, el );
+
+} );
+
 class Range {
 
   constructor( name, options ) {

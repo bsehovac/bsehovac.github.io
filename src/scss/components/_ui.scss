@@ -1,31 +1,72 @@
 .ui {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  overflow: hidden;
+  @include fullscreen(relative);
   pointer-events: none;
 
-  &__game,
-  &__main,
-  &__preferences {
+  &__screen {
+    @include fullscreen;
+    overflow: hidden;
+
+    &--game {
+      z-index: 1;
+    }
+
+    &--menu {
+      z-index: 2;
+    }
+
+    &--prefs {
+      z-index: 3;
+    }
+  }
+
+  &__text {
     position: absolute;
     left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    text-align: center;
+    line-height: 0.75;
+    opacity: 0;
+    perspective: 100rem;
+
+    i {
+      display: inline-block;
+    }
+
+    &--title {
+      bottom: 75%;
+      font-size: 4.4em;
+      height: 1.2em;
+
+      span {
+        display: block;
+
+        &:first-child {
+          font-size: 0.5em;
+          margin-bottom: 0.2em;
+        }
+      }
+    }
+
+    &--note {
+      top: 87%;
+      font-size: 1em;
+    }
+
+    &--timer {
+      bottom: 75%;
+      font-size: 3.5em;
+      height: 1.25em;
+    }
   }
 
   &__game {
-    overflow: hidden;
-    z-index: 1;
+    @include fullscreen;
+    pointer-events: all;
 
     canvas {
+      display: block;
       width: 100%;
       height: 100%;
-      display: block;
       // image-rendering: optimizeSpeed;
       // image-rendering: -moz-crisp-edges;
       // image-rendering: -webkit-optimize-contrast;
@@ -34,175 +75,14 @@
     }
   }
 
-
-  &__main {
-    z-index: 2;
-    pointer-events: none;
-
-    &.is-active {
-      pointer-events: all;
-    }
-  }
-
-  &__title {
-    position: absolute;
-    bottom: 75%;
-    left: 0;
-    width: 100%;
-    font-size: 22vw;
-    line-height: 0.75;
-    text-align: center;
-    height: 1.2em;
-    letter-spacing: 0.025em;
-    perspective: 100vw;
-    opacity: 0;
-    pointer-events: none;
-    @include breakpoint() {
-      font-size: 22vh * 0.666;
-    }
-
-    span {
-      display: block;
-
-      &:first-child {
-        font-size: 0.5em;
-        margin-bottom: 0.2em;
-      }
-    }
-
-    i {
-      transform-origin: 50% 100%;
-      display: inline-block;
-      white-space: pre;
-    }
-  }
-
-  &__start {
-    position: absolute;
-    top: 87%;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 5vw;
-    opacity: 0;
-    pointer-events: none;
-    @include breakpoint() {
-      font-size: 5vh * 0.666;
-    }
-  }
-
-  &__timer {
-    @include transition(opacity);
-    position: absolute;
-    bottom: 75%;
-    left: 0;
-    width: 100%;
-    font-size: 17vw;
-    line-height: 0.75;
-    text-align: center;
-    height: 1.3em;
-    letter-spacing: -0.025em;
-    perspective: 100vw;
-    opacity: 0;
-    pointer-events: none;
-    @include breakpoint() {
-      font-size: 17vh * 0.666;
-    }
-
-    i {
-      transform-origin: 50% 100%;
-      display: inline-block;
-      white-space: pre;
-    }
-  }
-
-  &__icon {
-    position: absolute;
-    font-size: 6vw;
-    opacity: 0.25;
-    pointer-events: all;
-    @include breakpoint() {
-      font-size: 6vh * 0.666;
-    }
-
-    &--audio {
-      bottom: 4vw;
-      right: 4vw;
-
-      path {
-        @include transition(opacity);
-
-        &:nth-child(2) {
-          opacity: 0;
-        }
-
-        &:nth-child(3) {
-          opacity: 0;
-        }
-      }
-
-      &.is-active {
-        path {
-          &:nth-child(2) {
-            opacity: 1;
-          }
-
-          &:nth-child(3) {
-            opacity: 1;
-          }
-        }
-      }
-    }
-
-    &--settings {
-      bottom: 4vw;
-      right: 4vw;
-    }
-
-    &--home {
-      bottom: 4vw;
-      left: 4vw;
-      visibility: hidden;
-    }
-  }
-
-  &__moves,
-  &__undo {
+  &__prefs {
+    @include fullscreen;
+    @include transition(background);
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
     display: none;
-  }
-
-  &__preferences {
-    @include transition(opacity, visibility);
-    @include flexbox-display;
-    @include flexbox-align-items(center);
-    // @include flexbox-justify-content(center);
-    pointer-events: none;
-    opacity: 0;
-    visibility: hidden;
-    z-index: 3;
-    background: rgba(#fff, 0.95);
-    padding: 20vw 0;
-    @include breakpoint() {
-      padding: 20vh * 0.666 0;
-    }
-
-    &.is-active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    &-holder {
-      @include flexbox-display;
-      @include flexbox-flow(row nowrap);
-      width: 100%;
-    }
-
-    &-inner {
-      @include flexbox-flex(0 0 100%);
-      padding: 0 15vw;
-      @include breakpoint() {
-        padding: 0 15vh * 0.666;
-      }
-    }
   }
 }

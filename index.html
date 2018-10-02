@@ -1,189 +1,57 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
 
-    <title>The Cube</title>
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" type="text/css" href="assets/css/styles.css">
 
-    <link rel="stylesheet" type="text/css" href="assets/css/styles.css?v=5">
+</head>
+<body>
 
-  </head>
-  <body style="opacity: 0.01">
+  <div class="ui">
 
-    <div class="ui">
-
+    <div class="ui__screen ui__screen--game">
       <div class="ui__game"></div>
-
-      <div class="ui__main">
-
-        <h1 class="ui__title">
-          <span>The</span>
-          <span>Cube</span>
-        </h1>
-
-        <span class="ui__start">
-          Double Tap to Start
-        </span>
-
-        <div class="ui__timer">
-          o:oo
-        </div>
-
-        <!-- <button class="ui__icon ui__icon--audio">
-          <icon audio />
-        </button> -->
-
-        <button class="ui__icon ui__icon--settings">
-          <icon settings />
-        </button>
-
-        <button class="ui__icon ui__icon--home">
-          <icon home />
-        </button>
-
-        <!-- <div class="ui__moves" id="moves">
-          0:00
-        </div> -->
-
-        <!-- <button class="ui__button ui__button--undo" id="undo">
-          Undo
-        </button> -->
-
-      </div>
-
-      <div class="ui__preferences">
-
-        <div class="ui__preferences-holder">
-
-          <div class="ui__preferences-inner">
-
-            <div class="range" name="scramble">
-              <div class="range__label">
-                Scramble Length
-              </div>
-              <div class="range__track">
-                <div class="range__handle"></div>
-              </div>
-              <div class="range__list">
-                <div>10</div>
-                <div>15</div>
-                <div>20</div>
-                <div>25</div>
-                <div>30</div>
-              </div>
-            </div>
-          
-            <div class="range" name="speed">
-              <div class="range__label">
-                Flip Speed
-              </div>
-              <div class="range__track">
-                <div class="range__handle"></div>
-              </div>
-              <div class="range__list">
-                <div>Slow</div>
-                <div>Fast</div>
-              </div>
-            </div>
-
-            <div class="range" name="bounce">
-              <div class="range__label">
-                Flip Bounce
-              </div>
-              <div class="range__track">
-                <div class="range__handle"></div>
-              </div>
-              <div class="range__list">
-                <div>None</div>
-                <div>Large</div>
-              </div>
-            </div>
-
-            <div class="range" name="theme">
-              <div class="range__label">
-                Theme
-              </div>
-              <div class="range__track">
-                <div class="range__handle"></div>
-              </div>
-              <div class="range__list">
-                <div>Light</div>
-                <div>Dark</div>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="ui__preferences-inner">
-
-            <div class="range" name="sound">
-              <div class="range__label">
-                Sound Volume
-              </div>
-              <div class="range__track">
-                <div class="range__handle"></div>
-              </div>
-              <div class="range__list">
-                <div>Low</div>
-                <div>High</div>
-              </div>
-            </div>
-
-            <div class="range" name="music">
-              <div class="range__label">
-                Music Volume
-              </div>
-              <div class="range__track">
-                <div class="range__handle"></div>
-              </div>
-              <div class="range__list">
-                <div>Low</div>
-                <div>High</div>
-              </div>
-            </div>
-
-            <div class="range" name="fov">
-              <div class="range__label">
-                Camera Angle
-              </div>
-              <div class="range__track">
-                <div class="range__handle"></div>
-              </div>
-              <div class="range__list">
-                <div>Ortographic</div>
-                <div>Perspective</div>
-              </div>
-            </div>
-
-            <div class="range" name="graphics">
-              <div class="range__label">
-                Graphics Quality
-              </div>
-              <div class="range__track">
-                <div class="range__handle"></div>
-              </div>
-              <div class="range__list">
-                <div>Low</div>
-                <div>High</div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-        
-      </div>
-
+      <div class="ui__text ui__text--timer">0:00</div>
     </div>
 
-    <script src="assets/js/three.js"></script>
-    <script src="assets/js/rubik.js"></script>
+    <div class="ui__screen ui__screen--menu">
+      <h1 class="ui__text ui__text--title">
+        <span>The</span>
+        <span>Cube</span>
+      </h1>
+      <div class="ui__text ui__text--note">Double tap to start</div>
+    </div>
 
-    <script>const game = new RUBIK.Game();</script>
+    <div class="ui__screen ui__screen--prefs">
+      <div class="ui__prefs ui__prefs--controls">
+        <range name="scramble" title="Scramble Length" list="10,15,20,25,30"></range>
+        <range name="speed" title="Flip Speed" list="Slow,Fast"></range>
+        <range name="bounce" title="Flip Bounce" list="None,Large"></range>
+        <range name="theme" title="Theme" list="Light,Dark"></range>
+        <range name="sound" title="Sound Volume" list="Low,High"></range>
+        <range name="music" title="Music Volume" list="Low,High"></range>
+        <range name="fov" title="Camera Angle" list="Ortographic,Perspective"></range>
+        <range name="graphics" title="Graphics Quality" list="Low,High"></range>
+      </div>
+    </div>
 
-  </body>
+    <div class="ui__screen ui__screen--buttons">
+      <!-- <button class="btn btn--tr">Stats</button>
+      <button class="btn btn--tl">About</button> -->
+      <button class="btn btn--br btn--controls">C</button>
+      <button class="btn btn--bl btn--options">O</button>
+      <button class="btn btn--bl btn--back">B</button>
+      <!-- <button class="btn btn--bl">Share</button> -->
+    </div>
+
+  </div>
+
+  <script src="assets/js/three.js"></script>
+  <script src="assets/js/rubik.js"></script>
+  <script>const game = new RUBIK.Game();</script>
+
+</body>
 </html>
-

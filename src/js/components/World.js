@@ -3,6 +3,7 @@ class World {
 	constructor( game ) {
 
 		this.game = game;
+
 		this.container = this.game.dom.container;
 
 		this.scene = new THREE.Scene();

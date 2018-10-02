@@ -5,7 +5,8 @@ class Cube {
 	constructor( game ) {
 
 		this.game = game;
-		this.size = game.options.cubeSize;
+
+		this.size = 3;
 
 		this.colors = {
 			right: 0x41aac8,

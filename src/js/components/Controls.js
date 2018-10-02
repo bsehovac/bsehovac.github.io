@@ -334,7 +334,7 @@ class Controls {
     let solved = true;
     const layers = { R: [], L: [], U: [], D: [], F: [], B: [] };
 
-    game.cube.pieces.forEach( ( piece, index ) => {
+    this.game.cube.pieces.forEach( ( piece, index ) => {
 
       const position = this.getPiecePosition( piece );
 

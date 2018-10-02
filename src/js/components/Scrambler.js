@@ -21,7 +21,7 @@ class Scrambler {
 
 			const faces = 'UDLRFB';
 			const modifiers = [ "", "'", "2" ];
-			const total = ( typeof scramble === 'undefined' ) ? 25 : scramble;
+			const total = ( typeof scramble === 'undefined' ) ? this.scrambleLength : scramble;
 
 			// TODO: Other Cube Sizes Scramble
 
@@ -47,7 +47,7 @@ class Scrambler {
 
 	convert( moves ) {
 
-		this.convert = [];
+		this.converted = [];
 
 		this.moves.forEach( move => {
 
@@ -64,8 +64,8 @@ class Scrambler {
 
 			const convertedMove = { position, axis, angle, name: move };
 
-			this.convert.push( convertedMove );
-			if ( modifier == "2" ) this.convert.push( convertedMove );
+			this.converted.push( convertedMove );
+			if ( modifier == "2" ) this.converted.push( convertedMove );
 
 		} );
 

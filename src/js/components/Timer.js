@@ -3,6 +3,7 @@ class Timer {
 	constructor( game ) {
 
 		this.game = game;
+
 		this.startTime = null;
 
 	}
@@ -51,9 +52,7 @@ class Timer {
 		this.seconds = parseInt( ( time / 1000 ) % 60 );
 		this.minutes = parseInt( ( time / ( 1000 * 60 ) ) );
 
-		const print = this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
-
-		return print.replace( /0/g, 'o' );
+		return this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
 
 	}
 

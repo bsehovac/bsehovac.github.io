@@ -9,6 +9,7 @@
 		constructor( game ) {
 
 			this.game = game;
+
 			this.container = this.game.dom.container;
 
 			this.scene = new THREE.Scene();
@@ -676,7 +677,8 @@
 		constructor( game ) {
 
 			this.game = game;
-			this.size = game.options.cubeSize;
+
+			this.size = 3;
 
 			this.colors = {
 				right: 0x41aac8,
@@ -1374,7 +1376,7 @@
 	    let solved = true;
 	    const layers = { R: [], L: [], U: [], D: [], F: [], B: [] };
 
-	    game.cube.pieces.forEach( ( piece, index ) => {
+	    this.game.cube.pieces.forEach( ( piece, index ) => {
 
 	      const position = this.getPiecePosition( piece );
 
@@ -1625,7 +1627,7 @@
 
 				const faces = 'UDLRFB';
 				const modifiers = [ "", "'", "2" ];
-				const total = ( typeof scramble === 'undefined' ) ? 25 : scramble;
+				const total = ( typeof scramble === 'undefined' ) ? this.scrambleLength : scramble;
 
 				// TODO: Other Cube Sizes Scramble
 
@@ -1651,7 +1653,7 @@
 
 		convert( moves ) {
 
-			this.convert = [];
+			this.converted = [];
 
 			this.moves.forEach( move => {
 
@@ -1668,14 +1670,28 @@
 
 				const convertedMove = { position, axis, angle, name: move };
 
-				this.convert.push( convertedMove );
-				if ( modifier == "2" ) this.convert.push( convertedMove );
+				this.converted.push( convertedMove );
+				if ( modifier == "2" ) this.converted.push( convertedMove );
 
 			} );
 
 		}
 
 	}
+
+	const Tweens = [];
+
+	const Animate = () => {
+
+	  let i = Tweens.length;
+
+	  while (i--) Tweens[i].update();
+
+	  requestAnimationFrame( Animate );
+
+	};
+
+	Animate();
 
 	class Tween {
 
@@ -1718,7 +1734,7 @@
 	    setTimeout( () => {
 
 	      this.start = performance.now();
-	      this.animate = requestAnimationFrame( () => this.update() );
+	      Tweens.push( this );
 
 	    }, this.delay );
 
@@ -1728,7 +1744,7 @@
 
 	  kill() {
 
-	    cancelAnimationFrame( this.animate );
+	    Tweens.splice( Tweens.indexOf( this ), 1 );
 
 	  }
 
@@ -1768,13 +1784,11 @@
 	      } else {
 
 	        this.onComplete( this );
-	        return;
+	        Tweens.splice( Tweens.indexOf( this ), 1 );
 
 	      }
 
 	    }
-
-	    this.animate = requestAnimationFrame( () => this.update() );
 
 	  }
 
@@ -1892,84 +1906,16 @@
 	    return (p-=1)*p*((s+1)*p + s) + 1;
 	  },
 
-	  // easeOutBounce: p => {
-	  //   if ((p) < (1/2.75)) {
-	  //     return (7.5625*p*p);
-	  //   } else if (p < (2/2.75)) {
-	  //     return (7.5625*(p-=(1.5/2.75))*p + 0.75);
-	  //   } else if (p < (2.5/2.75)) {
-	  //     return (7.5625*(p-=(2.25/2.75))*p + 0.9375);
-	  //   } else {
-	  //     return (7.5625*(p-=(2.625/2.75))*p + 0.984375);
-	  //   }
-	  // },
-
-	  // easeInBack: p => {
-	  //   var s = 1.70158;
-	  //   return (p)*p*((s+1)*p - s);
-	  // },
-
-	  // easeOutBack: p => {
-	  //   var s = 1.70158;
-	  //   return (p=p-1)*p*((s+1)*p + s) + 1;
-	  // },
-
-	  // easeInOutBack: p => {
-	  //   var s = 1.70158;
-	  //   if((p/=0.5) < 1) return 0.5*(p*p*(((s*=(1.525))+1)*p -s));
-	  //   return 0.5*((p-=2)*p*(((s*=(1.525))+1)*p +s) +2);
-	  // },
-
-	  // elastic: p => {
-	  //   return -1 * Math.pow(4,-8*p) * Math.sin((p*6-1)*(2*Math.PI)/2) + 1;
-	  // },
-
-	  // bounce: p => {
-	  //   if (p < (1/2.75)) {
-	  //     return (7.5625*p*p);
-	  //   } else if (p < (2/2.75)) {
-	  //     return (7.5625*(p-=(1.5/2.75))*p + 0.75);
-	  //   } else if (p < (2.5/2.75)) {
-	  //     return (7.5625*(p-=(2.25/2.75))*p + 0.9375);
-	  //   } else {
-	  //     return (7.5625*(p-=(2.625/2.75))*p + 0.984375);
-	  //   }
-	  // },
-
-	  // bouncePast: p => {
-	  //   if (p < (1/2.75)) {
-	  //     return (7.5625*p*p);
-	  //   } else if (p < (2/2.75)) {
-	  //     return 2 - (7.5625*(p-=(1.5/2.75))*p + 0.75);
-	  //   } else if (p < (2.5/2.75)) {
-	  //     return 2 - (7.5625*(p-=(2.25/2.75))*p + 0.9375);
-	  //   } else {
-	  //     return 2 - (7.5625*(p-=(2.625/2.75))*p + 0.984375);
-	  //   }
-	  // },
-
-	  // easeFromTo: p => {
-	  //   if ((p/=0.5) < 1) return 0.5*Math.pow(p,4);
-	  //   return -0.5 * ((p-=2)*Math.pow(p,3) - 2);
-	  // },
-
-	  // easeFrom: p => {
-	  //   return Math.pow(p,4);
-	  // },
-
-	  // easeTo: p => {
-	  //   return Math.pow(p,0.25);
-	  // },
-
 	};
 
 	class Animations {
 
 	  constructor( game ) {
 
+	    this.game = game;
+
 	    this.data = {};
 	    this.tweens = {};
-	    this.game = game;
 
 	    this.data.cubeY = -0.2;
 	    this.data.floatScale = 1;
@@ -2007,8 +1953,8 @@
 
 	    setTimeout( () => {
 
-	      if ( show ) setTimeout( () => { this.game.dom.main.classList.add( 'is-active' ); }, 600 );
-	      else this.game.dom.main.classList.remove( 'is-active' );
+	      if ( show ) setTimeout( () => { this.game.dom.menu.classList.add( 'is-active' ); }, 600 );
+	      else this.game.dom.menu.classList.remove( 'is-active' );
 
 	      this.data.titleLetters.forEach( ( letter, index ) => {
 
@@ -2034,7 +1980,7 @@
 	        easing: 'easeOutSine',
 	        onUpdate: tween => {
 
-	          this.game.dom.start.style.opacity = ( show ) ? tween.progress : 1 - tween.progress;
+	          this.game.dom.note.style.opacity = ( show ) ? tween.progress : 1 - tween.progress;
 
 	        },
 	        onComplete: () => {
@@ -2045,7 +1991,7 @@
 	            yoyo: true,
 	            onUpdate: tween => {
 
-	              this.game.dom.start.style.opacity = 1 - tween.progress;
+	              this.game.dom.note.style.opacity = 1 - tween.progress;
 
 	            },
 	          } );
@@ -2219,6 +2165,7 @@
 		constructor( game ) {
 
 			this.game = game;
+
 			this.startTime = null;
 
 		}
@@ -2267,9 +2214,7 @@
 			this.seconds = parseInt( ( time / 1000 ) % 60 );
 			this.minutes = parseInt( ( time / ( 1000 * 60 ) ) );
 
-			const print = this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
-
-			return print.replace( /0/g, 'o' );
+			return this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
 
 		}
 
@@ -2281,14 +2226,14 @@
 
 	    this.dom = {
 	      container: document.querySelector( '.ui__game' ),
-	      main: document.querySelector( '.ui__main' ),
-	      title: document.querySelector( '.ui__title' ),
-	      start: document.querySelector( '.ui__start' ),
-	      timer: document.querySelector( '.ui__timer' ),
-	      preferences: document.querySelector( '.ui__preferences' ),
+	      menu: document.querySelector( '.ui__screen--menu' ),
+	      title: document.querySelector( '.ui__text--title' ),
+	      note: document.querySelector( '.ui__text--note' ),
+	      timer: document.querySelector( '.ui__text--timer' ),
+	      preferences: document.querySelector( '.ui__screen--prefs' ),
 	      buttons: {
-	        settings: document.querySelector( '.ui__icon--settings' ),
-	        home: document.querySelector( '.ui__icon--home' ),
+	        // settings: document.querySelector( '.ui__icon--settings' ),
+	        // home: document.querySelector( '.ui__icon--home' ),
 	        // share: document.querySelector( '.ui__icon--share' ),
 	        // about: document.querySelector( '.ui__icon--about' ),
 	      }
@@ -2297,11 +2242,11 @@
 	    this.world = new RUBIK.World( this );
 	    this.cube = new RUBIK.Cube( this );
 	    this.controls = new RUBIK.Controls( this );
+	    this.scrambler = new RUBIK.Scrambler( this );
 	    this.animation = new RUBIK.Animations( this );
 	    this.audio = new RUBIK.Audio( this );
 	    this.timer = new RUBIK.Timer( this );
 	    this.preferences = new RUBIK.Preferences( this );
-	    this.scrambler = new RUBIK.Scrambler( this );
 	    this.icons = new RUBIK.SvgIcons();
 
 	    this.initDoupleTap();
@@ -2309,39 +2254,42 @@
 	    this.saved = this.cube.loadState();
 	    this.playing = false;
 
+	    console.log( this.saved );
+
 	    this.animation.drop();
 
 	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
 	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
 
-	    this.dom.buttons.settings.onclick = e => {
+	    // this.dom.buttons.settings.onclick = e => {
 
-	      e.stopPropagation();
-	      this.dom.preferences.classList.toggle( 'is-active' );
+	    //   e.stopPropagation();
+	    //   this.dom.preferences.classList.toggle( 'is-active' );
 
-	    };
+	    // }
 
-	    this.dom.buttons.home.onclick = e => {
+	    // this.dom.buttons.home.onclick = e => {
 
-	      e.stopPropagation();
-	      if ( this.playing ) this.pause();
+	    //   e.stopPropagation();
+	    //   if ( this.playing ) this.pause();
 
-	    };
+	    // }
 
 	  }
 
 	  start() {
 	    let duration = 0;
 
-	    this.dom.buttons.home.style.visibility = 'visible';
+	    // this.dom.buttons.home.style.visibility = 'visible';
 
 	    if ( ! this.saved ) {
 
 	      this.dom.timer.innerHTML = '0:00';
 
 	      this.scrambler.scramble();
+	      this.controls.scrambleCube( () => {} );
+
 	      duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
-	      this.controls.scrambleCube( () => { this.saved = true; } );
 
 	    } else {
 
@@ -2357,6 +2305,7 @@
 	      this.playing = true;
 	      this.controls.disabled = false;
 	      this.timer.start( this.saved );
+	      this.saved = true;
 
 	    } );
 
@@ -2364,7 +2313,7 @@
 
 	  pause() {
 
-	    this.dom.buttons.home.style.visibility = 'hidden';
+	    // this.dom.buttons.home.style.visibility = 'hidden';
 
 	    this.playing = false;
 	    this.timer.stop();
@@ -2383,8 +2332,6 @@
 
 	    const tapHandler = event => {
 
-	      if ( event.target !== this.dom.main ) return;
-
 	      event.preventDefault();
 
 	      if ( ! tappedTwice ) {
@@ -2399,8 +2346,8 @@
 
 	    };
 
-	    this.dom.main.addEventListener( 'click', tapHandler, false );
-	    this.dom.main.addEventListener( 'touchstart', tapHandler, false );
+	    this.dom.container.addEventListener( 'click', tapHandler, false );
+	    this.dom.container.addEventListener( 'touchstart', tapHandler, false );
 
 	  }
 
@@ -2571,43 +2518,43 @@
 	    // }, false);
 
 	    this.speed = new RUBIK.Range( 'speed', {
-	      value: game.controls.options.flipSpeed,
+	      value: this.game.controls.options.flipSpeed,
 	      range: [ 300, 100 ],
 	      onUpdate: value => {
 
-	        game.controls.options.flipSpeed = value;
+	        this.game.controls.options.flipSpeed = value;
 
 	      }
 	    } );
 
 	    this.bounce = new RUBIK.Range( 'bounce', {
-	      value: game.controls.options.flipBounce,
+	      value: this.game.controls.options.flipBounce,
 	      range: [ 0, 2 ],
 	      onUpdate: value => {
 
-	        game.controls.options.flipBounce = value;
+	        this.game.controls.options.flipBounce = value;
 
 	      }
 	    } );
 
 	    this.fov = new RUBIK.Range( 'fov', {
-	      value: game.world.fov,
+	      value: this.game.world.fov,
 	      range: [ 2, 45 ],
 	      onUpdate: value => {
 
-	        game.world.fov = value;
-	        game.world.updateCamera();
+	        this.game.world.fov = value;
+	        this.game.world.updateCamera();
 
 	      },
 	    } );
 
 	    this.scramble = new RUBIK.Range( 'scramble', {
-	      value: game.options.scrambleLength,
+	      value: this.game.scrambler.scrambleLength,
 	      range: [ 10, 30 ],
 	      step: 5,
 	      onUpdate: value => {
 
-	        game.options.scrambleLength = value;
+	        this.game.options.scrambleLength = value;
 
 	      },
 	    } );
@@ -2618,7 +2565,7 @@
 	      step: 1,
 	      onUpdate: value => {
 
-	        game.world.renderer.setPixelRatio = ( value == 1 ) ? 1 : window.devicePixelRatio;
+	        this.game.world.renderer.setPixelRatio = ( value == 1 ) ? 1 : window.devicePixelRatio;
 
 	      },
 	    } );
@@ -2630,6 +2577,42 @@
 	  }
 
 	}
+
+	const RangeHTML = [
+
+	  '<div class="range">',
+	    '<div class="range__label"></div>',
+	    '<div class="range__track">',
+	      '<div class="range__handle"></div>',
+	    '</div>',
+	    '<div class="range__list"></div>',
+	  '</div>',
+
+	].join( '\n' );
+
+	document.querySelectorAll( 'range' ).forEach( el => {
+
+	  const temp = document.createElement( 'div' );
+	  temp.innerHTML = RangeHTML;
+
+	  const range = temp.querySelector( '.range' );
+	  const rangeLabel = range.querySelector( '.range__label' );
+	  const rangeList = range.querySelector( '.range__list' );
+
+	  range.setAttribute( 'name', el.getAttribute( 'name' ) );
+	  rangeLabel.innerHTML = el.getAttribute( 'title' );
+
+	  el.getAttribute( 'list' ).split( ',' ).forEach( listItemText => {
+
+	    const listItem = document.createElement( 'div' );
+	    listItem.innerHTML = listItemText;
+	    rangeList.appendChild( listItem );
+
+	  } );
+
+	  el.parentNode.replaceChild( range, el );
+
+	} );
 
 	class Range {
 

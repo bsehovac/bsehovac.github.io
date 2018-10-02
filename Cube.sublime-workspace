@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"star",
+				"startTime"
+			],
+			[
+				"scra",
+				"scrambler"
+			],
+			[
+				"con",
+				"container"
+			],
+			[
+				"anima",
+				"animations"
+			],
+			[
 				"anim",
 				"animations"
 			],
@@ -64,10 +80,6 @@
 				"flipBounce"
 			],
 			[
-				"con",
-				"converted"
-			],
-			[
 				"cube",
 				"cubeY"
 			],
@@ -86,10 +98,6 @@
 			[
 				"setF",
 				"setFromVector3"
-			],
-			[
-				"scra",
-				"scramble"
 			],
 			[
 				"p",
@@ -196,20 +204,12 @@
 				"roundAngle"
 			],
 			[
-				"star",
-				"startQuaternion"
-			],
-			[
 				"sta",
 				"startQuaternion"
 			],
 			[
 				"que",
 				"quaternion"
-			],
-			[
-				"anima",
-				"animationSpeed"
 			],
 			[
 				"ani",
@@ -520,18 +520,28 @@
 	"buffers":
 	[
 		{
-			"file": "src/js/components/Game.js",
+			"file": "src/js/components/Timer.js",
 			"settings":
 			{
-				"buffer_size": 3177,
+				"buffer_size": 1208,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/js/components/Tween.js",
+			"file": "src/js/components/Game.js",
 			"settings":
 			{
-				"buffer_size": 6982,
+				"buffer_size": 3234,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/scss/components/_ui.scss",
+			"settings":
+			{
+				"buffer_size": 1411,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -667,13 +677,35 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/boris/Documents/bsehovac.github.io",
-		"/Users/boris/Documents/bsehovac.github.io/src",
-		"/Users/boris/Documents/bsehovac.github.io/src/js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components"
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io"
 	],
 	"file_history":
 	[
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Timer.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Tween.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Range.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Rubik.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/World.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Animations.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Cube.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Preferences.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/test/Solver.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Scrambler.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Audio.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Game.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_ui.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/ui/scss/components/_ui.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/styles.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/ui/ui.html",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_transition.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_fullscreen.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_btn.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_range.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_document.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/ui/scss/components/_range.scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/ui/scss/components/_document.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Cube.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Game.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/CubePieces.js",
@@ -693,14 +725,9 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_range.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_ui.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Draggable.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Range.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Animations.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/styles.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_flexbox.scss",
 		"/Library/WebServer/Documents/Localhost/cointed.new/src/scss/framework/mixins/_flexbox.scss",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_range.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_fonts.scss",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_document.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_fonts.scss",
 		"/Users/boris/Documents/bsehovac.github.io/src/scss/styles.scss",
@@ -708,18 +735,9 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/ControlsTEST.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Range.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Tween.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Easing.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Rubik.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Game.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_ui.scss",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Audio.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Timer.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Init.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/SvgIcons.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Cube.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/World.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Tween.js",
 		"/Users/bsehovac/Downloads/transfonter.org-20180923-171606/stylesheet.css",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Logo.js",
 		"/Users/bsehovac/Documents/Windows 7/Windows 7/___thecubelogo/b.html",
@@ -772,9 +790,7 @@
 		"/Users/boris/Library/Application Support/Sublime Text 3/Packages/Libsass Build/Libsass Build.sublime-settings",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/init.js",
 		"/Users/bsehovac/Documents/Windows 7/Windows 7/rubik/svgs/music.svg",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_transition.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Icons.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_document.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/mixins/_breakpoint.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/_ui.scss",
 		"/Users/bsehovac/Documents/Windows 7/Windows 7/untitled folder/music.svg",
@@ -792,26 +808,21 @@
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/rubik/components/Animate.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/rubik/components/Cube.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/rubik/components/CubePieces.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/rubik/components/Controls.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/rubik/components/Color.js",
-		"/Users/bsehovac/Desktop/threejs export scene.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/rubik/components/Scramble.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/rubik/Rubik.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.php",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/rubik/components/World.js",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/src/three/Three.js",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/styles.css",
-		"/Applications/MAMP/Localhost/bsehovac.github.io/rollup.config.three.js"
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/rubik/components/Controls.js"
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 54.0
 	},
 	"find_in_files":
 	{
 		"height": 122.0,
 		"where_history":
 		[
+			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components",
+			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
+			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components",
+			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
 			"/Users/boris/Documents/bsehovac.github.io/src/js/components",
 			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components",
 			"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
@@ -848,6 +859,16 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"timer.start",
+			"game.",
+			"this.data.floatScale",
+			"game.",
+			"game = game",
+			"this.game",
+			"dom.main",
+			"dom.start",
+			"create",
+			"Tween.Easings",
 			"getId",
 			"getPiecePosition",
 			"checkIs",
@@ -965,17 +986,7 @@
 			"getInte",
 			"getIntersect",
 			"console",
-			"Draggable",
-			"addmome",
-			"getIntersect",
-			"rotateOn",
-			"init",
-			"getCurrentIntersectposition",
-			"( position )",
-			"convertIntersect",
-			"helper",
-			"getIntersect",
-			"getInte"
+			"Draggable"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -983,6 +994,8 @@
 		"regex": false,
 		"replace_history":
 		[
+			"this.game.",
+			"game",
 			"range__list",
 			"$hs",
 			"$size",
@@ -1068,24 +1081,53 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/js/components/Game.js",
+					"file": "src/js/components/Timer.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3177,
+						"buffer_size": 1208,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								522,
-								522
+								272,
+								272
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 79.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/js/components/Game.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3234,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2456,
+								2456
 							]
 						],
 						"settings":
@@ -1095,37 +1137,37 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 985.0,
+						"translation.y": 1185.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "src/js/components/Tween.js",
+					"buffer": 2,
+					"file": "src/scss/components/_ui.scss",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6982,
+						"buffer_size": 1411,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								57,
-								57
+								399,
+								399
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"syntax": "Packages/Sass/Syntaxes/SCSS.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 489.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -1136,7 +1178,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 27.0
+		"height": 30.0
 	},
 	"input":
 	{
@@ -1177,7 +1219,7 @@
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 50.0
+		"height": 56.0
 	},
 	"save_all_on_build": true,
 	"select_file":

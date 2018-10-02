@@ -14,7 +14,7 @@
     font-family: inherit;
     font-weight: inherit;
     font-style: inherit;
-    text-transform: lowercase;
+    text-transform: uppercase;
   }
 
   &:focus {
@@ -27,24 +27,19 @@ html {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
   overflow: hidden;
-  font-size: 16px;
+  height: 100%;
 }
 
 body {
-  height: 100%;
-  overflow: hidden;
-  color: #070d15;
   background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%);
+  font-family: 'Bungee', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  color: #070d15;
   cursor: default;
-}
-
-button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-color: transparent;
-  border-radius: 0;
-  border-width: 0;
+  overflow: hidden;
+  height: 100%;
+  font-size: 5rem;
 }

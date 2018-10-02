@@ -95,7 +95,6 @@ class Solver {
 
 	constructor( game ) {
 
-		this.game = game;
 		this.phase = 0;
 		this.currentState = null;
 		this.goalState = null;
