@@ -569,10 +569,10 @@
 
 		const pieces = [];
 
-		const edgeScale = 0.835;
-		const edgeRoundness = 0.125;
-		const pieceRoundness = 0.1;
-		const edgeDepth = 0.0125;
+		const edgeScale = 0.84;
+		const edgeRoundness = 0.15;
+		const pieceRoundness = 0.105;
+		const edgeDepth = 0.014;
 		const pieceSize = 1 / size;
 
 		const pieceMesh = new THREE.Mesh(

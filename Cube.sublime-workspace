@@ -529,19 +529,10 @@
 			}
 		},
 		{
-			"file": "src/js/components/Game.js",
+			"file": "src/js/components/CubePieces.js",
 			"settings":
 			{
-				"buffer_size": 3234,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/scss/components/_ui.scss",
-			"settings":
-			{
-				"buffer_size": 1411,
+				"buffer_size": 2908,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -677,10 +668,15 @@
 	},
 	"expanded_folders":
 	[
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io"
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components"
 	],
 	"file_history":
 	[
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Game.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_ui.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Timer.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Tween.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Range.js",
@@ -693,8 +689,6 @@
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/test/Solver.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Scrambler.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Audio.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Game.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_ui.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/ui/scss/components/_ui.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/styles.scss",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
@@ -812,7 +806,7 @@
 	],
 	"find":
 	{
-		"height": 54.0
+		"height": 30.0
 	},
 	"find_in_files":
 	{
@@ -1081,7 +1075,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -1110,64 +1104,33 @@
 						"translation.y": 79.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "src/js/components/Game.js",
+					"file": "src/js/components/CubePieces.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3234,
+						"buffer_size": 2908,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2456,
-								2456
+								244,
+								244
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1185.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "src/scss/components/_ui.scss",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1411,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								399,
-								399
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Sass/Syntaxes/SCSS.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 489.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
