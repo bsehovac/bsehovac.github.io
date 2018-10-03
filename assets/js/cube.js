@@ -1,8 +1,55 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.RUBIK = {})));
+	(factory((global.CUBE = {})));
 }(this, (function (exports) { 'use strict';
+
+	class AnimateController {
+
+	  constructor() {
+
+	    this.started = false;
+	    this.animations = [];
+	    this.animation = null;
+
+	  }
+
+	  animate() {
+
+	    let i = this.animations.length;
+
+	    while ( i-- ) this.animations[ i ]();
+
+	    requestAnimationFrame( () => this.animate() );
+
+	  }
+
+	  add( animation ) {
+
+	    this.animations.push( animation );
+
+	    if ( this.started ) return;
+
+	    this.started = true;
+	    this.animation = requestAnimationFrame( () => this.animate() );
+
+	  }
+
+	  remove( animation ) {
+
+	    this.animations.splice( this.animations.indexOf( animation ), 1 );
+
+	    if ( this.animations.length > 1 ) return;
+
+	    this.started = false;
+	    cancelAnimationFrame( this.animation );
+
+
+	  }
+
+	}
+
+	const Animate = new AnimateController();
 
 	class World {
 
@@ -25,32 +72,27 @@
 
 			this.createLights();
 
-			const resize = e => {
+			this.resize = this.resize.bind( this );
+			this.resize();
+			window.addEventListener( 'resize', this.resize, false );
 
-				this.width = this.container.offsetWidth;
-				this.height = this.container.offsetHeight;
-
-				this.renderer.setSize( this.width, this.height );
-				this.updateCamera();
-
-			};
-
-			window.addEventListener( 'resize', resize, false );
-
-			resize();
-
-			const animate = () => {
-
-				this.renderer.render( this.scene, this.camera );
-				requestAnimationFrame( animate );
-
-			};
-
-			animate();
+			this.render = this.render.bind( this );
+			CUBE.Animate.add( this.render );
 
 		}
 
-		updateCamera() {
+		render() {
+
+			this.renderer.render( this.scene, this.camera );
+
+		}
+
+		resize() {
+
+			this.width = this.container.offsetWidth;
+			this.height = this.container.offsetHeight;
+
+			this.renderer.setSize( this.width, this.height );
 
 		  this.camera.fov = this.fov;
 		  this.camera.aspect = this.width / this.height;
@@ -855,17 +897,12 @@
 
 	}
 
+	window.addEventListener( 'touchmove', () => {} );
+	document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
+
 	class Draggable {
 
 	  constructor( element, options ) {
-
-	    if ( typeof window.DraggableDragFix === 'undefined' ) {
-
-	      window.addEventListener( 'touchmove', () => {} );
-	      document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
-	      window.DraggableDragFix = true;
-
-	    }
 
 	    this.position = {
 	      current: new THREE.Vector2(),
@@ -1008,37 +1045,37 @@
 
 	  }
 
-	  addMomentumPoint( delta ) {
+	  // addMomentumPoint( delta ) {
 
-	    const time = Date.now();
+	  //   const time = Date.now();
 
-	    while ( this.momentum.length > 0 ) {
+	  //   while ( this.momentum.length > 0 ) {
 
-	      if ( time - this.momentum[0].time <= 200 ) break;
-	      this.momentum.shift();
+	  //     if ( time - this.momentum[0].time <= 200 ) break;
+	  //     this.momentum.shift();
 
-	    }
+	  //   }
 
-	    if ( delta !== false ) this.momentum.push( { delta, time } );
+	  //   if ( delta !== false ) this.momentum.push( { delta, time } );
 
-	  }
+	  // }
 
-	  getMomentum() {
+	  // getMomentum() {
 
-	    const points = this.momentum.length;
-	    const momentum = new THREE.Vector2();
+	  //   const points = this.momentum.length;
+	  //   const momentum = new THREE.Vector2();
 
-	    this.addMomentumPoint( false );
+	  //   this.addMomentumPoint( false );
 
-	    this.momentum.forEach( ( point, index ) => {
+	  //   this.momentum.forEach( ( point, index ) => {
 
-	      momentum.add( point.delta.multiplyScalar( index / points ) );
+	  //     momentum.add( point.delta.multiplyScalar( index / points ) )
 
-	    } );
+	  //   } );
 
-	    return momentum;
+	  //   return momentum;
 
-	  }
+	  // }
 
 	}
 
@@ -1250,7 +1287,7 @@
 	    const easing = p => { return ( p -= 1 ) * p * ( ( bounce + 1 ) * p + bounce ) + 1; };
 	    const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
 
-	    this.rotationTween = new RUBIK.Tween( {
+	    this.rotationTween = new CUBE.Tween( {
 	      duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
 	      easing: easing,
 	      onUpdate: tween => {
@@ -1306,7 +1343,7 @@
 	      return (p-=1)*p*((s+1)*p + s) + 1;
 	    };
 
-	    this.rotationTween = new RUBIK.Tween( {
+	    this.rotationTween = new CUBE.Tween( {
 	      duration: this.options.flipSpeed,
 	      easing: easing,
 	      onUpdate: tween => {
@@ -1679,20 +1716,6 @@
 
 	}
 
-	const Tweens = [];
-
-	const Animate = () => {
-
-	  let i = Tweens.length;
-
-	  while (i--) Tweens[i].update();
-
-	  requestAnimationFrame( Animate );
-
-	};
-
-	Animate();
-
 	class Tween {
 
 	  constructor( options ) {
@@ -1714,7 +1737,6 @@
 
 	    this.progress = 0;
 	    this.delta = 0;
-	    this.animate = null;
 	    this.values = [];
 
 	    if ( this.yoyo != null ) this.yoyo = false;
@@ -1733,8 +1755,9 @@
 
 	    setTimeout( () => {
 
+	      this.update = this.update.bind( this );
 	      this.start = performance.now();
-	      Tweens.push( this );
+	      CUBE.Animate.add( this.update );
 
 	    }, this.delay );
 
@@ -1744,7 +1767,7 @@
 
 	  kill() {
 
-	    Tweens.splice( Tweens.indexOf( this ), 1 );
+	    CUBE.Animate.remove( this.update );
 
 	  }
 
@@ -1784,7 +1807,7 @@
 	      } else {
 
 	        this.onComplete( this );
-	        Tweens.splice( Tweens.indexOf( this ), 1 );
+	        CUBE.Animate.remove( this.update );
 
 	      }
 
@@ -1908,7 +1931,7 @@
 
 	};
 
-	class Animations {
+	class Transition {
 
 	  constructor( game ) {
 
@@ -1958,7 +1981,7 @@
 
 	      this.data.titleLetters.forEach( ( letter, index ) => {
 
-	        this.tweens.title[ index ] = new RUBIK.Tween( {
+	        this.tweens.title[ index ] = new CUBE.Tween( {
 	          duration: ( show ) ? 800 : 400,
 	          delay: index * 50,
 	          easing: 'easeOutSine',
@@ -1975,7 +1998,7 @@
 
 	      if ( typeof this.tweens.start !== 'undefined' ) this.tweens.start.kill();
 
-	      this.tweens.start = new RUBIK.Tween( {
+	      this.tweens.start = new CUBE.Tween( {
 	        duration: 400,
 	        easing: 'easeOutSine',
 	        onUpdate: tween => {
@@ -1985,7 +2008,7 @@
 	        },
 	        onComplete: () => {
 
-	          if ( show ) this.tweens.start = new RUBIK.Tween( {
+	          if ( show ) this.tweens.start = new CUBE.Tween( {
 	            duration: 800,
 	            easing: 'easeInOutSine',
 	            yoyo: true,
@@ -2000,6 +2023,10 @@
 	      } );
 
 	    }, timeout );
+
+	  }
+
+	  range( element, show ) {
 
 	  }
 
@@ -2028,7 +2055,7 @@
 
 	      this.data.timerLetters.forEach( ( letter, index ) => {
 
-	        this.tweens.timer[ index ] = new RUBIK.Tween( {
+	        this.tweens.timer[ index ] = new CUBE.Tween( {
 	          duration: ( show ) ? 800 : 400,
 	          delay: index * 50,
 	          easing: 'easeOutSine',
@@ -2061,7 +2088,7 @@
 	    this.game.world.camera.zoom = this.data.cameraZoom;
 	    this.game.world.camera.updateProjectionMatrix();
 
-	    this.tweens.drop = new RUBIK.Tween( {
+	    this.tweens.drop = new CUBE.Tween( {
 	      target: this.game.cube.animator.position,
 	      duration: 2500,
 	      easing: 'easeOutCubic',
@@ -2070,7 +2097,7 @@
 	      onComplete: () => { this.float( true ); },
 	    } );
 
-	    this.tweens.rotate = new RUBIK.Tween( {
+	    this.tweens.rotate = new CUBE.Tween( {
 	      target: this.game.cube.animator.rotation,
 	      duration: 2500,
 	      easing: 'easeOutCubic',
@@ -2087,7 +2114,7 @@
 
 	    if ( drop ) {
 
-	      this.tweens.float = new RUBIK.Tween( {
+	      this.tweens.float = new CUBE.Tween( {
 	        duration: 2500,
 	        easing: 'easeInOutSine',
 	        yoyo: true,
@@ -2101,7 +2128,7 @@
 
 	    } else {
 
-	      this.tweens.float = new RUBIK.Tween( {
+	      this.tweens.float = new CUBE.Tween( {
 	        duration: 2500 / 2,
 	        easing: 'easeOutSine',
 	        onUpdate: tween => {
@@ -2126,21 +2153,21 @@
 	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
 	    const easing = ( time > 0 ) ? 'easeInOutQuad' : 'easeInOutCubic';
 
-	    this.tweens.scale = new RUBIK.Tween( {
+	    this.tweens.scale = new CUBE.Tween( {
 	      target: this.data,
 	      duration: duration,
 	      easing: easing,
 	      to: { floatScale: floatScale },
 	    } );
 
-	    // this.tweens.cubeY = new RUBIK.Tween( {
+	    // this.tweens.cubeY = new CUBE.Tween( {
 	    //   target: this.game.cube.object.position,
 	    //   duration: duration,
 	    //   easing: easing,
 	    //   to: { y: cubeY },
 	    // } );
 
-	    this.tweens.zoom = new RUBIK.Tween( {
+	    this.tweens.zoom = new CUBE.Tween( {
 	      target: this.game.world.camera,
 	      duration: duration,
 	      easing: easing,
@@ -2148,7 +2175,7 @@
 	      onUpdate: () => { this.game.world.camera.updateProjectionMatrix(); },
 	    } );
 
-	    this.tweens.rotate = new RUBIK.Tween( {
+	    this.tweens.rotate = new CUBE.Tween( {
 	      target: this.game.cube.animator.rotation,
 	      duration: duration,
 	      easing: easing,
@@ -2167,6 +2194,7 @@
 			this.game = game;
 
 			this.startTime = null;
+			this.update = this.update.bind( this );
 
 		}
 
@@ -2175,7 +2203,8 @@
 			this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
 			this.deltaTime = 0;
 			this.converted = this.convert( this.deltaTime );
-			this.animate = requestAnimationFrame( () => this.update() );
+
+			CUBE.Animate.add( this.update );
 
 		}
 
@@ -2194,8 +2223,6 @@
 
 			}
 
-			this.animate = requestAnimationFrame( () => this.update() );
-
 		}
 
 		stop() {
@@ -2203,7 +2230,7 @@
 			this.currentTime = Date.now();
 			this.deltaTime = this.currentTime - this.startTime;
 
-			cancelAnimationFrame( this.animate );
+			CUBE.Animate.remove( this.update );
 
 			return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 
@@ -2222,7 +2249,7 @@
 
 	class Game {
 
-	  constructor( container ) {
+	  constructor() {
 
 	    this.dom = {
 	      container: document.querySelector( '.ui__game' ),
@@ -2239,24 +2266,22 @@
 	      }
 	    };
 
-	    this.world = new RUBIK.World( this );
-	    this.cube = new RUBIK.Cube( this );
-	    this.controls = new RUBIK.Controls( this );
-	    this.scrambler = new RUBIK.Scrambler( this );
-	    this.animation = new RUBIK.Animations( this );
-	    this.audio = new RUBIK.Audio( this );
-	    this.timer = new RUBIK.Timer( this );
-	    this.preferences = new RUBIK.Preferences( this );
-	    this.icons = new RUBIK.SvgIcons();
+	    this.world = new CUBE.World( this );
+	    this.cube = new CUBE.Cube( this );
+	    this.controls = new CUBE.Controls( this );
+	    this.scrambler = new CUBE.Scrambler( this );
+	    this.transition = new CUBE.Transition( this );
+	    this.audio = new CUBE.Audio( this );
+	    this.timer = new CUBE.Timer( this );
+	    this.preferences = new CUBE.Preferences( this );
+	    this.icons = new CUBE.Icons();
 
 	    this.initDoupleTap();
 
 	    this.saved = this.cube.loadState();
 	    this.playing = false;
 
-	    console.log( this.saved );
-
-	    this.animation.drop();
+	    this.transition.drop();
 
 	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
 	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
@@ -2297,10 +2322,10 @@
 
 	    }
 
-	    this.animation.title( false, 0 );
-	    this.animation.timer( true, 600 );
+	    this.transition.title( false, 0 );
+	    this.transition.timer( true, 600 );
 
-	    this.animation.zoom( true, duration, () => {
+	    this.transition.zoom( true, duration, () => {
 
 	      this.playing = true;
 	      this.controls.disabled = false;
@@ -2319,10 +2344,10 @@
 	    this.timer.stop();
 	    this.controls.disabled = true;
 
-	    this.animation.title( true, 600 );
-	    this.animation.timer( false, 0 );
+	    this.transition.title( true, 600 );
+	    this.transition.timer( false, 0 );
 
-	    this.animation.zoom( false, 0, () => {} );
+	    this.transition.zoom( false, 0, () => {} );
 
 	  }
 
@@ -2353,26 +2378,26 @@
 
 	}
 
-	class SvgIcons {
+	class Icons {
 
 		constructor( options ) {
 
 			options = Object.assign( {
 				tagName: 'icon',
 				className: 'icon',
-				styles: true,
+				// styles: true,
 				observe: false,
 				convert: true,
 			}, options || {} );
 
 			this.tagName = options.tagName;
 			this.className = options.className;
-			this.icons = this.constructor.icons;
+			this.svg = this.constructor.SVG;
 
 			this.svgTag = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
 			this.svgTag.setAttribute( 'class', this.className );
 
-			if ( options.styles ) this.addStyles();
+			// if ( options.styles ) this.addStyles();
 			if ( options.convert ) this.convertAllIcons();
 
 			if ( options.observe ) {
@@ -2395,7 +2420,7 @@
 
 		convertIcon( icon ) {
 
-			const svgData = this.icons[ icon.attributes[0].localName ];
+			const svgData = this.svg[ icon.attributes[0].localName ];
 
 			if ( typeof svgData === 'undefined' ) return;
 
@@ -2411,24 +2436,24 @@
 
 		}
 
-		addStyles() {
+		// addStyles() {
 
-			const style = document.createElement( 'style' );
-			style.innerHTML = `
-			.${this.className} {
-				display: inline-block;
-				font-size: inherit;
-				overflow: visible;
-				vertical-align: -0.125em;
-				preserveAspectRatio: none;
-			}`;
-			document.head.appendChild( style );
+		// 	const style = document.createElement( 'style' );
+		// 	style.innerHTML = `
+		// 		.${this.className} {
+		// 			display: inline-block;
+		// 			font-size: inherit;
+		// 			overflow: visible;
+		// 			vertical-align: -0.125em;
+		// 			preserveAspectRatio: none;
+		// 		}`;
+		// 	document.head.appendChild( style );
 
-		}
+		// }
 
 	}
 
-	SvgIcons.icons = {
+	Icons.SVG = {
 	  'audio': {
 	    viewbox: '0 0 26712 21370',
 	    content: '<g fill="currentColor"><path d="M11966 392l-4951 4950 -5680 0c-738,0 -1336,598 -1336,1336l0 8014c0,737 598,1336 1336,1336l5680 0 4951 4950c836,836 2280,249 2280,-944l0 -18696c0,-1194 -1445,-1780 -2280,-944z"/><path d="M18823 6407c-644,-352 -1457,-120 -1815,526 -356,646 -120,1458 526,1815 718,394 1165,1137 1165,1937 0,800 -446,1543 -1164,1937 -646,357 -882,1169 -526,1815 358,649 1171,879 1815,526 1571,-865 2547,-2504 2547,-4278 0,-1774 -976,-3413 -2548,-4277l0 0z"/><path d="M26712 10685c0,-3535 -1784,-6786 -4773,-8695 -623,-397 -1449,-213 -1843,415 -395,628 -210,1459 412,1857 2212,1413 3533,3814 3533,6423 0,2609 -1321,5010 -3533,6423 -623,397 -807,1228 -412,1856 362,577 1175,843 1843,415 2989,-1909 4773,-5159 4773,-8695z"/></g>',
@@ -2517,7 +2542,7 @@
 	    //     event.preventDefault(); }
 	    // }, false);
 
-	    this.speed = new RUBIK.Range( 'speed', {
+	    this.speed = new CUBE.Range( 'speed', {
 	      value: this.game.controls.options.flipSpeed,
 	      range: [ 300, 100 ],
 	      onUpdate: value => {
@@ -2527,7 +2552,7 @@
 	      }
 	    } );
 
-	    this.bounce = new RUBIK.Range( 'bounce', {
+	    this.bounce = new CUBE.Range( 'bounce', {
 	      value: this.game.controls.options.flipBounce,
 	      range: [ 0, 2 ],
 	      onUpdate: value => {
@@ -2537,7 +2562,7 @@
 	      }
 	    } );
 
-	    this.fov = new RUBIK.Range( 'fov', {
+	    this.fov = new CUBE.Range( 'fov', {
 	      value: this.game.world.fov,
 	      range: [ 2, 45 ],
 	      onUpdate: value => {
@@ -2548,7 +2573,7 @@
 	      },
 	    } );
 
-	    this.scramble = new RUBIK.Range( 'scramble', {
+	    this.scramble = new CUBE.Range( 'scramble', {
 	      value: this.game.scrambler.scrambleLength,
 	      range: [ 10, 30 ],
 	      step: 5,
@@ -2559,7 +2584,7 @@
 	      },
 	    } );
 
-	    this.graphics = new RUBIK.Range( 'graphics', {
+	    this.graphics = new CUBE.Range( 'graphics', {
 	      value: 2,
 	      range: [ 1, 2 ],
 	      step: 1,
@@ -2727,15 +2752,16 @@
 
 	}
 
+	exports.Animate = Animate;
 	exports.World = World;
 	exports.Cube = Cube;
 	exports.Controls = Controls;
 	exports.Scrambler = Scrambler;
 	exports.Tween = Tween;
-	exports.Animations = Animations;
+	exports.Transition = Transition;
 	exports.Timer = Timer;
 	exports.Game = Game;
-	exports.SvgIcons = SvgIcons;
+	exports.Icons = Icons;
 	exports.Audio = Audio;
 	exports.Preferences = Preferences;
 	exports.Range = Range;

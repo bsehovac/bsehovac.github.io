@@ -37,6 +37,13 @@ body {
   height: 100%;
   font-size: 5rem; }
 
+.icon {
+  display: inline-block;
+  font-size: inherit;
+  overflow: visible;
+  vertical-align: -0.125em;
+  preserveAspectRatio: none; }
+
 .range {
   width: 100%;
   width: 14em; }

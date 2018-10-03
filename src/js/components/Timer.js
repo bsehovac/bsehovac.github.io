@@ -5,6 +5,7 @@ class Timer {
 		this.game = game;
 
 		this.startTime = null;
+		this.update = this.update.bind( this );
 
 	}
 
@@ -13,7 +14,8 @@ class Timer {
 		this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
 		this.deltaTime = 0;
 		this.converted = this.convert( this.deltaTime );
-		this.animate = requestAnimationFrame( () => this.update() );
+
+		CUBE.Animate.add( this.update );
 
 	}
 
@@ -32,8 +34,6 @@ class Timer {
 
 		}
 
-		this.animate = requestAnimationFrame( () => this.update() );
-
 	}
 
 	stop() {
@@ -41,7 +41,7 @@ class Timer {
 		this.currentTime = Date.now();
 		this.deltaTime = this.currentTime - this.startTime;
 
-		cancelAnimationFrame( this.animate );
+		CUBE.Animate.remove( this.update );
 
 		return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 

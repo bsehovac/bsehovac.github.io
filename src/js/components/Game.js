@@ -1,6 +1,6 @@
 class Game {
 
-  constructor( container ) {
+  constructor() {
 
     this.dom = {
       container: document.querySelector( '.ui__game' ),
@@ -17,24 +17,22 @@ class Game {
       }
     };
 
-    this.world = new RUBIK.World( this );
-    this.cube = new RUBIK.Cube( this );
-    this.controls = new RUBIK.Controls( this );
-    this.scrambler = new RUBIK.Scrambler( this );
-    this.animation = new RUBIK.Animations( this );
-    this.audio = new RUBIK.Audio( this );
-    this.timer = new RUBIK.Timer( this );
-    this.preferences = new RUBIK.Preferences( this );
-    this.icons = new RUBIK.SvgIcons();
+    this.world = new CUBE.World( this );
+    this.cube = new CUBE.Cube( this );
+    this.controls = new CUBE.Controls( this );
+    this.scrambler = new CUBE.Scrambler( this );
+    this.transition = new CUBE.Transition( this );
+    this.audio = new CUBE.Audio( this );
+    this.timer = new CUBE.Timer( this );
+    this.preferences = new CUBE.Preferences( this );
+    this.icons = new CUBE.Icons();
 
     this.initDoupleTap();
 
     this.saved = this.cube.loadState();
     this.playing = false;
 
-    console.log( this.saved );
-
-    this.animation.drop();
+    this.transition.drop();
 
     this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
     this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
@@ -77,10 +75,10 @@ class Game {
 
     }
 
-    this.animation.title( false, 0 );
-    this.animation.timer( true, 600 );
+    this.transition.title( false, 0 );
+    this.transition.timer( true, 600 );
 
-    this.animation.zoom( true, duration, () => {
+    this.transition.zoom( true, duration, () => {
 
       this.playing = true;
       this.controls.disabled = false;
@@ -99,10 +97,10 @@ class Game {
     this.timer.stop();
     this.controls.disabled = true;
 
-    this.animation.title( true, 600 );
-    this.animation.timer( false, 0 );
+    this.transition.title( true, 600 );
+    this.transition.timer( false, 0 );
 
-    this.animation.zoom( false, 0, () => {} );
+    this.transition.zoom( false, 0, () => {} );
 
   }
 

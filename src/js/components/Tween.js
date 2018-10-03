@@ -1,17 +1,3 @@
-const Tweens = [];
-
-const Animate = () => {
-
-  let i = Tweens.length;
-
-  while (i--) Tweens[i].update();
-
-  requestAnimationFrame( Animate );
-
-}
-
-Animate();
-
 class Tween {
 
   constructor( options ) {
@@ -33,7 +19,6 @@ class Tween {
 
     this.progress = 0;
     this.delta = 0;
-    this.animate = null;
     this.values = [];
 
     if ( this.yoyo != null ) this.yoyo = false;
@@ -52,8 +37,9 @@ class Tween {
 
     setTimeout( () => {
 
+      this.update = this.update.bind( this );
       this.start = performance.now();
-      Tweens.push( this );
+      CUBE.Animate.add( this.update );
 
     }, this.delay );
 
@@ -63,7 +49,7 @@ class Tween {
 
   kill() {
 
-    Tweens.splice( Tweens.indexOf( this ), 1 );
+    CUBE.Animate.remove( this.update );
 
   }
 
@@ -103,7 +89,7 @@ class Tween {
       } else {
 
         this.onComplete( this );
-        Tweens.splice( Tweens.indexOf( this ), 1 );
+        CUBE.Animate.remove( this.update );
 
       }
 

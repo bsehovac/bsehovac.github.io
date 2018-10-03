@@ -208,7 +208,7 @@ class Controls {
     const easing = p => { return ( p -= 1 ) * p * ( ( bounce + 1 ) * p + bounce ) + 1; }
     const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
 
-    this.rotationTween = new RUBIK.Tween( {
+    this.rotationTween = new CUBE.Tween( {
       duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
       easing: easing,
       onUpdate: tween => {
@@ -264,7 +264,7 @@ class Controls {
       return (p-=1)*p*((s+1)*p + s) + 1;
     };
 
-    this.rotationTween = new RUBIK.Tween( {
+    this.rotationTween = new CUBE.Tween( {
       duration: this.options.flipSpeed,
       easing: easing,
       onUpdate: tween => {

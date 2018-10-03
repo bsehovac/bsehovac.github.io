@@ -19,32 +19,27 @@ class World {
 
 		this.createLights();
 
-		const resize = e => {
+		this.resize = this.resize.bind( this );
+		this.resize();
+		window.addEventListener( 'resize', this.resize, false );
 
-			this.width = this.container.offsetWidth;
-			this.height = this.container.offsetHeight;
-
-			this.renderer.setSize( this.width, this.height );
-			this.updateCamera();
-
-		};
-
-		window.addEventListener( 'resize', resize, false );
-
-		resize();
-
-		const animate = () => {
-
-			this.renderer.render( this.scene, this.camera );
-			requestAnimationFrame( animate );
-
-		}
-
-		animate();
+		this.render = this.render.bind( this );
+		CUBE.Animate.add( this.render );
 
 	}
 
-	updateCamera() {
+	render() {
+
+		this.renderer.render( this.scene, this.camera );
+
+	}
+
+	resize() {
+
+		this.width = this.container.offsetWidth;
+		this.height = this.container.offsetHeight;
+
+		this.renderer.setSize( this.width, this.height );
 
 	  this.camera.fov = this.fov;
 	  this.camera.aspect = this.width / this.height;

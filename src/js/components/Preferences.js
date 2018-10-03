@@ -4,13 +4,15 @@ class Preferences {
 
     this.game = game;
 
+    this.ranges = {};
+
     // document.addEventListener('touchmove', function(event) {
     //    if(event.target.parentNode.className.indexOf('noBounce') != -1 
     // || event.target.className.indexOf('noBounce') != -1 ) {
     //     event.preventDefault(); }
     // }, false);
 
-    this.speed = new RUBIK.Range( 'speed', {
+    this.ranges = new CUBE.Range( 'speed', {
       value: this.game.controls.options.flipSpeed,
       range: [ 300, 100 ],
       onUpdate: value => {
@@ -20,7 +22,7 @@ class Preferences {
       }
     } );
 
-    this.bounce = new RUBIK.Range( 'bounce', {
+    this.ranges = new CUBE.Range( 'bounce', {
       value: this.game.controls.options.flipBounce,
       range: [ 0, 2 ],
       onUpdate: value => {
@@ -30,7 +32,7 @@ class Preferences {
       }
     } );
 
-    this.fov = new RUBIK.Range( 'fov', {
+    this.ranges = new CUBE.Range( 'fov', {
       value: this.game.world.fov,
       range: [ 2, 45 ],
       onUpdate: value => {
@@ -41,7 +43,7 @@ class Preferences {
       },
     } );
 
-    this.scramble = new RUBIK.Range( 'scramble', {
+    this.ranges = new CUBE.Range( 'scramble', {
       value: this.game.scrambler.scrambleLength,
       range: [ 10, 30 ],
       step: 5,
@@ -52,7 +54,7 @@ class Preferences {
       },
     } );
 
-    this.graphics = new RUBIK.Range( 'graphics', {
+    this.ranges = new CUBE.Range( 'graphics', {
       value: 2,
       range: [ 1, 2 ],
       step: 1,

@@ -1,23 +1,23 @@
-class SvgIcons {
+class Icons {
 
 	constructor( options ) {
 
 		options = Object.assign( {
 			tagName: 'icon',
 			className: 'icon',
-			styles: true,
+			// styles: true,
 			observe: false,
 			convert: true,
 		}, options || {} );
 
 		this.tagName = options.tagName;
 		this.className = options.className;
-		this.icons = this.constructor.icons;
+		this.svg = this.constructor.SVG;
 
 		this.svgTag = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
 		this.svgTag.setAttribute( 'class', this.className );
 
-		if ( options.styles ) this.addStyles();
+		// if ( options.styles ) this.addStyles();
 		if ( options.convert ) this.convertAllIcons();
 
 		if ( options.observe ) {
@@ -40,7 +40,7 @@ class SvgIcons {
 
 	convertIcon( icon ) {
 
-		const svgData = this.icons[ icon.attributes[0].localName ];
+		const svgData = this.svg[ icon.attributes[0].localName ];
 
 		if ( typeof svgData === 'undefined' ) return;
 
@@ -56,24 +56,24 @@ class SvgIcons {
 
 	}
 
-	addStyles() {
+	// addStyles() {
 
-		const style = document.createElement( 'style' );
-		style.innerHTML = `
-			.${this.className} {
-				display: inline-block;
-				font-size: inherit;
-				overflow: visible;
-				vertical-align: -0.125em;
-				preserveAspectRatio: none;
-			}`;
-		document.head.appendChild( style );
+	// 	const style = document.createElement( 'style' );
+	// 	style.innerHTML = `
+	// 		.${this.className} {
+	// 			display: inline-block;
+	// 			font-size: inherit;
+	// 			overflow: visible;
+	// 			vertical-align: -0.125em;
+	// 			preserveAspectRatio: none;
+	// 		}`;
+	// 	document.head.appendChild( style );
 
-	}
+	// }
 
 }
 
-SvgIcons.icons = {
+Icons.SVG = {
   'audio': {
     viewbox: '0 0 26712 21370',
     content: '<g fill="currentColor"><path d="M11966 392l-4951 4950 -5680 0c-738,0 -1336,598 -1336,1336l0 8014c0,737 598,1336 1336,1336l5680 0 4951 4950c836,836 2280,249 2280,-944l0 -18696c0,-1194 -1445,-1780 -2280,-944z"/><path d="M18823 6407c-644,-352 -1457,-120 -1815,526 -356,646 -120,1458 526,1815 718,394 1165,1137 1165,1937 0,800 -446,1543 -1164,1937 -646,357 -882,1169 -526,1815 358,649 1171,879 1815,526 1571,-865 2547,-2504 2547,-4278 0,-1774 -976,-3413 -2548,-4277l0 0z"/><path d="M26712 10685c0,-3535 -1784,-6786 -4773,-8695 -623,-397 -1449,-213 -1843,415 -395,628 -210,1459 412,1857 2212,1413 3533,3814 3533,6423 0,2609 -1321,5010 -3533,6423 -623,397 -807,1228 -412,1856 362,577 1175,843 1843,415 2989,-1909 4773,-5159 4773,-8695z"/></g>',
@@ -88,4 +88,4 @@ SvgIcons.icons = {
   },
 };
 
-export { SvgIcons };
+export { Icons };

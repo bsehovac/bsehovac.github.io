@@ -1,4 +1,4 @@
-class Animations {
+class Transition {
 
   constructor( game ) {
 
@@ -48,7 +48,7 @@ class Animations {
 
       this.data.titleLetters.forEach( ( letter, index ) => {
 
-        this.tweens.title[ index ] = new RUBIK.Tween( {
+        this.tweens.title[ index ] = new CUBE.Tween( {
           duration: ( show ) ? 800 : 400,
           delay: index * 50,
           easing: 'easeOutSine',
@@ -65,7 +65,7 @@ class Animations {
 
       if ( typeof this.tweens.start !== 'undefined' ) this.tweens.start.kill()
 
-      this.tweens.start = new RUBIK.Tween( {
+      this.tweens.start = new CUBE.Tween( {
         duration: 400,
         easing: 'easeOutSine',
         onUpdate: tween => {
@@ -75,7 +75,7 @@ class Animations {
         },
         onComplete: () => {
 
-          if ( show ) this.tweens.start = new RUBIK.Tween( {
+          if ( show ) this.tweens.start = new CUBE.Tween( {
             duration: 800,
             easing: 'easeInOutSine',
             yoyo: true,
@@ -90,6 +90,20 @@ class Animations {
       } );
 
     }, timeout );
+
+  }
+
+  range( range, show ) {
+
+    if ( show ) {
+
+
+
+    } else {
+
+      
+      
+    }
 
   }
 
@@ -118,7 +132,7 @@ class Animations {
 
       this.data.timerLetters.forEach( ( letter, index ) => {
 
-        this.tweens.timer[ index ] = new RUBIK.Tween( {
+        this.tweens.timer[ index ] = new CUBE.Tween( {
           duration: ( show ) ? 800 : 400,
           delay: index * 50,
           easing: 'easeOutSine',
@@ -151,7 +165,7 @@ class Animations {
     this.game.world.camera.zoom = this.data.cameraZoom;
     this.game.world.camera.updateProjectionMatrix();
 
-    this.tweens.drop = new RUBIK.Tween( {
+    this.tweens.drop = new CUBE.Tween( {
       target: this.game.cube.animator.position,
       duration: 2500,
       easing: 'easeOutCubic',
@@ -160,7 +174,7 @@ class Animations {
       onComplete: () => { this.float( true ); },
     } );
 
-    this.tweens.rotate = new RUBIK.Tween( {
+    this.tweens.rotate = new CUBE.Tween( {
       target: this.game.cube.animator.rotation,
       duration: 2500,
       easing: 'easeOutCubic',
@@ -177,7 +191,7 @@ class Animations {
 
     if ( drop ) {
 
-      this.tweens.float = new RUBIK.Tween( {
+      this.tweens.float = new CUBE.Tween( {
         duration: 2500,
         easing: 'easeInOutSine',
         yoyo: true,
@@ -191,7 +205,7 @@ class Animations {
 
     } else {
 
-      this.tweens.float = new RUBIK.Tween( {
+      this.tweens.float = new CUBE.Tween( {
         duration: 2500 / 2,
         easing: 'easeOutSine',
         onUpdate: tween => {
@@ -216,21 +230,21 @@ class Animations {
     const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
     const easing = ( time > 0 ) ? 'easeInOutQuad' : 'easeInOutCubic';
 
-    this.tweens.scale = new RUBIK.Tween( {
+    this.tweens.scale = new CUBE.Tween( {
       target: this.data,
       duration: duration,
       easing: easing,
       to: { floatScale: floatScale },
     } );
 
-    // this.tweens.cubeY = new RUBIK.Tween( {
+    // this.tweens.cubeY = new CUBE.Tween( {
     //   target: this.game.cube.object.position,
     //   duration: duration,
     //   easing: easing,
     //   to: { y: cubeY },
     // } );
 
-    this.tweens.zoom = new RUBIK.Tween( {
+    this.tweens.zoom = new CUBE.Tween( {
       target: this.game.world.camera,
       duration: duration,
       easing: easing,
@@ -238,7 +252,7 @@ class Animations {
       onUpdate: () => { this.game.world.camera.updateProjectionMatrix(); },
     } );
 
-    this.tweens.rotate = new RUBIK.Tween( {
+    this.tweens.rotate = new CUBE.Tween( {
       target: this.game.cube.animator.rotation,
       duration: duration,
       easing: easing,
@@ -250,4 +264,4 @@ class Animations {
   
 }
 
-export { Animations };
+export { Transition };

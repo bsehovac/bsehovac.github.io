@@ -48,9 +48,11 @@ class Range {
       onComplete: () => {},
     }, options || {} );
 
-    this.element = document.querySelector( '.range[name="' + name + '"]' );
-    this.track = this.element.querySelector( '.range__track' );
-    this.handle = this.element.querySelector( '.range__handle' );
+    this.dom = {
+      element: document.querySelector( '.range[name="' + name + '"]' ),
+      track: this.element.querySelector( '.range__track' ),
+      handle: this.element.querySelector( '.range__handle' ),
+    };
 
     this.value = options.value;
     this.min = options.range[0];
