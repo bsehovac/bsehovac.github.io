@@ -2346,7 +2346,8 @@
 
 	      }
 
-	      if ( this.playing ) return;
+	      if ( this.playing || this.animating ) return;
+	      this.animating = true;
 	      let duration = 0;
 
 	      if ( ! this.saved ) {
@@ -2370,6 +2371,7 @@
 	      this.transition.zoom( true, duration, () => {
 
 	        this.playing = true;
+	        this.animating = false;
 	        this.controls.disabled = false;
 	        this.timer.start( this.saved );
 	        this.saved = true;
@@ -2399,18 +2401,44 @@
 
 	      if ( button.classList.contains( 'is-active' ) ) {
 
-	        this.transition.title( false, 0 );
+	        if ( !this.playing ) {
+
+	          this.transition.title( false, 0 );
+
+	        } else {
+
+	          this.controls.disabled = true;
+	          this.timer.stop();
+	          this.transition.timer( false, 0 );
+
+	        }
+
 	        this.transition.preferences( true, 600 );
-	        this.dom.prefs.classList.remove( 'is-inactive' );
-	        this.dom.prefs.classList.add( 'is-active' );
+	        this.dom.game.classList.add( 'is-inactive' );
+	        this.dom.game.classList.remove( 'is-active' );
 
 	      } else {
 
-	        this.transition.title( true, 600 );
+	        if ( !this.playing ) {
+
+	          this.transition.title( true, 600 );
+
+	        } else {
+
+	          this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
+	          this.transition.timer( true, 600 );
+	          setTimeout( () => {
+
+	            this.controls.disabled = false;
+	            this.timer.start( true );
+
+	          }, 1500 );
+
+	        }
+
 	        this.transition.preferences( false, 0 );
-	        this.dom.game.style.opacity = 1;
-	        this.dom.prefs.classList.remove( 'is-active' );
-	        this.dom.prefs.classList.add( 'is-inactive' );
+	        this.dom.game.classList.add( 'is-active' );
+	        this.dom.game.classList.remove( 'is-inactive' );
 
 	      }
 
