@@ -109,42 +109,6 @@ body {
     font-size: 0.6em;
     color: rgba(0, 0, 0, 0.5); }
 
-.range .range__label {
-  transition-delay: 0; }
-
-.range .range__track:before {
-  transition-delay: 100ms; }
-
-.range .range__handle {
-  transition-delay: 100ms; }
-
-.range .range__list div:nth-child(1) {
-  transition-delay: 250ms; }
-
-.range .range__list div:nth-child(2) {
-  transition-delay: 300ms; }
-
-.range .range__list div:nth-child(3) {
-  transition-delay: 350ms; }
-
-.range .range__list div:nth-child(4) {
-  transition-delay: 400ms; }
-
-.range .range__list div:nth-child(5) {
-  transition-delay: 450ms; }
-
-.range .range__list div:nth-child(6) {
-  transition-delay: 500ms; }
-
-.range .range__list div:nth-child(7) {
-  transition-delay: 550ms; }
-
-.range .range__list div:nth-child(8) {
-  transition-delay: 600ms; }
-
-.range .range__list div:nth-child(9) {
-  transition-delay: 650ms; }
-
 .range__label, .range__track:before, .range__handle,
 .range__list div {
   transition-property: transform, opacity;
@@ -169,44 +133,65 @@ body {
   transform: translate3d(0, 1em, 0) scale3d(1, 1, 1);
   opacity: 0; }
 
-.range.is-active {
-  transition-duration: 0;
-  opacity: 1; }
-  .range.is-active .range__label, .range.is-active .range__track:before, .range.is-active .range__handle,
-  .range.is-active .range__list div {
-    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
-    opacity: 1; }
-
 .range.is-active .range__label, .range.is-active .range__track:before, .range.is-active .range__handle,
 .range.is-active .range__list div {
   transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
   opacity: 1; }
 
+.range.is-active .range__label {
+  transition-delay: 0; }
+
+.range.is-active .range__track:before {
+  transition-delay: 100ms; }
+
 .range.is-active .range__handle {
+  transition-delay: 100ms;
   pointer-events: all; }
+
+.range.is-active .range__list div:nth-child(1) {
+  transition-delay: 250ms; }
+
+.range.is-active .range__list div:nth-child(2) {
+  transition-delay: 300ms; }
+
+.range.is-active .range__list div:nth-child(3) {
+  transition-delay: 350ms; }
+
+.range.is-active .range__list div:nth-child(4) {
+  transition-delay: 400ms; }
+
+.range.is-active .range__list div:nth-child(5) {
+  transition-delay: 450ms; }
+
+.range.is-active .range__list div:nth-child(6) {
+  transition-delay: 500ms; }
+
+.range.is-active .range__list div:nth-child(7) {
+  transition-delay: 550ms; }
+
+.range.is-active .range__list div:nth-child(8) {
+  transition-delay: 600ms; }
+
+.range.is-active .range__list div:nth-child(9) {
+  transition-delay: 650ms; }
 
 .range.is-inactive .range__label, .range.is-inactive .range__track:before, .range.is-inactive .range__handle,
 .range.is-inactive .range__list div {
-  transition-delay: 0; }
+  transition-delay: 0;
+  opacity: 0; }
 
 .range.is-inactive .range__label {
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
-  opacity: 0; }
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
 
 .range.is-inactive .range__track:before {
-  transform: translate3d(0, 0, 0) scale3d(0, 1, 1);
-  opacity: 0; }
+  transform: translate3d(0, 0, 0) scale3d(0, 1, 1); }
 
 .range.is-inactive .range__handle {
   transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 0.5);
-  opacity: 0; }
+  pointer-events: unset; }
 
 .range.is-inactive .range__list div {
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
-  opacity: 0; }
-
-.range.is-inactive .range__handle {
-  pointer-events: unset; }
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
 
 .btn {
   transition: transform 300ms ease, opacity 300ms ease;
