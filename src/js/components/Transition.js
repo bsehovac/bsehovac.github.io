@@ -223,13 +223,6 @@ class Transition {
       to: { floatScale: floatScale },
     } );
 
-    // this.tweens.cubeY = new CUBE.Tween( {
-    //   target: this.game.cube.object.position,
-    //   duration: duration,
-    //   easing: easing,
-    //   to: { y: cubeY },
-    // } );
-
     this.tweens.zoom = new CUBE.Tween( {
       target: this.game.world.camera,
       duration: duration,

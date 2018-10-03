@@ -2026,37 +2026,6 @@
 
 	  }
 
-	  preferences( show ) {
-
-	    const elements = this.game.preferences.elements;
-
-	    if ( show ) {
-
-	      Object.keys( elements ).forEach( ( name, index ) => {
-
-	        elements[ name ].element.classList.remove( 'is-inactive' );
-
-	        setTimeout( () => {
-
-	          elements[ name ].element.classList.add( 'is-active' );
-
-	        }, index * 100 );
-
-	      } );
-
-	    } else {
-
-	      Object.keys( elements ).forEach( name => {
-
-	        elements[ name ].element.classList.add( 'is-inactive' );
-	        elements[ name ].element.classList.remove( 'is-active' );
-
-	      } );
-
-	    }
-
-	  }
-
 	  timer( show, timeout ) {
 
 	    this.data.timerLetters = [];
@@ -2187,13 +2156,6 @@
 	      to: { floatScale: floatScale },
 	    } );
 
-	    // this.tweens.cubeY = new CUBE.Tween( {
-	    //   target: this.game.cube.object.position,
-	    //   duration: duration,
-	    //   easing: easing,
-	    //   to: { y: cubeY },
-	    // } );
-
 	    this.tweens.zoom = new CUBE.Tween( {
 	      target: this.game.world.camera,
 	      duration: duration,
@@ -2209,6 +2171,37 @@
 	      to: { y: - Math.PI * 2 * rotations },
 	      onComplete: () => { this.game.cube.animator.rotation.y = 0; callback(); },
 	    } );
+
+	  }
+
+	  preferences( show ) {
+
+	    const elements = this.game.preferences.elements;
+
+	    if ( show ) {
+
+	      Object.keys( elements ).forEach( ( name, index ) => {
+
+	        elements[ name ].element.classList.remove( 'is-inactive' );
+
+	        setTimeout( () => {
+
+	          elements[ name ].element.classList.add( 'is-active' );
+
+	        }, index * 100 );
+
+	      } );
+
+	    } else {
+
+	      Object.keys( elements ).forEach( name => {
+
+	        elements[ name ].element.classList.add( 'is-inactive' );
+	        elements[ name ].element.classList.remove( 'is-active' );
+
+	      } );
+
+	    }
 
 	  }
 	  
