@@ -50,7 +50,7 @@ class Controls {
 
   initDraggable() {
 
-    this.draggable = new Draggable( this.game.dom.container );
+    this.draggable = new Draggable( this.game.dom.game );
 
     this.draggable.onDragStart = position => {
 

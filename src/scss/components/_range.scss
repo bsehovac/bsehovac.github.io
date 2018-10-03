@@ -48,7 +48,7 @@
       top: 0;
       width: 0.9em;
       height: 0.9em;
-      border-radius: 0.1em;
+      border-radius: 0.2em;
       margin-left: -0.45em;
       margin-top: -0.45em;
       background: #41aac8;
@@ -85,10 +85,10 @@
 // ANIMATIONS
 
 .range {
+  $ease: cubic-bezier(0.25, 0.46, 0.45, 0.94); // out quadratic
   $speed: 400ms;
   $delay: 100ms;
-  $translate: 1em;
-  $ease: cubic-bezier(0.25, 0.46, 0.45, 0.94); // out quadratic
+  $y: 1em;
 
   &__label,
   &__track:before,
@@ -101,23 +101,23 @@
   }
 
   &__label {
-    transform: translate3d(0, $translate, 0) scale3d(1, 1, 1);
+    transform: translate3d(0, $y, 0) scale3d(1, 1, 1);
     opacity: 0;
   }
 
   &__track:before {
-    transform: translate3d(0, $translate, 0) scale3d(0, 1, 1);
+    transform: translate3d(0, $y, 0) scale3d(0, 1, 1);
     transform-origin: left center;
     opacity: 1;
   }
 
   &__handle {
-    transform: translate3d(0, $translate, 0) scale3d(0.5, 0.5, 0.5);
+    transform: translate3d(0, $y, 0) scale3d(0.5, 0.5, 0.5);
     opacity: 0;
   }
 
   &__list div {
-    transform: translate3d(0, $translate, 0) scale3d(1, 1, 1);
+    transform: translate3d(0, $y, 0) scale3d(1, 1, 1);
     opacity: 0;
   }
 

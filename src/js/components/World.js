@@ -4,7 +4,7 @@ class World {
 
 		this.game = game;
 
-		this.container = this.game.dom.container;
+		this.container = this.game.dom.game;
 
 		this.scene = new THREE.Scene();
 

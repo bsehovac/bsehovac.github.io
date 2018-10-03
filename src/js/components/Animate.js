@@ -31,13 +31,16 @@ class AnimateController {
 
   remove( animation ) {
 
-    this.animations.splice( this.animations.indexOf( animation ), 1 );
+    const index = this.animations.indexOf( animation );
+
+    if ( index < 0 ) return;
+
+    this.animations.splice( index, 1 );
 
     if ( this.animations.length > 1 ) return;
 
     this.started = false;
     cancelAnimationFrame( this.animation );
-
 
   }
 

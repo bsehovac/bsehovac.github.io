@@ -3,17 +3,14 @@ class Game {
   constructor() {
 
     this.dom = {
-      container: document.querySelector( '.ui__game' ),
-      menu: document.querySelector( '.ui__screen--menu' ),
+      game: document.querySelector( '.ui__game' ),
+      prefs: document.querySelector( '.ui__prefs' ),
+      menu: document.querySelector( '.ui__menu' ),
       title: document.querySelector( '.ui__text--title' ),
       note: document.querySelector( '.ui__text--note' ),
       timer: document.querySelector( '.ui__text--timer' ),
-      preferences: document.querySelector( '.ui__screen--prefs' ),
       buttons: {
-        // settings: document.querySelector( '.ui__icon--settings' ),
-        // home: document.querySelector( '.ui__icon--home' ),
-        // share: document.querySelector( '.ui__icon--share' ),
-        // about: document.querySelector( '.ui__icon--about' ),
+        settings: document.querySelector( '.btn--settings' ),
       }
     };
 
@@ -27,84 +24,44 @@ class Game {
     this.preferences = new CUBE.Preferences( this );
     this.icons = new CUBE.Icons();
 
-    this.initDoupleTap();
+    this.initStart();
+    //this.initPause();
+    this.initPrefs();
 
     this.saved = this.cube.loadState();
     this.playing = false;
+    this.animating = true;
 
     this.transition.drop();
 
     this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
     this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
-    // this.dom.buttons.settings.onclick = e => {
-
-    //   e.stopPropagation();
-    //   this.dom.preferences.classList.toggle( 'is-active' );
-
-    // }
-
-    // this.dom.buttons.home.onclick = e => {
-
-    //   e.stopPropagation();
-    //   if ( this.playing ) this.pause();
-
-    // }
-
   }
 
-  start() {
+  initPause() {
 
-    const start = Date.now();
-    let duration = 0;
+    this.dom.buttons.home.onclick = e => {
 
-    // this.dom.buttons.home.style.visibility = 'visible';
+      e.stopPropagation();
+      if ( !this.playing ) return;
 
-    if ( ! this.saved ) {
+      // this.dom.buttons.home.style.visibility = 'hidden';
 
-      this.dom.timer.innerHTML = '0:00';
+      this.playing = false;
+      this.timer.stop();
+      this.controls.disabled = true;
 
-      this.scrambler.scramble();
-      this.controls.scrambleCube( () => {} );
+      this.transition.title( true, 600 );
+      this.transition.timer( false, 0 );
 
-      duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
-
-    } else {
-
-      this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
+      this.transition.zoom( false, 0, () => {} );
 
     }
 
-    this.transition.title( false, 0 );
-    this.transition.timer( true, 600 );
-
-    this.transition.zoom( true, duration, () => {
-
-      this.playing = true;
-      this.controls.disabled = false;
-      this.timer.start( this.saved );
-      this.saved = true;
-
-    } );
-
   }
 
-  pause() {
-
-    // this.dom.buttons.home.style.visibility = 'hidden';
-
-    this.playing = false;
-    this.timer.stop();
-    this.controls.disabled = true;
-
-    this.transition.title( true, 600 );
-    this.transition.timer( false, 0 );
-
-    this.transition.zoom( false, 0, () => {} );
-
-  }
-
-  initDoupleTap() {
+  initStart() {
 
     let tappedTwice = false
 
@@ -120,12 +77,77 @@ class Game {
 
       }
 
-      this.start();
+      if ( this.playing ) return;
+
+      const start = Date.now();
+      let duration = 0;
+
+      if ( ! this.saved ) {
+
+        this.dom.timer.innerHTML = '0:00';
+
+        this.scrambler.scramble();
+        this.controls.scrambleCube( () => {} );
+
+        duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
+
+      } else {
+
+        this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
+
+      }
+
+      this.transition.title( false, 0 );
+      this.transition.timer( true, 600 );
+
+      this.transition.zoom( true, duration, () => {
+
+        this.playing = true;
+        this.controls.disabled = false;
+        this.timer.start( this.saved );
+        this.saved = true;
+
+      } );
 
     };
 
-    this.dom.container.addEventListener( 'click', tapHandler, false );
-    this.dom.container.addEventListener( 'touchstart', tapHandler, false );
+    this.dom.game.addEventListener( 'click', tapHandler, false );
+    this.dom.game.addEventListener( 'touchstart', tapHandler, false );
+
+  }
+
+  initPrefs() {
+
+    const button = this.dom.buttons.settings;
+
+    button.addEventListener( 'click', e => {
+
+      e.stopPropagation();
+
+      if ( this.animating ) return;
+      this.animating = true;
+      setTimeout( () => { this.animating = false; }, 1500 );
+
+      button.classList.toggle( 'is-active' );
+
+      if ( button.classList.contains( 'is-active' ) ) {
+
+        this.transition.title( false, 0 );
+        this.transition.preferences( true, 600 );
+        this.dom.prefs.classList.remove( 'is-inactive' );
+        this.dom.prefs.classList.add( 'is-active' );
+
+      } else {
+
+        this.transition.title( true, 600 );
+        this.transition.preferences( false, 0 );
+        this.dom.game.style.opacity = 1;
+        this.dom.prefs.classList.remove( 'is-active' );
+        this.dom.prefs.classList.add( 'is-inactive' );
+
+      }
+
+    }, false );
 
   }
 

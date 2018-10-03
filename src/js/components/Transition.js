@@ -43,9 +43,6 @@ class Transition {
 
     setTimeout( () => {
 
-      if ( show ) setTimeout( () => { this.game.dom.menu.classList.add( 'is-active' ); }, 600 );
-      else this.game.dom.menu.classList.remove( 'is-active' );
-
       this.data.titleLetters.forEach( ( letter, index ) => {
 
         this.tweens.title[ index ] = new CUBE.Tween( {
@@ -157,7 +154,7 @@ class Transition {
       easing: 'easeOutCubic',
       to: { x: 0, y: - 0.1 * this.data.floatScale, z: 0 },
       onUpdate: () => { this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5; },
-      onComplete: () => { this.float( true ); },
+      onComplete: () => { this.float( true ); this.game.animating = false; },
     } );
 
     this.tweens.rotate = new CUBE.Tween( {
@@ -241,34 +238,34 @@ class Transition {
 
   }
 
-  preferences( show ) {
+  preferences( show, timeout ) {
 
     const elements = this.game.preferences.elements;
 
-    if ( show ) {
+    setTimeout( () => {
 
       Object.keys( elements ).forEach( ( name, index ) => {
 
-        elements[ name ].element.classList.remove( 'is-inactive' );
+        if ( show ) {
 
-        setTimeout( () => {
+          elements[ name ].element.classList.remove( 'is-inactive' );
 
-          elements[ name ].element.classList.add( 'is-active' );
+          setTimeout( () => {
 
-        }, index * 100 );
+            elements[ name ].element.classList.add( 'is-active' );
+
+          }, index * 100 );
+
+        } else {
+
+          elements[ name ].element.classList.add( 'is-inactive' );
+          elements[ name ].element.classList.remove( 'is-active' );
+
+        }
 
       } );
 
-    } else {
-
-      Object.keys( elements ).forEach( name => {
-
-        elements[ name ].element.classList.add( 'is-inactive' );
-        elements[ name ].element.classList.remove( 'is-active' );
-
-      } );
-
-    }
+    }, timeout );
 
   }
   

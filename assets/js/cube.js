@@ -37,13 +37,16 @@
 
 	  remove( animation ) {
 
-	    this.animations.splice( this.animations.indexOf( animation ), 1 );
+	    const index = this.animations.indexOf( animation );
+
+	    if ( index < 0 ) return;
+
+	    this.animations.splice( index, 1 );
 
 	    if ( this.animations.length > 1 ) return;
 
 	    this.started = false;
 	    cancelAnimationFrame( this.animation );
-
 
 	  }
 
@@ -57,7 +60,7 @@
 
 			this.game = game;
 
-			this.container = this.game.dom.container;
+			this.container = this.game.dom.game;
 
 			this.scene = new THREE.Scene();
 
@@ -1129,7 +1132,7 @@
 
 	  initDraggable() {
 
-	    this.draggable = new Draggable( this.game.dom.container );
+	    this.draggable = new Draggable( this.game.dom.game );
 
 	    this.draggable.onDragStart = position => {
 
@@ -1976,9 +1979,6 @@
 
 	    setTimeout( () => {
 
-	      if ( show ) setTimeout( () => { this.game.dom.menu.classList.add( 'is-active' ); }, 600 );
-	      else this.game.dom.menu.classList.remove( 'is-active' );
-
 	      this.data.titleLetters.forEach( ( letter, index ) => {
 
 	        this.tweens.title[ index ] = new CUBE.Tween( {
@@ -2090,7 +2090,7 @@
 	      easing: 'easeOutCubic',
 	      to: { x: 0, y: - 0.1 * this.data.floatScale, z: 0 },
 	      onUpdate: () => { this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5; },
-	      onComplete: () => { this.float( true ); },
+	      onComplete: () => { this.float( true ); this.game.animating = false; },
 	    } );
 
 	    this.tweens.rotate = new CUBE.Tween( {
@@ -2174,34 +2174,34 @@
 
 	  }
 
-	  preferences( show ) {
+	  preferences( show, timeout ) {
 
 	    const elements = this.game.preferences.elements;
 
-	    if ( show ) {
+	    setTimeout( () => {
 
 	      Object.keys( elements ).forEach( ( name, index ) => {
 
-	        elements[ name ].element.classList.remove( 'is-inactive' );
+	        if ( show ) {
 
-	        setTimeout( () => {
+	          elements[ name ].element.classList.remove( 'is-inactive' );
 
-	          elements[ name ].element.classList.add( 'is-active' );
+	          setTimeout( () => {
 
-	        }, index * 100 );
+	            elements[ name ].element.classList.add( 'is-active' );
+
+	          }, index * 100 );
+
+	        } else {
+
+	          elements[ name ].element.classList.add( 'is-inactive' );
+	          elements[ name ].element.classList.remove( 'is-active' );
+
+	        }
 
 	      } );
 
-	    } else {
-
-	      Object.keys( elements ).forEach( name => {
-
-	        elements[ name ].element.classList.add( 'is-inactive' );
-	        elements[ name ].element.classList.remove( 'is-active' );
-
-	      } );
-
-	    }
+	    }, timeout );
 
 	  }
 	  
@@ -2272,17 +2272,14 @@
 	  constructor() {
 
 	    this.dom = {
-	      container: document.querySelector( '.ui__game' ),
-	      menu: document.querySelector( '.ui__screen--menu' ),
+	      game: document.querySelector( '.ui__game' ),
+	      prefs: document.querySelector( '.ui__prefs' ),
+	      menu: document.querySelector( '.ui__menu' ),
 	      title: document.querySelector( '.ui__text--title' ),
 	      note: document.querySelector( '.ui__text--note' ),
 	      timer: document.querySelector( '.ui__text--timer' ),
-	      preferences: document.querySelector( '.ui__screen--prefs' ),
 	      buttons: {
-	        // settings: document.querySelector( '.ui__icon--settings' ),
-	        // home: document.querySelector( '.ui__icon--home' ),
-	        // share: document.querySelector( '.ui__icon--share' ),
-	        // about: document.querySelector( '.ui__icon--about' ),
+	        settings: document.querySelector( '.btn--settings' ),
 	      }
 	    };
 
@@ -2296,82 +2293,44 @@
 	    this.preferences = new CUBE.Preferences( this );
 	    this.icons = new CUBE.Icons();
 
-	    this.initDoupleTap();
+	    this.initStart();
+	    //this.initPause();
+	    this.initPrefs();
 
 	    this.saved = this.cube.loadState();
 	    this.playing = false;
+	    this.animating = true;
 
 	    this.transition.drop();
 
 	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
 	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
 
-	    // this.dom.buttons.settings.onclick = e => {
+	  }
 
-	    //   e.stopPropagation();
-	    //   this.dom.preferences.classList.toggle( 'is-active' );
+	  initPause() {
 
-	    // }
+	    this.dom.buttons.home.onclick = e => {
 
-	    // this.dom.buttons.home.onclick = e => {
+	      e.stopPropagation();
+	      if ( !this.playing ) return;
 
-	    //   e.stopPropagation();
-	    //   if ( this.playing ) this.pause();
+	      // this.dom.buttons.home.style.visibility = 'hidden';
 
-	    // }
+	      this.playing = false;
+	      this.timer.stop();
+	      this.controls.disabled = true;
+
+	      this.transition.title( true, 600 );
+	      this.transition.timer( false, 0 );
+
+	      this.transition.zoom( false, 0, () => {} );
+
+	    };
 
 	  }
 
-	  start() {
-	    let duration = 0;
-
-	    // this.dom.buttons.home.style.visibility = 'visible';
-
-	    if ( ! this.saved ) {
-
-	      this.dom.timer.innerHTML = '0:00';
-
-	      this.scrambler.scramble();
-	      this.controls.scrambleCube( () => {} );
-
-	      duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
-
-	    } else {
-
-	      this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
-
-	    }
-
-	    this.transition.title( false, 0 );
-	    this.transition.timer( true, 600 );
-
-	    this.transition.zoom( true, duration, () => {
-
-	      this.playing = true;
-	      this.controls.disabled = false;
-	      this.timer.start( this.saved );
-	      this.saved = true;
-
-	    } );
-
-	  }
-
-	  pause() {
-
-	    // this.dom.buttons.home.style.visibility = 'hidden';
-
-	    this.playing = false;
-	    this.timer.stop();
-	    this.controls.disabled = true;
-
-	    this.transition.title( true, 600 );
-	    this.transition.timer( false, 0 );
-
-	    this.transition.zoom( false, 0, () => {} );
-
-	  }
-
-	  initDoupleTap() {
+	  initStart() {
 
 	    let tappedTwice = false;
 
@@ -2387,12 +2346,75 @@
 
 	      }
 
-	      this.start();
+	      if ( this.playing ) return;
+	      let duration = 0;
+
+	      if ( ! this.saved ) {
+
+	        this.dom.timer.innerHTML = '0:00';
+
+	        this.scrambler.scramble();
+	        this.controls.scrambleCube( () => {} );
+
+	        duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
+
+	      } else {
+
+	        this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
+
+	      }
+
+	      this.transition.title( false, 0 );
+	      this.transition.timer( true, 600 );
+
+	      this.transition.zoom( true, duration, () => {
+
+	        this.playing = true;
+	        this.controls.disabled = false;
+	        this.timer.start( this.saved );
+	        this.saved = true;
+
+	      } );
 
 	    };
 
-	    this.dom.container.addEventListener( 'click', tapHandler, false );
-	    this.dom.container.addEventListener( 'touchstart', tapHandler, false );
+	    this.dom.game.addEventListener( 'click', tapHandler, false );
+	    this.dom.game.addEventListener( 'touchstart', tapHandler, false );
+
+	  }
+
+	  initPrefs() {
+
+	    const button = this.dom.buttons.settings;
+
+	    button.addEventListener( 'click', e => {
+
+	      e.stopPropagation();
+
+	      if ( this.animating ) return;
+	      this.animating = true;
+	      setTimeout( () => { this.animating = false; }, 1500 );
+
+	      button.classList.toggle( 'is-active' );
+
+	      if ( button.classList.contains( 'is-active' ) ) {
+
+	        this.transition.title( false, 0 );
+	        this.transition.preferences( true, 600 );
+	        this.dom.prefs.classList.remove( 'is-inactive' );
+	        this.dom.prefs.classList.add( 'is-active' );
+
+	      } else {
+
+	        this.transition.title( true, 600 );
+	        this.transition.preferences( false, 0 );
+	        this.dom.game.style.opacity = 1;
+	        this.dom.prefs.classList.remove( 'is-active' );
+	        this.dom.prefs.classList.add( 'is-inactive' );
+
+	      }
+
+	    }, false );
 
 	  }
 
@@ -2556,37 +2578,30 @@
 
 	    this.game = game;
 
+	    this.load();
+
 	    this.elements = {
 
 	      speed: new CUBE.Range( 'speed', {
 	        value: this.game.controls.options.flipSpeed,
 	        range: [ 300, 100 ],
-	        onUpdate: value => {
-
-	          this.game.controls.options.flipSpeed = value;
-
-	        }
+	        onUpdate: value => { this.game.controls.options.flipSpeed = value; },
+	        onComplete: value => { localStorage.setItem( 'flipSpeed', value ); },
 	      } ),
 
 	      bounce: new CUBE.Range( 'bounce', {
 	        value: this.game.controls.options.flipBounce,
 	        range: [ 0, 2 ],
-	        onUpdate: value => {
-
-	          this.game.controls.options.flipBounce = value;
-
-	        }
+	        onUpdate: value => { this.game.controls.options.flipBounce = value; },
+	        onComplete: value => { localStorage.setItem( 'flipBounce', value ); },
 	      } ),
 
 	      scramble: new CUBE.Range( 'scramble', {
 	        value: this.game.scrambler.scrambleLength,
 	        range: [ 10, 30 ],
 	        step: 5,
-	        onUpdate: value => {
-
-	          this.game.scrambler.scrambleLength = value;
-
-	        },
+	        onUpdate: value => { this.game.scrambler.scrambleLength = value; },
+	        onComplete: value => { localStorage.setItem( 'scrambleLength', value ); },
 	      } ),
 
 	      fov: new CUBE.Range( 'fov', {
@@ -2598,16 +2613,38 @@
 	          this.game.world.resize();
 
 	        },
+	        onComplete: value => { localStorage.setItem( 'fov', value ); },
 	      } ),
 
 	      theme: new CUBE.Range( 'theme', {
-	        value: 'light',
-	        range: [ 1, 2 ],
+	        value: 0,
+	        range: [ 0, 1 ],
 	        step: 1,
 	        onUpdate: value => {},
 	      } ),
 
 	    };
+
+	  }
+
+	  load() {
+
+	    const flipSpeed = localStorage.getItem( 'flipSpeed' );
+	    const flipBounce = localStorage.getItem( 'flipBounce' );
+	    const scrambleLength = localStorage.getItem( 'scrambleLength' );
+	    const fov = localStorage.getItem( 'fov' );
+	    // const theme = localStorage.getItem( 'theme' );
+
+	    if ( flipSpeed != null ) this.game.controls.options.flipSpeed = flipSpeed;
+	    if ( flipBounce != null ) this.game.controls.options.flipBounce = flipBounce;
+	    if ( scrambleLength != null ) this.game.scrambler.scrambleLength = scrambleLength;
+
+	    if ( fov != null ) {
+
+	      this.game.world.fov = fov;
+	      this.game.world.resize();
+
+	    }
 
 	  }
 

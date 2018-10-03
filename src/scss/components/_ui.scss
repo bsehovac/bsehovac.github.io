@@ -17,6 +17,10 @@
     &--prefs {
       z-index: 3;
     }
+
+    &--buttons {
+      z-index: 4;
+    }
   }
 
   &__text {
@@ -77,25 +81,20 @@
 
   &__prefs {
     @include fullscreen;
-    @include transition(background);
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-  }
-}
 
-.ui {
-  &__game {
-    opacity: 0 !important;
-  }
+    &.is-active {
+      transition: background 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 400ms;
+      background: rgba(#fff, 0.9);
+    }
 
-  &__text {
-    &--timer,
-    &--title,
-    &--note {
-      opacity: 0 !important;
+    &.is-inactive {
+      transition: background 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      background: rgba(#fff, 0);
     }
   }
 }
