@@ -4,7 +4,7 @@ class Preferences {
 
     this.game = game;
 
-    this.ranges = {
+    this.elements = {
 
       speed: new CUBE.Range( 'speed', {
         value: this.game.controls.options.flipSpeed,

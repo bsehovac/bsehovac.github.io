@@ -93,17 +93,19 @@ class Transition {
 
   }
 
-  ranges( show ) {
+  preferences( show ) {
+
+    const elements = this.game.preferences.elements;
 
     if ( show ) {
 
-      Object.keys( this.game.preferences.ranges ).forEach( ( name, index ) => {
+      Object.keys( elements ).forEach( ( name, index ) => {
 
-        this.game.preferences.ranges[ name ].element.classList.remove( 'is-inactive' );
+        elements[ name ].element.classList.remove( 'is-inactive' );
 
         setTimeout( () => {
 
-          this.game.preferences.ranges[ name ].element.classList.add( 'is-active' );
+          elements[ name ].element.classList.add( 'is-active' );
 
         }, index * 100 );
 
@@ -111,10 +113,10 @@ class Transition {
 
     } else {
 
-      Object.keys( this.game.preferences.ranges ).forEach( name => {
+      Object.keys( elements ).forEach( name => {
 
-        this.game.preferences.ranges[ name ].element.classList.add( 'is-inactive' );
-        this.game.preferences.ranges[ name ].element.classList.remove( 'is-active' );
+        elements[ name ].element.classList.add( 'is-inactive' );
+        elements[ name ].element.classList.remove( 'is-active' );
 
       } );
 
