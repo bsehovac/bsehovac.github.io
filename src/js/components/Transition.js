@@ -93,16 +93,31 @@ class Transition {
 
   }
 
-  range( range, show ) {
+  ranges( show ) {
 
     if ( show ) {
 
+      Object.keys( this.game.preferences.ranges ).forEach( ( name, index ) => {
 
+        this.game.preferences.ranges[ name ].element.classList.remove( 'is-inactive' );
+
+        setTimeout( () => {
+
+          this.game.preferences.ranges[ name ].element.classList.add( 'is-active' );
+
+        }, index * 100 );
+
+      } );
 
     } else {
 
-      
-      
+      Object.keys( this.game.preferences.ranges ).forEach( name => {
+
+        this.game.preferences.ranges[ name ].element.classList.add( 'is-inactive' );
+        this.game.preferences.ranges[ name ].element.classList.remove( 'is-active' );
+
+      } );
+
     }
 
   }

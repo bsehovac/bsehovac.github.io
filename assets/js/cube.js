@@ -2026,7 +2026,32 @@
 
 	  }
 
-	  range( element, show ) {
+	  ranges( show ) {
+
+	    if ( show ) {
+
+	      Object.keys( this.game.preferences.ranges ).forEach( ( name, index ) => {
+
+	        this.game.preferences.ranges[ name ].element.classList.remove( 'is-inactive' );
+
+	        setTimeout( () => {
+
+	          this.game.preferences.ranges[ name ].element.classList.add( 'is-active' );
+
+	        }, index * 100 );
+
+	      } );
+
+	    } else {
+
+	      Object.keys( this.game.preferences.ranges ).forEach( name => {
+
+	        this.game.preferences.ranges[ name ].element.classList.add( 'is-inactive' );
+	        this.game.preferences.ranges[ name ].element.classList.remove( 'is-active' );
+
+	      } );
+
+	    }
 
 	  }
 
@@ -2536,68 +2561,58 @@
 
 	    this.game = game;
 
-	    // document.addEventListener('touchmove', function(event) {
-	    //    if(event.target.parentNode.className.indexOf('noBounce') != -1 
-	    // || event.target.className.indexOf('noBounce') != -1 ) {
-	    //     event.preventDefault(); }
-	    // }, false);
+	    this.ranges = {
 
-	    this.speed = new CUBE.Range( 'speed', {
-	      value: this.game.controls.options.flipSpeed,
-	      range: [ 300, 100 ],
-	      onUpdate: value => {
+	      speed: new CUBE.Range( 'speed', {
+	        value: this.game.controls.options.flipSpeed,
+	        range: [ 300, 100 ],
+	        onUpdate: value => {
 
-	        this.game.controls.options.flipSpeed = value;
+	          this.game.controls.options.flipSpeed = value;
 
-	      }
-	    } );
+	        }
+	      } ),
 
-	    this.bounce = new CUBE.Range( 'bounce', {
-	      value: this.game.controls.options.flipBounce,
-	      range: [ 0, 2 ],
-	      onUpdate: value => {
+	      bounce: new CUBE.Range( 'bounce', {
+	        value: this.game.controls.options.flipBounce,
+	        range: [ 0, 2 ],
+	        onUpdate: value => {
 
-	        this.game.controls.options.flipBounce = value;
+	          this.game.controls.options.flipBounce = value;
 
-	      }
-	    } );
+	        }
+	      } ),
 
-	    this.fov = new CUBE.Range( 'fov', {
-	      value: this.game.world.fov,
-	      range: [ 2, 45 ],
-	      onUpdate: value => {
+	      scramble: new CUBE.Range( 'scramble', {
+	        value: this.game.scrambler.scrambleLength,
+	        range: [ 10, 30 ],
+	        step: 5,
+	        onUpdate: value => {
 
-	        this.game.world.fov = value;
-	        this.game.world.updateCamera();
+	          this.game.scrambler.scrambleLength = value;
 
-	      },
-	    } );
+	        },
+	      } ),
 
-	    this.scramble = new CUBE.Range( 'scramble', {
-	      value: this.game.scrambler.scrambleLength,
-	      range: [ 10, 30 ],
-	      step: 5,
-	      onUpdate: value => {
+	      fov: new CUBE.Range( 'fov', {
+	        value: this.game.world.fov,
+	        range: [ 2, 45 ],
+	        onUpdate: value => {
 
-	        this.game.options.scrambleLength = value;
+	          this.game.world.fov = value;
+	          this.game.world.resize();
 
-	      },
-	    } );
+	        },
+	      } ),
 
-	    this.graphics = new CUBE.Range( 'graphics', {
-	      value: 2,
-	      range: [ 1, 2 ],
-	      step: 1,
-	      onUpdate: value => {
+	      theme: new CUBE.Range( 'theme', {
+	        value: 'light',
+	        range: [ 1, 2 ],
+	        step: 1,
+	        onUpdate: value => {},
+	      } ),
 
-	        this.game.world.renderer.setPixelRatio = ( value == 1 ) ? 1 : window.devicePixelRatio;
-
-	      },
-	    } );
-
-	    // VOLUME - 0-100%
-
-	    // THEME - dark, light, blue, green, orange
+	    };
 
 	  }
 
@@ -2680,7 +2695,6 @@
 
 	      current = this.positionFromValue( this.value );
 	      this.handle.style.left = current + 'px';
-	      this.element.classList.add( 'is-active' );
 
 	    };
 
@@ -2696,7 +2710,6 @@
 
 	    this.draggable.onDragEnd = position => {
 
-	      this.element.classList.remove( 'is-active' );
 	      this.onComplete( this.value );
 
 	    };

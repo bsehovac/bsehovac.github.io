@@ -84,81 +84,128 @@
 
 // ANIMATIONS
 
-// .range {
-//   $speed: 400ms;
-//   $delay-range: 100ms;
-//   $delay-element: 75ms;
-//   $translate-y: 1em;
-//   $ease: cubic-bezier(0.25, 0.46, 0.45, 0.94); // out quadratic
+.range {
+  $speed: 400ms;
+  $delay-element: 100ms;
+  $translate-y: 1em;
+  $ease: cubic-bezier(0.25, 0.46, 0.45, 0.94); // out quadratic
 
-//   @for $i from 1 to 6 {
-//     &:nth-child(#{$i}) {
-//       $delay: $delay-range * $i;
+  .range {
+    &__label {
+      transition-delay: 0;
+    }
 
-//       .range {
-//         &__label {
-//           transition-delay: $delay;
-//         }
+    &__track:before {
+      transition-delay: $delay-element;
+    }
 
-//         &__track:before {
-//           transition-delay: $delay + $delay-element;
-//         }
+    &__handle {
+      transition-delay: $delay-element;
+    }
 
-//         &__handle {
-//           transition-delay: $delay + $delay-element;
-//         }
+    &__list div {
+      @for $i from 1 to 10 {
+        &:nth-child(#{$i}) {
+          transition-delay: ($delay-element * 2) + (($delay-element / 2) * $i);
+        }
+      }
+    }
+  }
 
-//         &__list div {
-//           @for $i from 1 to 6 {
-//             &:nth-child(#{$i}) {
-//               transition-delay: $delay + ($delay-element * 2) + (($delay-element / 2) * $i);
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
+  &__label,
+  &__track:before,
+  &__handle,
+  &__list div {
+    transition-property: transform, opacity;
+    transition-duration: $speed;
+    transition-timing-function: $ease;
+    will-change: transform, opacity;
+  }
 
-//   &__label,
-//   &__track:before,
-//   &__handle,
-//   &__list div {
-//     transition-property: transform, opacity;
-//     transition-duration: $speed;
-//     transition-timing-function: $ease;
-//     will-change: transform, opacity;
-//   }
+  &__label {
+    transform: translate3d(0, $translate-y, 0) scale3d(1, 1, 1);
+    opacity: 0;
+  }
 
-//   &__label {
-//     transform: translate3d(0, $translate-y, 0) scale3d(1, 1, 1);
-//     opacity: 0;
-//   }
+  &__track:before {
+    transform: translate3d(0, $translate-y, 0) scale3d(0, 1, 1);
+    transform-origin: left center;
+    opacity: 1;
+  }
 
-//   &__track:before {
-//     transform: translate3d(0, $translate-y, 0) scale3d(0, 1, 1);
-//     transform-origin: left center;
-//     opacity: 1;
-//   }
+  &__handle {
+    transform: translate3d(0, $translate-y, 0) scale3d(0.5, 0.5, 0.5);
+    opacity: 0;
+  }
 
-//   &__handle {
-//     transform: translate3d(0, $translate-y, 0) scale3d(0.5, 0.5, 0.5);
-//     opacity: 0;
-//   }
+  &__list  div {
+    transform: translate3d(0, $translate-y, 0) scale3d(1, 1, 1);
+    opacity: 0;
+  }
 
-//   &__list  div {
-//     transform: translate3d(0, $translate-y, 0) scale3d(1, 1, 1);
-//     opacity: 0;
-//   }
+  &.is-active {
+    transition-duration: 0;
+    opacity: 1;
 
-//   .ui__prefs.is-active & {
-//     .range {
-//       &__label,
-//       &__track:before,
-//       &__handle,
-//       &__list div {
-//         transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
-//         opacity: 1;
-//       }
-//     }
-//   }
-// }
+    .range {
+      &__label,
+      &__track:before,
+      &__handle,
+      &__list div {
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+        opacity: 1;
+      }
+    }
+  }
+
+  &.is-active {
+    .range {
+      &__label,
+      &__track:before,
+      &__handle,
+      &__list div {
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+        opacity: 1;
+      }
+
+      &__handle {
+        pointer-events: all;
+      }
+    }
+  }
+
+  &.is-inactive {
+    .range {
+      &__label,
+      &__track:before,
+      &__handle,
+      &__list div {
+        transition-delay: 0;
+      }
+
+      &__label {
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+        opacity: 0;
+      }
+
+      &__track:before {
+        transform: translate3d(0, 0, 0) scale3d(0, 1, 1);
+        opacity: 0;
+      }
+
+      &__handle {
+        transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 0.5);
+        opacity: 0;
+      }
+
+      &__list  div {
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+        opacity: 0;
+      }
+
+      &__handle {
+        pointer-events: unset;
+      }
+    }
+  }
+}

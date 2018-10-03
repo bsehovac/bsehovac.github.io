@@ -48,11 +48,9 @@ class Range {
       onComplete: () => {},
     }, options || {} );
 
-    this.dom = {
-      element: document.querySelector( '.range[name="' + name + '"]' ),
-      track: this.element.querySelector( '.range__track' ),
-      handle: this.element.querySelector( '.range__handle' ),
-    };
+    this.element = document.querySelector( '.range[name="' + name + '"]' );
+    this.track = this.element.querySelector( '.range__track' );
+    this.handle = this.element.querySelector( '.range__handle' );
 
     this.value = options.value;
     this.min = options.range[0];
@@ -81,7 +79,6 @@ class Range {
 
       current = this.positionFromValue( this.value );
       this.handle.style.left = current + 'px';
-      this.element.classList.add( 'is-active' );
 
     }
 
@@ -97,7 +94,6 @@ class Range {
 
     this.draggable.onDragEnd = position => {
 
-      this.element.classList.remove( 'is-active' );
       this.onComplete( this.value );
 
     }

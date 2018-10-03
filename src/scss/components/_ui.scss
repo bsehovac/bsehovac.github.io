@@ -83,6 +83,20 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    display: none;
+    // display: none;
+  }
+}
+
+.ui {
+  &__game {
+    opacity: 0 !important;
+  }
+
+  &__text {
+    &--timer,
+    &--title,
+    &--note {
+      opacity: 0 !important;
+    }
   }
 }
