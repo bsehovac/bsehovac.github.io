@@ -37,9 +37,9 @@ class Tween {
 
     setTimeout( () => {
 
-      this.update = this.update.bind( this );
+      this.animate = this.update.bind( this );
       this.start = performance.now();
-      CUBE.Animate.add( this.update );
+      CUBE.Animate.add( this.animate );
 
     }, this.delay );
 
@@ -49,7 +49,7 @@ class Tween {
 
   kill() {
 
-    CUBE.Animate.remove( this.update );
+    CUBE.Animate.remove( this.animate );
 
   }
 
@@ -89,7 +89,7 @@ class Tween {
       } else {
 
         this.onComplete( this );
-        CUBE.Animate.remove( this.update );
+        CUBE.Animate.remove( this.animate );
 
       }
 

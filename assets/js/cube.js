@@ -79,8 +79,8 @@
 			this.resize();
 			window.addEventListener( 'resize', this.resize, false );
 
-			this.render = this.render.bind( this );
-			CUBE.Animate.add( this.render );
+			this.animate = this.render.bind( this );
+			CUBE.Animate.add( this.animate );
 
 		}
 
@@ -1758,9 +1758,9 @@
 
 	    setTimeout( () => {
 
-	      this.update = this.update.bind( this );
+	      this.animate = this.update.bind( this );
 	      this.start = performance.now();
-	      CUBE.Animate.add( this.update );
+	      CUBE.Animate.add( this.animate );
 
 	    }, this.delay );
 
@@ -1770,7 +1770,7 @@
 
 	  kill() {
 
-	    CUBE.Animate.remove( this.update );
+	    CUBE.Animate.remove( this.animate );
 
 	  }
 
@@ -1810,7 +1810,7 @@
 	      } else {
 
 	        this.onComplete( this );
-	        CUBE.Animate.remove( this.update );
+	        CUBE.Animate.remove( this.animate );
 
 	      }
 
@@ -2214,7 +2214,7 @@
 			this.game = game;
 
 			this.startTime = null;
-			this.update = this.update.bind( this );
+			this.animate = this.update.bind( this );
 
 		}
 
@@ -2224,7 +2224,18 @@
 			this.deltaTime = 0;
 			this.converted = this.convert( this.deltaTime );
 
-			CUBE.Animate.add( this.update );
+			CUBE.Animate.add( this.animate );
+
+		}
+
+		stop() {
+
+			this.currentTime = Date.now();
+			this.deltaTime = this.currentTime - this.startTime;
+
+			CUBE.Animate.remove( this.animate );
+
+			return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 
 		}
 
@@ -2242,17 +2253,6 @@
 				this.game.dom.timer.innerHTML = this.converted;
 
 			}
-
-		}
-
-		stop() {
-
-			this.currentTime = Date.now();
-			this.deltaTime = this.currentTime - this.startTime;
-
-			CUBE.Animate.remove( this.update );
-
-			return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 
 		}
 

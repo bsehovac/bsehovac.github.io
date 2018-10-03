@@ -23,8 +23,8 @@ class World {
 		this.resize();
 		window.addEventListener( 'resize', this.resize, false );
 
-		this.render = this.render.bind( this );
-		CUBE.Animate.add( this.render );
+		this.animate = this.render.bind( this );
+		CUBE.Animate.add( this.animate );
 
 	}
 
