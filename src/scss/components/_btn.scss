@@ -1,0 +1,30 @@
+.btn {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border-radius: 0;
+  border-width: 0;
+  position: absolute;
+  pointer-events: all;
+
+  &--tr {
+    top: 1em;
+    right: 1em;
+  }
+
+  &--br {
+    bottom: 1em;
+    right: 1em;
+  }
+
+  &--tl {
+    top: 1em;
+    left: 1em;
+  }
+
+  &--bl {
+    bottom: 1em;
+    left: 1em;
+  }
+}

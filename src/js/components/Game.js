@@ -1,119 +1,71 @@
 class Game {
 
-  constructor( container ) {
+  constructor() {
 
     this.dom = {
-      container: document.querySelector( '.game' ),
-      main: document.querySelector( '.ui__main' ),
-      title: document.querySelector( '.ui__title' ),
-      start: document.querySelector( '.ui__start' ),
-      timer: document.querySelector( '.ui__timer' ),
-      preferences: document.querySelector( '.ui__preferences' ),
+      game: document.querySelector( '.ui__game' ),
+      prefs: document.querySelector( '.ui__prefs' ),
+      menu: document.querySelector( '.ui__menu' ),
+      title: document.querySelector( '.ui__text--title' ),
+      note: document.querySelector( '.ui__text--note' ),
+      timer: document.querySelector( '.ui__text--timer' ),
       buttons: {
-        settings: document.querySelector( '.ui__icon--settings' ),
-        // audio: document.querySelector( '.ui__icon--audio' ),
-        home: document.querySelector( '.ui__icon--home' ),
+        settings: document.querySelector( '.btn--settings' ),
       }
     };
 
-    this.options = {
-      cubeSize: 3,
-      scrambleLength: 20,
-    }
+    this.world = new CUBE.World( this );
+    this.cube = new CUBE.Cube( this );
+    this.controls = new CUBE.Controls( this );
+    this.scrambler = new CUBE.Scrambler( this );
+    this.transition = new CUBE.Transition( this );
+    this.audio = new CUBE.Audio( this );
+    this.timer = new CUBE.Timer( this );
+    this.preferences = new CUBE.Preferences( this );
+    this.icons = new CUBE.Icons();
 
-    this.world = new RUBIK.World( this.dom.container, this.options );
-    this.cube = new RUBIK.Cube( this.options.cubeSize );
-    this.controls = new RUBIK.Controls( this.cube, this.options );
-    this.animation = new RUBIK.Animations( this );
-    this.audio = new RUBIK.Audio( /*this.dom.buttons.audio*/ );
-    this.timer = new RUBIK.Timer( this.world, this.dom.timer );
-    this.icons = new RUBIK.SvgIcons( { observer: false, convert: true } );
-
-    this.world.addCube( this.cube );
-    this.world.addControls( this.controls );
-    this.initDoupleTap();
-    this.initPreferences();
+    this.initStart();
+    //this.initPause();
+    this.initPrefs();
 
     this.saved = this.cube.loadState();
     this.playing = false;
+    this.animating = true;
 
-    this.animation.drop();
+    this.transition.drop();
 
     this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
     this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
-    this.dom.buttons.settings.onclick = e => {
+  }
 
-      e.stopPropagation();
-      this.dom.preferences.classList.toggle( 'is-active' );
-
-    }
+  initPause() {
 
     this.dom.buttons.home.onclick = e => {
 
       e.stopPropagation();
-      if ( this.playing ) this.pause();
+      if ( !this.playing ) return;
+
+      // this.dom.buttons.home.style.visibility = 'hidden';
+
+      this.playing = false;
+      this.timer.stop();
+      this.controls.disabled = true;
+
+      this.transition.title( true, 600 );
+      this.transition.timer( false, 0 );
+
+      this.transition.zoom( false, 0, () => {} );
 
     }
 
   }
 
-  start() {
-
-    const start = Date.now();
-    let duration = 0;
-
-    this.dom.buttons.home.style.visibility = 'visible';
-
-    if ( ! this.saved ) {
-
-      this.dom.timer.innerHTML = 'o:oo';
-
-      const scramble = new RUBIK.Scramble( this.cube, this.options.scrambleLength );
-      duration = scramble.converted.length * this.controls.options.scrambleSpeed;
-      this.controls.scrambleCube( scramble, () => { this.saved = true; } );
-
-    } else {
-
-      this.dom.timer.innerHTML = this.timer.convert( this.world.timer.deltaTime );
-
-    }
-
-    this.animation.title( false, 0 );
-    this.animation.timer( true, 600 );
-
-    this.animation.zoom( true, duration, () => {
-
-      this.playing = true;
-      this.controls.disabled = false;
-      this.timer.start( this.saved );
-
-    } );
-
-  }
-
-  pause() {
-
-    this.dom.buttons.home.style.visibility = 'hidden';
-
-    this.playing = false;
-    this.timer.stop();
-    this.controls.disabled = true;
-
-    this.animation.title( true, 600 );
-    this.animation.timer( false, 0 );
-
-    this.animation.zoom( false, 0, () => {} );
-
-  }
-
-  initDoupleTap() {
+  initStart() {
 
     let tappedTwice = false
 
     const tapHandler = event => {
-
-      if ( event.target !== this.dom.main ) return;
 
       event.preventDefault();
 
@@ -125,40 +77,77 @@ class Game {
 
       }
 
-      this.start();
+      if ( this.playing ) return;
+
+      const start = Date.now();
+      let duration = 0;
+
+      if ( ! this.saved ) {
+
+        this.dom.timer.innerHTML = '0:00';
+
+        this.scrambler.scramble();
+        this.controls.scrambleCube( () => {} );
+
+        duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
+
+      } else {
+
+        this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
+
+      }
+
+      this.transition.title( false, 0 );
+      this.transition.timer( true, 600 );
+
+      this.transition.zoom( true, duration, () => {
+
+        this.playing = true;
+        this.controls.disabled = false;
+        this.timer.start( this.saved );
+        this.saved = true;
+
+      } );
 
     };
 
-    this.dom.main.addEventListener( 'click', tapHandler, false );
-    this.dom.main.addEventListener( 'touchstart', tapHandler, false );
+    this.dom.game.addEventListener( 'click', tapHandler, false );
+    this.dom.game.addEventListener( 'touchstart', tapHandler, false );
 
   }
 
-  initPreferences() {
+  initPrefs() {
 
-    const flipSpeed = new RUBIK.Range( {
-      element: '.range[type="speed"]',
-      handle: '.range__handle',
-      value: this.controls.options.flipSpeed,
-      values: [ 100, 300 ],
-      onUpdate: value => { this.controls.options.flipSpeed = value; }
-    } );
+    const button = this.dom.buttons.settings;
 
-    const flipBounce = new RUBIK.Range( {
-      element: '.range[type="bounce"]',
-      handle: '.range__handle',
-      value: this.controls.options.flipBounce,
-      values: [ 0.1, 2 ],
-      onUpdate: value => { this.controls.options.flipBounce = value; }
-    } );
+    button.addEventListener( 'click', e => {
 
-    const cameraFOV = new RUBIK.Range( {
-      element: '.range[type="fov"]',
-      handle: '.range__handle',
-      value: this.world.fov,
-      values: [ 2, 45 ],
-      onUpdate: value => { this.world.fov = value; this.world.updateCamera(); }
-    } );
+      e.stopPropagation();
+
+      if ( this.animating ) return;
+      this.animating = true;
+      setTimeout( () => { this.animating = false; }, 1500 );
+
+      button.classList.toggle( 'is-active' );
+
+      if ( button.classList.contains( 'is-active' ) ) {
+
+        this.transition.title( false, 0 );
+        this.transition.preferences( true, 600 );
+        this.dom.prefs.classList.remove( 'is-inactive' );
+        this.dom.prefs.classList.add( 'is-active' );
+
+      } else {
+
+        this.transition.title( true, 600 );
+        this.transition.preferences( false, 0 );
+        this.dom.game.style.opacity = 1;
+        this.dom.prefs.classList.remove( 'is-active' );
+        this.dom.prefs.classList.add( 'is-inactive' );
+
+      }
+
+    }, false );
 
   }
 

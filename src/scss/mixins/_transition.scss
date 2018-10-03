@@ -2,7 +2,7 @@
   $properties: null;
   @each $property in $property-array {
     @if $property != "none" {
-      $properties: $properties, $property 300ms ease;
+      $properties: $properties, $property $transition-speed $transition-easing;
     }
     @else {
       transition: none;

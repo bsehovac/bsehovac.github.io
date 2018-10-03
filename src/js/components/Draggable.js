@@ -1,9 +1,9 @@
+window.addEventListener( 'touchmove', () => {} );
+document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
+
 class Draggable {
 
   constructor( element, options ) {
-
-    window.addEventListener( 'touchmove', function () {} );
-    document.addEventListener( 'touchmove', function( event ){ event.preventDefault(); }, { passive: false } );
 
     this.position = {
       current: new THREE.Vector2(),
@@ -146,37 +146,37 @@ class Draggable {
 
   }
 
-  addMomentumPoint( delta ) {
+  // addMomentumPoint( delta ) {
 
-    const time = Date.now();
+  //   const time = Date.now();
 
-    while ( this.momentum.length > 0 ) {
+  //   while ( this.momentum.length > 0 ) {
 
-      if ( time - this.momentum[0].time <= 200 ) break;
-      this.momentum.shift();
+  //     if ( time - this.momentum[0].time <= 200 ) break;
+  //     this.momentum.shift();
 
-    }
+  //   }
 
-    if ( delta !== false ) this.momentum.push( { delta, time } );
+  //   if ( delta !== false ) this.momentum.push( { delta, time } );
 
-  }
+  // }
 
-  getMomentum() {
+  // getMomentum() {
 
-    const points = this.momentum.length;
-    const momentum = new THREE.Vector2();
+  //   const points = this.momentum.length;
+  //   const momentum = new THREE.Vector2();
 
-    this.addMomentumPoint( false );
+  //   this.addMomentumPoint( false );
 
-    this.momentum.forEach( ( point, index ) => {
+  //   this.momentum.forEach( ( point, index ) => {
 
-      momentum.add( point.delta.multiplyScalar( index / points ) )
+  //     momentum.add( point.delta.multiplyScalar( index / points ) )
 
-    } );
+  //   } );
 
-    return momentum;
+  //   return momentum;
 
-  }
+  // }
 
 }
 

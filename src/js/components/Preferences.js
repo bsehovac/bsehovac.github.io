@@ -1,0 +1,79 @@
+class Preferences {
+
+  constructor( game ) {
+
+    this.game = game;
+
+    this.load();
+
+    this.elements = {
+
+      speed: new CUBE.Range( 'speed', {
+        value: this.game.controls.options.flipSpeed,
+        range: [ 300, 100 ],
+        onUpdate: value => { this.game.controls.options.flipSpeed = value; },
+        onComplete: value => { localStorage.setItem( 'flipSpeed', value ); },
+      } ),
+
+      bounce: new CUBE.Range( 'bounce', {
+        value: this.game.controls.options.flipBounce,
+        range: [ 0, 2 ],
+        onUpdate: value => { this.game.controls.options.flipBounce = value; },
+        onComplete: value => { localStorage.setItem( 'flipBounce', value ); },
+      } ),
+
+      scramble: new CUBE.Range( 'scramble', {
+        value: this.game.scrambler.scrambleLength,
+        range: [ 10, 30 ],
+        step: 5,
+        onUpdate: value => { this.game.scrambler.scrambleLength = value; },
+        onComplete: value => { localStorage.setItem( 'scrambleLength', value ); },
+      } ),
+
+      fov: new CUBE.Range( 'fov', {
+        value: this.game.world.fov,
+        range: [ 2, 45 ],
+        onUpdate: value => {
+
+          this.game.world.fov = value;
+          this.game.world.resize();
+
+        },
+        onComplete: value => { localStorage.setItem( 'fov', value ); },
+      } ),
+
+      theme: new CUBE.Range( 'theme', {
+        value: 0,
+        range: [ 0, 1 ],
+        step: 1,
+        onUpdate: value => {},
+      } ),
+
+    };
+
+  }
+
+  load() {
+
+    const flipSpeed = localStorage.getItem( 'flipSpeed' );
+    const flipBounce = localStorage.getItem( 'flipBounce' );
+    const scrambleLength = localStorage.getItem( 'scrambleLength' );
+    const fov = localStorage.getItem( 'fov' );
+    // const theme = localStorage.getItem( 'theme' );
+
+    if ( flipSpeed != null ) this.game.controls.options.flipSpeed = flipSpeed;
+    if ( flipBounce != null ) this.game.controls.options.flipBounce = flipBounce;
+    if ( scrambleLength != null ) this.game.scrambler.scrambleLength = scrambleLength;
+
+    if ( fov != null ) {
+
+      this.game.world.fov = fov;
+      this.game.world.resize();
+
+    }
+
+  }
+
+}
+
+export { Preferences };

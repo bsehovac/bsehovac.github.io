@@ -19,7 +19,6 @@ class Tween {
 
     this.progress = 0;
     this.delta = 0;
-    this.animate = null;
     this.values = [];
 
     if ( this.yoyo != null ) this.yoyo = false;
@@ -38,8 +37,9 @@ class Tween {
 
     setTimeout( () => {
 
+      this.update = this.update.bind( this );
       this.start = performance.now();
-      this.animate = requestAnimationFrame( () => this.update() );
+      CUBE.Animate.add( this.update );
 
     }, this.delay );
 
@@ -49,7 +49,7 @@ class Tween {
 
   kill() {
 
-    cancelAnimationFrame( this.animate );
+    CUBE.Animate.remove( this.update );
 
   }
 
@@ -89,13 +89,11 @@ class Tween {
       } else {
 
         this.onComplete( this );
-        return;
+        CUBE.Animate.remove( this.update );
 
       }
 
     }
-
-    this.animate = window.requestAnimationFrame( () => this.update() );
 
   }
 
@@ -212,75 +210,6 @@ Tween.Easings = {
     var s = 1.70158;
     return (p-=1)*p*((s+1)*p + s) + 1;
   },
-
-  // easeOutBounce: p => {
-  //   if ((p) < (1/2.75)) {
-  //     return (7.5625*p*p);
-  //   } else if (p < (2/2.75)) {
-  //     return (7.5625*(p-=(1.5/2.75))*p + 0.75);
-  //   } else if (p < (2.5/2.75)) {
-  //     return (7.5625*(p-=(2.25/2.75))*p + 0.9375);
-  //   } else {
-  //     return (7.5625*(p-=(2.625/2.75))*p + 0.984375);
-  //   }
-  // },
-
-  // easeInBack: p => {
-  //   var s = 1.70158;
-  //   return (p)*p*((s+1)*p - s);
-  // },
-
-  // easeOutBack: p => {
-  //   var s = 1.70158;
-  //   return (p=p-1)*p*((s+1)*p + s) + 1;
-  // },
-
-  // easeInOutBack: p => {
-  //   var s = 1.70158;
-  //   if((p/=0.5) < 1) return 0.5*(p*p*(((s*=(1.525))+1)*p -s));
-  //   return 0.5*((p-=2)*p*(((s*=(1.525))+1)*p +s) +2);
-  // },
-
-  // elastic: p => {
-  //   return -1 * Math.pow(4,-8*p) * Math.sin((p*6-1)*(2*Math.PI)/2) + 1;
-  // },
-
-  // bounce: p => {
-  //   if (p < (1/2.75)) {
-  //     return (7.5625*p*p);
-  //   } else if (p < (2/2.75)) {
-  //     return (7.5625*(p-=(1.5/2.75))*p + 0.75);
-  //   } else if (p < (2.5/2.75)) {
-  //     return (7.5625*(p-=(2.25/2.75))*p + 0.9375);
-  //   } else {
-  //     return (7.5625*(p-=(2.625/2.75))*p + 0.984375);
-  //   }
-  // },
-
-  // bouncePast: p => {
-  //   if (p < (1/2.75)) {
-  //     return (7.5625*p*p);
-  //   } else if (p < (2/2.75)) {
-  //     return 2 - (7.5625*(p-=(1.5/2.75))*p + 0.75);
-  //   } else if (p < (2.5/2.75)) {
-  //     return 2 - (7.5625*(p-=(2.25/2.75))*p + 0.9375);
-  //   } else {
-  //     return 2 - (7.5625*(p-=(2.625/2.75))*p + 0.984375);
-  //   }
-  // },
-
-  // easeFromTo: p => {
-  //   if ((p/=0.5) < 1) return 0.5*Math.pow(p,4);
-  //   return -0.5 * ((p-=2)*Math.pow(p,3) - 2);
-  // },
-
-  // easeFrom: p => {
-  //   return Math.pow(p,4);
-  // },
-
-  // easeTo: p => {
-  //   return Math.pow(p,0.25);
-  // },
 
 };
 

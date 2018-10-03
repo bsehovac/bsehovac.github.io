@@ -1,8 +1,13 @@
-@import "mixins/transition";
-@import "mixins/breakpoint";
+@import url('https://fonts.googleapis.com/css?family=Bungee');
 
-@import "components/fonts";
+$transition-speed: 300ms;
+$transition-easing: ease;
+
+@import "mixins/transition";
+@import "mixins/fullscreen";
+
 @import "components/document";
-@import "components/game";
-@import "components/ui";
+@import "components/icon";
 @import "components/range";
+@import "components/btn";
+@import "components/ui";

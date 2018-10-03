@@ -5,10 +5,10 @@ function CubePieces( size, positions, colors ) {
 	const pieces = [];
 	const edges = [];
 
-	const edgeScale = 0.835;
-	const edgeRoundness = 0.125;
-	const pieceRoundness = 0.1;
-	const edgeDepth = 0.0125;
+	const edgeScale = 0.84;
+	const edgeRoundness = 0.15;
+	const pieceRoundness = 0.105;
+	const edgeDepth = 0.014;
 	const pieceSize = 1 / size;
 
 	const pieceMesh = new THREE.Mesh(
@@ -29,21 +29,26 @@ function CubePieces( size, positions, colors ) {
 		metalness: 0.5,
 	} );
 
+	const namesTest = [];
+
 	positions.forEach( ( position, index ) => {
 
 		const piece = new THREE.Object3D();
 		const pieceCube = pieceMesh.clone();
 		const edges = [];
+		// let edgesNames = '';
 
 		piece.position.copy( position.clone().divideScalar( size ) );
 		piece.add( pieceCube );
 		piece.name = index;
+		piece.edgesName = '';
 
 		position.edges.forEach( position => {
 
 			const edge = createEdge( position );
+			edge.userData.name = [ 'L', 'R', 'D', 'U', 'B', 'F' ][ position ];
 			piece.add( edge );
-			edges.push( [ 'left', 'right', 'bottom', 'top', 'back', 'front' ][ position ] );
+			edges.push( edge.userData.name );
 
 		} );
 

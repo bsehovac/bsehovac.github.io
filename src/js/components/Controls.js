@@ -2,22 +2,21 @@ import { Draggable } from './Draggable.js';
 
 class Controls {
 
-  constructor( cube, options ) {
+  constructor( game ) {
 
-    this.options = Object.assign( {
+    this.game = game;
+
+    this.options = {
       flipSpeed: 300,
       flipBounce: 1.70158,
       scrambleSpeed: 150,
-      scrambleEasing: 'easeOutExpo', // easeOutQuart
-    }, options || {} );
+      scrambleBounce: 0,
+    };
 
-    this.cube = cube;
-    this.cube.controls = this;
-    this.draggable = new Draggable();
     this.raycaster = new THREE.Raycaster();
 
     this.group = new THREE.Object3D();
-    this.cube.object.add( this.group );
+    this.game.cube.object.add( this.group );
 
     this.helper = new THREE.Mesh(
       new THREE.PlaneBufferGeometry( 20, 20 ),
@@ -25,11 +24,14 @@ class Controls {
     );
 
     this.helper.rotation.set( 0, Math.PI / 4, 0 );
+    this.game.world.scene.add( this.helper );
 
     this.edges = new THREE.Mesh(
       new THREE.BoxBufferGeometry( 0.95, 0.95, 0.95 ),
       new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0xff0033 } )
     );
+
+    this.game.world.scene.add( this.edges );
 
     this.onSolved = () => {};
     this.onMove = () => {};
@@ -42,6 +44,14 @@ class Controls {
     this.scramble = null;
     this.state = 'still';
 
+    this.initDraggable();
+
+  }
+
+  initDraggable() {
+
+    this.draggable = new Draggable( this.game.dom.game );
+
     this.draggable.onDragStart = position => {
 
       if ( this.state !== 'still' || this.disabled || this.scramble !== null ) return;
@@ -53,7 +63,7 @@ class Controls {
         this.drag.normal = edgeIntersect.face.normal.round();
         this.drag.type = 'layer';
 
-        this.attach( this.helper, this.cube.object )
+        this.attach( this.helper, this.game.cube.object )
 
         this.helper.rotation.set( 0, 0, 0 );
         this.helper.position.set( 0, 0, 0 );
@@ -61,9 +71,9 @@ class Controls {
         this.helper.translateZ( 0.5 );
         this.helper.updateMatrixWorld();
 
-        this.detach( this.helper, this.cube.object );
+        this.detach( this.helper, this.game.cube.object );
 
-        this.drag.intersect = this.getIntersect( position.current, this.cube.cubes, true );
+        this.drag.intersect = this.getIntersect( position.current, this.game.cube.cubes, true );
 
       } else {
 
@@ -77,6 +87,7 @@ class Controls {
       }
 
       const planeIntersect = this.getIntersect( position.current, this.helper, false ).point;
+      if ( planeIntersect === false ) return;
 
       this.drag.current = this.helper.worldToLocal( planeIntersect );
       this.drag.total = new THREE.Vector3();
@@ -120,7 +131,7 @@ class Controls {
         } else {
 
           const axis = ( this.drag.direction != 'x' )
-            ? ( ( this.drag.direction == 'y' && position.current.x > this.world.width / 2 ) ? 'z' : 'x' )
+            ? ( ( this.drag.direction == 'y' && position.current.x > this.game.world.width / 2 ) ? 'z' : 'x' )
             : 'y';
 
           this.drag.axis = new THREE.Vector3();
@@ -142,7 +153,7 @@ class Controls {
         } else {
 
           this.edges.rotateOnWorldAxis( this.drag.axis, rotation );
-          this.cube.object.rotation.copy( this.edges.rotation );
+          this.game.cube.object.rotation.copy( this.edges.rotation );
           this.drag.angle += rotation;
 
         }
@@ -193,15 +204,11 @@ class Controls {
 
   rotateLayer( rotation, scramble, callback ) {
 
-    const bounceCube = this.bounceCube();
-    const easing = scramble
-      ? this.options.scrambleEasing
-      : p => {
-        var s = this.options.flipBounce;
-        return (p-=1)*p*((s+1)*p + s) + 1;
-      }
+    const bounce = scramble ? this.options.scrambleBounce : this.options.flipBounce;
+    const easing = p => { return ( p -= 1 ) * p * ( ( bounce + 1 ) * p + bounce ) + 1; }
+    const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
 
-    this.rotationTween = new RUBIK.Tween( {
+    this.rotationTween = new CUBE.Tween( {
       duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
       easing: easing,
       onUpdate: tween => {
@@ -215,10 +222,10 @@ class Controls {
 
         const layer = this.drag.layer.slice( 0 );
 
-        this.cube.object.rotation.setFromVector3( this.snapRotation( this.cube.object.rotation.toVector3() ) );
+        this.game.cube.object.rotation.setFromVector3( this.snapRotation( this.game.cube.object.rotation.toVector3() ) );
         this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
         this.deselectLayer( this.drag.layer );
-        this.cube.saveState();
+        this.game.cube.saveState();
 
         callback( layer );
 
@@ -242,7 +249,7 @@ class Controls {
 
           }
 
-          this.cube.object.rotateOnAxis( this.drag.axis, delta );
+          this.game.cube.object.rotateOnAxis( this.drag.axis, delta );
 
         }
 
@@ -257,19 +264,19 @@ class Controls {
       return (p-=1)*p*((s+1)*p + s) + 1;
     };
 
-    this.rotationTween = new RUBIK.Tween( {
+    this.rotationTween = new CUBE.Tween( {
       duration: this.options.flipSpeed,
       easing: easing,
       onUpdate: tween => {
 
         this.edges.rotateOnWorldAxis( this.drag.axis, tween.delta * rotation );
-        this.cube.object.rotation.copy( this.edges.rotation );
+        this.game.cube.object.rotation.copy( this.edges.rotation );
 
       },
       onComplete: () => {
 
         this.edges.rotation.setFromVector3( this.snapRotation( this.edges.rotation.toVector3() ) );
-        this.cube.object.rotation.copy( this.edges.rotation );
+        this.game.cube.object.rotation.copy( this.edges.rotation );
         callback();
 
       },
@@ -327,7 +334,7 @@ class Controls {
     let solved = true;
     const layers = { R: [], L: [], U: [], D: [], F: [], B: [] };
 
-    game.cube.pieces.forEach( ( piece, index ) => {
+    this.game.cube.pieces.forEach( ( piece, index ) => {
 
       const position = this.getPiecePosition( piece );
 
@@ -357,7 +364,7 @@ class Controls {
     if ( solved ) {
 
         this.onSolved();
-        //this.cube.clearState();
+        //this.game.cube.clearState();
 
     }
 
@@ -366,14 +373,14 @@ class Controls {
   selectLayer( layer ) {
 
     this.group.rotation.set( 0, 0, 0 );
-    this.movePieces( layer, this.cube.object, this.group );
+    this.movePieces( layer, this.game.cube.object, this.group );
     this.drag.layer = layer;
 
   }
 
   deselectLayer( layer ) {
 
-    this.movePieces( layer, this.group, this.cube.object );
+    this.movePieces( layer, this.group, this.game.cube.object );
     this.drag.layer = null;
 
   }
@@ -385,7 +392,7 @@ class Controls {
 
     layer.forEach( index => {
 
-      const piece = this.cube.pieces[ index ];
+      const piece = this.game.cube.pieces[ index ];
 
       piece.applyMatrix( from.matrixWorld );
       from.remove( piece );
@@ -412,7 +419,7 @@ class Controls {
 
     }
 
-    this.cube.pieces.forEach( piece => {
+    this.game.cube.pieces.forEach( piece => {
 
       const piecePosition = this.getPiecePosition( piece );
 
@@ -428,17 +435,17 @@ class Controls {
 
     let position = new THREE.Vector3()
       .setFromMatrixPosition( piece.matrixWorld )
-      .multiplyScalar( this.cube.size );
+      .multiplyScalar( this.game.cube.size );
 
-    return this.cube.object.worldToLocal( position ).round();
+    return this.game.cube.object.worldToLocal( position.sub( this.game.cube.animator.position ) ).round();
 
   }
 
-  scrambleCube( scramble, callback ) {
+  scrambleCube( callback ) {
 
     if ( this.scramble == null ) {
 
-      this.scramble = scramble;
+      this.scramble = this.game.scrambler;
       this.scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
 
     }
@@ -474,7 +481,7 @@ class Controls {
 
     this.raycaster.setFromCamera(
       this.draggable.convertPosition( position.clone() ),
-      this.world.camera
+      this.game.world.camera
     );
 
     const intersect = ( multiple )
@@ -497,14 +504,14 @@ class Controls {
 
     child.applyMatrix( parent.matrixWorld );
     parent.remove( child );
-    this.world.scene.add( child );
+    this.game.world.scene.add( child );
 
   }
 
   attach( child, parent ) {
 
     child.applyMatrix( new THREE.Matrix4().getInverse( parent.matrixWorld ) );
-    this.world.scene.remove( child );
+    this.game.world.scene.remove( child );
     parent.add( child );
 
   }

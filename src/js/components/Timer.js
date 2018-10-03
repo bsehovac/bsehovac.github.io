@@ -1,12 +1,11 @@
 class Timer {
 
-	constructor( world, element ) {
+	constructor( game ) {
 
-		this.element = element;
+		this.game = game;
+
 		this.startTime = null;
-
-		this.world = world;
-		world.timer = this;
+		this.update = this.update.bind( this );
 
 	}
 
@@ -16,22 +15,24 @@ class Timer {
 		this.deltaTime = 0;
 		this.converted = this.convert( this.deltaTime );
 
-		this.world.onAnimate = () => {
+		CUBE.Animate.add( this.update );
 
-			const old = this.converted;
+	}
 
-			this.currentTime = Date.now();
-			this.deltaTime = this.currentTime - this.startTime;
-			this.converted = this.convert( this.deltaTime );
+	update() {
 
-			if ( this.converted != old ) {
+		const old = this.converted;
 
-				localStorage.setItem( 'gameTime', JSON.stringify( this.deltaTime ) );
-				this.element.innerHTML = this.converted;
+		this.currentTime = Date.now();
+		this.deltaTime = this.currentTime - this.startTime;
+		this.converted = this.convert( this.deltaTime );
 
-			}
+		if ( this.converted != old ) {
 
-		};
+			localStorage.setItem( 'gameTime', JSON.stringify( this.deltaTime ) );
+			this.game.dom.timer.innerHTML = this.converted;
+
+		}
 
 	}
 
@@ -40,7 +41,7 @@ class Timer {
 		this.currentTime = Date.now();
 		this.deltaTime = this.currentTime - this.startTime;
 
-		this.world.onAnimate = () => {};
+		CUBE.Animate.remove( this.update );
 
 		return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 
@@ -49,11 +50,9 @@ class Timer {
 	convert( time ) {
 
 		this.seconds = parseInt( ( time / 1000 ) % 60 );
-		this.minutes = parseInt( ( time / ( 1000 * 60 ) ) /*% 60*/ );
+		this.minutes = parseInt( ( time / ( 1000 * 60 ) ) );
 
-		const print = this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
-
-		return print.replace( /0/g, 'o' );
+		return this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
 
 	}
 

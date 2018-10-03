@@ -1,9 +1,10 @@
 class World {
 
-	constructor( container, options ) {
+	constructor( game ) {
 
-		this.container = container;
-		this.options = options;
+		this.game = game;
+
+		this.container = this.game.dom.game;
 
 		this.scene = new THREE.Scene();
 
@@ -13,40 +14,54 @@ class World {
 
 		this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
 
-		this.onAnimate = () => {};
-		this.onResize = () => {};
-
 		this.stage = { width: 2, height: 3 };
 		this.fov = 10;
 
 		this.createLights();
 
-		const resize = e => {
+		this.resize = this.resize.bind( this );
+		this.resize();
+		window.addEventListener( 'resize', this.resize, false );
 
-			this.width = container.offsetWidth;
-			this.height = container.offsetHeight;
+		this.render = this.render.bind( this );
+		CUBE.Animate.add( this.render );
 
-			this.renderer.setSize( this.width, this.height );
+	}
 
-			this.updateCamera();
-			this.onResize();
+	render() {
 
-		};
+		this.renderer.render( this.scene, this.camera );
 
-		window.addEventListener( 'resize', resize, false );
+	}
 
-		resize();
+	resize() {
 
-		const animate = () => {
+		this.width = this.container.offsetWidth;
+		this.height = this.container.offsetHeight;
 
-			this.renderer.render( this.scene, this.camera );
-			this.onAnimate();
+		this.renderer.setSize( this.width, this.height );
 
-			requestAnimationFrame( animate );
+	  this.camera.fov = this.fov;
+	  this.camera.aspect = this.width / this.height;
 
-		}
+		const aspect = this.stage.width / this.stage.height;
+	  const fovRad = this.fov * THREE.Math.DEG2RAD;
 
-		animate();
+	  let distance = ( aspect < this.camera.aspect )
+			? ( this.stage.height / 2 ) / Math.tan( fovRad / 2 )
+			: ( this.stage.width / this.camera.aspect ) / ( 2 * Math.tan( fovRad / 2 ) );
+
+	  distance *= 0.5;
+
+		this.camera.position.set( distance, distance, distance);
+		this.camera.lookAt( this.scene.position );
+		this.camera.updateProjectionMatrix();
+
+		const docFontSize = ( aspect < this.camera.aspect )
+			? ( this.height / 100 ) * aspect
+			: this.width / 100;
+
+		document.documentElement.style.fontSize = docFontSize + 'px';
 
 	}
 
@@ -67,57 +82,6 @@ class World {
 		this.lights.holder.add( this.lights.back );
 
 		this.scene.add( this.lights.holder );
-
-	}
-
-	updateCamera() {
-
-	  this.camera.fov = this.fov;
-	  this.camera.aspect = this.width / this.height;
-
-		const aspect = this.stage.width / this.stage.height;
-	  const fovRad = this.fov * THREE.Math.DEG2RAD;
-
-	  let distance = ( aspect < this.camera.aspect )
-			? ( this.stage.height / 2 ) / Math.tan( fovRad / 2 )
-			: ( this.stage.width / this.camera.aspect ) / ( 2 * Math.tan( fovRad / 2 ) );
-
-	  distance *= 0.5;
-
-		this.camera.position.set( distance, distance, distance);
-		this.camera.lookAt( this.scene.position );
-		this.camera.updateProjectionMatrix();
-
-	}
-
-	addCube( cube ) {
-
-		this.cube = cube;
-		this.cube.world = this;
-
-		this.scene.add( this.cube.holder );
-		this.scene.add( this.cube.shadow );
-
-	}
-
-	// addAudio( audio ) {
-
-	// 	this.audio = audio;
-	// 	this.audio.world = this;
-
-	// 	this.camera.add( this.audio.listener );
-
-	// }
-
-	addControls( controls ) {
-
-		this.controls = controls;
-		this.controls.world = this;
-
-    this.scene.add( this.controls.edges );
-    this.scene.add( this.controls.helper );
-
-		this.controls.draggable.init( this.container );
 
 	}
 
