@@ -1,0 +1,272 @@
+body, html {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: #181e24; }
+
+#logo {
+  position: relative;
+  z-index: 2; }
+  #logo svg {
+    display: block;
+    width: auto;
+    height: 140vh;
+    margin: -20vh auto 0; }
+    #logo svg #dos-background {
+      fill: none;
+      stroke: #1E252C;
+      stroke-width: 1000;
+      animation: dos-background-animation 1.25s 0s ease forwards; }
+
+@keyframes dos-background-animation {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+    #logo svg #dos-logo {
+      fill: none;
+      stroke: url(#amigos-gradient);
+      stroke-width: 11500;
+      stroke-linecap: round;
+      opacity: 0;
+      stroke-dasharray: 1159523.875;
+      stroke-dashoffset: 1159523.875;
+      animation: dos-logo-animation 1.75s 0s ease forwards; }
+
+@keyframes dos-logo-animation {
+  0% {
+    opacity: 0;
+    transform: translateY(20000px);
+    stroke-dashoffset: 1159523.875; }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    stroke-dashoffset: 0; } }
+    #logo svg #beyond-software-outline > * {
+      fill: none;
+      stroke-width: 3480;
+      stroke: #b6c4d2;
+      stroke-linecap: round;
+      stroke-linejoin: round; }
+      #logo svg #beyond-software-outline > *:nth-child(1) {
+        stroke-dasharray: 14795;
+        stroke-dashoffset: 14795;
+        animation: beyond-software-letter-animation-1 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-1 {
+  0% {
+    stroke-dashoffset: 14795; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(2) {
+        stroke-dasharray: 14069;
+        stroke-dashoffset: 14069;
+        animation: beyond-software-letter-animation-2 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-2 {
+  0% {
+    stroke-dashoffset: 14069; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(3) {
+        stroke-dasharray: 26558;
+        stroke-dashoffset: 26558;
+        animation: beyond-software-letter-animation-3 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-3 {
+  0% {
+    stroke-dashoffset: 26558; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(4) {
+        stroke-dasharray: 27011;
+        stroke-dashoffset: 27011;
+        animation: beyond-software-letter-animation-4 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-4 {
+  0% {
+    stroke-dashoffset: 27011; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(5) {
+        stroke-dasharray: 40252;
+        stroke-dashoffset: 40252;
+        animation: beyond-software-letter-animation-5 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-5 {
+  0% {
+    stroke-dashoffset: 40252; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(6) {
+        stroke-dasharray: 26558;
+        stroke-dashoffset: 26558;
+        animation: beyond-software-letter-animation-6 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-6 {
+  0% {
+    stroke-dashoffset: 26558; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(7) {
+        stroke-dasharray: 40252;
+        stroke-dashoffset: 40252;
+        animation: beyond-software-letter-animation-7 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-7 {
+  0% {
+    stroke-dashoffset: 40252; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(8) {
+        stroke-dasharray: 47643.008;
+        stroke-dashoffset: 47643.008;
+        animation: beyond-software-letter-animation-8 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-8 {
+  0% {
+    stroke-dashoffset: 47643.008; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(9) {
+        stroke-dasharray: 40439.691;
+        stroke-dashoffset: 40439.691;
+        animation: beyond-software-letter-animation-9 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-9 {
+  0% {
+    stroke-dashoffset: 40439.691; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(10) {
+        stroke-dasharray: 105510.023;
+        stroke-dashoffset: 105510.023;
+        animation: beyond-software-letter-animation-10 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-10 {
+  0% {
+    stroke-dashoffset: 105510.023; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(11) {
+        stroke-dasharray: 72069.977;
+        stroke-dashoffset: 72069.977;
+        animation: beyond-software-letter-animation-11 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-11 {
+  0% {
+    stroke-dashoffset: 72069.977; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(12) {
+        stroke-dasharray: 98170.391;
+        stroke-dashoffset: 98170.391;
+        animation: beyond-software-letter-animation-12 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-12 {
+  0% {
+    stroke-dashoffset: 98170.391; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(13) {
+        stroke-dasharray: 21509.248;
+        stroke-dashoffset: 21509.248;
+        animation: beyond-software-letter-animation-13 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-13 {
+  0% {
+    stroke-dashoffset: 21509.248; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(14) {
+        stroke-dasharray: 83523.602;
+        stroke-dashoffset: 83523.602;
+        animation: beyond-software-letter-animation-14 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-14 {
+  0% {
+    stroke-dashoffset: 83523.602; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(15) {
+        stroke-dasharray: 86321.781;
+        stroke-dashoffset: 86321.781;
+        animation: beyond-software-letter-animation-15 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-15 {
+  0% {
+    stroke-dashoffset: 86321.781; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(16) {
+        stroke-dasharray: 83524.875;
+        stroke-dashoffset: 83524.875;
+        animation: beyond-software-letter-animation-16 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-16 {
+  0% {
+    stroke-dashoffset: 83524.875; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(17) {
+        stroke-dasharray: 52916.742;
+        stroke-dashoffset: 52916.742;
+        animation: beyond-software-letter-animation-17 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-17 {
+  0% {
+    stroke-dashoffset: 52916.742; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(18) {
+        stroke-dasharray: 86321.742;
+        stroke-dashoffset: 86321.742;
+        animation: beyond-software-letter-animation-18 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-18 {
+  0% {
+    stroke-dashoffset: 86321.742; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(19) {
+        stroke-dasharray: 54917.648;
+        stroke-dashoffset: 54917.648;
+        animation: beyond-software-letter-animation-19 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-19 {
+  0% {
+    stroke-dashoffset: 54917.648; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(20) {
+        stroke-dasharray: 53459.07;
+        stroke-dashoffset: 53459.07;
+        animation: beyond-software-letter-animation-20 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-20 {
+  0% {
+    stroke-dashoffset: 53459.07; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(21) {
+        stroke-dasharray: 98169.328;
+        stroke-dashoffset: 98169.328;
+        animation: beyond-software-letter-animation-21 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-21 {
+  0% {
+    stroke-dashoffset: 98169.328; }
+  100% {
+    stroke-dashoffset: 0; } }
+      #logo svg #beyond-software-outline > *:nth-child(22) {
+        stroke-dasharray: 83523.594;
+        stroke-dashoffset: 83523.594;
+        animation: beyond-software-letter-animation-22 1.5s 0.25s ease forwards; }
+
+@keyframes beyond-software-letter-animation-22 {
+  0% {
+    stroke-dashoffset: 83523.594; }
+  100% {
+    stroke-dashoffset: 0; } }
