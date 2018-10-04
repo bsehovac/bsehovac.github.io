@@ -2483,23 +2483,34 @@
 	      speed: new CUBE.Range( 'speed', {
 	        value: this.game.controls.options.flipSpeed,
 	        range: [ 300, 100 ],
-	        onUpdate: value => { this.game.controls.options.flipSpeed = value; },
-	        onComplete: value => { localStorage.setItem( 'flipSpeed', value ); },
+	        onComplete: value => {
+
+	          this.game.controls.options.flipSpeed = value;
+	          localStorage.setItem( 'flipSpeed', value );
+
+	          this.game.controls.options.flipBounce = ( ( value - 100 ) / 200 ) * 2;
+	          localStorage.setItem( 'flipBounce', value );
+	          
+	        },
 	      } ),
 
-	      bounce: new CUBE.Range( 'bounce', {
-	        value: this.game.controls.options.flipBounce,
-	        range: [ 0, 2 ],
-	        onUpdate: value => { this.game.controls.options.flipBounce = value; },
-	        onComplete: value => { localStorage.setItem( 'flipBounce', value ); },
-	      } ),
+	      // bounce: new CUBE.Range( 'bounce', {
+	      //   value: this.game.controls.options.flipBounce,
+	      //   range: [ 0, 2 ],
+	      //   onUpdate: value => { this.game.controls.options.flipBounce = value; },
+	      //   onComplete: value => { localStorage.setItem( 'flipBounce', value ); },
+	      // } ),
 
 	      scramble: new CUBE.Range( 'scramble', {
 	        value: this.game.scrambler.scrambleLength,
 	        range: [ 10, 30 ],
 	        step: 5,
-	        onUpdate: value => { this.game.scrambler.scrambleLength = value; },
-	        onComplete: value => { localStorage.setItem( 'scrambleLength', value ); },
+	        onComplete: value => {
+
+	          this.game.scrambler.scrambleLength = value;
+	          localStorage.setItem( 'scrambleLength', value );
+
+	        },
 	      } ),
 
 	      fov: new CUBE.Range( 'fov', {
@@ -2511,7 +2522,11 @@
 	          this.game.world.resize();
 
 	        },
-	        onComplete: value => { localStorage.setItem( 'fov', value ); },
+	        onComplete: value => {
+
+	          localStorage.setItem( 'fov', value );
+
+	        },
 	      } ),
 
 	      theme: new CUBE.Range( 'theme', {
