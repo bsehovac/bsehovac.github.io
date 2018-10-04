@@ -23,7 +23,7 @@ class Timer {
 		this.currentTime = Date.now();
 		this.deltaTime = this.currentTime - this.startTime;
 
-		clearAnimationFrame( this.animate );
+		cancelAnimationFrame( this.animate );
 
 		return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 

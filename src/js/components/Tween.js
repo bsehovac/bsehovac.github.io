@@ -48,7 +48,7 @@ class Tween {
 
   kill() {
 
-    clearAnimationFrame( this.animate );
+    cancelAnimationFrame( this.animate );
 
   }
 
