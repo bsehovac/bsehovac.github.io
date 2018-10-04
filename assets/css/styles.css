@@ -497,7 +497,7 @@ body {
       z-index: -1; }
     .ui__prefs.show:before {
       transition: opacity 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 200ms;
-      opacity: 1; }
+      opacity: 0.95; }
     .ui__prefs.hide:before {
       transition: opacity 600ms cubic-bezier(0.55, 0.085, 0.68, 0.53);
       opacity: 0; }
