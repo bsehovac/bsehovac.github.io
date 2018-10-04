@@ -1,0 +1,196 @@
+.range
+  position: relative
+  width: 100%
+  width: 14em
+  z-index: 1
+
+  &:not(:last-child)
+    margin-bottom: 1.5em
+
+  &__label
+    position: relative
+    font-size: 0.9em
+    line-height: 0.75em
+    padding-bottom: 0.5em
+    z-index: 2
+
+  &__track
+    position: relative
+    height: 1em
+    margin-left: 0.5em
+    margin-right: 0.5em
+    z-index: 3
+
+    &:before
+      content: ''
+      position: absolute
+      background: rgba(#000, 0.2)
+      height: 2px
+      top: 50%
+      margin-top: -1px
+      left: -0.5em
+      right: -0.5em
+
+  &__handle
+    position: absolute
+    width: 0
+    height: 0
+    top: 50%
+    left: 0
+    cursor: pointer
+    z-index: 1
+
+    &:before
+      content: ''
+      transition: transform 300ms
+      position: absolute
+      left: 0
+      top: 0
+      width: 0.9em
+      height: 0.9em
+      border-radius: 0.2em
+      margin-left: -0.45em
+      margin-top: -0.45em
+      background: #41aac8
+      border-bottom: 2px solid rgba(#000, 0.2)
+
+      .range.is-active &
+        transform: scale(1.25)
+
+    &:after
+      content: ''
+      position: absolute
+      left: 0
+      top: 0
+      width: 3em
+      height: 3em
+      margin-left: -1.5em
+      margin-top: -1.5em
+
+  &__list
+    display: flex
+    flex-flow: row nowrap
+    justify-content: space-between
+    position: relative
+    padding-top: 0.5em
+    font-size: 0.6em
+    color: rgba(#000, 0.5)
+    z-index: 1
+
+// ANIMATIONS
+
+.range
+  $ranges: 5
+  $list-items: 5
+  $range-delay: 100ms
+  $element-delay: 100ms
+  $duration: 400ms
+  $easing: $easeOutQuad
+  $y: 1em
+
+  @at-root .ui__prefs.show
+    animation-duration: ($ranges + 1) * $range-delay + $element-delay * 2 + ($list-items + 1) * ($element-delay / 2) + $duration
+
+  @at-root .ui__prefs.hide
+    animation-duration: $duration
+
+  &__label,
+  &__track:before,
+  &__handle,
+  &__list div
+    will-change: opacity, transform
+    opacity: 0
+
+  &__track:before
+    transform-origin: left center
+
+  .ui__prefs.show &
+    @for $i from 1 to ($ranges + 1)
+      &:nth-child(#{$i})
+        $delay: $i * $range-delay
+
+        .range
+          &__label
+            animation: range-slide-in $duration $easing forwards
+            animation-delay: $delay
+
+          &__track:before
+            animation: range-stretch-in $duration $easing forwards
+            animation-delay: $delay + $element-delay
+
+          &__handle
+            animation: range-zoom-in $duration $easing forwards
+            animation-delay: $delay + $element-delay
+            pointer-events: all
+
+          &__list div
+            animation: range-slide-in $duration $easing forwards
+            @for $j from 1 to ($list-items + 1)
+              &:nth-child(#{$j})
+                animation-delay: $delay + $element-delay * 2 + $j * ( $element-delay / 2 )
+
+  .ui__prefs.hide &
+    transition-duration: $duration
+
+    .range
+      &__label
+        animation: range-slide-out $duration $easing forwards
+
+      &__track:before
+        animation: range-stretch-out $duration $easing forwards
+
+      &__handle
+        animation: range-zoom-out $duration $easing forwards
+        pointer-events: unset
+
+      &__list div
+        animation: range-slide-out $duration $easing forwards
+
+  // KEYFRAMES
+
+  @keyframes range-slide-in
+    from
+      opacity: 0
+      transform: translate3d(0, $y, 0)
+    to
+      opacity: 1
+      transform: translate3d(0, 0, 0)
+
+  @keyframes range-stretch-in
+    from
+      opacity: 0
+      transform: translate3d(0, $y, 0) scale3d(0, 1, 1)
+    to
+      opacity: 1
+      transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+
+  @keyframes range-zoom-in
+    from
+      opacity: 0
+      transform: translate3d(0, $y, 0) scale3d(0.5, 0.5, 0.5)
+    to
+      opacity: 1
+      transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+
+  @keyframes range-slide-out
+    from
+      opacity: 1
+    to
+      opacity: 0
+
+  @keyframes range-stretch-out
+    from
+      opacity: 1
+      transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+      
+    to
+      opacity: 0
+      transform: translate3d(0, 0, 0) scale3d(0, 1, 1)
+
+  @keyframes range-zoom-out
+    from
+      opacity: 1
+      transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+    to
+      opacity: 0
+      transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 0.5)

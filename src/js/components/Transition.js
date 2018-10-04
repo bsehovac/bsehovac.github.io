@@ -13,127 +13,6 @@ class Transition {
 
   }
 
-  title( show, timeout ) {
-
-    if ( typeof this.data.titleLetters == 'undefined' ) {
-
-      this.data.titleLetters = [];
-
-      this.game.dom.title.querySelectorAll( 'span' ).forEach( span => {
-
-        const spanText = span.innerHTML;
-        span.innerHTML = '';
-
-        spanText.split( '' ).forEach( letter => {
-
-          const i = document.createElement( 'i' );
-          i.innerHTML = letter;
-          i.style.opacity = 0;
-          span.appendChild( i );
-          this.data.titleLetters.push( i );
-
-        } );
-
-      } );
-
-      this.game.dom.title.style.opacity = 1;
-      this.tweens.title = [];
-
-    }
-
-    setTimeout( () => {
-
-      this.data.titleLetters.forEach( ( letter, index ) => {
-
-        this.tweens.title[ index ] = new CUBE.Tween( {
-          duration: ( show ) ? 800 : 400,
-          delay: index * 50,
-          easing: 'easeOutSine',
-          onUpdate: tween => {
-
-            const rotation = ( ( show ) ? - 80 : 0 ) + 80 * tween.progress;
-            letter.style.transform = 'rotateY(' + rotation + 'deg)';
-            letter.style.opacity = ( show ) ? tween.progress : 1 - tween.progress;
-
-          },
-        } );
-
-      } );
-
-      if ( typeof this.tweens.start !== 'undefined' ) this.tweens.start.kill()
-
-      this.tweens.start = new CUBE.Tween( {
-        duration: 400,
-        easing: 'easeOutSine',
-        onUpdate: tween => {
-
-          this.game.dom.note.style.opacity = ( show ) ? tween.progress : 1 - tween.progress
-
-        },
-        onComplete: () => {
-
-          if ( show ) this.tweens.start = new CUBE.Tween( {
-            duration: 800,
-            easing: 'easeInOutSine',
-            yoyo: true,
-            onUpdate: tween => {
-
-              this.game.dom.note.style.opacity = 1 - tween.progress;
-
-            },
-          } );
-
-        },
-      } );
-
-    }, timeout );
-
-  }
-
-  timer( show, timeout ) {
-
-    this.data.timerLetters = [];
-
-    const timerText = this.game.dom.timer.innerHTML;
-    this.game.dom.timer.innerHTML = '';
-
-    timerText.split( '' ).forEach( letter => {
-
-      const i = document.createElement( 'i' );
-      i.innerHTML = letter;
-      i.style.opacity = ( show ) ? 0 : 1;
-      this.game.dom.timer.appendChild( i );
-      this.data.timerLetters.push( i );
-
-    } );
-
-    this.game.dom.timer.style.opacity = 1;
-
-    this.tweens.timer = [];
-
-    setTimeout( () => {
-
-      this.data.timerLetters.forEach( ( letter, index ) => {
-
-        this.tweens.timer[ index ] = new CUBE.Tween( {
-          duration: ( show ) ? 800 : 400,
-          delay: index * 50,
-          easing: 'easeOutSine',
-          onUpdate: tween => {
-
-            const rotation = ( ( show ) ? - 80 : 0 ) + 80 * tween.progress;
-            letter.style.transform = 'rotateY(' + rotation + 'deg)';
-            letter.style.opacity = ( show ) ? tween.progress : 1 - tween.progress;
-
-          },
-        } );
-
-      } );
-
-    }, timeout );
-
-  }
-
   drop() {
 
     this.game.controls.disabled = true;
@@ -153,7 +32,11 @@ class Transition {
       duration: 2500,
       easing: 'easeOutCubic',
       to: { x: 0, y: - 0.1 * this.data.floatScale, z: 0 },
-      onUpdate: () => { this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5; },
+      onUpdate: () => {
+
+        this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
+
+      },
       onComplete: () => { this.float( true ); this.game.animating = false; },
     } );
 
@@ -164,7 +47,7 @@ class Transition {
       to: { x: 0 },
     } );
 
-    setTimeout( () => { this.title( true ); }, 2000 );
+    setTimeout( () => { this.title( true, 0 ); }, 2000 );
 
   }
 
@@ -180,8 +63,11 @@ class Transition {
         yoyo: true,
         onUpdate: tween => {
 
-          this.game.cube.animator.position.y = - 0.1 * this.data.floatScale + tween.progress * 0.2 * this.data.floatScale;
-          this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
+          this.game.cube.animator.position.y =
+            - 0.1 * this.data.floatScale + tween.progress * 0.2 * this.data.floatScale;
+
+          this.game.cube.shadow.material.opacity =
+            0.4 - this.game.cube.animator.position.y * 0.5;
 
         },
       } );
@@ -238,34 +124,47 @@ class Transition {
 
   }
 
-  preferences( show, timeout ) {
+  title( show, callback ) {
 
-    const elements = this.game.preferences.elements;
+    if ( this.game.dom.title.querySelector( 'span i' ) === null )
+      this.game.dom.title.querySelectorAll( 'span' ).forEach( span => CUBE.Lettering( span ) );
 
-    setTimeout( () => {
+    this.game.dom.title.classList.add( ( show ) ? 'show' : 'hide' );
+    this.game.dom.title.classList.remove( ( show ) ? 'hide' : 'show' );
 
-      Object.keys( elements ).forEach( ( name, index ) => {
+    this.game.dom.note.classList.remove( ( show ) ? 'hide' : 'show' );
+    this.game.dom.note.classList.add( ( show ) ? 'show' : 'hide' );
 
-        if ( show ) {
+    const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.title ).animationDuration ) * 1000;
 
-          elements[ name ].element.classList.remove( 'is-inactive' );
+    if ( typeof callback === 'function' )
+      setTimeout( () => callback(), callbackTimeout );
 
-          setTimeout( () => {
+  }
 
-            elements[ name ].element.classList.add( 'is-active' );
+  timer( show, callback ) {
 
-          }, index * 100 );
+    CUBE.Lettering( this.game.dom.timer );
 
-        } else {
+    this.game.dom.timer.classList.add( ( show ) ? 'flip-in' : 'flip-out' );
+    this.game.dom.timer.classList.remove( ( show ) ? 'flip-out' : 'flip-in' );
 
-          elements[ name ].element.classList.add( 'is-inactive' );
-          elements[ name ].element.classList.remove( 'is-active' );
+    const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.timer ).animationDuration ) * 1000;
 
-        }
+    if ( typeof callback === 'function' )
+      setTimeout( () => callback(), callbackTimeout );
 
-      } );
+  }  
 
-    }, timeout );
+  preferences( show, callback ) {
+
+    this.game.dom.prefs.classList.add( ( show ) ? 'show' : 'hide' );
+    this.game.dom.prefs.classList.remove( ( show ) ? 'hide' : 'show' );
+
+    const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.prefs ).animationDuration ) * 1000;
+
+    if ( typeof callback === 'function' )
+      setTimeout( () => callback(), callbackTimeout );
 
   }
   

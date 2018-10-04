@@ -19,18 +19,18 @@ class World {
 
 		this.createLights();
 
-		this.resize = this.resize.bind( this );
 		this.resize();
-		window.addEventListener( 'resize', this.resize, false );
+		window.addEventListener( 'resize', () => this.resize(), false );
 
-		this.animate = this.render.bind( this );
-		CUBE.Animate.add( this.animate );
+		requestAnimationFrame( () => this.render() );
 
 	}
 
 	render() {
 
 		this.renderer.render( this.scene, this.camera );
+
+		requestAnimationFrame( () => this.render() );
 
 	}
 

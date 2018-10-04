@@ -37,9 +37,8 @@ class Tween {
 
     setTimeout( () => {
 
-      this.animate = this.update.bind( this );
       this.start = performance.now();
-      CUBE.Animate.add( this.animate );
+      this.animate = requestAnimationFrame( () => this.update() );
 
     }, this.delay );
 
@@ -49,7 +48,7 @@ class Tween {
 
   kill() {
 
-    CUBE.Animate.remove( this.animate );
+    clearAnimationFrame( this.animate );
 
   }
 
@@ -89,11 +88,13 @@ class Tween {
       } else {
 
         this.onComplete( this );
-        CUBE.Animate.remove( this.animate );
+        return;
 
       }
 
     }
+
+    this.animate = requestAnimationFrame( () => this.update() );
 
   }
 

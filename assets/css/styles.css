@@ -47,21 +47,24 @@ body {
   preserveAspectRatio: none; }
 
 .range {
+  position: relative;
   width: 100%;
-  width: 14em; }
+  width: 14em;
+  z-index: 1; }
   .range:not(:last-child) {
     margin-bottom: 1.5em; }
   .range__label {
     position: relative;
     font-size: 0.9em;
     line-height: 0.75em;
-    padding-bottom: 0.5em; }
+    padding-bottom: 0.5em;
+    z-index: 2; }
   .range__track {
     position: relative;
     height: 1em;
     margin-left: 0.5em;
     margin-right: 0.5em;
-    z-index: 2; }
+    z-index: 3; }
     .range__track:before {
       content: '';
       position: absolute;
@@ -77,7 +80,8 @@ body {
     height: 0;
     top: 50%;
     left: 0;
-    cursor: pointer; }
+    cursor: pointer;
+    z-index: 1; }
     .range__handle:before {
       content: '';
       transition: transform 300ms;
@@ -109,91 +113,328 @@ body {
     position: relative;
     padding-top: 0.5em;
     font-size: 0.6em;
-    color: rgba(0, 0, 0, 0.5); }
+    color: rgba(0, 0, 0, 0.5);
+    z-index: 1; }
+
+.ui__prefs.show {
+  animation-duration: 1500ms; }
+
+.ui__prefs.hide {
+  animation-duration: 400ms; }
 
 .range__label, .range__track:before, .range__handle,
 .range__list div {
-  transition-property: transform, opacity;
-  transition-duration: 400ms;
-  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform, opacity; }
-
-.range__label {
-  transform: translate3d(0, 1em, 0) scale3d(1, 1, 1);
+  will-change: opacity, transform;
   opacity: 0; }
 
 .range__track:before {
-  transform: translate3d(0, 1em, 0) scale3d(0, 1, 1);
-  transform-origin: left center;
-  opacity: 1; }
+  transform-origin: left center; }
 
-.range__handle {
-  transform: translate3d(0, 1em, 0) scale3d(0.5, 0.5, 0.5);
-  opacity: 0; }
+.ui__prefs.show .range:nth-child(1) .range__label {
+  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 100ms; }
 
-.range__list div {
-  transform: translate3d(0, 1em, 0) scale3d(1, 1, 1);
-  opacity: 0; }
+.ui__prefs.show .range:nth-child(1) .range__track:before {
+  animation: range-stretch-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 200ms; }
 
-.range.is-active .range__label, .range.is-active .range__track:before, .range.is-active .range__handle,
-.range.is-active .range__list div {
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
-  opacity: 1; }
-
-.range.is-active .range__label {
-  transition-delay: 0; }
-
-.range.is-active .range__track:before {
-  transition-delay: 100ms; }
-
-.range.is-active .range__handle {
-  transition-delay: 100ms;
+.ui__prefs.show .range:nth-child(1) .range__handle {
+  animation: range-zoom-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 200ms;
   pointer-events: all; }
 
-.range.is-active .range__list div:nth-child(1) {
-  transition-delay: 250ms; }
+.ui__prefs.show .range:nth-child(1) .range__list div {
+  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+  .ui__prefs.show .range:nth-child(1) .range__list div:nth-child(1) {
+    animation-delay: 350ms; }
+  .ui__prefs.show .range:nth-child(1) .range__list div:nth-child(2) {
+    animation-delay: 400ms; }
+  .ui__prefs.show .range:nth-child(1) .range__list div:nth-child(3) {
+    animation-delay: 450ms; }
+  .ui__prefs.show .range:nth-child(1) .range__list div:nth-child(4) {
+    animation-delay: 500ms; }
+  .ui__prefs.show .range:nth-child(1) .range__list div:nth-child(5) {
+    animation-delay: 550ms; }
 
-.range.is-active .range__list div:nth-child(2) {
-  transition-delay: 300ms; }
+.ui__prefs.show .range:nth-child(2) .range__label {
+  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 200ms; }
 
-.range.is-active .range__list div:nth-child(3) {
-  transition-delay: 350ms; }
+.ui__prefs.show .range:nth-child(2) .range__track:before {
+  animation: range-stretch-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 300ms; }
 
-.range.is-active .range__list div:nth-child(4) {
-  transition-delay: 400ms; }
+.ui__prefs.show .range:nth-child(2) .range__handle {
+  animation: range-zoom-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 300ms;
+  pointer-events: all; }
 
-.range.is-active .range__list div:nth-child(5) {
-  transition-delay: 450ms; }
+.ui__prefs.show .range:nth-child(2) .range__list div {
+  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+  .ui__prefs.show .range:nth-child(2) .range__list div:nth-child(1) {
+    animation-delay: 450ms; }
+  .ui__prefs.show .range:nth-child(2) .range__list div:nth-child(2) {
+    animation-delay: 500ms; }
+  .ui__prefs.show .range:nth-child(2) .range__list div:nth-child(3) {
+    animation-delay: 550ms; }
+  .ui__prefs.show .range:nth-child(2) .range__list div:nth-child(4) {
+    animation-delay: 600ms; }
+  .ui__prefs.show .range:nth-child(2) .range__list div:nth-child(5) {
+    animation-delay: 650ms; }
 
-.range.is-active .range__list div:nth-child(6) {
-  transition-delay: 500ms; }
+.ui__prefs.show .range:nth-child(3) .range__label {
+  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 300ms; }
 
-.range.is-active .range__list div:nth-child(7) {
-  transition-delay: 550ms; }
+.ui__prefs.show .range:nth-child(3) .range__track:before {
+  animation: range-stretch-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 400ms; }
 
-.range.is-active .range__list div:nth-child(8) {
-  transition-delay: 600ms; }
+.ui__prefs.show .range:nth-child(3) .range__handle {
+  animation: range-zoom-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 400ms;
+  pointer-events: all; }
 
-.range.is-active .range__list div:nth-child(9) {
-  transition-delay: 650ms; }
+.ui__prefs.show .range:nth-child(3) .range__list div {
+  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+  .ui__prefs.show .range:nth-child(3) .range__list div:nth-child(1) {
+    animation-delay: 550ms; }
+  .ui__prefs.show .range:nth-child(3) .range__list div:nth-child(2) {
+    animation-delay: 600ms; }
+  .ui__prefs.show .range:nth-child(3) .range__list div:nth-child(3) {
+    animation-delay: 650ms; }
+  .ui__prefs.show .range:nth-child(3) .range__list div:nth-child(4) {
+    animation-delay: 700ms; }
+  .ui__prefs.show .range:nth-child(3) .range__list div:nth-child(5) {
+    animation-delay: 750ms; }
 
-.range.is-inactive .range__label, .range.is-inactive .range__track:before, .range.is-inactive .range__handle,
-.range.is-inactive .range__list div {
-  transition-delay: 0;
+.ui__prefs.show .range:nth-child(4) .range__label {
+  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 400ms; }
+
+.ui__prefs.show .range:nth-child(4) .range__track:before {
+  animation: range-stretch-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 500ms; }
+
+.ui__prefs.show .range:nth-child(4) .range__handle {
+  animation: range-zoom-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 500ms;
+  pointer-events: all; }
+
+.ui__prefs.show .range:nth-child(4) .range__list div {
+  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+  .ui__prefs.show .range:nth-child(4) .range__list div:nth-child(1) {
+    animation-delay: 650ms; }
+  .ui__prefs.show .range:nth-child(4) .range__list div:nth-child(2) {
+    animation-delay: 700ms; }
+  .ui__prefs.show .range:nth-child(4) .range__list div:nth-child(3) {
+    animation-delay: 750ms; }
+  .ui__prefs.show .range:nth-child(4) .range__list div:nth-child(4) {
+    animation-delay: 800ms; }
+  .ui__prefs.show .range:nth-child(4) .range__list div:nth-child(5) {
+    animation-delay: 850ms; }
+
+.ui__prefs.show .range:nth-child(5) .range__label {
+  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 500ms; }
+
+.ui__prefs.show .range:nth-child(5) .range__track:before {
+  animation: range-stretch-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 600ms; }
+
+.ui__prefs.show .range:nth-child(5) .range__handle {
+  animation: range-zoom-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 600ms;
+  pointer-events: all; }
+
+.ui__prefs.show .range:nth-child(5) .range__list div {
+  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+  .ui__prefs.show .range:nth-child(5) .range__list div:nth-child(1) {
+    animation-delay: 750ms; }
+  .ui__prefs.show .range:nth-child(5) .range__list div:nth-child(2) {
+    animation-delay: 800ms; }
+  .ui__prefs.show .range:nth-child(5) .range__list div:nth-child(3) {
+    animation-delay: 850ms; }
+  .ui__prefs.show .range:nth-child(5) .range__list div:nth-child(4) {
+    animation-delay: 900ms; }
+  .ui__prefs.show .range:nth-child(5) .range__list div:nth-child(5) {
+    animation-delay: 950ms; }
+
+.ui__prefs.hide .range {
+  transition-duration: 400ms; }
+  .ui__prefs.hide .range .range__label {
+    animation: range-slide-out 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+  .ui__prefs.hide .range .range__track:before {
+    animation: range-stretch-out 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+  .ui__prefs.hide .range .range__handle {
+    animation: range-zoom-out 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    pointer-events: unset; }
+  .ui__prefs.hide .range .range__list div {
+    animation: range-slide-out 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+
+@keyframes range-slide-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1em, 0); }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0); } }
+
+@keyframes range-stretch-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1em, 0) scale3d(0, 1, 1); }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1); } }
+
+@keyframes range-zoom-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1em, 0) scale3d(0.5, 0.5, 0.5); }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1); } }
+
+@keyframes range-slide-out {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0; } }
+
+@keyframes range-stretch-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale3d(0, 1, 1); } }
+
+@keyframes range-zoom-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 0.5); } }
+
+.text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  line-height: 0.75;
+  perspective: 100rem; }
+  .text i {
+    display: inline-block; }
+  .text--title {
+    bottom: 75%;
+    font-size: 4.4em;
+    height: 1.2em;
+    z-index: 1; }
+    .text--title span {
+      display: block; }
+      .text--title span:first-child {
+        font-size: 0.5em;
+        margin-bottom: 0.2em; }
+  .text--note {
+    top: 87%;
+    font-size: 1em;
+    opacity: 0 !important;
+    z-index: 2; }
+  .text--timer {
+    bottom: 75%;
+    font-size: 3.5em;
+    height: 1.25em;
+    z-index: 3; }
+
+.text--title, .text--timer {
   opacity: 0; }
+  .text--title i, .text--timer i {
+    will-change: opacity, transform;
+    opacity: 0; }
+  .text--title.show, .text--timer.show {
+    animation-duration: 1150ms;
+    opacity: 1; }
+    .text--title.show i, .text--timer.show i {
+      opacity: 0;
+      animation: text-flip-in 800ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards; }
+      .text--title.show i:nth-child(1), .text--timer.show i:nth-child(1) {
+        animation-delay: 50ms; }
+      .text--title.show i:nth-child(2), .text--timer.show i:nth-child(2) {
+        animation-delay: 100ms; }
+      .text--title.show i:nth-child(3), .text--timer.show i:nth-child(3) {
+        animation-delay: 150ms; }
+      .text--title.show i:nth-child(4), .text--timer.show i:nth-child(4) {
+        animation-delay: 200ms; }
+      .text--title.show i:nth-child(5), .text--timer.show i:nth-child(5) {
+        animation-delay: 250ms; }
+      .text--title.show i:nth-child(6), .text--timer.show i:nth-child(6) {
+        animation-delay: 300ms; }
+  .text--title.hide, .text--timer.hide {
+    animation-duration: 750ms;
+    opacity: 1; }
+    .text--title.hide i, .text--timer.hide i {
+      opacity: 1;
+      animation: text-flip-out 400ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards; }
+      .text--title.hide i:nth-child(1), .text--timer.hide i:nth-child(1) {
+        animation-delay: 50ms; }
+      .text--title.hide i:nth-child(2), .text--timer.hide i:nth-child(2) {
+        animation-delay: 100ms; }
+      .text--title.hide i:nth-child(3), .text--timer.hide i:nth-child(3) {
+        animation-delay: 150ms; }
+      .text--title.hide i:nth-child(4), .text--timer.hide i:nth-child(4) {
+        animation-delay: 200ms; }
+      .text--title.hide i:nth-child(5), .text--timer.hide i:nth-child(5) {
+        animation-delay: 250ms; }
+      .text--title.hide i:nth-child(6), .text--timer.hide i:nth-child(6) {
+        animation-delay: 300ms; }
 
-.range.is-inactive .range__label {
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+.text--note {
+  will-change: opacity;
+  opacity: 0; }
+  .text--note span {
+    animation: text-blink 800ms cubic-bezier(0.39, 0.575, 0.565, 1) infinite alternate;
+    will-change: opacity;
+    opacity: 0; }
+  .text--note.show {
+    animation: text-fade-in 800ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards; }
+  .text--note.hide {
+    animation: text-fade-out 400ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards; }
 
-.range.is-inactive .range__track:before {
-  transform: translate3d(0, 0, 0) scale3d(0, 1, 1); }
+@keyframes text-flip-in {
+  from {
+    opacity: 0;
+    transform: rotate3d(0, 1, 0, -80deg); }
+  to {
+    opacity: 1;
+    transform: rotate3d(0, 1, 0, 0deg); } }
 
-.range.is-inactive .range__handle {
-  transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 0.5);
-  pointer-events: unset; }
+@keyframes text-flip-out {
+  from {
+    opacity: 1;
+    transform: rotate3d(0, 1, 0, 0deg); }
+  to {
+    opacity: 0;
+    transform: rotate3d(0, 1, 0, 80deg); } }
 
-.range.is-inactive .range__list div {
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+@keyframes text-fade-in {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+
+@keyframes text-fade-out {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0; } }
+
+@keyframes text-blink {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
 
 .btn {
   -webkit-appearance: none;
@@ -219,81 +460,29 @@ body {
     left: 1em; }
 
 .ui {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   pointer-events: none; }
-  .ui__screen {
+  .ui, .ui__game, .ui__texts, .ui__prefs, .ui__buttons {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     overflow: hidden; }
-    .ui__screen--game {
-      z-index: 1; }
-    .ui__screen--menu {
-      z-index: 2; }
-    .ui__screen--prefs {
-      z-index: 3; }
-    .ui__screen--buttons {
-      z-index: 4; }
-  .ui__text {
-    position: absolute;
-    left: 0;
-    right: 0;
-    text-align: center;
-    line-height: 0.75;
-    opacity: 0;
-    perspective: 100rem; }
-    .ui__text i {
-      display: inline-block; }
-    .ui__text--title {
-      bottom: 75%;
-      font-size: 4.4em;
-      height: 1.2em; }
-      .ui__text--title span {
-        display: block; }
-        .ui__text--title span:first-child {
-          font-size: 0.5em;
-          margin-bottom: 0.2em; }
-    .ui__text--note {
-      top: 87%;
-      font-size: 1em; }
-    .ui__text--timer {
-      bottom: 75%;
-      font-size: 3.5em;
-      height: 1.25em; }
   .ui__game {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     pointer-events: all;
-    transform: translate3d(0, 0, 0);
-    will-change: opacity;
-    opacity: 1; }
+    z-index: 1; }
     .ui__game canvas {
       display: block;
       width: 100%;
       height: 100%; }
-    .ui__game.is-inactive {
-      transition: opacity 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 400ms;
-      opacity: 0.05; }
-    .ui__game.is-active {
-      transition: opacity 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      opacity: 1; }
+  .ui__texts {
+    z-index: 2; }
   .ui__prefs {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
-    overflow: hidden; }
+    overflow: hidden;
+    z-index: 3; }
+  .ui__buttons {
+    z-index: 4; }

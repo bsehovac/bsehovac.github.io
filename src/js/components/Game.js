@@ -4,11 +4,13 @@ class Game {
 
     this.dom = {
       game: document.querySelector( '.ui__game' ),
+      texts: document.querySelector( '.ui__texts' ),
       prefs: document.querySelector( '.ui__prefs' ),
-      menu: document.querySelector( '.ui__menu' ),
-      title: document.querySelector( '.ui__text--title' ),
-      note: document.querySelector( '.ui__text--note' ),
-      timer: document.querySelector( '.ui__text--timer' ),
+
+      title: document.querySelector( '.text--title' ),
+      note: document.querySelector( '.text--note' ),
+      timer: document.querySelector( '.text--timer' ),
+
       buttons: {
         settings: document.querySelector( '.btn--settings' ),
       }
@@ -25,7 +27,7 @@ class Game {
     this.icons = new CUBE.Icons();
 
     this.initStart();
-    //this.initPause();
+    // this.initPause();
     this.initPrefs();
 
     this.saved = this.cube.loadState();
@@ -122,56 +124,57 @@ class Game {
 
     const button = this.dom.buttons.settings;
 
-    button.addEventListener( 'click', e => {
-
-      e.stopPropagation();
+    button.addEventListener( 'click', () => {
 
       if ( this.animating ) return;
+
       this.animating = true;
-      setTimeout( () => { this.animating = false; }, 1500 );
 
       button.classList.toggle( 'is-active' );
 
       if ( button.classList.contains( 'is-active' ) ) {
 
-        if ( !this.playing ) {
-
-          this.transition.title( false, 0 );
-
-        } else {
+        if ( this.playing ) {
 
           this.controls.disabled = true;
           this.timer.stop();
-          this.transition.timer( false, 0 );
 
         }
 
-        this.transition.preferences( true, 600 );
-        this.dom.game.classList.add( 'is-inactive' );
-        this.dom.game.classList.remove( 'is-active' );
+        this.transition[ this.playing ? 'timer' : 'title' ]( false, () => {
+
+          this.transition.preferences( true, () => {
+
+            this.animating = false;
+
+          } )
+
+        } );
 
       } else {
 
-        if ( !this.playing ) {
-
-          this.transition.title( true, 600 );
-
-        } else {
+        if ( this.playing ) {
 
           this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
-          this.transition.timer( true, 600 );
-          setTimeout( () => {
-
-            this.controls.disabled = false;
-            this.timer.start( true );
-
-          }, 1500 );
 
         }
 
-        this.transition.preferences( false, 0 );
-        this.dom.game.classList.add( 'is-active' );
-        this.dom.game.classList.remove( 'is-inactive' );
+        this.transition.preferences( false, () => {
+
+          this.transition[ this.playing ? 'timer' : 'title' ]( true, () => {
+
+            this.animating = false;
+
+            if ( this.playing ) {
+
+              this.controls.disabled = false;
+              this.timer.start( true );
+
+            }
+
+          } );
+
+        } );
 
       }
 

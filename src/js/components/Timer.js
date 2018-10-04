@@ -5,7 +5,6 @@ class Timer {
 		this.game = game;
 
 		this.startTime = null;
-		this.animate = this.update.bind( this );
 
 	}
 
@@ -15,7 +14,7 @@ class Timer {
 		this.deltaTime = 0;
 		this.converted = this.convert( this.deltaTime );
 
-		CUBE.Animate.add( this.animate );
+		this.animate = requestAnimationFrame( () => this.update() );
 
 	}
 
@@ -24,7 +23,7 @@ class Timer {
 		this.currentTime = Date.now();
 		this.deltaTime = this.currentTime - this.startTime;
 
-		CUBE.Animate.remove( this.animate );
+		clearAnimationFrame( this.animate );
 
 		return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
 
