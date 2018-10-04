@@ -31,7 +31,7 @@ class Preferences {
 
       scramble: new CUBE.Range( 'scramble', {
         value: this.game.scrambler.scrambleLength,
-        range: [ 10, 30 ],
+        range: [ 20, 30 ],
         step: 5,
         onComplete: value => {
 
@@ -70,10 +70,10 @@ class Preferences {
 
   load() {
 
-    const flipSpeed = localStorage.getItem( 'flipSpeed' );
-    const flipBounce = localStorage.getItem( 'flipBounce' );
-    const scrambleLength = localStorage.getItem( 'scrambleLength' );
-    const fov = localStorage.getItem( 'fov' );
+    const flipSpeed = parseFloat( localStorage.getItem( 'flipSpeed' ) );
+    const flipBounce = parseFloat( localStorage.getItem( 'flipBounce' ) );
+    const scrambleLength = parseFloat( localStorage.getItem( 'scrambleLength' ) );
+    const fov = parseFloat( localStorage.getItem( 'fov' ) );
     // const theme = localStorage.getItem( 'theme' );
 
     if ( flipSpeed != null ) this.game.controls.options.flipSpeed = flipSpeed;

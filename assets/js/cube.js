@@ -2025,7 +2025,7 @@
 	    const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.title ).animationDuration ) * 1000;
 
 	    if ( typeof callback === 'function' )
-	      setTimeout( () => callback(), callbackTimeout );
+	      setTimeout( () => callback(), callbackTimeout * 0.75 );
 
 	  }
 
@@ -2033,13 +2033,13 @@
 
 	    CUBE.Lettering( this.game.dom.timer );
 
-	    this.game.dom.timer.classList.add( ( show ) ? 'flip-in' : 'flip-out' );
-	    this.game.dom.timer.classList.remove( ( show ) ? 'flip-out' : 'flip-in' );
+	    this.game.dom.timer.classList.add( ( show ) ? 'show' : 'hide' );
+	    this.game.dom.timer.classList.remove( ( show ) ? 'hide' : 'show' );
 
 	    const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.timer ).animationDuration ) * 1000;
 
 	    if ( typeof callback === 'function' )
-	      setTimeout( () => callback(), callbackTimeout );
+	      setTimeout( () => callback(), callbackTimeout * 0.75 );
 
 	  }  
 
@@ -2051,7 +2051,7 @@
 	    const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.prefs ).animationDuration ) * 1000;
 
 	    if ( typeof callback === 'function' )
-	      setTimeout( () => callback(), callbackTimeout );
+	      setTimeout( () => callback(), callbackTimeout * 0.75 );
 
 	  }
 	  
@@ -2102,6 +2102,8 @@
 				this.game.dom.timer.innerHTML = this.converted;
 
 			}
+
+			this.animate = requestAnimationFrame( () => this.update() );
 
 		}
 
@@ -2172,8 +2174,7 @@
 	      this.timer.stop();
 	      this.controls.disabled = true;
 
-	      this.transition.title( true, 600 );
-	      this.transition.timer( false, 0 );
+	      this.transition.title( true, () => this.transition.timer( false ) );
 
 	      this.transition.zoom( false, 0, () => {} );
 
@@ -2212,12 +2213,12 @@
 
 	      } else {
 
+	        this.dom.timer.classList.remove( 'hide' );
 	        this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
 
 	      }
 
-	      this.transition.title( false, 0 );
-	      this.transition.timer( true, 600 );
+	      this.transition.title( false, () => this.transition.timer( true ) );
 
 	      this.transition.zoom( true, duration, () => {
 
@@ -2250,6 +2251,8 @@
 
 	      if ( button.classList.contains( 'is-active' ) ) {
 
+	        this.dom.game.classList.add( 'hide' );
+
 	        if ( this.playing ) {
 
 	          this.controls.disabled = true;
@@ -2269,8 +2272,11 @@
 
 	      } else {
 
+	        this.dom.game.classList.remove( 'hide' );
+
 	        if ( this.playing ) {
 
+	          this.dom.timer.classList.remove( 'hide' );
 	          this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
 
 	        }
@@ -2503,7 +2509,7 @@
 
 	      scramble: new CUBE.Range( 'scramble', {
 	        value: this.game.scrambler.scrambleLength,
-	        range: [ 10, 30 ],
+	        range: [ 20, 30 ],
 	        step: 5,
 	        onComplete: value => {
 
@@ -2542,10 +2548,10 @@
 
 	  load() {
 
-	    const flipSpeed = localStorage.getItem( 'flipSpeed' );
-	    const flipBounce = localStorage.getItem( 'flipBounce' );
-	    const scrambleLength = localStorage.getItem( 'scrambleLength' );
-	    const fov = localStorage.getItem( 'fov' );
+	    const flipSpeed = parseFloat( localStorage.getItem( 'flipSpeed' ) );
+	    const flipBounce = parseFloat( localStorage.getItem( 'flipBounce' ) );
+	    const scrambleLength = parseFloat( localStorage.getItem( 'scrambleLength' ) );
+	    const fov = parseFloat( localStorage.getItem( 'fov' ) );
 	    // const theme = localStorage.getItem( 'theme' );
 
 	    if ( flipSpeed != null ) this.game.controls.options.flipSpeed = flipSpeed;

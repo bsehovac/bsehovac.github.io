@@ -54,8 +54,7 @@ class Game {
       this.timer.stop();
       this.controls.disabled = true;
 
-      this.transition.title( true, 600 );
-      this.transition.timer( false, 0 );
+      this.transition.title( true, () => this.transition.timer( false ) );
 
       this.transition.zoom( false, 0, () => {} );
 
@@ -96,12 +95,12 @@ class Game {
 
       } else {
 
+        this.dom.timer.classList.remove( 'hide' );
         this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
 
       }
 
-      this.transition.title( false, 0 );
-      this.transition.timer( true, 600 );
+      this.transition.title( false, () => this.transition.timer( true ) );
 
       this.transition.zoom( true, duration, () => {
 
@@ -134,6 +133,8 @@ class Game {
 
       if ( button.classList.contains( 'is-active' ) ) {
 
+        this.dom.game.classList.add( 'hide' );
+
         if ( this.playing ) {
 
           this.controls.disabled = true;
@@ -153,8 +154,11 @@ class Game {
 
       } else {
 
+        this.dom.game.classList.remove( 'hide' );
+
         if ( this.playing ) {
 
+          this.dom.timer.classList.remove( 'hide' );
           this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
 
         }

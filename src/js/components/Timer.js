@@ -44,6 +44,8 @@ class Timer {
 
 		}
 
+		this.animate = requestAnimationFrame( () => this.update() );
+
 	}
 
 	convert( time ) {

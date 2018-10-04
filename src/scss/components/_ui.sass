@@ -14,6 +14,11 @@
   &__game
     pointer-events: all
     z-index: 1
+    will-change: opacity
+    transition: opacity 600ms $easeOutQuad
+
+    &.hide
+      opacity: 0
 
     canvas
       display: block
@@ -36,21 +41,21 @@
     overflow: hidden
     z-index: 3
 
-    &:before
-      @include fullscreen
-      content: ''
-      background: #fff
-      opacity: 0
-      will-change: opacity
-      z-index: -1
+    // &:before
+    //   @include fullscreen
+    //   content: ''
+    //   background: #fff
+    //   opacity: 0
+    //   will-change: opacity
+    //   z-index: -1
 
-    &.show:before
-      transition: opacity 400ms $easeOutQuad
-      opacity: 0.95
+    // &.show:before
+    //   transition: opacity 400ms $easeOutQuad
+    //   opacity: 0.95
 
-    &.hide:before
-      transition: opacity 400ms $easeInQuad
-      opacity: 0
+    // &.hide:before
+    //   transition: opacity 400ms $easeInQuad
+    //   opacity: 0
 
   &__buttons
     z-index: 4

@@ -138,7 +138,7 @@ class Transition {
     const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.title ).animationDuration ) * 1000;
 
     if ( typeof callback === 'function' )
-      setTimeout( () => callback(), callbackTimeout );
+      setTimeout( () => callback(), callbackTimeout * 0.75 );
 
   }
 
@@ -146,13 +146,13 @@ class Transition {
 
     CUBE.Lettering( this.game.dom.timer );
 
-    this.game.dom.timer.classList.add( ( show ) ? 'flip-in' : 'flip-out' );
-    this.game.dom.timer.classList.remove( ( show ) ? 'flip-out' : 'flip-in' );
+    this.game.dom.timer.classList.add( ( show ) ? 'show' : 'hide' );
+    this.game.dom.timer.classList.remove( ( show ) ? 'hide' : 'show' );
 
     const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.timer ).animationDuration ) * 1000;
 
     if ( typeof callback === 'function' )
-      setTimeout( () => callback(), callbackTimeout );
+      setTimeout( () => callback(), callbackTimeout * 0.75 );
 
   }  
 
@@ -164,7 +164,7 @@ class Transition {
     const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.prefs ).animationDuration ) * 1000;
 
     if ( typeof callback === 'function' )
-      setTimeout( () => callback(), callbackTimeout );
+      setTimeout( () => callback(), callbackTimeout * 0.75 );
 
   }
   
