@@ -122,7 +122,7 @@ class Controls {
 
     this.draggable = new Draggable( this.game.dom.game );
 
-    this.spring.setAtRest();
+    this.spring.setAtRest(); // OVO STAVITI SAMO U DRAG I TO KADA ODRADI DELTU I IZABERE PRAVAC DA NE PREKIDA ODMAH ANIMACIJU
 
     this.draggable.onDragStart = position => {
 

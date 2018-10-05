@@ -6,7 +6,6 @@ var springSystem = new rebound.SpringSystem();
 var mainSpring = springSystem.createSpring();
 
 var lastX = 0;
-var panVelocity = 0;
 var isDragging = false;
 
 
@@ -14,41 +13,47 @@ var isDragging = false;
 
 
 startDragging = function(x) {
+
   lastX = x;
   isDragging = true;
   viewportWidth = $("#wrapper").innerWidth();
-  mainSpring.setAtRest();
+  mainSpring.setAtRest(); // OVO STAVITI SAMO U DRAG I TO KADA ODRADI DELTU I IZABERE PRAVAC DA NE PREKIDA ODMAH ANIMACIJU
+
 }
 
 continueDragging = function(x) {
-  panVelocity = x - lastX;
+
+  delta = x - lastX;
   lastX = x;
   
-  continueTrackingWithDelta(panVelocity);
+  continueTrackingWithDelta(delta);
+
 }
 
 continueTrackingWithDelta = function(delta) {
-  panVelocity = delta;
 
-  var progress = progressForValueInRange(delta,0,-viewportWidth);
+  var progress = progressForValueInRange(delta, 0, -viewportWidth);
   
-  var currentValue = mainSpring.getCurrentValue();
+  var currentValue = mainSpring.getCurrentValue(); // OVO MALO PREGLEDATI STA SE DOBIJA KAO CURRENT A STA JE DELTA I KAKO SE KONVERTUJE NA ROTACIJU DELTA
   
   // Rubberband when beyond the scroll boundaries
-  if ((currentValue + progress) < 0 || (currentValue + progress) > tabs.length - 1)
-    progress *= 0.5;
+  // if ((currentValue + progress) < 0 || (currentValue + progress) > tabs.length - 1)
+  //   progress *= 0.5;
   
   mainSpring.setCurrentValue(currentValue + progress);
   mainSpring.setAtRest();
+
 }
 
 endTrackingInputMode = function(inputMode) {
+
   var currentPosition = mainSpring.getCurrentValue();
-  var startPosition = endValue;
+
+  var startPosition = endValue; // end value je trenutno izabran objekat tamo kod njega on se podesava u selectTabIndex
 
   var positionDelta = currentPosition - startPosition;
-  var swipingTowardsCurrentPage = (positionDelta > 0 && panVelocity > 0) || (positionDelta < 0 && panVelocity < 0); 
-  var passedVelocityTolerance = (Math.abs(panVelocity) > 3);
+  var swipingTowardsCurrentPage = (positionDelta > 0 && delta > 0) || (positionDelta < 0 && delta < 0); 
+  var passedVelocityTolerance = (Math.abs(delta) > 3);
   var passedDistanceTolerance = (Math.abs(positionDelta) > 0.3);
   
   if (inputMode == "desktop-scroll") {
@@ -56,7 +61,7 @@ endTrackingInputMode = function(inputMode) {
   }
   
   var shouldAdvance = (passedDistanceTolerance || passedVelocityTolerance) && !swipingTowardsCurrentPage;
-  var directionIsForward = (panVelocity <= 0);
+  var directionIsForward = (delta <= 0);
   
   if (shouldAdvance) {
     var targetIndex;
@@ -72,9 +77,9 @@ endTrackingInputMode = function(inputMode) {
     selectTabIndex(startPosition, true);        
   }
   
-  var normalizedVelocity = progressForValueInRange(panVelocity,0,-viewportWidth);
+  var normalizedVelocity = progressForValueInRange(delta,0,-viewportWidth);
   mainSpring.setVelocity(normalizedVelocity * 30);
-  panVelocity = 0;
+  delta = 0;
   isDragging = false;
 }
 
