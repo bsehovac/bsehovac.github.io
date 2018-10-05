@@ -16,6 +16,8 @@ class Game {
       }
     };
 
+    this.springSystem = new REBOUND.SpringSystem();
+
     this.world = new CUBE.World( this );
     this.cube = new CUBE.Cube( this );
     this.controls = new CUBE.Controls( this );
@@ -26,39 +28,18 @@ class Game {
     this.preferences = new CUBE.Preferences( this );
     this.icons = new CUBE.Icons();
 
-    this.initStart();
+    // this.initStart();
     // this.initPause();
-    this.initPrefs();
+    // this.initPrefs();
 
-    this.saved = this.cube.loadState();
-    this.playing = false;
-    this.animating = true;
+    // this.saved = this.cube.loadState();
+    // this.playing = false;
+    // this.animating = true;
 
-    this.transition.drop();
+    // this.transition.drop();
 
-    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
-    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
-
-  }
-
-  initPause() {
-
-    this.dom.buttons.home.onclick = e => {
-
-      e.stopPropagation();
-      if ( !this.playing ) return;
-
-      // this.dom.buttons.home.style.visibility = 'hidden';
-
-      this.playing = false;
-      this.timer.stop();
-      this.controls.disabled = true;
-
-      this.transition.title( true, () => this.transition.timer( false ) );
-
-      this.transition.zoom( false, 0, () => {} );
-
-    }
+    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
+    // this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
   }
 
@@ -116,6 +97,27 @@ class Game {
 
     this.dom.game.addEventListener( 'click', tapHandler, false );
     this.dom.game.addEventListener( 'touchstart', tapHandler, false );
+
+  }
+
+  initPause() {
+
+    this.dom.buttons.home.onclick = e => {
+
+      e.stopPropagation();
+      if ( !this.playing ) return;
+
+      // this.dom.buttons.home.style.visibility = 'hidden';
+
+      this.playing = false;
+      this.timer.stop();
+      this.controls.disabled = true;
+
+      this.transition.title( true, () => this.transition.timer( false ) );
+
+      this.transition.zoom( false, 0, () => {} );
+
+    }
 
   }
 

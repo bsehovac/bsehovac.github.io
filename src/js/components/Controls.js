@@ -37,20 +37,92 @@ class Controls {
     this.onMove = () => {};
 
     this.drag = {};
-    this.momentum = [];
     this.moves = [];
 
     this.disabled = false;
     this.scramble = null;
     this.state = 'still';
 
+    this.initSpring();
     this.initDraggable();
+
+  }
+
+  initSpring() {
+
+    this.spring = this.game.springSystem.createSpring( 50, 3 );
+    this.spring.setSpringConfig( REBOUND.SpringConfig.fromQcTensionAndFriction( 4.5, 5.7 ) );
+    this.spring.setAtRest();
+
+    this.spring.addListener( {
+      onSpringUpdate: spring => {
+
+        // Progress from 0 to n
+        let progress = spring.getCurrentValue() * Math.PI / 2;
+
+        if ( this.drag.type === 'layer' ) { 
+
+          this.group.setRotationFromAxisAngle( this.drag.axis, progress );
+          // this.drag.angle += rotation;
+
+        } else {
+
+          this.edges.setRotationFromAxisAngle( this.drag.axis, progress );
+          this.game.cube.object.rotation.copy( this.edges.rotation );
+          // this.drag.angle += rotation;
+
+        }
+
+      },
+      onSpringAtRest: spring => {
+
+        if ( this.state == 'finishing' ) {
+
+          this.state = 'still';
+          this.drag.active = false;
+
+        }
+
+        // const momentum = this.getMomentum()[ this.drag.direction ];
+        // const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this.drag.angle ) < Math.PI / 2 );
+
+        // const angle = flip
+        //   ? this.roundAngle( this.drag.angle + Math.sign( this.drag.angle ) * ( Math.PI / 4 ) )
+        //   : this.roundAngle( this.drag.angle );
+
+        // const delta = angle - this.drag.angle;
+
+        // if ( this.drag.type === 'layer' ) {
+
+        //   this.rotateLayer( delta, false, layer => {
+
+        //     this.addMove( angle, layer );
+        //     this.checkIsSolved();
+        //     this.state = 'still';
+
+        //   } );
+
+        // } else {
+
+        //   this.rotateCube( delta, () => {
+
+        //     this.drag.active = false;
+        //     this.state = 'still';
+
+        //   } );
+
+        // }
+
+      }
+    } );
 
   }
 
   initDraggable() {
 
     this.draggable = new Draggable( this.game.dom.game );
+
+    this.spring.setAtRest();
 
     this.draggable.onDragStart = position => {
 
@@ -110,7 +182,6 @@ class Controls {
       this.drag.delta = point.clone().sub( this.drag.current ).setZ( 0 );
       this.drag.total.add( this.drag.delta );
       this.drag.current = point;
-      this.addMomentumPoint( this.drag.delta );
 
       if ( this.drag.axis === null && this.drag.total.length() > 0.05 ) {
 
@@ -143,20 +214,31 @@ class Controls {
 
       } else if ( this.drag.axis !== null ) {
 
-        const rotation = this.drag.delta[ this.drag.direction ];// * 2.25;
-
-        if ( this.drag.type === 'layer' ) { 
-
-          this.group.rotateOnAxis( this.drag.axis, rotation );
-          this.drag.angle += rotation;
-
-        } else {
-
-          this.edges.rotateOnWorldAxis( this.drag.axis, rotation );
-          this.game.cube.object.rotation.copy( this.edges.rotation );
-          this.drag.angle += rotation;
-
+        const progressForValueInRange = function(value, startValue, endValue) {
+          return (value - startValue) / (endValue - startValue);
         }
+
+        const rotation = this.drag.delta[ this.drag.direction ];
+
+        let progress = progressForValueInRange(rotation, 0, 1);
+
+        let currentValue = this.spring.getCurrentValue();
+
+        this.spring.setCurrentValue(currentValue + progress);
+        this.spring.setAtRest();
+
+        // if ( this.drag.type === 'layer' ) { 
+
+        //   this.group.rotateOnAxis( this.drag.axis, rotation );
+        //   this.drag.angle += rotation;
+
+        // } else {
+
+        //   this.edges.rotateOnWorldAxis( this.drag.axis, rotation );
+        //   this.game.cube.object.rotation.copy( this.edges.rotation );
+        //   this.drag.angle += rotation;
+
+        // }
 
       }
 
@@ -168,35 +250,7 @@ class Controls {
 
       this.state = 'finishing';
 
-      const momentum = this.getMomentum()[ this.drag.direction ];
-      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this.drag.angle ) < Math.PI / 2 );
-
-      const angle = flip
-        ? this.roundAngle( this.drag.angle + Math.sign( this.drag.angle ) * ( Math.PI / 4 ) )
-        : this.roundAngle( this.drag.angle );
-
-      const delta = angle - this.drag.angle;
-
-      if ( this.drag.type === 'layer' ) {
-
-        this.rotateLayer( delta, false, layer => {
-
-          this.addMove( angle, layer );
-          this.checkIsSolved();
-          this.state = 'still';
-
-        } );
-
-      } else {
-
-        this.rotateCube( delta, () => {
-
-          this.drag.active = false;
-          this.state = 'still';
-
-        } );
-
-      }
+      this.spring.setEndValue( Math.ceil( Math.abs( this.spring.getCurrentValue() ) ) * Math.sign( this.spring.getCurrentValue() ) )
 
     };
 
@@ -513,33 +567,6 @@ class Controls {
     child.applyMatrix( new THREE.Matrix4().getInverse( parent.matrixWorld ) );
     this.game.world.scene.remove( child );
     parent.add( child );
-
-  }
-
-  addMomentumPoint( delta ) {
-
-    const time = Date.now();
-
-    this.momentum = this.momentum.filter( moment => time - moment.time < 500 );
-
-    if ( delta !== false ) this.momentum.push( { delta, time } );
-
-  }
-
-  getMomentum() {
-
-    const points = this.momentum.length;
-    const momentum = new THREE.Vector2();
-
-    this.addMomentumPoint( false );
-
-    this.momentum.forEach( ( point, index ) => {
-
-      momentum.add( point.delta.multiplyScalar( index / points ) )
-
-    } );
-
-    return momentum;
 
   }
 

@@ -4,7 +4,7 @@ class Preferences {
 
     this.game = game;
 
-    this.load();
+    // this.load();
 
     this.elements = {
 
