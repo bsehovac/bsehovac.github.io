@@ -8,103 +8,84 @@ class Transition {
     this.tweens = {};
 
     this.data.cubeY = -0.2;
-    this.data.floatScale = 1;
     this.data.cameraZoom = 0.85;
+
+    this.springs = {};
 
   }
 
   drop() {
 
     this.game.controls.disabled = true;
-    this.data.floatScale = 1;
     this.data.cubeY = -0.2;
 
     this.game.cube.object.position.y = this.data.cubeY;
     this.game.controls.edges.position.y = this.data.cubeY;
-    this.game.cube.animator.position.set( -2, 4, -2 );
-    this.game.cube.animator.rotation.x = - Math.PI / 4;
-    this.game.cube.shadow.material.opacity = 0;
     this.game.world.camera.zoom = this.data.cameraZoom;
     this.game.world.camera.updateProjectionMatrix();
 
-    this.tweens.drop = new CUBE.Tween( {
-      target: this.game.cube.animator.position,
-      duration: 2500,
-      easing: 'easeOutCubic',
-      to: { x: 0, y: - 0.1 * this.data.floatScale, z: 0 },
-      onUpdate: () => {
+    this.springs.drop = this.game.springSystem.createSpring( 30, 6 ).setSpringSpeedFix( 0.04 );
+    this.springs.drop.data.direction = 1;
 
-        this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
+    this.springs.drop.addListener( {
+
+      onSpringUpdate: spring => {
+
+        const current = spring.getCurrentValue();
+        // const rotation = current * Math.PI / 2;
+
+        this.game.cube.animator.position.y = 4 * current;
+        this.game.cube.animator.rotation.x = Math.PI / 3 * current;
+        this.game.cube.shadow.material.opacity =
+          Math.max( this.progressForValueInRange(
+            this.game.cube.animator.position.y, 1, this.game.cube.shadow.position.y + 0.5 + this.data.cubeY ),
+          0 );
 
       },
-      onComplete: () => { this.float( true ); this.game.animating = false; },
+
+      onSpringAtRest: spring => {},
+
     } );
 
-    this.tweens.rotate = new CUBE.Tween( {
-      target: this.game.cube.animator.rotation,
-      duration: 2500,
-      easing: 'easeOutCubic',
-      to: { x: 0 },
-    } );
+    this.springs.drop.setCurrentValue( 1 ).setAtRest();
 
-    setTimeout( () => { this.title( true, 0 ); }, 2000 );
+    setTimeout( () => {
+
+      this.title( true, () => {
+
+        this.game.animating = false;
+        this.game.controls.disabled = false;
+
+      } );
+      this.springs.drop.setEndValue( 0 );
+
+    }, 200 );
 
   }
 
-  float( drop ) {
+  float() {
 
-    if ( typeof this.data.floatScale == 'undefined' ) this.data.floatScale = 1;
+    this.tweens.float = new CUBE.Tween( {
+      duration: 1500,
+      easing: 'easeInOutSine',
+      yoyo: true,
+      onUpdate: tween => {
 
-    if ( drop ) {
+        this.game.cube.holder.position.y = -0.015 + tween.progress * 0.03;
+        this.game.cube.holder.rotation.z = 0.006 - tween.progress * 0.012 ;
 
-      this.tweens.float = new CUBE.Tween( {
-        duration: 2500,
-        easing: 'easeInOutSine',
-        yoyo: true,
-        onUpdate: tween => {
-
-          this.game.cube.animator.position.y =
-            - 0.1 * this.data.floatScale + tween.progress * 0.2 * this.data.floatScale;
-
-          this.game.cube.shadow.material.opacity =
-            0.4 - this.game.cube.animator.position.y * 0.5;
-
-        },
-      } );
-
-    } else {
-
-      this.tweens.float = new CUBE.Tween( {
-        duration: 2500 / 2,
-        easing: 'easeOutSine',
-        onUpdate: tween => {
-
-          this.game.cube.animator.position.y = tween.progress * - 0.1 * this.data.floatScale;
-          this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
-
-        },
-        onComplete: () => { this.float( true ); },
-      } );
-
-    }
+      },
+    } );
 
   }
 
   zoom( game, time, callback ) {
 
-    const floatScale = ( game ) ? 0.25 : 1;
     const zoom = ( game ) ? 1 : this.data.cameraZoom;
     const cubeY = ( game ) ? 0 : this.data.cubeY;
     const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
     const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
     const easing = ( time > 0 ) ? 'easeInOutQuad' : 'easeInOutCubic';
-
-    this.tweens.scale = new CUBE.Tween( {
-      target: this.data,
-      duration: duration,
-      easing: easing,
-      to: { floatScale: floatScale },
-    } );
 
     this.tweens.zoom = new CUBE.Tween( {
       target: this.game.world.camera,
@@ -138,7 +119,7 @@ class Transition {
     const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.title ).animationDuration ) * 1000;
 
     if ( typeof callback === 'function' )
-      setTimeout( () => callback(), callbackTimeout * 0.75 );
+      setTimeout( () => callback(), callbackTimeout * 0.5 );
 
   }
 
@@ -167,6 +148,8 @@ class Transition {
       setTimeout( () => callback(), callbackTimeout * 0.75 );
 
   }
+
+  progressForValueInRange(value, start, end) { return (value - start) / (end - start) }
   
 }
 

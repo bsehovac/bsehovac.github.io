@@ -1,5 +1,13 @@
 import { Draggable } from './Draggable.js';
 
+const STILL = 0;
+const PREPARING = 1;
+const ROTATING = 2;
+const ANIMATING = 3;
+
+const LAYER = 0;
+const CUBE = 1;
+
 class Controls {
 
   constructor( game ) {
@@ -7,8 +15,7 @@ class Controls {
     this.game = game;
 
     this.options = {
-      flipSpeed: 300,
-      flipBounce: 1.70158,
+      flipSpeed: 0.15, // 0 slower, 1 faster
       scrambleSpeed: 150,
       scrambleBounce: 0,
     };
@@ -34,6 +41,7 @@ class Controls {
     this.game.world.scene.add( this.edges );
 
     this.onSolved = () => {};
+    this.onFirstMove = () => {};
     this.onMove = () => {};
 
     this.drag = {};
@@ -42,9 +50,90 @@ class Controls {
 
     this.disabled = false;
     this.scramble = null;
-    this.state = 'still';
+    this.state = STILL;
 
+    this.initSpring();
     this.initDraggable();
+
+  }
+
+  initSpring() {
+
+    this.spring = this.game.springSystem
+      .createSpring( 70, 8 )
+      .setSpringSpeedFix( this.options.flipSpeed )
+      .setAtRest();
+
+    this.spring.addListener( {
+
+      onSpringUpdate: spring => {
+
+        if ( ! ( this.state == ROTATING || this.state == ANIMATING ) ) return;
+
+        const current = spring.getCurrentValue();
+        const rotation = current * Math.PI / 2;
+        const rotationDelta = rotation - this.spring.data.oldValue;
+        this.spring.data.oldValue = rotation;
+
+        if ( this.spring.data.type === LAYER ) { 
+
+          this.group.rotateOnAxis( this.drag.axis, rotationDelta );
+
+          if ( this.state == ANIMATING ) this.cubeBounce( rotationDelta );
+
+        } else {
+
+          this.edges.rotateOnWorldAxis( this.drag.axis, rotationDelta );
+          this.game.cube.object.rotation.copy( this.edges.rotation );
+
+        }
+
+      },
+
+      onSpringAtRest: spring => {
+
+        if ( this.state == ANIMATING ) {
+
+          this.roundCubeRotation();
+
+          if ( this.spring.data.type === LAYER ) {
+
+            const layer = this.drag.layer.slice( 0 );
+
+            this.deselectLayer( this.drag.layer );
+            this.game.cube.saveState();
+
+            // flipping callback dont use in scramble
+            // this.addMove( angle, layer );
+            // this.checkIsSolved();
+
+          }
+
+          this.state = this.drag.canGetDelta ? PREPARING : STILL;
+          this.spring.setSpringSpeedFix( this.options.flipSpeed );
+
+          console.log( 'animation complete duration', performance.now() - window.startTime );
+
+        }
+
+      }
+
+    } );
+
+  }
+
+  cubeBounce( rotationDelta ) {
+
+    const currentAbsolute = Math.abs( this.spring.getCurrentValue() );
+
+    if ( currentAbsolute >= 1 && this.spring.data.fixDelta ) {
+
+      rotationDelta = ( currentAbsolute - 1 ) * this.spring.getEndValue() * Math.PI / 2;
+      this.spring.data.fixDelta = false;
+
+    }
+
+    if ( ! this.spring.data.fixDelta ) this.game.cube.object.rotateOnAxis( this.drag.axis, rotationDelta );
 
   }
 
@@ -54,14 +143,33 @@ class Controls {
 
     this.draggable.onDragStart = position => {
 
-      if ( this.state !== 'still' || this.disabled || this.scramble !== null ) return;
+      this.drag.canGetDelta = false;
+
+      if ( this.disabled || this.scramble !== null ) return;
+
+      if ( this.state === ANIMATING ) {
+
+        const current = this.spring.getCurrentValue();
+        const currentAbsolute = Math.abs( current );
+
+        if ( currentAbsolute > 0.95 && currentAbsolute < 1.05 ) {
+
+          this.spring.setSpringSpeedFix( this.options.flipSpeed * 5 );
+          this.drag.canGetDelta = true;
+
+        }
+
+      }
+
+      if ( !( this.state === STILL || this.state === ANIMATING ) ) return;
+      if ( this.state === ANIMATING && ! this.drag.canGetDelta ) return;
 
       const edgeIntersect = this.getIntersect( position.current, this.edges, false );
 
       if ( edgeIntersect !== false ) {
 
         this.drag.normal = edgeIntersect.face.normal.round();
-        this.drag.type = 'layer';
+        this.drag.type = LAYER;
 
         this.attach( this.helper, this.game.cube.object )
 
@@ -73,12 +181,13 @@ class Controls {
 
         this.detach( this.helper, this.game.cube.object );
 
+        this.helper.rotation.setFromVector3( this.roundRotation( this.helper.rotation.toVector3() ) );
         this.drag.intersect = this.getIntersect( position.current, this.game.cube.cubes, true );
 
       } else {
 
         this.drag.normal = new THREE.Vector3( 0, 0, 1 );
-        this.drag.type = 'cube';
+        this.drag.type = CUBE;
 
         this.helper.position.set( 0, 0, 0 );
         this.helper.rotation.set( 0, Math.PI / 4, 0 );
@@ -91,16 +200,17 @@ class Controls {
 
       this.drag.current = this.helper.worldToLocal( planeIntersect );
       this.drag.total = new THREE.Vector3();
-      this.drag.axis = null;
       this.drag.delta = null;
-      this.drag.angle = 0;
-      this.state = 'preparing';
+      this.state = ( this.state !== ANIMATING ) ? PREPARING : ANIMATING;
 
     };
 
     this.draggable.onDragMove = position => {
 
-      if ( ( this.state !== 'preparing' && this.state !== 'rotating' ) || this.disabled || this.scramble !== null ) return;
+      if ( this.disabled || this.scramble !== null ) return;
+
+      if ( this.state === STILL ) return;
+      if ( this.state === ANIMATING && ! this.drag.canGetDelta ) return;
 
       const planeIntersect = this.getIntersect( position.current, this.helper, false );
       if ( planeIntersect === false ) return;
@@ -112,11 +222,11 @@ class Controls {
       this.drag.current = point;
       this.addMomentumPoint( this.drag.delta );
 
-      if ( this.drag.axis === null && this.drag.total.length() > 0.05 ) {
+      if ( this.state === PREPARING && this.drag.total.length() > 0.05 ) {
 
         this.drag.direction = this.getMainAxis( this.drag.total );
 
-        if ( this.drag.type === 'layer' ) {
+        if ( this.drag.type === LAYER ) {
 
           const direction = new THREE.Vector3();
           direction[ this.drag.direction ] = 1;
@@ -139,24 +249,20 @@ class Controls {
 
         }
 
-        this.state = 'rotating';
+        this.spring.data.type = this.drag.type;
+        this.spring.data.oldValue = 0;
+        this.spring.data.fixDelta = true;
+        this.spring.setCurrentValue( 0 ).setAtRest();
 
-      } else if ( this.drag.axis !== null ) {
+        this.state = ROTATING;
 
-        const rotation = this.drag.delta[ this.drag.direction ];// * 2.25;
+      } else if ( this.state === ROTATING ) {
 
-        if ( this.drag.type === 'layer' ) { 
+        this.spring
+          .setCurrentValue( this.spring.getCurrentValue() + this.drag.delta[ this.drag.direction ] )
+          .setAtRest();
 
-          this.group.rotateOnAxis( this.drag.axis, rotation );
-          this.drag.angle += rotation;
-
-        } else {
-
-          this.edges.rotateOnWorldAxis( this.drag.axis, rotation );
-          this.game.cube.object.rotation.copy( this.edges.rotation );
-          this.drag.angle += rotation;
-
-        }
+        if ( Math.abs( this.spring.getCurrentValue() ) > 0.8 ) this.draggable.onDragEnd();
 
       }
 
@@ -164,123 +270,56 @@ class Controls {
 
     this.draggable.onDragEnd = position => {
 
-      if ( this.state !== 'rotating' || this.disabled || this.scramble !== null ) return;
+      if ( this.disabled || this.scramble !== null ) return;
 
-      this.state = 'finishing';
+      if ( this.state !== ROTATING ) return;
 
-      const momentum = this.getMomentum()[ this.drag.direction ];
-      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this.drag.angle ) < Math.PI / 2 );
+      this.state = ANIMATING;
 
-      const angle = flip
-        ? this.roundAngle( this.drag.angle + Math.sign( this.drag.angle ) * ( Math.PI / 4 ) )
-        : this.roundAngle( this.drag.angle );
+      let current = this.spring.getCurrentValue();
+      let momentum = this.getMomentum()[ this.drag.direction ];
 
-      const delta = angle - this.drag.angle;
+      let endValue = 0;
+      let velocity = 0;
 
-      if ( this.drag.type === 'layer' ) {
+      if ( Math.abs( current ) > 0.8 ) {
 
-        this.rotateLayer( delta, false, layer => {
-
-          this.addMove( angle, layer );
-          this.checkIsSolved();
-          this.state = 'still';
-
-        } );
+        current = 0.8 * Math.sign( current );
+        this.spring.setCurrentValue( current ).setAtRest();
+        endValue = Math.sign( current );
+        velocity = momentum * 10;
 
       } else {
 
-        this.rotateCube( delta, () => {
+        const returnBack = ( -current > 0 && momentum > 0 ) || ( -current < 0 && momentum < 0 ); 
+        const passedMomentumTolerance = ( Math.abs( momentum ) > 0.05 );
+        const passedDistanceTolerance = ( Math.abs( current ) > 0.3 );
 
-          this.drag.active = false;
-          this.state = 'still';
+        if ( ( passedDistanceTolerance || passedMomentumTolerance ) && ! returnBack ) {
 
-        } );
+          if ( current == 0 ) endValue = ( momentum > 0 ) ? current + 1 : current - 1;
+          else endValue = ( momentum > 0 ) ? Math.ceil( current ) : Math.floor( current );
 
-      }
-
-    };
-
-  }
-
-  rotateLayer( rotation, scramble, callback ) {
-
-    const bounce = scramble ? this.options.scrambleBounce : this.options.flipBounce;
-    const easing = p => { return ( p -= 1 ) * p * ( ( bounce + 1 ) * p + bounce ) + 1; }
-    const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
-
-    this.rotationTween = new CUBE.Tween( {
-      duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
-      easing: easing,
-      onUpdate: tween => {
-
-        let deltaAngle = tween.delta * rotation;
-        this.group.rotateOnAxis( this.drag.axis, deltaAngle );
-        bounceCube( tween.progress, deltaAngle, rotation );
-
-      },
-      onComplete: () => {
-
-        const layer = this.drag.layer.slice( 0 );
-
-        this.game.cube.object.rotation.setFromVector3( this.snapRotation( this.game.cube.object.rotation.toVector3() ) );
-        this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
-        this.deselectLayer( this.drag.layer );
-        this.game.cube.saveState();
-
-        callback( layer );
-
-      },
-    } );
-
-  }
-
-  bounceCube() {
-
-    let fixDelta = true;
-
-    return ( progress, delta, rotation ) => {
-
-        if ( progress >= 1 ) {
-
-          if ( fixDelta ) {
-
-            delta = ( progress - 1 ) * rotation;
-            fixDelta = false;
-
-          }
-
-          this.game.cube.object.rotateOnAxis( this.drag.axis, delta );
+          velocity = momentum * 10;
 
         }
 
-    }
+      }
 
-  }
+      velocity = Math.min( Math.abs( velocity ), 4 ) * Math.sign( velocity );
 
-  rotateCube( rotation, callback ) {
+      this.spring.setEndValue( endValue ).setVelocity( velocity );
 
-    const easing = p => {
-      var s = this.options.flipBounce;
-      return (p-=1)*p*((s+1)*p + s) + 1;
+      if ( ! this.game.playing && endValue !== 0 ) {
+
+        this.game.playing = true;
+        this.onFirstMove();
+
+      }
+
+      window.startTime = performance.now();
+
     };
-
-    this.rotationTween = new CUBE.Tween( {
-      duration: this.options.flipSpeed,
-      easing: easing,
-      onUpdate: tween => {
-
-        this.edges.rotateOnWorldAxis( this.drag.axis, tween.delta * rotation );
-        this.game.cube.object.rotation.copy( this.edges.rotation );
-
-      },
-      onComplete: () => {
-
-        this.edges.rotation.setFromVector3( this.snapRotation( this.edges.rotation.toVector3() ) );
-        this.game.cube.object.rotation.copy( this.edges.rotation );
-        callback();
-
-      },
-    } );
 
   }
 
@@ -550,13 +589,26 @@ class Controls {
 
   }
 
-  snapRotation( angle ) {
+  roundRotation( angle ) {
 
     return angle.set(
       this.roundAngle( angle.x ),
       this.roundAngle( angle.y ),
       this.roundAngle( angle.z )
     );
+
+  }
+
+  roundCubeRotation() {
+
+    this.edges.rotation.setFromVector3( this.roundRotation( this.edges.rotation.toVector3() ) );
+    this.game.cube.object.rotation.copy( this.edges.rotation );
+
+  }
+
+  progressInRange( value, start, end ) {
+
+    return ( value - start ) / ( end - start );
 
   }
 

@@ -4,20 +4,20 @@ class Preferences {
 
     this.game = game;
 
-    this.load();
+    // this.load();
 
     this.elements = {
 
       speed: new CUBE.Range( 'speed', {
         value: this.game.controls.options.flipSpeed,
-        range: [ 300, 100 ],
+        range: [ 0.5, 0.15 ], // 0 slower 1+ faster
         onComplete: value => {
 
           this.game.controls.options.flipSpeed = value;
           localStorage.setItem( 'flipSpeed', value );
 
-          this.game.controls.options.flipBounce = ( ( value - 100 ) / 200 ) * 2;
-          localStorage.setItem( 'flipBounce', value );
+          // this.game.controls.options.flipBounce = ( ( value - 100 ) / 200 ) * 2;
+          // localStorage.setItem( 'flipBounce', value );
           
         },
       } ),
@@ -71,13 +71,13 @@ class Preferences {
   load() {
 
     const flipSpeed = parseFloat( localStorage.getItem( 'flipSpeed' ) );
-    const flipBounce = parseFloat( localStorage.getItem( 'flipBounce' ) );
+    // const flipBounce = parseFloat( localStorage.getItem( 'flipBounce' ) );
     const scrambleLength = parseFloat( localStorage.getItem( 'scrambleLength' ) );
     const fov = parseFloat( localStorage.getItem( 'fov' ) );
     // const theme = localStorage.getItem( 'theme' );
 
     if ( flipSpeed != null ) this.game.controls.options.flipSpeed = flipSpeed;
-    if ( flipBounce != null ) this.game.controls.options.flipBounce = flipBounce;
+    // if ( flipBounce != null ) this.game.controls.options.flipBounce = flipBounce;
     if ( scrambleLength != null ) this.game.scrambler.scrambleLength = scrambleLength;
 
     if ( fov != null ) {
