@@ -273,7 +273,7 @@ body {
 @keyframes range-slide-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 1em, 0); }
+    transform: translate3d(0, 1.5em, 0); }
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0); } }
@@ -281,7 +281,7 @@ body {
 @keyframes range-stretch-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 1em, 0) scale3d(0, 1, 1); }
+    transform: translate3d(0, 1.5em, 0) scale3d(0, 1, 1); }
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale3d(1, 1, 1); } }
@@ -289,7 +289,7 @@ body {
 @keyframes range-zoom-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 1em, 0) scale3d(0.5, 0.5, 0.5); }
+    transform: translate3d(0, 1.5em, 0) scale3d(0.5, 0.5, 0.5); }
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale3d(1, 1, 1); } }
@@ -352,41 +352,41 @@ body {
     will-change: opacity, transform;
     opacity: 0; }
   .text--title.show, .text--timer.show {
-    animation-duration: 1150ms;
+    animation-duration: 1500ms;
     opacity: 1; }
     .text--title.show i, .text--timer.show i {
       opacity: 0;
       animation: text-flip-in 800ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards; }
       .text--title.show i:nth-child(1), .text--timer.show i:nth-child(1) {
-        animation-delay: 50ms; }
-      .text--title.show i:nth-child(2), .text--timer.show i:nth-child(2) {
         animation-delay: 100ms; }
-      .text--title.show i:nth-child(3), .text--timer.show i:nth-child(3) {
-        animation-delay: 150ms; }
-      .text--title.show i:nth-child(4), .text--timer.show i:nth-child(4) {
+      .text--title.show i:nth-child(2), .text--timer.show i:nth-child(2) {
         animation-delay: 200ms; }
-      .text--title.show i:nth-child(5), .text--timer.show i:nth-child(5) {
-        animation-delay: 250ms; }
-      .text--title.show i:nth-child(6), .text--timer.show i:nth-child(6) {
+      .text--title.show i:nth-child(3), .text--timer.show i:nth-child(3) {
         animation-delay: 300ms; }
+      .text--title.show i:nth-child(4), .text--timer.show i:nth-child(4) {
+        animation-delay: 400ms; }
+      .text--title.show i:nth-child(5), .text--timer.show i:nth-child(5) {
+        animation-delay: 500ms; }
+      .text--title.show i:nth-child(6), .text--timer.show i:nth-child(6) {
+        animation-delay: 600ms; }
   .text--title.hide, .text--timer.hide {
-    animation-duration: 750ms;
+    animation-duration: 1100ms;
     opacity: 1; }
     .text--title.hide i, .text--timer.hide i {
       opacity: 1;
       animation: text-flip-out 400ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards; }
       .text--title.hide i:nth-child(1), .text--timer.hide i:nth-child(1) {
-        animation-delay: 50ms; }
-      .text--title.hide i:nth-child(2), .text--timer.hide i:nth-child(2) {
         animation-delay: 100ms; }
-      .text--title.hide i:nth-child(3), .text--timer.hide i:nth-child(3) {
-        animation-delay: 150ms; }
-      .text--title.hide i:nth-child(4), .text--timer.hide i:nth-child(4) {
+      .text--title.hide i:nth-child(2), .text--timer.hide i:nth-child(2) {
         animation-delay: 200ms; }
-      .text--title.hide i:nth-child(5), .text--timer.hide i:nth-child(5) {
-        animation-delay: 250ms; }
-      .text--title.hide i:nth-child(6), .text--timer.hide i:nth-child(6) {
+      .text--title.hide i:nth-child(3), .text--timer.hide i:nth-child(3) {
         animation-delay: 300ms; }
+      .text--title.hide i:nth-child(4), .text--timer.hide i:nth-child(4) {
+        animation-delay: 400ms; }
+      .text--title.hide i:nth-child(5), .text--timer.hide i:nth-child(5) {
+        animation-delay: 500ms; }
+      .text--title.hide i:nth-child(6), .text--timer.hide i:nth-child(6) {
+        animation-delay: 600ms; }
 
 .text--note {
   will-change: opacity;

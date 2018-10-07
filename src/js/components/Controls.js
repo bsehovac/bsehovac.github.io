@@ -41,6 +41,7 @@ class Controls {
     this.game.world.scene.add( this.edges );
 
     this.onSolved = () => {};
+    this.onFirstMove = () => {};
     this.onMove = () => {};
 
     this.drag = {};
@@ -202,8 +203,6 @@ class Controls {
       this.drag.delta = null;
       this.state = ( this.state !== ANIMATING ) ? PREPARING : ANIMATING;
 
-      console.log( 'ready to get delta', performance.now() - window.startTime );
-
     };
 
     this.draggable.onDragMove = position => {
@@ -310,6 +309,13 @@ class Controls {
       velocity = Math.min( Math.abs( velocity ), 4 ) * Math.sign( velocity );
 
       this.spring.setEndValue( endValue ).setVelocity( velocity );
+
+      if ( ! this.game.playing && endValue !== 0 ) {
+
+        this.game.playing = true;
+        this.onFirstMove();
+
+      }
 
       window.startTime = performance.now();
 

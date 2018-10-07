@@ -30,11 +30,17 @@
 
 			requestAnimationFrame( () => this.render() );
 
+			this.stats = new Stats();
+			this.stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+			document.body.appendChild( this.stats.dom );
+
 		}
 
 		render() {
 
+			// this.stats.begin();
 			this.renderer.render( this.scene, this.camera );
+			this.stats.end();
 
 			requestAnimationFrame( () => this.render() );
 
@@ -1073,6 +1079,7 @@
 	    this.game.world.scene.add( this.edges );
 
 	    this.onSolved = () => {};
+	    this.onFirstMove = () => {};
 	    this.onMove = () => {};
 
 	    this.drag = {};
@@ -1234,8 +1241,6 @@
 	      this.drag.delta = null;
 	      this.state = ( this.state !== ANIMATING ) ? PREPARING : ANIMATING;
 
-	      console.log( 'ready to get delta', performance.now() - window.startTime );
-
 	    };
 
 	    this.draggable.onDragMove = position => {
@@ -1342,6 +1347,13 @@
 	      velocity = Math.min( Math.abs( velocity ), 4 ) * Math.sign( velocity );
 
 	      this.spring.setEndValue( endValue ).setVelocity( velocity );
+
+	      if ( ! this.game.playing && endValue !== 0 ) {
+
+	        this.game.playing = true;
+	        this.onFirstMove();
+
+	      }
 
 	      window.startTime = performance.now();
 
@@ -1941,103 +1953,84 @@
 	    this.tweens = {};
 
 	    this.data.cubeY = -0.2;
-	    this.data.floatScale = 1;
 	    this.data.cameraZoom = 0.85;
+
+	    this.springs = {};
 
 	  }
 
 	  drop() {
 
 	    this.game.controls.disabled = true;
-	    this.data.floatScale = 1;
 	    this.data.cubeY = -0.2;
 
 	    this.game.cube.object.position.y = this.data.cubeY;
 	    this.game.controls.edges.position.y = this.data.cubeY;
-	    this.game.cube.animator.position.set( -2, 4, -2 );
-	    this.game.cube.animator.rotation.x = - Math.PI / 4;
-	    this.game.cube.shadow.material.opacity = 0;
 	    this.game.world.camera.zoom = this.data.cameraZoom;
 	    this.game.world.camera.updateProjectionMatrix();
 
-	    this.tweens.drop = new CUBE.Tween( {
-	      target: this.game.cube.animator.position,
-	      duration: 2500,
-	      easing: 'easeOutCubic',
-	      to: { x: 0, y: - 0.1 * this.data.floatScale, z: 0 },
-	      onUpdate: () => {
+	    this.springs.drop = this.game.springSystem.createSpring( 30, 6 ).setSpringSpeedFix( 0.04 );
+	    this.springs.drop.data.direction = 1;
 
-	        this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
+	    this.springs.drop.addListener( {
+
+	      onSpringUpdate: spring => {
+
+	        const current = spring.getCurrentValue();
+	        // const rotation = current * Math.PI / 2;
+
+	        this.game.cube.animator.position.y = 4 * current;
+	        this.game.cube.animator.rotation.x = Math.PI / 3 * current;
+	        this.game.cube.shadow.material.opacity =
+	          Math.max( this.progressForValueInRange(
+	            this.game.cube.animator.position.y, 1, this.game.cube.shadow.position.y + 0.5 + this.data.cubeY ),
+	          0 );
 
 	      },
-	      onComplete: () => { this.float( true ); this.game.animating = false; },
+
+	      onSpringAtRest: spring => {},
+
 	    } );
 
-	    this.tweens.rotate = new CUBE.Tween( {
-	      target: this.game.cube.animator.rotation,
-	      duration: 2500,
-	      easing: 'easeOutCubic',
-	      to: { x: 0 },
-	    } );
+	    this.springs.drop.setCurrentValue( 1 ).setAtRest();
 
-	    setTimeout( () => { this.title( true, 0 ); }, 2000 );
+	    setTimeout( () => {
+
+	      this.title( true, () => {
+
+	        this.game.animating = false;
+	        this.game.controls.disabled = false;
+
+	      } );
+	      this.springs.drop.setEndValue( 0 );
+
+	    }, 200 );
 
 	  }
 
-	  float( drop ) {
+	  float() {
 
-	    if ( typeof this.data.floatScale == 'undefined' ) this.data.floatScale = 1;
+	    this.tweens.float = new CUBE.Tween( {
+	      duration: 1500,
+	      easing: 'easeInOutSine',
+	      yoyo: true,
+	      onUpdate: tween => {
 
-	    if ( drop ) {
+	        this.game.cube.holder.position.y = -0.015 + tween.progress * 0.03;
+	        this.game.cube.holder.rotation.z = 0.006 - tween.progress * 0.012 ;
 
-	      this.tweens.float = new CUBE.Tween( {
-	        duration: 2500,
-	        easing: 'easeInOutSine',
-	        yoyo: true,
-	        onUpdate: tween => {
-
-	          this.game.cube.animator.position.y =
-	            - 0.1 * this.data.floatScale + tween.progress * 0.2 * this.data.floatScale;
-
-	          this.game.cube.shadow.material.opacity =
-	            0.4 - this.game.cube.animator.position.y * 0.5;
-
-	        },
-	      } );
-
-	    } else {
-
-	      this.tweens.float = new CUBE.Tween( {
-	        duration: 2500 / 2,
-	        easing: 'easeOutSine',
-	        onUpdate: tween => {
-
-	          this.game.cube.animator.position.y = tween.progress * - 0.1 * this.data.floatScale;
-	          this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
-
-	        },
-	        onComplete: () => { this.float( true ); },
-	      } );
-
-	    }
+	      },
+	    } );
 
 	  }
 
 	  zoom( game, time, callback ) {
 
-	    const floatScale = ( game ) ? 0.25 : 1;
 	    const zoom = ( game ) ? 1 : this.data.cameraZoom;
 	    const cubeY = ( game ) ? 0 : this.data.cubeY;
 	    const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
 	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
 	    const easing = ( time > 0 ) ? 'easeInOutQuad' : 'easeInOutCubic';
-
-	    this.tweens.scale = new CUBE.Tween( {
-	      target: this.data,
-	      duration: duration,
-	      easing: easing,
-	      to: { floatScale: floatScale },
-	    } );
 
 	    this.tweens.zoom = new CUBE.Tween( {
 	      target: this.game.world.camera,
@@ -2071,7 +2064,7 @@
 	    const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.title ).animationDuration ) * 1000;
 
 	    if ( typeof callback === 'function' )
-	      setTimeout( () => callback(), callbackTimeout * 0.75 );
+	      setTimeout( () => callback(), callbackTimeout * 0.5 );
 
 	  }
 
@@ -2100,6 +2093,8 @@
 	      setTimeout( () => callback(), callbackTimeout * 0.75 );
 
 	  }
+
+	  progressForValueInRange(value, start, end) { return (value - start) / (end - start) }
 	  
 	}
 
@@ -2111,6 +2106,8 @@
 
 			this.startTime = null;
 
+			this.render = true;
+
 		}
 
 		start( continueGame ) {
@@ -2118,6 +2115,7 @@
 			this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
 			this.deltaTime = 0;
 			this.converted = this.convert( this.deltaTime );
+			this.render = true;
 
 			this.animate = requestAnimationFrame( () => this.update() );
 
@@ -2142,7 +2140,7 @@
 			this.deltaTime = this.currentTime - this.startTime;
 			this.converted = this.convert( this.deltaTime );
 
-			if ( this.converted != old ) {
+			if ( this.converted != old && this.render ) {
 
 				localStorage.setItem( 'gameTime', JSON.stringify( this.deltaTime ) );
 				this.game.dom.timer.innerHTML = this.converted;
@@ -2196,15 +2194,30 @@
 
 	    // this.initStart();
 	    // this.initPause();
-	    // this.initPrefs();
+	    this.initPrefs();
 
 	    // this.saved = this.cube.loadState();
-	    // this.playing = false;
-	    // this.animating = true;
+	    this.playing = false;
+	    this.animating = true;
 
-	    // this.transition.drop();
+	    this.transition.float();
+	    this.transition.drop();
 
-	    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
+	    this.controls.onFirstMove = data => {
+
+	      this.timer.start( this.saved );
+	      this.timer.render = false;
+
+	      this.transition.title( false, () => {
+
+	        this.dom.timer.innerHTML = this.timer.convert( Math.round( this.timer.deltaTime / 1000 ) * 1000 );
+
+	        this.transition.timer( true, () => { this.timer.render = true; } );
+
+	      } );
+	      if ( this.audio.musicOn ) this.audio.click.play();
+
+	    };
 	    // this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
 	  }
@@ -2233,10 +2246,10 @@
 
 	        this.dom.timer.innerHTML = '0:00';
 
-	        this.scrambler.scramble();
-	        this.controls.scrambleCube( () => {} );
+	        // this.scrambler.scramble();
+	        // this.controls.scrambleCube( () => {} );
 
-	        duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
+	        // duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
 
 	      } else {
 
@@ -2299,14 +2312,14 @@
 
 	      if ( button.classList.contains( 'is-active' ) ) {
 
-	        this.dom.game.classList.add( 'hide' );
-
 	        if ( this.playing ) {
 
 	          this.controls.disabled = true;
 	          this.timer.stop();
 
 	        }
+
+	        this.transition.springs.drop.setEndValue( 1 );
 
 	        this.transition[ this.playing ? 'timer' : 'title' ]( false, () => {
 
@@ -2320,14 +2333,14 @@
 
 	      } else {
 
-	        this.dom.game.classList.remove( 'hide' );
-
 	        if ( this.playing ) {
 
 	          this.dom.timer.classList.remove( 'hide' );
 	          this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
 
 	        }
+
+	        this.transition.springs.drop.setEndValue( 0 );
 
 	        this.transition.preferences( false, () => {
 
@@ -2536,14 +2549,14 @@
 
 	      speed: new CUBE.Range( 'speed', {
 	        value: this.game.controls.options.flipSpeed,
-	        range: [ 300, 100 ],
+	        range: [ 0.5, 0.15 ], // 0 slower 1+ faster
 	        onComplete: value => {
 
 	          this.game.controls.options.flipSpeed = value;
 	          localStorage.setItem( 'flipSpeed', value );
 
-	          this.game.controls.options.flipBounce = ( ( value - 100 ) / 200 ) * 2;
-	          localStorage.setItem( 'flipBounce', value );
+	          // this.game.controls.options.flipBounce = ( ( value - 100 ) / 200 ) * 2;
+	          // localStorage.setItem( 'flipBounce', value );
 	          
 	        },
 	      } ),
@@ -2597,13 +2610,13 @@
 	  load() {
 
 	    const flipSpeed = parseFloat( localStorage.getItem( 'flipSpeed' ) );
-	    const flipBounce = parseFloat( localStorage.getItem( 'flipBounce' ) );
+	    // const flipBounce = parseFloat( localStorage.getItem( 'flipBounce' ) );
 	    const scrambleLength = parseFloat( localStorage.getItem( 'scrambleLength' ) );
 	    const fov = parseFloat( localStorage.getItem( 'fov' ) );
 	    // const theme = localStorage.getItem( 'theme' );
 
 	    if ( flipSpeed != null ) this.game.controls.options.flipSpeed = flipSpeed;
-	    if ( flipBounce != null ) this.game.controls.options.flipBounce = flipBounce;
+	    // if ( flipBounce != null ) this.game.controls.options.flipBounce = flipBounce;
 	    if ( scrambleLength != null ) this.game.scrambler.scrambleLength = scrambleLength;
 
 	    if ( fov != null ) {

@@ -30,15 +30,30 @@ class Game {
 
     // this.initStart();
     // this.initPause();
-    // this.initPrefs();
+    this.initPrefs();
 
     // this.saved = this.cube.loadState();
-    // this.playing = false;
-    // this.animating = true;
+    this.playing = false;
+    this.animating = true;
 
-    // this.transition.drop();
+    this.transition.float();
+    this.transition.drop();
 
-    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
+    this.controls.onFirstMove = data => {
+
+      this.timer.start( this.saved );
+      this.timer.render = false;
+
+      this.transition.title( false, () => {
+
+        this.dom.timer.innerHTML = this.timer.convert( Math.round( this.timer.deltaTime / 1000 ) * 1000 );
+
+        this.transition.timer( true, () => { this.timer.render = true } );
+
+      } );
+      if ( this.audio.musicOn ) this.audio.click.play();
+
+    }
     // this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
   }
@@ -69,10 +84,10 @@ class Game {
 
         this.dom.timer.innerHTML = '0:00';
 
-        this.scrambler.scramble();
-        this.controls.scrambleCube( () => {} );
+        // this.scrambler.scramble();
+        // this.controls.scrambleCube( () => {} );
 
-        duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
+        // duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
 
       } else {
 
@@ -135,14 +150,14 @@ class Game {
 
       if ( button.classList.contains( 'is-active' ) ) {
 
-        this.dom.game.classList.add( 'hide' );
-
         if ( this.playing ) {
 
           this.controls.disabled = true;
           this.timer.stop();
 
         }
+
+        this.transition.springs.drop.setEndValue( 1 );
 
         this.transition[ this.playing ? 'timer' : 'title' ]( false, () => {
 
@@ -156,14 +171,14 @@ class Game {
 
       } else {
 
-        this.dom.game.classList.remove( 'hide' );
-
         if ( this.playing ) {
 
           this.dom.timer.classList.remove( 'hide' );
           this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
 
         }
+
+        this.transition.springs.drop.setEndValue( 0 );
 
         this.transition.preferences( false, () => {
 
