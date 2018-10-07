@@ -1,0 +1,10 @@
+{
+    "name": "New Tab 2amigos",
+    "description": "New Tab Replacement",
+    "version": "0.0.0.1",
+    "permissions" : ["bookmarks"],
+    "chrome_url_overrides" : {
+        "newtab": "newtab.html"
+    },
+    "manifest_version": 2
+ }
