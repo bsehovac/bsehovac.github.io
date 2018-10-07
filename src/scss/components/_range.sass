@@ -88,109 +88,94 @@
   $easing: $easeOutQuad
   $y: 1em
 
-  @at-root .ui__prefs.show
-    animation-duration: ($ranges + 1) * $range-delay + $element-delay * 2 + ($list-items + 1) * ($element-delay / 2) + $duration
-
-  @at-root .ui__prefs.hide
-    animation-duration: $duration
-
   &__label,
   &__track:before,
   &__handle,
   &__list div
+    transition-property: opacity, transform
     will-change: opacity, transform
     opacity: 0
 
   &__track:before
     transform-origin: left center
 
-  .ui__prefs.show &
-    @for $i from 1 to ($ranges + 1)
-      &:nth-child(#{$i})
-        $delay: $i * $range-delay
-
-        .range
-          &__label
-            animation: range-slide-in $duration $easing forwards
-            animation-delay: $delay
-
-          &__track:before
-            animation: range-stretch-in $duration $easing forwards
-            animation-delay: $delay + $element-delay
-
-          &__handle
-            animation: range-zoom-in $duration $easing forwards
-            animation-delay: $delay + $element-delay
-            pointer-events: all
-
-          &__list div
-            animation: range-slide-in $duration $easing forwards
-            @for $j from 1 to ($list-items + 1)
-              &:nth-child(#{$j})
-                animation-delay: $delay + $element-delay * 2 + $j * ( $element-delay / 2 )
-
-  .ui__prefs.hide &
-    transition-duration: $duration
-
+  &
     .range
       &__label
-        animation: range-slide-out $duration $easing forwards
+        opacity: 0
+        transform: translate3d(0, $y, 0)
 
       &__track:before
-        animation: range-stretch-out $duration $easing forwards
+        opacity: 0
+        transform: translate3d(0, $y, 0) scale3d(0, 1, 1)
 
       &__handle
-        animation: range-zoom-out $duration $easing forwards
-        pointer-events: unset
+        opacity: 0
+        transform: translate3d(0, $y, 0) scale3d(0.5, 0.5, 0.5)
+        pointer-events: none
 
       &__list div
-        animation: range-slide-out $duration $easing forwards
+        opacity: 0
+        transform: translate3d(0, $y, 0)
 
-  // KEYFRAMES
+  &.show
+    .range
+      &__label,
+      &__track:before,
+      &__handle,
+      &__list div
+        transition-timing-function: $easing
+        transition-duration: $duration
 
-  @keyframes range-slide-in
-    from
-      opacity: 0
-      transform: translate3d(0, $y, 0)
-    to
-      opacity: 1
-      transform: translate3d(0, 0, 0)
+      &__label
+        opacity: 1
+        transform: translate3d(0, 0, 0)
+        transition-delay: 0
 
-  @keyframes range-stretch-in
-    from
-      opacity: 0
-      transform: translate3d(0, $y, 0) scale3d(0, 1, 1)
-    to
-      opacity: 1
-      transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+      &__track:before
+        opacity: 1
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+        transition-delay: $element-delay
 
-  @keyframes range-zoom-in
-    from
-      opacity: 0
-      transform: translate3d(0, $y, 0) scale3d(0.5, 0.5, 0.5)
-    to
-      opacity: 1
-      transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+      &__handle
+        opacity: 1
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+        transition-delay: $element-delay
+        pointer-events: all
 
-  @keyframes range-slide-out
-    from
-      opacity: 1
-    to
-      opacity: 0
+      &__list div
+        opacity: 1
+        transform: translate3d(0, 0, 0)
+        @for $j from 1 to ($list-items + 1)
+          &:nth-child(#{$j})
+            transition-delay: $element-delay * 2 + $j * ( $element-delay / 2 )
 
-  @keyframes range-stretch-out
-    from
-      opacity: 1
-      transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
-      
-    to
-      opacity: 0
-      transform: translate3d(0, 0, 0) scale3d(0, 1, 1)
+  &.hide
+    .range
+      &__label,
+      &__track:before,
+      &__handle,
+      &__list div
+        transition-timing-function: $easing
+        transition-duration: $duration / 2
+        transition-delay: 0ms
 
-  @keyframes range-zoom-out
-    from
-      opacity: 1
-      transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
-    to
-      opacity: 0
-      transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 0.5)
+      &__label
+        opacity: 0
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+
+      &__track:before
+        opacity: 0
+        transform: translate3d(0, 0, 0) scale3d(0, 1, 1)
+
+      &__handle
+        opacity: 0
+        transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 0.5)
+        pointer-events: none
+
+      &__list div
+        opacity: 0
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+        @for $j from 1 to ($list-items + 1)
+          &:nth-child(#{$j})
+            transition-delay: 0ms

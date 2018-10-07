@@ -114,207 +114,99 @@ body {
     color: rgba(0, 0, 0, 0.5);
     z-index: 1; }
 
-.ui__prefs.show {
-  animation-duration: 1500ms; }
-
-.ui__prefs.hide {
-  animation-duration: 400ms; }
-
 .range__label, .range__track:before, .range__handle,
 .range__list div {
+  transition-property: opacity, transform;
   will-change: opacity, transform;
   opacity: 0; }
 
 .range__track:before {
   transform-origin: left center; }
 
-.ui__prefs.show .range:nth-child(1) .range__label {
-  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 100ms; }
+.range .range__label {
+  opacity: 0;
+  transform: translate3d(0, 1em, 0); }
 
-.ui__prefs.show .range:nth-child(1) .range__track:before {
-  animation: range-stretch-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 200ms; }
+.range .range__track:before {
+  opacity: 0;
+  transform: translate3d(0, 1em, 0) scale3d(0, 1, 1); }
 
-.ui__prefs.show .range:nth-child(1) .range__handle {
-  animation: range-zoom-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 200ms;
-  pointer-events: all; }
+.range .range__handle {
+  opacity: 0;
+  transform: translate3d(0, 1em, 0) scale3d(0.5, 0.5, 0.5);
+  pointer-events: none; }
 
-.ui__prefs.show .range:nth-child(1) .range__list div {
-  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-  .ui__prefs.show .range:nth-child(1) .range__list div:nth-child(1) {
-    animation-delay: 350ms; }
-  .ui__prefs.show .range:nth-child(1) .range__list div:nth-child(2) {
-    animation-delay: 400ms; }
-  .ui__prefs.show .range:nth-child(1) .range__list div:nth-child(3) {
-    animation-delay: 450ms; }
-  .ui__prefs.show .range:nth-child(1) .range__list div:nth-child(4) {
-    animation-delay: 500ms; }
-  .ui__prefs.show .range:nth-child(1) .range__list div:nth-child(5) {
-    animation-delay: 550ms; }
+.range .range__list div {
+  opacity: 0;
+  transform: translate3d(0, 1em, 0); }
 
-.ui__prefs.show .range:nth-child(2) .range__label {
-  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 200ms; }
-
-.ui__prefs.show .range:nth-child(2) .range__track:before {
-  animation: range-stretch-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 300ms; }
-
-.ui__prefs.show .range:nth-child(2) .range__handle {
-  animation: range-zoom-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 300ms;
-  pointer-events: all; }
-
-.ui__prefs.show .range:nth-child(2) .range__list div {
-  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-  .ui__prefs.show .range:nth-child(2) .range__list div:nth-child(1) {
-    animation-delay: 450ms; }
-  .ui__prefs.show .range:nth-child(2) .range__list div:nth-child(2) {
-    animation-delay: 500ms; }
-  .ui__prefs.show .range:nth-child(2) .range__list div:nth-child(3) {
-    animation-delay: 550ms; }
-  .ui__prefs.show .range:nth-child(2) .range__list div:nth-child(4) {
-    animation-delay: 600ms; }
-  .ui__prefs.show .range:nth-child(2) .range__list div:nth-child(5) {
-    animation-delay: 650ms; }
-
-.ui__prefs.show .range:nth-child(3) .range__label {
-  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 300ms; }
-
-.ui__prefs.show .range:nth-child(3) .range__track:before {
-  animation: range-stretch-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 400ms; }
-
-.ui__prefs.show .range:nth-child(3) .range__handle {
-  animation: range-zoom-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 400ms;
-  pointer-events: all; }
-
-.ui__prefs.show .range:nth-child(3) .range__list div {
-  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-  .ui__prefs.show .range:nth-child(3) .range__list div:nth-child(1) {
-    animation-delay: 550ms; }
-  .ui__prefs.show .range:nth-child(3) .range__list div:nth-child(2) {
-    animation-delay: 600ms; }
-  .ui__prefs.show .range:nth-child(3) .range__list div:nth-child(3) {
-    animation-delay: 650ms; }
-  .ui__prefs.show .range:nth-child(3) .range__list div:nth-child(4) {
-    animation-delay: 700ms; }
-  .ui__prefs.show .range:nth-child(3) .range__list div:nth-child(5) {
-    animation-delay: 750ms; }
-
-.ui__prefs.show .range:nth-child(4) .range__label {
-  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 400ms; }
-
-.ui__prefs.show .range:nth-child(4) .range__track:before {
-  animation: range-stretch-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 500ms; }
-
-.ui__prefs.show .range:nth-child(4) .range__handle {
-  animation: range-zoom-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 500ms;
-  pointer-events: all; }
-
-.ui__prefs.show .range:nth-child(4) .range__list div {
-  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-  .ui__prefs.show .range:nth-child(4) .range__list div:nth-child(1) {
-    animation-delay: 650ms; }
-  .ui__prefs.show .range:nth-child(4) .range__list div:nth-child(2) {
-    animation-delay: 700ms; }
-  .ui__prefs.show .range:nth-child(4) .range__list div:nth-child(3) {
-    animation-delay: 750ms; }
-  .ui__prefs.show .range:nth-child(4) .range__list div:nth-child(4) {
-    animation-delay: 800ms; }
-  .ui__prefs.show .range:nth-child(4) .range__list div:nth-child(5) {
-    animation-delay: 850ms; }
-
-.ui__prefs.show .range:nth-child(5) .range__label {
-  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 500ms; }
-
-.ui__prefs.show .range:nth-child(5) .range__track:before {
-  animation: range-stretch-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 600ms; }
-
-.ui__prefs.show .range:nth-child(5) .range__handle {
-  animation: range-zoom-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 600ms;
-  pointer-events: all; }
-
-.ui__prefs.show .range:nth-child(5) .range__list div {
-  animation: range-slide-in 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-  .ui__prefs.show .range:nth-child(5) .range__list div:nth-child(1) {
-    animation-delay: 750ms; }
-  .ui__prefs.show .range:nth-child(5) .range__list div:nth-child(2) {
-    animation-delay: 800ms; }
-  .ui__prefs.show .range:nth-child(5) .range__list div:nth-child(3) {
-    animation-delay: 850ms; }
-  .ui__prefs.show .range:nth-child(5) .range__list div:nth-child(4) {
-    animation-delay: 900ms; }
-  .ui__prefs.show .range:nth-child(5) .range__list div:nth-child(5) {
-    animation-delay: 950ms; }
-
-.ui__prefs.hide .range {
+.range.show .range__label, .range.show .range__track:before, .range.show .range__handle,
+.range.show .range__list div {
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transition-duration: 400ms; }
-  .ui__prefs.hide .range .range__label {
-    animation: range-slide-out 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-  .ui__prefs.hide .range .range__track:before {
-    animation: range-stretch-out 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-  .ui__prefs.hide .range .range__handle {
-    animation: range-zoom-out 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    pointer-events: unset; }
-  .ui__prefs.hide .range .range__list div {
-    animation: range-slide-out 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
 
-@keyframes range-slide-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 1em, 0); }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0); } }
+.range.show .range__label {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 0; }
 
-@keyframes range-stretch-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 1em, 0) scale3d(0, 1, 1); }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale3d(1, 1, 1); } }
+.range.show .range__track:before {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+  transition-delay: 100ms; }
 
-@keyframes range-zoom-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 1em, 0) scale3d(0.5, 0.5, 0.5); }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale3d(1, 1, 1); } }
+.range.show .range__handle {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+  transition-delay: 100ms;
+  pointer-events: all; }
 
-@keyframes range-slide-out {
-  from {
-    opacity: 1; }
-  to {
-    opacity: 0; } }
+.range.show .range__list div {
+  opacity: 1;
+  transform: translate3d(0, 0, 0); }
+  .range.show .range__list div:nth-child(1) {
+    transition-delay: 250ms; }
+  .range.show .range__list div:nth-child(2) {
+    transition-delay: 300ms; }
+  .range.show .range__list div:nth-child(3) {
+    transition-delay: 350ms; }
+  .range.show .range__list div:nth-child(4) {
+    transition-delay: 400ms; }
+  .range.show .range__list div:nth-child(5) {
+    transition-delay: 450ms; }
 
-@keyframes range-stretch-out {
-  from {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
-  to {
-    opacity: 0;
-    transform: translate3d(0, 0, 0) scale3d(0, 1, 1); } }
+.range.hide .range__label, .range.hide .range__track:before, .range.hide .range__handle,
+.range.hide .range__list div {
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-duration: 200ms;
+  transition-delay: 0ms; }
 
-@keyframes range-zoom-out {
-  from {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
-  to {
-    opacity: 0;
-    transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 0.5); } }
+.range.hide .range__label {
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+
+.range.hide .range__track:before {
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale3d(0, 1, 1); }
+
+.range.hide .range__handle {
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 0.5);
+  pointer-events: none; }
+
+.range.hide .range__list div {
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+  .range.hide .range__list div:nth-child(1) {
+    transition-delay: 0ms; }
+  .range.hide .range__list div:nth-child(2) {
+    transition-delay: 0ms; }
+  .range.hide .range__list div:nth-child(3) {
+    transition-delay: 0ms; }
+  .range.hide .range__list div:nth-child(4) {
+    transition-delay: 0ms; }
+  .range.hide .range__list div:nth-child(5) {
+    transition-delay: 0ms; }
 
 .text {
   position: absolute;
@@ -444,6 +336,16 @@ body {
   position: absolute;
   pointer-events: all;
   opacity: 0.5; }
+  .btn:after {
+    position: absolute;
+    content: '';
+    width: 3em;
+    height: 3em;
+    left: 50%;
+    top: 50%;
+    margin-left: -1.5em;
+    margin-top: -1.5em;
+    border-radius: 100%; }
   .btn--tr {
     top: 1em;
     right: 1em; }
@@ -470,11 +372,7 @@ body {
     overflow: hidden; }
   .ui__game {
     pointer-events: all;
-    z-index: 1;
-    will-change: opacity;
-    transition: opacity 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-    .ui__game.hide {
-      opacity: 0; }
+    z-index: 1; }
     .ui__game canvas {
       display: block;
       width: 100%;

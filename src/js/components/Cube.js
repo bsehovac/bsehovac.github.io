@@ -37,10 +37,10 @@ class Cube {
 
 		} );
 
-		this.generateShadow();
+		// this.generateShadow();
 
 		this.game.world.scene.add( this.holder );
-		this.game.world.scene.add( this.shadow );
+		// this.game.world.scene.add( this.shadow );
 
 	}
 

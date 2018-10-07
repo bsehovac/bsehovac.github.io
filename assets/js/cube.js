@@ -704,10 +704,10 @@
 
 			} );
 
-			this.generateShadow();
+			// this.generateShadow();
 
 			this.game.world.scene.add( this.holder );
-			this.game.world.scene.add( this.shadow );
+			// this.game.world.scene.add( this.shadow );
 
 		}
 
@@ -1237,12 +1237,13 @@
 	  rotateLayer( rotation, scramble, callback ) {
 
 	    const bounce = scramble ? this.options.scrambleBounce : this.options.flipBounce;
-	    const easing = p => { return ( p -= 1 ) * p * ( ( bounce + 1 ) * p + bounce ) + 1; };
 	    const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
+
+	    console.log( bounce ); 
 
 	    this.rotationTween = new CUBE.Tween( {
 	      duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
-	      easing: easing,
+	      easing: CUBE.Easing.BackOut( bounce ),
 	      onUpdate: tween => {
 
 	        let deltaAngle = tween.delta * rotation;
@@ -1682,7 +1683,7 @@
 	    this.onUpdate = options.onUpdate || ( () => {} );
 	    this.yoyo = options.yoyo || null;
 
-	    if ( typeof options.easing == 'undefined' ) options.easing = 'linear'; 
+	    if ( typeof options.easing == 'undefined' ) options.easing = p => p; 
 
 	    this.easing = ( typeof options.easing !== 'function' ) 
 	      ? this.constructor.Easings[ options.easing ]
@@ -1735,9 +1736,9 @@
 
 	    if ( this.yoyo == null && delta > this.duration - 1000 / 60 ) progress = 1;
 
-	    if ( progress >= 1 ) { progress = 1; this.progress = 1; }
-	    else if ( progress <= 0 ) { progress = 0; this.progress = 0; }
-	    else this.progress = this.easing( progress );
+	    if ( progress >= 1 ) { progress = 1; /*this.progress = 1;*/ }
+	    else if ( progress <= 0 ) { progress = 0; /*this.progress = 0;*/ }
+	    this.progress = this.easing( progress );
 
 	    this.delta = this.progress - old;
 
@@ -1885,6 +1886,63 @@
 
 	};
 
+	const Easing = {
+
+	  BackOut: s => {
+
+	    if ( typeof s === 'undefined' ) s = 1.70158;
+
+	    return p => { return ( p -= 1 ) * p * ( ( s + 1 ) * p + s ) + 1; };
+
+	  },
+
+	  ElasticOut: ( amplitude, period ) => {
+
+	    let PI2 = Math.PI * 2;
+
+	    let p1 = (amplitude >= 1) ? amplitude : 1;
+	    let p2 = (period || 0.3) / (amplitude < 1 ? amplitude : 1);
+	    let p3 = p2 / PI2 * (Math.asin(1 / p1) || 0);
+
+	    p2 = PI2 / p2;
+
+	    return (p) => { return p1 * Math.pow(2, -10 * p) * Math.sin( (p - p3) * p2 ) + 1; };
+
+	  },
+
+	  // ElasticOut: ( amplitude, period ) => {
+
+	  //   if (typeof amplitude == 'undefined') amplitude = 1;
+	  //   if (typeof period == 'undefined') period = 0;
+
+	  //   return p => {
+	    
+	  //     var offset = 1.70158;
+
+	  //     if ( p == 0 ) return 0;
+	  //     if ( p == 1 ) return 1;
+
+	  //     if ( ! period ) period = .3;
+
+	  //     if ( amplitude < 1 ) {
+
+	  //       amplitude = 1;
+	  //       offset = period / 4;
+
+	  //     } else {
+
+	  //       offset = period / ( 2 * Math.PI ) * Math.asin( 1 / amplitude );
+
+	  //     }
+
+	  //     return amplitude * Math.pow( 2, -10 * p ) * Math.sin( ( p - offset ) * ( Math.PI * 2 ) / period ) + 1;
+
+	  //   };
+
+	  // },
+
+	};
+
 	class Transition {
 
 	  constructor( game ) {
@@ -1893,105 +1951,128 @@
 
 	    this.data = {};
 	    this.tweens = {};
-
-	    this.data.cubeY = -0.2;
-	    this.data.floatScale = 1;
-	    this.data.cameraZoom = 0.85;
+	    this.initialized = false;
 
 	  }
 
-	  drop() {
+	  initialize() {
+
+	    this.data.cubeY = -0.2;
+	    this.data.cameraZoom = 0.85;
 
 	    this.game.controls.disabled = true;
-	    this.data.floatScale = 1;
-	    this.data.cubeY = -0.2;
 
 	    this.game.cube.object.position.y = this.data.cubeY;
 	    this.game.controls.edges.position.y = this.data.cubeY;
-	    this.game.cube.animator.position.set( -2, 4, -2 );
-	    this.game.cube.animator.rotation.x = - Math.PI / 4;
-	    this.game.cube.shadow.material.opacity = 0;
+	    this.game.cube.animator.position.y = 4;
+	    this.game.cube.animator.rotation.x = - Math.PI / 3;
+	    // this.game.cube.shadow.material.opacity = 0;
 	    this.game.world.camera.zoom = this.data.cameraZoom;
 	    this.game.world.camera.updateProjectionMatrix();
 
-	    this.tweens.drop = new CUBE.Tween( {
-	      target: this.game.cube.animator.position,
-	      duration: 2500,
-	      easing: 'easeOutCubic',
-	      to: { x: 0, y: - 0.1 * this.data.floatScale, z: 0 },
-	      onUpdate: () => {
-
-	        this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
-
-	      },
-	      onComplete: () => { this.float( true ); this.game.animating = false; },
-	    } );
-
-	    this.tweens.rotate = new CUBE.Tween( {
-	      target: this.game.cube.animator.rotation,
-	      duration: 2500,
-	      easing: 'easeOutCubic',
-	      to: { x: 0 },
-	    } );
-
-	    setTimeout( () => { this.title( true, 0 ); }, 2000 );
+	    this.initialized = true;
 
 	  }
 
-	  float( drop ) {
+	  cube( show ) {
 
-	    if ( typeof this.data.floatScale == 'undefined' ) this.data.floatScale = 1;
+	    if ( show ) {
 
-	    if ( drop ) {
+	      if ( ! this.initialized ) this.initialize();
 
-	      this.tweens.float = new CUBE.Tween( {
-	        duration: 2500,
-	        easing: 'easeInOutSine',
-	        yoyo: true,
+	      try { this.tweens.drop.kill(); } catch(e) {}
+	      this.tweens.drop = new CUBE.Tween( {
+	        duration: 3000, easing: CUBE.Easing.ElasticOut( 0.5, 0.5 ),
 	        onUpdate: tween => {
 
-	          this.game.cube.animator.position.y =
-	            - 0.1 * this.data.floatScale + tween.progress * 0.2 * this.data.floatScale;
+	          this.game.cube.animator.position.y = ( 1 - tween.progress ) * 4;
+	          this.game.cube.animator.rotation.x = ( 1 - tween.progress ) * - Math.PI / 3;
+	          // this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y / 6;
 
-	          this.game.cube.shadow.material.opacity =
-	            0.4 - this.game.cube.animator.position.y * 0.5;
-
-	        },
+	        }
 	      } );
+
+	      if ( this.game.playing ) {
+
+	        this.game.dom.timer.classList.remove( 'hide' );
+	        this.game.dom.timer.innerHTML = this.game.timer.convert( this.game.timer.deltaTime );
+	        setTimeout( () => this.timer( true ), 700 );
+
+	      } else {
+
+	        setTimeout( () => this.title( true ), 700 );
+
+	      }
+
+	      setTimeout( () => {
+
+	        this.game.animating = false;
+
+	        if ( this.game.playing ) {
+
+	          this.game.controls.disabled = false;
+	          this.game.timer.start( true );
+
+	        }
+
+	      }, 1500 );
 
 	    } else {
 
-	      this.tweens.float = new CUBE.Tween( {
-	        duration: 2500 / 2,
-	        easing: 'easeOutSine',
+	      this.game.controls.disabled = true;
+
+	      if ( this.game.playing ) {
+
+	        this.game.timer.stop();
+	        this.timer( false );
+
+	      } else {
+
+	        this.title( false );
+
+	      }
+
+	      try { this.tweens.drop.kill(); } catch(e) {}
+	      this.tweens.drop = new CUBE.Tween( {
+	        duration: 2000, easing: CUBE.Easing.BackOut( 0.5 ),
 	        onUpdate: tween => {
 
-	          this.game.cube.animator.position.y = tween.progress * - 0.1 * this.data.floatScale;
-	          this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y * 0.5;
+	          this.game.cube.animator.position.y = tween.progress * 4;
+	          this.game.cube.animator.rotation.x = tween.progress * Math.PI / 3;
+	          // this.game.cube.shadow.material.opacity = 0.4 - this.game.cube.animator.position.y / 6;
 
-	        },
-	        onComplete: () => { this.float( true ); },
+	        }
 	      } );
 
 	    }
 
 	  }
 
+	  float() {
+
+	      this.tweens.float = new CUBE.Tween( {
+	        duration: 1500,
+	        easing: 'easeInOutSine',
+	        yoyo: true,
+	        onUpdate: tween => {
+
+	          this.game.cube.holder.position.y = - 0.02 + tween.progress * 0.04;
+	          this.game.cube.holder.rotation.x = 0.005 - tween.progress * 0.01;
+	          this.game.cube.holder.rotation.z = - this.game.cube.holder.rotation.x;
+	          this.game.cube.holder.rotation.y = this.game.cube.holder.rotation.x;
+
+	        },
+	      } );
+
+	  }
+
 	  zoom( game, time, callback ) {
 
-	    const floatScale = ( game ) ? 0.25 : 1;
 	    const zoom = ( game ) ? 1 : this.data.cameraZoom;
 	    const cubeY = ( game ) ? 0 : this.data.cubeY;
 	    const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
 	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
 	    const easing = ( time > 0 ) ? 'easeInOutQuad' : 'easeInOutCubic';
-
-	    this.tweens.scale = new CUBE.Tween( {
-	      target: this.data,
-	      duration: duration,
-	      easing: easing,
-	      to: { floatScale: floatScale },
-	    } );
 
 	    this.tweens.zoom = new CUBE.Tween( {
 	      target: this.game.world.camera,
@@ -2011,7 +2092,7 @@
 
 	  }
 
-	  title( show, callback ) {
+	  title( show ) {
 
 	    if ( this.game.dom.title.querySelector( 'span i' ) === null )
 	      this.game.dom.title.querySelectorAll( 'span' ).forEach( span => CUBE.Lettering( span ) );
@@ -2022,36 +2103,30 @@
 	    this.game.dom.note.classList.remove( ( show ) ? 'hide' : 'show' );
 	    this.game.dom.note.classList.add( ( show ) ? 'show' : 'hide' );
 
-	    const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.title ).animationDuration ) * 1000;
-
-	    if ( typeof callback === 'function' )
-	      setTimeout( () => callback(), callbackTimeout * 0.75 );
-
 	  }
 
-	  timer( show, callback ) {
+	  timer( show ) {
 
 	    CUBE.Lettering( this.game.dom.timer );
 
 	    this.game.dom.timer.classList.add( ( show ) ? 'show' : 'hide' );
 	    this.game.dom.timer.classList.remove( ( show ) ? 'hide' : 'show' );
 
-	    const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.timer ).animationDuration ) * 1000;
-
-	    if ( typeof callback === 'function' )
-	      setTimeout( () => callback(), callbackTimeout * 0.75 );
-
 	  }  
 
-	  preferences( show, callback ) {
+	  preferences( show ) {
 
-	    this.game.dom.prefs.classList.add( ( show ) ? 'show' : 'hide' );
-	    this.game.dom.prefs.classList.remove( ( show ) ? 'hide' : 'show' );
+	    this.game.dom.prefs.querySelectorAll( '.range' ).forEach( ( range, index ) => {
 
-	    const callbackTimeout = parseFloat( getComputedStyle( this.game.dom.prefs ).animationDuration ) * 1000;
+	      if ( show ) range.classList.remove( 'hide', 'show' );
 
-	    if ( typeof callback === 'function' )
-	      setTimeout( () => callback(), callbackTimeout * 0.75 );
+	      setTimeout( () => {
+
+	        range.classList.add( ( show ) ? 'show' : 'hide' );
+
+	      }, ( show ) ? 50 + index * 100 : index * 50 );
+
+	    } );
 
 	  }
 	  
@@ -2154,7 +2229,8 @@
 	    this.playing = false;
 	    this.animating = true;
 
-	    this.transition.drop();
+	    this.transition.float();
+	    this.transition.cube( true );
 
 	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
 	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
@@ -2168,13 +2244,12 @@
 	      e.stopPropagation();
 	      if ( !this.playing ) return;
 
-	      // this.dom.buttons.home.style.visibility = 'hidden';
-
 	      this.playing = false;
 	      this.timer.stop();
 	      this.controls.disabled = true;
 
-	      this.transition.title( true, () => this.transition.timer( false ) );
+	      this.transition.title( true );
+	      setTimeout( () => this.transition.timer( false ), 500 );
 
 	      this.transition.zoom( false, 0, () => {} );
 
@@ -2218,7 +2293,8 @@
 
 	      }
 
-	      this.transition.title( false, () => this.transition.timer( true ) );
+	      this.transition.title( false );
+	      setTimeout( () => this.transition.timer( true ), 500 );
 
 	      this.transition.zoom( true, duration, () => {
 
@@ -2243,60 +2319,17 @@
 
 	    button.addEventListener( 'click', () => {
 
-	      if ( this.animating ) return;
+	      button.classList.toggle( 'active' );
 
-	      this.animating = true;
+	      if ( button.classList.contains( 'active' ) ) {
 
-	      button.classList.toggle( 'is-active' );
-
-	      if ( button.classList.contains( 'is-active' ) ) {
-
-	        this.dom.game.classList.add( 'hide' );
-
-	        if ( this.playing ) {
-
-	          this.controls.disabled = true;
-	          this.timer.stop();
-
-	        }
-
-	        this.transition[ this.playing ? 'timer' : 'title' ]( false, () => {
-
-	          this.transition.preferences( true, () => {
-
-	            this.animating = false;
-
-	          } );
-
-	        } );
+	        this.transition.cube( false );
+	        setTimeout( () => this.transition.preferences( true ), 300 );
 
 	      } else {
 
-	        this.dom.game.classList.remove( 'hide' );
-
-	        if ( this.playing ) {
-
-	          this.dom.timer.classList.remove( 'hide' );
-	          this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
-
-	        }
-
-	        this.transition.preferences( false, () => {
-
-	          this.transition[ this.playing ? 'timer' : 'title' ]( true, () => {
-
-	            this.animating = false;
-
-	            if ( this.playing ) {
-
-	              this.controls.disabled = false;
-	              this.timer.start( true );
-
-	            }
-
-	          } );
-
-	        } );
+	        this.transition.preferences( false );
+	        this.transition.cube( true );
 
 	      }
 
@@ -2495,7 +2528,7 @@
 	          localStorage.setItem( 'flipSpeed', value );
 
 	          this.game.controls.options.flipBounce = ( ( value - 100 ) / 200 ) * 2;
-	          localStorage.setItem( 'flipBounce', value );
+	          localStorage.setItem( 'flipBounce', this.game.controls.options.flipBounce );
 	          
 	        },
 	      } ),
@@ -2550,7 +2583,7 @@
 
 	    const flipSpeed = parseFloat( localStorage.getItem( 'flipSpeed' ) );
 	    const flipBounce = parseFloat( localStorage.getItem( 'flipBounce' ) );
-	    const scrambleLength = parseFloat( localStorage.getItem( 'scrambleLength' ) );
+	    const scrambleLength = parseInt( localStorage.getItem( 'scrambleLength' ) );
 	    const fov = parseFloat( localStorage.getItem( 'fov' ) );
 	    // const theme = localStorage.getItem( 'theme' );
 
@@ -2721,6 +2754,7 @@
 	exports.Controls = Controls;
 	exports.Scrambler = Scrambler;
 	exports.Tween = Tween;
+	exports.Easing = Easing;
 	exports.Transition = Transition;
 	exports.Timer = Timer;
 	exports.Game = Game;

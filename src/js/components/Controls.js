@@ -205,12 +205,13 @@ class Controls {
   rotateLayer( rotation, scramble, callback ) {
 
     const bounce = scramble ? this.options.scrambleBounce : this.options.flipBounce;
-    const easing = p => { return ( p -= 1 ) * p * ( ( bounce + 1 ) * p + bounce ) + 1; }
     const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
+
+    console.log( bounce ); 
 
     this.rotationTween = new CUBE.Tween( {
       duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
-      easing: easing,
+      easing: CUBE.Easing.BackOut( bounce ),
       onUpdate: tween => {
 
         let deltaAngle = tween.delta * rotation;

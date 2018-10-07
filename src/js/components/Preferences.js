@@ -17,7 +17,7 @@ class Preferences {
           localStorage.setItem( 'flipSpeed', value );
 
           this.game.controls.options.flipBounce = ( ( value - 100 ) / 200 ) * 2;
-          localStorage.setItem( 'flipBounce', value );
+          localStorage.setItem( 'flipBounce', this.game.controls.options.flipBounce );
           
         },
       } ),
@@ -72,7 +72,7 @@ class Preferences {
 
     const flipSpeed = parseFloat( localStorage.getItem( 'flipSpeed' ) );
     const flipBounce = parseFloat( localStorage.getItem( 'flipBounce' ) );
-    const scrambleLength = parseFloat( localStorage.getItem( 'scrambleLength' ) );
+    const scrambleLength = parseInt( localStorage.getItem( 'scrambleLength' ) );
     const fov = parseFloat( localStorage.getItem( 'fov' ) );
     // const theme = localStorage.getItem( 'theme' );
 

@@ -34,7 +34,8 @@ class Game {
     this.playing = false;
     this.animating = true;
 
-    this.transition.drop();
+    this.transition.float();
+    this.transition.cube( true );
 
     this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
     this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
@@ -48,13 +49,12 @@ class Game {
       e.stopPropagation();
       if ( !this.playing ) return;
 
-      // this.dom.buttons.home.style.visibility = 'hidden';
-
       this.playing = false;
       this.timer.stop();
       this.controls.disabled = true;
 
-      this.transition.title( true, () => this.transition.timer( false ) );
+      this.transition.title( true );
+      setTimeout( () => this.transition.timer( false ), 500 );
 
       this.transition.zoom( false, 0, () => {} );
 
@@ -100,7 +100,8 @@ class Game {
 
       }
 
-      this.transition.title( false, () => this.transition.timer( true ) );
+      this.transition.title( false );
+      setTimeout( () => this.transition.timer( true ), 500 );
 
       this.transition.zoom( true, duration, () => {
 
@@ -125,60 +126,17 @@ class Game {
 
     button.addEventListener( 'click', () => {
 
-      if ( this.animating ) return;
+      button.classList.toggle( 'active' );
 
-      this.animating = true;
+      if ( button.classList.contains( 'active' ) ) {
 
-      button.classList.toggle( 'is-active' );
-
-      if ( button.classList.contains( 'is-active' ) ) {
-
-        this.dom.game.classList.add( 'hide' );
-
-        if ( this.playing ) {
-
-          this.controls.disabled = true;
-          this.timer.stop();
-
-        }
-
-        this.transition[ this.playing ? 'timer' : 'title' ]( false, () => {
-
-          this.transition.preferences( true, () => {
-
-            this.animating = false;
-
-          } )
-
-        } );
+        this.transition.cube( false );
+        setTimeout( () => this.transition.preferences( true ), 300 );
 
       } else {
 
-        this.dom.game.classList.remove( 'hide' );
-
-        if ( this.playing ) {
-
-          this.dom.timer.classList.remove( 'hide' );
-          this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
-
-        }
-
-        this.transition.preferences( false, () => {
-
-          this.transition[ this.playing ? 'timer' : 'title' ]( true, () => {
-
-            this.animating = false;
-
-            if ( this.playing ) {
-
-              this.controls.disabled = false;
-              this.timer.start( true );
-
-            }
-
-          } );
-
-        } );
+        this.transition.preferences( false )
+        this.transition.cube( true );
 
       }
 

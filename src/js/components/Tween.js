@@ -11,7 +11,7 @@ class Tween {
     this.onUpdate = options.onUpdate || ( () => {} );
     this.yoyo = options.yoyo || null;
 
-    if ( typeof options.easing == 'undefined' ) options.easing = 'linear'; 
+    if ( typeof options.easing == 'undefined' ) options.easing = p => p; 
 
     this.easing = ( typeof options.easing !== 'function' ) 
       ? this.constructor.Easings[ options.easing ]
@@ -64,9 +64,9 @@ class Tween {
 
     if ( this.yoyo == null && delta > this.duration - 1000 / 60 ) progress = 1;
 
-    if ( progress >= 1 ) { progress = 1; this.progress = 1; }
-    else if ( progress <= 0 ) { progress = 0; this.progress = 0; }
-    else this.progress = this.easing( progress );
+    if ( progress >= 1 ) { progress = 1; /*this.progress = 1;*/ }
+    else if ( progress <= 0 ) { progress = 0; /*this.progress = 0;*/ }
+    this.progress = this.easing( progress );
 
     this.delta = this.progress - old;
 
@@ -214,4 +214,61 @@ Tween.Easings = {
 
 };
 
-export { Tween };
+const Easing = {
+
+  BackOut: s => {
+
+    if ( typeof s === 'undefined' ) s = 1.70158;
+
+    return p => { return ( p -= 1 ) * p * ( ( s + 1 ) * p + s ) + 1; };
+
+  },
+
+  ElasticOut: ( amplitude, period ) => {
+
+    let PI2 = Math.PI * 2;
+
+    let p1 = (amplitude >= 1) ? amplitude : 1;
+    let p2 = (period || 0.3) / (amplitude < 1 ? amplitude : 1);
+    let p3 = p2 / PI2 * (Math.asin(1 / p1) || 0);
+
+    p2 = PI2 / p2;
+
+    return (p) => { return p1 * Math.pow(2, -10 * p) * Math.sin( (p - p3) * p2 ) + 1; };
+
+  },
+
+  // ElasticOut: ( amplitude, period ) => {
+
+  //   if (typeof amplitude == 'undefined') amplitude = 1;
+  //   if (typeof period == 'undefined') period = 0;
+
+  //   return p => {
+    
+  //     var offset = 1.70158;
+
+  //     if ( p == 0 ) return 0;
+  //     if ( p == 1 ) return 1;
+
+  //     if ( ! period ) period = .3;
+
+  //     if ( amplitude < 1 ) {
+
+  //       amplitude = 1;
+  //       offset = period / 4;
+
+  //     } else {
+
+  //       offset = period / ( 2 * Math.PI ) * Math.asin( 1 / amplitude );
+
+  //     }
+
+  //     return amplitude * Math.pow( 2, -10 * p ) * Math.sin( ( p - offset ) * ( Math.PI * 2 ) / period ) + 1;
+
+  //   };
+
+  // },
+
+}
+
+export { Tween, Easing };
