@@ -6,8 +6,6 @@ class Timer {
 
 		this.startTime = null;
 
-		this.render = true;
-
 	}
 
 	start( continueGame ) {
@@ -15,7 +13,6 @@ class Timer {
 		this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
 		this.deltaTime = 0;
 		this.converted = this.convert( this.deltaTime );
-		this.render = true;
 
 		this.animate = requestAnimationFrame( () => this.update() );
 
@@ -40,7 +37,7 @@ class Timer {
 		this.deltaTime = this.currentTime - this.startTime;
 		this.converted = this.convert( this.deltaTime );
 
-		if ( this.converted != old && this.render ) {
+		if ( this.converted != old ) {
 
 			localStorage.setItem( 'gameTime', JSON.stringify( this.deltaTime ) );
 			this.game.dom.timer.innerHTML = this.converted;
