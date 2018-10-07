@@ -47,12 +47,15 @@ continueTrackingWithDelta = function(delta) {
 
 endTrackingInputMode = function(inputMode) {
 
+  let current = this.spring.getCurrentValue();
+  let returnBack = ( current > 0 && this.drag.delta > 0 ) || ( current < 0 && this.drag.delta < 0 ); 
+
   var currentPosition = mainSpring.getCurrentValue();
 
   var startPosition = endValue; // end value je trenutno izabran objekat tamo kod njega on se podesava u selectTabIndex
 
   var positionDelta = currentPosition - startPosition;
-  var swipingTowardsCurrentPage = (positionDelta > 0 && delta > 0) || (positionDelta < 0 && delta < 0); 
+  var swipingTowardsCurrentPage = (current > 0 && this.drag.delta > 0) || (current < 0 && this.drag.delta < 0); 
   var passedVelocityTolerance = (Math.abs(delta) > 3);
   var passedDistanceTolerance = (Math.abs(positionDelta) > 0.3);
   
