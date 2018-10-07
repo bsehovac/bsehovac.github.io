@@ -126,7 +126,7 @@ class Transition {
   zoom( game, time, callback ) {
 
     const zoom = ( game ) ? 1 : this.data.cameraZoom;
-    const cubeY = ( game ) ? 0 : this.data.cubeY;
+    const cubeY = ( game ) ? -0.3 : this.data.cubeY;
     const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
     const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
     const easing = ( time > 0 ) ? 'easeInOutQuad' : 'easeInOutCubic';
@@ -146,6 +146,19 @@ class Transition {
       to: { y: - Math.PI * 2 * rotations },
       onComplete: () => { this.game.cube.animator.rotation.y = 0; callback(); },
     } );
+
+    // this.tweens.cubeY = new CUBE.Tween( {
+    //   target: this.data,
+    //   duration: duration,
+    //   easing: easing,
+    //   to: { cubeY: ( game ) ? -0.3 : -0.2 },
+    //   onUpdate: () => {
+
+    //     this.game.cube.object.position.y = this.data.cubeY;
+    //     this.game.controls.edges.position.y = this.data.cubeY;
+
+    //   },
+    // } );
 
   }
 

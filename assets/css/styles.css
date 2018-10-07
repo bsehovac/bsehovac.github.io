@@ -237,6 +237,16 @@ body {
     font-size: 3.5em;
     height: 1.25em;
     z-index: 3; }
+  .text--record {
+    bottom: 72%;
+    font-size: 1.5em;
+    z-index: 4;
+    opacity: 0; }
+    .text--record i {
+      position: relative;
+      display: inline-block;
+      font-size: 0.9em;
+      top: -0.05em; }
 
 .text--title, .text--timer {
   opacity: 0; }

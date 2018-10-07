@@ -778,10 +778,10 @@
 				if ( !gameInProgress ) throw new Error();
 
 				const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
-				const gameMoves = JSON.parse( localStorage.getItem( 'gameMoves' ) );
+				// const gameMoves = JSON.parse( localStorage.getItem( 'gameMoves' ) );
 				const gameTime = localStorage.getItem( 'gameTime' );
 
-				if ( !cubeData || !gameMoves || !gameTime ) throw new Error();
+				if ( !cubeData || /*!gameMoves ||*/ !gameTime ) throw new Error();
 
 				this.pieces.forEach( piece => {
 
@@ -795,14 +795,14 @@
 
 				} );
 
-				this.game.controls.moves = gameMoves;
+				// this.game.controls.moves = gameMoves;
 
-				this.game.controls.moves.forEach( move => {
+				// this.game.controls.moves.forEach( move => {
 
-					const angle = move[0];
-					move[0] = new THREE.Vector3( angle.x, angle.y, angle.z );
+				// 	const angle = move[0];
+				// 	move[0] = new THREE.Vector3( angle.x, angle.y, angle.z );
 
-				} );
+				// } );
 
 				this.game.timer.deltaTime = gameTime;
 
@@ -834,7 +834,7 @@
 
 			localStorage.setItem( 'gameInProgress', 'yes' );
 			localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
-			localStorage.setItem( 'gameMoves', JSON.stringify( this.game.controls.moves ) );
+			// localStorage.setItem( 'gameMoves', JSON.stringify( this.game.controls.moves ) );
 			localStorage.setItem( 'gameTime', this.game.timer.deltaTime );
 
 		}
@@ -843,7 +843,7 @@
 
 			localStorage.removeItem( 'gameInProgress' );
 			localStorage.removeItem( 'cubeData' );
-			localStorage.removeItem( 'gameMoves' );
+			// localStorage.removeItem( 'gameMoves' );
 			localStorage.removeItem( 'gameTime' );
 
 		}
@@ -1032,18 +1032,21 @@
 
 	}
 
+	const STILL = 0;
+	const PREPARING = 1;
+	const ROTATING = 2;
+	const ANIMATING = 3;
+
 	class Controls {
 
 	  constructor( game ) {
 
 	    this.game = game;
 
-	    this.options = {
-	      flipSpeed: 300,
-	      flipBounce: 1.70158,
-	      scrambleSpeed: 150,
-	      scrambleBounce: 0,
-	    };
+	    this._flipSpeed = 300;
+	    this._flipBounce = 1.70158;
+	    this._scrambleSpeed = 150;
+	    this._scrambleBounce = 0;
 
 	    this.raycaster = new THREE.Raycaster();
 
@@ -1068,13 +1071,12 @@
 	    this.onSolved = () => {};
 	    this.onMove = () => {};
 
-	    this.drag = {};
-	    this.momentum = [];
-	    this.moves = [];
+	    this._momentum = [];
+	    this._moves = [];
 
 	    this.disabled = false;
-	    this.scramble = null;
-	    this.state = 'still';
+	    this._scramble = null;
+	    this._state = STILL;
 
 	    this.initDraggable();
 
@@ -1086,31 +1088,34 @@
 
 	    this.draggable.onDragStart = position => {
 
-	      if ( this.state !== 'still' || this.disabled || this.scramble !== null ) return;
+	      if ( this.disabled || this._scramble !== null ) return;
+	      if ( this._state === PREPARING || this._state === ROTATING ) return;
+	      if ( this._state === ANIMATING && ( this._flipProgress < 0.9 || this._flipProgress > 1.1 ) ) return;
 
 	      const edgeIntersect = this.getIntersect( position.current, this.edges, false );
 
 	      if ( edgeIntersect !== false ) {
 
-	        this.drag.normal = edgeIntersect.face.normal.round();
-	        this.drag.type = 'layer';
+	        this._dragNormal = edgeIntersect.face.normal.round();
+	        this._flipType = 'layer';
 
 	        this.attach( this.helper, this.game.cube.object );
 
 	        this.helper.rotation.set( 0, 0, 0 );
 	        this.helper.position.set( 0, 0, 0 );
-	        this.helper.lookAt( this.drag.normal );
+	        this.helper.lookAt( this._dragNormal );
 	        this.helper.translateZ( 0.5 );
 	        this.helper.updateMatrixWorld();
 
 	        this.detach( this.helper, this.game.cube.object );
+	        this.helper.rotation.setFromVector3( this.snapRotation( this.helper.rotation.toVector3() ) );
 
-	        this.drag.intersect = this.getIntersect( position.current, this.game.cube.cubes, true );
+	        this._dragIntersect = this.getIntersect( position.current, this.game.cube.cubes, true );
 
 	      } else {
 
-	        this.drag.normal = new THREE.Vector3( 0, 0, 1 );
-	        this.drag.type = 'cube';
+	        this._dragNormal = new THREE.Vector3( 0, 0, 1 );
+	        this._flipType = 'cube';
 
 	        this.helper.position.set( 0, 0, 0 );
 	        this.helper.rotation.set( 0, Math.PI / 4, 0 );
@@ -1121,72 +1126,72 @@
 	      const planeIntersect = this.getIntersect( position.current, this.helper, false ).point;
 	      if ( planeIntersect === false ) return;
 
-	      this.drag.current = this.helper.worldToLocal( planeIntersect );
-	      this.drag.total = new THREE.Vector3();
-	      this.drag.axis = null;
-	      this.drag.delta = null;
-	      this.drag.angle = 0;
-	      this.state = 'preparing';
+	      this._dragCurrent = this.helper.worldToLocal( planeIntersect );
+	      this._dragTotal = new THREE.Vector3();
+	      this._state = ( this._state === ANIMATING ) ? ANIMATING : PREPARING;
+	      this._nextState = ( this._state === ANIMATING ) ? PREPARING : STILL;
 
 	    };
 
 	    this.draggable.onDragMove = position => {
 
-	      if ( ( this.state !== 'preparing' && this.state !== 'rotating' ) || this.disabled || this.scramble !== null ) return;
+	      if ( this.disabled || this._scramble !== null ) return;
+	      if ( this._state === STILL ) return;
 
 	      const planeIntersect = this.getIntersect( position.current, this.helper, false );
 	      if ( planeIntersect === false ) return;
 
 	      const point = this.helper.worldToLocal( planeIntersect.point.clone() );
 
-	      this.drag.delta = point.clone().sub( this.drag.current ).setZ( 0 );
-	      this.drag.total.add( this.drag.delta );
-	      this.drag.current = point;
-	      this.addMomentumPoint( this.drag.delta );
+	      this._dragDelta = point.clone().sub( this._dragCurrent ).setZ( 0 );
+	      this._dragTotal.add( this._dragDelta );
+	      this._dragCurrent = point;
+	      this.addMomentumPoint( this._dragDelta );
 
-	      if ( this.drag.axis === null && this.drag.total.length() > 0.05 ) {
+	      if ( this._state === PREPARING && this._dragTotal.length() > 0.05 ) {
 
-	        this.drag.direction = this.getMainAxis( this.drag.total );
+	        this._dragDirection = this.getMainAxis( this._dragTotal );
 
-	        if ( this.drag.type === 'layer' ) {
+	        if ( this._flipType === 'layer' ) {
 
 	          const direction = new THREE.Vector3();
-	          direction[ this.drag.direction ] = 1;
+	          direction[ this._dragDirection ] = 1;
 
 	          const worldDirection = this.helper.localToWorld( direction ).sub( this.helper.position );
 	          const objectDirection = this.edges.worldToLocal( worldDirection ).round();
 
-	          this.drag.axis = objectDirection.cross( this.drag.normal ).negate();
+	          this._flipAxis = objectDirection.cross( this._dragNormal ).negate();
 
 	          this.selectLayer( this.getLayer() );
 
 	        } else {
 
-	          const axis = ( this.drag.direction != 'x' )
-	            ? ( ( this.drag.direction == 'y' && position.current.x > this.game.world.width / 2 ) ? 'z' : 'x' )
+	          const axis = ( this._dragDirection != 'x' )
+	            ? ( ( this._dragDirection == 'y' && position.current.x > this.game.world.width / 2 ) ? 'z' : 'x' )
 	            : 'y';
 
-	          this.drag.axis = new THREE.Vector3();
-	          this.drag.axis[ axis ] = 1 * ( ( axis == 'x' ) ? - 1 : 1 );
+	          this._flipAxis = new THREE.Vector3();
+	          this._flipAxis[ axis ] = 1 * ( ( axis == 'x' ) ? - 1 : 1 );
 
 	        }
 
-	        this.state = 'rotating';
+	        this._flipAngle = 0;
+	        this._state = ROTATING;
 
-	      } else if ( this.drag.axis !== null ) {
+	      } else if ( this._state === ROTATING ) {
 
-	        const rotation = this.drag.delta[ this.drag.direction ];// * 2.25;
+	        const rotation = this._dragDelta[ this._dragDirection ];// * 2.25;
 
-	        if ( this.drag.type === 'layer' ) { 
+	        if ( this._flipType === 'layer' ) { 
 
-	          this.group.rotateOnAxis( this.drag.axis, rotation );
-	          this.drag.angle += rotation;
+	          this.group.rotateOnAxis( this._flipAxis, rotation );
+	          this._flipAngle += rotation;
 
 	        } else {
 
-	          this.edges.rotateOnWorldAxis( this.drag.axis, rotation );
+	          this.edges.rotateOnWorldAxis( this._flipAxis, rotation );
 	          this.game.cube.object.rotation.copy( this.edges.rotation );
-	          this.drag.angle += rotation;
+	          this._flipAngle += rotation;
 
 	        }
 
@@ -1196,26 +1201,27 @@
 
 	    this.draggable.onDragEnd = position => {
 
-	      if ( this.state !== 'rotating' || this.disabled || this.scramble !== null ) return;
+	      if ( this._state !== ROTATING || this.disabled || this._scramble !== null ) return;
 
-	      this.state = 'finishing';
+	      this._state = ANIMATING;
+	      this._flipProgress = 0;
 
-	      const momentum = this.getMomentum()[ this.drag.direction ];
-	      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this.drag.angle ) < Math.PI / 2 );
+	      const momentum = this.getMomentum()[ this._dragDirection ];
+	      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this._flipAngle ) < Math.PI / 2 );
 
 	      const angle = flip
-	        ? this.roundAngle( this.drag.angle + Math.sign( this.drag.angle ) * ( Math.PI / 4 ) )
-	        : this.roundAngle( this.drag.angle );
+	        ? this.roundAngle( this._flipAngle + Math.sign( this._flipAngle ) * ( Math.PI / 4 ) )
+	        : this.roundAngle( this._flipAngle );
 
-	      const delta = angle - this.drag.angle;
+	      const delta = angle - this._flipAngle;
 
-	      if ( this.drag.type === 'layer' ) {
+	      if ( this._flipType === 'layer' ) {
 
 	        this.rotateLayer( delta, false, layer => {
 
 	          this.addMove( angle, layer );
 	          this.checkIsSolved();
-	          this.state = 'still';
+	          this._state = this._nextState;
 
 	        } );
 
@@ -1223,8 +1229,7 @@
 
 	        this.rotateCube( delta, () => {
 
-	          this.drag.active = false;
-	          this.state = 'still';
+	          this._state = this._nextState;
 
 	        } );
 
@@ -1236,28 +1241,27 @@
 
 	  rotateLayer( rotation, scramble, callback ) {
 
-	    const bounce = scramble ? this.options.scrambleBounce : this.options.flipBounce;
+	    const bounce = scramble ? this._scrambleBounce : this._flipBounce;
 	    const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
 
-	    console.log( bounce ); 
-
 	    this.rotationTween = new CUBE.Tween( {
-	      duration: this.options[ scramble ? 'scrambleSpeed' : 'flipSpeed' ],
+	      duration:scramble ? this._scrambleSpeed : this._flipSpeed,
 	      easing: CUBE.Easing.BackOut( bounce ),
 	      onUpdate: tween => {
 
+	        this._flipProgress = tween.progress;
 	        let deltaAngle = tween.delta * rotation;
-	        this.group.rotateOnAxis( this.drag.axis, deltaAngle );
+	        this.group.rotateOnAxis( this._flipAxis, deltaAngle );
 	        bounceCube( tween.progress, deltaAngle, rotation );
 
 	      },
 	      onComplete: () => {
 
-	        const layer = this.drag.layer.slice( 0 );
+	        const layer = this._flipLayer.slice( 0 );
 
 	        this.game.cube.object.rotation.setFromVector3( this.snapRotation( this.game.cube.object.rotation.toVector3() ) );
 	        this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
-	        this.deselectLayer( this.drag.layer );
+	        this.deselectLayer( this._flipLayer );
 	        this.game.cube.saveState();
 
 	        callback( layer );
@@ -1282,7 +1286,7 @@
 
 	          }
 
-	          this.game.cube.object.rotateOnAxis( this.drag.axis, delta );
+	          this.game.cube.object.rotateOnAxis( this._flipAxis, delta );
 
 	        }
 
@@ -1293,16 +1297,17 @@
 	  rotateCube( rotation, callback ) {
 
 	    const easing = p => {
-	      var s = this.options.flipBounce;
+	      var s = this._flipBounce;
 	      return (p-=1)*p*((s+1)*p + s) + 1;
 	    };
 
 	    this.rotationTween = new CUBE.Tween( {
-	      duration: this.options.flipSpeed,
+	      duration: this._flipSpeed,
 	      easing: easing,
 	      onUpdate: tween => {
 
-	        this.edges.rotateOnWorldAxis( this.drag.axis, tween.delta * rotation );
+	        this._flipProgress = tween.progress;
+	        this.edges.rotateOnWorldAxis( this._flipAxis, tween.delta * rotation );
 	        this.game.cube.object.rotation.copy( this.edges.rotation );
 
 	      },
@@ -1324,28 +1329,28 @@
 	    if ( angle == 0 ) return;
 
 	    if (
-	      this.moves.length > 0 &&
-	      this.moves[ this.moves.length - 1 ][ 0 ] * -1 == angle
+	      this._moves.length > 0 &&
+	      this._moves[ this._moves.length - 1 ][ 0 ] * -1 == angle
 	    ) {
 
-	      this.moves.pop();
+	      this._moves.pop();
 
 	    } else {
 
 	      move = [ angle, layer ];
-	      this.moves.push( move );
+	      this._moves.push( move );
 
 	    }
 
-	    this.onMove( { moves: this.moves, move: move, length: this.moves.length } );
+	    this.onMove( { moves: this._moves, move: move, length: this._moves.length } );
 
 	  }
 
 	  undoMove() {
 
-	    if ( this.moves.length > 0 ) {
+	    if ( this._moves.length > 0 ) {
 
-	      const move = this.moves[ this.moves.length - 1 ];
+	      const move = this._moves[ this._moves.length - 1 ];
 	      const angle = move[ 0 ] * -1;
 	      const layer = move[ 1 ];
 
@@ -1353,8 +1358,8 @@
 
 	      this.rotateLayer( angle, false, () => {
 
-	        this.moves.pop();
-	        this.onMove( { moves: this.moves, move: move, length: this.moves.length } );
+	        this._moves.pop();
+	        this.onMove( { moves: this._moves, move: move, length: this._moves.length } );
 
 	      } );
 
@@ -1407,14 +1412,14 @@
 
 	    this.group.rotation.set( 0, 0, 0 );
 	    this.movePieces( layer, this.game.cube.object, this.group );
-	    this.drag.layer = layer;
+	    this._flipLayer = layer;
 
 	  }
 
 	  deselectLayer( layer ) {
 
 	    this.movePieces( layer, this.group, this.game.cube.object );
-	    this.drag.layer = null;
+	    this._flipLayer = null;
 
 	  }
 
@@ -1443,8 +1448,8 @@
 
 	    if ( typeof position === 'undefined' ) {
 
-	      axis = this.getMainAxis( this.drag.axis );
-	      position = this.getPiecePosition( this.drag.intersect.object );
+	      axis = this.getMainAxis( this._flipAxis );
+	      position = this.getPiecePosition( this._dragIntersect.object );
 
 	    } else {
 
@@ -1476,19 +1481,19 @@
 
 	  scrambleCube( callback ) {
 
-	    if ( this.scramble == null ) {
+	    if ( this._scramble == null ) {
 
-	      this.scramble = this.game.scrambler;
-	      this.scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
+	      this._scramble = this.game.scrambler;
+	      this._scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
 
 	    }
 
-	    const converted = this.scramble.converted;
+	    const converted = this._scramble.converted;
 	    const move = converted[ 0 ];
 	    const layer = this.getLayer( move.position );
 
-	    this.drag.axis = new THREE.Vector3();
-	    this.drag.axis[ move.axis ] = 1;
+	    this._flipAxis = new THREE.Vector3();
+	    this._flipAxis[ move.axis ] = 1;
 
 	    this.selectLayer( layer );
 	    this.rotateLayer( move.angle, true, () => {
@@ -1501,8 +1506,8 @@
 
 	      } else {
 
-	        this.scramble.callback();
-	        this.scramble = null;
+	        this._scramble.callback();
+	        this._scramble = null;
 
 	      }
 
@@ -1553,20 +1558,20 @@
 
 	    const time = Date.now();
 
-	    this.momentum = this.momentum.filter( moment => time - moment.time < 500 );
+	    this._momentum = this._momentum.filter( moment => time - moment.time < 500 );
 
-	    if ( delta !== false ) this.momentum.push( { delta, time } );
+	    if ( delta !== false ) this._momentum.push( { delta, time } );
 
 	  }
 
 	  getMomentum() {
 
-	    const points = this.momentum.length;
+	    const points = this._momentum.length;
 	    const momentum = new THREE.Vector2();
 
 	    this.addMomentumPoint( false );
 
-	    this.momentum.forEach( ( point, index ) => {
+	    this._momentum.forEach( ( point, index ) => {
 
 	      momentum.add( point.delta.multiplyScalar( index / points ) );
 
@@ -2069,7 +2074,7 @@
 	  zoom( game, time, callback ) {
 
 	    const zoom = ( game ) ? 1 : this.data.cameraZoom;
-	    const cubeY = ( game ) ? 0 : this.data.cubeY;
+	    const cubeY = ( game ) ? -0.3 : this.data.cubeY;
 	    const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
 	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
 	    const easing = ( time > 0 ) ? 'easeInOutQuad' : 'easeInOutCubic';
@@ -2089,6 +2094,19 @@
 	      to: { y: - Math.PI * 2 * rotations },
 	      onComplete: () => { this.game.cube.animator.rotation.y = 0; callback(); },
 	    } );
+
+	    // this.tweens.cubeY = new CUBE.Tween( {
+	    //   target: this.data,
+	    //   duration: duration,
+	    //   easing: easing,
+	    //   to: { cubeY: ( game ) ? -0.3 : -0.2 },
+	    //   onUpdate: () => {
+
+	    //     this.game.cube.object.position.y = this.data.cubeY;
+	    //     this.game.controls.edges.position.y = this.data.cubeY;
+
+	    //   },
+	    // } );
 
 	  }
 
@@ -2284,7 +2302,7 @@
 	        this.scrambler.scramble();
 	        this.controls.scrambleCube( () => {} );
 
-	        duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
+	        duration = this.scrambler.converted.length * this.controls._scrambleSpeed;
 
 	      } else {
 
@@ -2445,6 +2463,10 @@
 	    viewbox: '0 0 576 512',
 	    content: '<path fill="currentColor" d="M488 312.7V456c0 13.3-10.7 24-24 24H348c-6.6 0-12-5.4-12-12V356c0-6.6-5.4-12-12-12h-72c-6.6 0-12 5.4-12 12v112c0 6.6-5.4 12-12 12H112c-13.3 0-24-10.7-24-24V312.7c0-3.6 1.6-7 4.4-9.3l188-154.8c4.4-3.6 10.8-3.6 15.3 0l188 154.8c2.7 2.3 4.3 5.7 4.3 9.3zm83.6-60.9L488 182.9V44.4c0-6.6-5.4-12-12-12h-56c-6.6 0-12 5.4-12 12V117l-89.5-73.7c-17.7-14.6-43.3-14.6-61 0L4.4 251.8c-5.1 4.2-5.8 11.8-1.6 16.9l25.5 31c4.2 5.1 11.8 5.8 16.9 1.6l235.2-193.7c4.4-3.6 10.8-3.6 15.3 0l235.2 193.7c5.1 4.2 12.7 3.5 16.9-1.6l25.5-31c4.2-5.2 3.4-12.7-1.7-16.9z" class=""></path>',
 	  },
+	  'trophy': {
+	  	viewbox: '0 0 576 512',
+	  	content: '<path fill="currentColor" d="M552 64H448V24c0-13.3-10.7-24-24-24H152c-13.3 0-24 10.7-24 24v40H24C10.7 64 0 74.7 0 88v56c0 66.5 77.9 131.7 171.9 142.4C203.3 338.5 240 360 240 360v72h-48c-35.3 0-64 20.7-64 56v12c0 6.6 5.4 12 12 12h296c6.6 0 12-5.4 12-12v-12c0-35.3-28.7-56-64-56h-48v-72s36.7-21.5 68.1-73.6C498.4 275.6 576 210.3 576 144V88c0-13.3-10.7-24-24-24zM64 144v-16h64.2c1 32.6 5.8 61.2 12.8 86.2-47.5-16.4-77-49.9-77-70.2zm448 0c0 20.2-29.4 53.8-77 70.2 7-25 11.8-53.6 12.8-86.2H512v16zm-127.3 4.7l-39.6 38.6 9.4 54.6c1.7 9.8-8.7 17.2-17.4 12.6l-49-25.8-49 25.8c-8.8 4.6-19.1-2.9-17.4-12.6l9.4-54.6-39.6-38.6c-7.1-6.9-3.2-19 6.7-20.5l54.8-8 24.5-49.6c4.4-8.9 17.1-8.9 21.5 0l24.5 49.6 54.8 8c9.6 1.5 13.5 13.6 6.4 20.5z" class=""></path>',
+	  }
 	};
 
 	class Audio {
@@ -2520,25 +2542,18 @@
 	    this.elements = {
 
 	      speed: new CUBE.Range( 'speed', {
-	        value: this.game.controls.options.flipSpeed,
+	        value: this.game.controls._flipSpeed,
 	        range: [ 300, 100 ],
 	        onComplete: value => {
 
-	          this.game.controls.options.flipSpeed = value;
+	          this.game.controls._flipSpeed = value;
 	          localStorage.setItem( 'flipSpeed', value );
 
-	          this.game.controls.options.flipBounce = ( ( value - 100 ) / 200 ) * 2;
-	          localStorage.setItem( 'flipBounce', this.game.controls.options.flipBounce );
+	          this.game.controls._flipBounce = ( ( value - 100 ) / 200 ) * 2;
+	          localStorage.setItem( 'flipBounce', this.game.controls._flipBounce );
 	          
 	        },
 	      } ),
-
-	      // bounce: new CUBE.Range( 'bounce', {
-	      //   value: this.game.controls.options.flipBounce,
-	      //   range: [ 0, 2 ],
-	      //   onUpdate: value => { this.game.controls.options.flipBounce = value; },
-	      //   onComplete: value => { localStorage.setItem( 'flipBounce', value ); },
-	      // } ),
 
 	      scramble: new CUBE.Range( 'scramble', {
 	        value: this.game.scrambler.scrambleLength,
@@ -2581,19 +2596,19 @@
 
 	  load() {
 
-	    const flipSpeed = parseFloat( localStorage.getItem( 'flipSpeed' ) );
-	    const flipBounce = parseFloat( localStorage.getItem( 'flipBounce' ) );
-	    const scrambleLength = parseInt( localStorage.getItem( 'scrambleLength' ) );
-	    const fov = parseFloat( localStorage.getItem( 'fov' ) );
+	    const flipSpeed = localStorage.getItem( 'flipSpeed' );
+	    const flipBounce = localStorage.getItem( 'flipBounce' );
+	    const scrambleLength = localStorage.getItem( 'scrambleLength' );
+	    const fov = localStorage.getItem( 'fov' );
 	    // const theme = localStorage.getItem( 'theme' );
 
-	    if ( flipSpeed != null ) this.game.controls.options.flipSpeed = flipSpeed;
-	    if ( flipBounce != null ) this.game.controls.options.flipBounce = flipBounce;
-	    if ( scrambleLength != null ) this.game.scrambler.scrambleLength = scrambleLength;
+	    if ( flipSpeed != null ) this.game.controls._flipSpeed = parseFloat( flipSpeed );
+	    if ( flipBounce != null ) this.game.controls._flipBounce = parseFloat( flipBounce );
+	    if ( scrambleLength != null ) this.game.scrambler.scrambleLength = parseInt( scrambleLength );
 
 	    if ( fov != null ) {
 
-	      this.game.world.fov = fov;
+	      this.game.world.fov = parseFloat( fov );
 	      this.game.world.resize();
 
 	    }

@@ -91,7 +91,7 @@ class Game {
         this.scrambler.scramble();
         this.controls.scrambleCube( () => {} );
 
-        duration = this.scrambler.converted.length * this.controls.options.scrambleSpeed;
+        duration = this.scrambler.converted.length * this.controls._scrambleSpeed;
 
       } else {
 
