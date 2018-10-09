@@ -28,7 +28,8 @@
 			this.resize();
 			window.addEventListener( 'resize', () => this.resize(), false );
 
-			requestAnimationFrame( () => this.render() );
+			this.render = this.render.bind( this );
+			requestAnimationFrame( this.render );
 
 		}
 
@@ -36,7 +37,7 @@
 
 			this.renderer.render( this.scene, this.camera );
 
-			requestAnimationFrame( () => this.render() );
+			requestAnimationFrame( this.render );
 
 		}
 
@@ -850,7 +851,7 @@
 
 	    // if ( this.options.calcMomentum ) this.options.calcDelta = true;
 
-	    this.element = null;
+	    this.element = element;
 	    this.touch = null;
 
 	    this.drag = {
@@ -931,15 +932,14 @@
 	    this.onDragMove = () => {};
 	    this.onDragEnd = () => {};
 
-	    if ( typeof element !== 'undefined' ) this.init( element );
+	    this.enable();
 
 	    return this;
 
 	  }
 
-	  init( element ) {
+	  enable() {
 
-	    this.element = element;
 	    this.element.addEventListener( 'touchstart', this.drag.start, false );
 	    this.element.addEventListener( 'mousedown', this.drag.start, false );
 
@@ -947,7 +947,7 @@
 
 	  }
 
-	  dispose() {
+	  disable() {
 
 	    this.element.removeEventListener( 'touchstart', this.drag.start, false );
 	    this.element.removeEventListener( 'mousedown', this.drag.start, false );
@@ -1051,7 +1051,6 @@
 	    this._momentum = [];
 	    this._moves = [];
 
-	    this.disabled = false;
 	    this._scramble = null;
 	    this._state = STILL;
 
@@ -1059,15 +1058,28 @@
 
 	  }
 
+	  enable() {
+
+	    this._draggable.enable();
+
+	  }
+
+	  disable() {
+
+	    this._draggable.disable();
+
+	  }
+
 	  initDraggable() {
 
-	    this.draggable = new Draggable( this.game.dom.game );
+	    this._draggable = new Draggable( this.game.dom.game );
 
-	    this.draggable.onDragStart = position => {
+	    this._draggable.onDragStart = position => {
 
-	      if ( this.disabled || this._scramble !== null ) return;
+	      if ( this._scramble !== null ) return;
 	      if ( this._state === PREPARING || this._state === ROTATING ) return;
-	      if ( this._state === ANIMATING && ( this._flipProgress < 0.9 || this._flipProgress > 1.1 ) ) return;
+
+	      this._gettingDrag = this._state === ANIMATING;
 
 	      const edgeIntersect = this.getIntersect( position.current, this.edges, false );
 
@@ -1076,7 +1088,7 @@
 	        this._dragNormal = edgeIntersect.face.normal.round();
 	        this._flipType = 'layer';
 
-	        this.attach( this.helper, this.game.cube.object );
+	        this.attach( this.helper, this.game.controls.edges );
 
 	        this.helper.rotation.set( 0, 0, 0 );
 	        this.helper.position.set( 0, 0, 0 );
@@ -1084,11 +1096,7 @@
 	        this.helper.translateZ( 0.5 );
 	        this.helper.updateMatrixWorld();
 
-	        this.detach( this.helper, this.game.cube.object );
-
-	        this.helper.rotation.setFromVector3( this.snapRotation( this.helper.rotation.toVector3() ) );
-
-	        this._dragIntersect = this.getIntersect( position.current, this.game.cube.cubes, true );
+	        this.detach( this.helper, this.game.controls.edges );
 
 	      } else {
 
@@ -1106,15 +1114,14 @@
 
 	      this._dragCurrent = this.helper.worldToLocal( planeIntersect );
 	      this._dragTotal = new THREE.Vector3();
-	      this._state = ( this._state === ANIMATING ) ? ANIMATING : PREPARING;
-	      this._nextState = ( this._state === ANIMATING ) ? PREPARING : STILL;
+	      this._state = ( this._state === STILL ) ? PREPARING : this._state;
 
 	    };
 
-	    this.draggable.onDragMove = position => {
+	    this._draggable.onDragMove = position => {
 
-	      if ( this.disabled || this._scramble !== null ) return;
-	      if ( this._state === STILL ) return;
+	      if ( this._scramble !== null ) return;
+	      if ( this._state === STILL || ( this._state === ANIMATING && this._gettingDrag === false ) ) return;
 
 	      const planeIntersect = this.getIntersect( position.current, this.helper, false );
 	      if ( planeIntersect === false ) return;
@@ -1140,7 +1147,9 @@
 
 	          this._flipAxis = objectDirection.cross( this._dragNormal ).negate();
 
-	          this.selectLayer( this.getLayer() );
+	          this._dragIntersect = this.getIntersect( position.current, this.game.cube.cubes, true );
+
+	          this.selectLayer( this.getLayer( false ) );
 
 	        } else {
 
@@ -1177,12 +1186,18 @@
 
 	    };
 
-	    this.draggable.onDragEnd = position => {
+	    this._draggable.onDragEnd = position => {
 
-	      if ( this._state !== ROTATING || this.disabled || this._scramble !== null ) return;
+	      if ( this._scramble !== null ) return;
+	      if ( this._state !== ROTATING ) {
+
+	        this._gettingDrag = false;
+	        this._state = STILL;
+	        return;
+
+	      }
 
 	      this._state = ANIMATING;
-	      this._flipProgress = 0;
 
 	      const momentum = this.getMomentum()[ this._dragDirection ];
 	      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this._flipAngle ) < Math.PI / 2 );
@@ -1197,9 +1212,11 @@
 
 	        this.rotateLayer( delta, false, layer => {
 
-	          this.addMove( angle, layer );
-	          this.checkIsSolved();
-	          this._state = this._nextState;
+	          // this.addMove( angle, layer );
+	          // this.checkIsSolved();
+	          
+	          this._state = this._gettingDrag ? PREPARING : STILL;
+	          this._gettingDrag = false;
 
 	        } );
 
@@ -1207,7 +1224,8 @@
 
 	        this.rotateCube( delta, () => {
 
-	          this._state = this._nextState;
+	          this._state = this._gettingDrag ? PREPARING : STILL;
+	          this._gettingDrag = false;
 
 	        } );
 
@@ -1227,7 +1245,6 @@
 	      easing: CUBE.Easing.Back.Out( bounce ),
 	      onUpdate: tween => {
 
-	        this._flipProgress = tween.progress;
 	        let deltaAngle = tween.delta * rotation;
 	        this.group.rotateOnAxis( this._flipAxis, deltaAngle );
 	        bounceCube( tween.progress, deltaAngle, rotation );
@@ -1279,7 +1296,6 @@
 	      easing: CUBE.Easing.Back.Out( this._flipBounce ),
 	      onUpdate: tween => {
 
-	        this._flipProgress = tween.progress;
 	        this.edges.rotateOnWorldAxis( this._flipAxis, tween.delta * rotation );
 	        this.game.cube.object.rotation.copy( this.edges.rotation );
 
@@ -1419,7 +1435,7 @@
 	    const layer = [];
 	    let axis;
 
-	    if ( typeof position === 'undefined' ) {
+	    if ( position === false ) {
 
 	      axis = this.getMainAxis( this._flipAxis );
 	      position = this.getPiecePosition( this._dragIntersect.object );
@@ -1491,7 +1507,7 @@
 	  getIntersect( position, object, multiple ) {
 
 	    this.raycaster.setFromCamera(
-	      this.draggable.convertPosition( position.clone() ),
+	      this._draggable.convertPosition( position.clone() ),
 	      this.game.world.camera
 	    );
 
@@ -1685,10 +1701,12 @@
 
 	    }
 
+	    this.update = this.update.bind( this );
+
 	    setTimeout( () => {
 
 	      this.start = performance.now();
-	      this.animate = requestAnimationFrame( () => this.update() );
+	      this.animate = requestAnimationFrame( this.update );
 
 	    }, this.delay );
 
@@ -1744,7 +1762,7 @@
 
 	    }
 
-	    this.animate = requestAnimationFrame( () => this.update() );
+	    this.animate = requestAnimationFrame( this.update );
 
 	  }
 
@@ -1849,7 +1867,7 @@
 	    this.data.cubeY = -0.2;
 	    this.data.cameraZoom = 0.85;
 
-	    this.game.controls.disabled = true;
+	    this.game.controls.disable();
 
 	    this.game.cube.object.position.y = this.data.cubeY;
 	    this.game.controls.edges.position.y = this.data.cubeY;
@@ -1887,7 +1905,7 @@
 
 	        setTimeout( () => {
 
-	          this.game.controls.disabled = false;
+	          this.game.controls.enable();
 	          this.game.timer.start( true );
 
 	        }, 1500 );
@@ -1900,7 +1918,7 @@
 
 	    } else {
 
-	      this.game.controls.disabled = true;
+	      this.game.controls.disable();
 
 	      if ( this.game.playing ) {
 
@@ -2197,6 +2215,8 @@
 			this.converted = '0:00';
 			this.animate = null;
 
+			this.update = this.update.bind( this );
+
 		}
 
 		start( continueGame ) {
@@ -2205,7 +2225,7 @@
 			this.deltaTime = 0;
 			this.converted = this.convert();
 
-			this.animate = requestAnimationFrame( () => this.update() );
+			this.animate = requestAnimationFrame( this.update );
 
 		}
 
@@ -2236,7 +2256,7 @@
 
 			}
 
-			this.animate = requestAnimationFrame( () => this.update() );
+			this.animate = requestAnimationFrame( this.update );
 
 		}
 
@@ -2276,27 +2296,33 @@
 	    };
 
 	    this.world = new CUBE.World( this );
-	    this.cube = new CUBE.Cube( this );
-	    this.controls = new CUBE.Controls( this );
-	    this.scrambler = new CUBE.Scrambler( this );
-	    this.transition = new CUBE.Transition( this );
-	    this.audio = new CUBE.Audio( this );
-	    this.timer = new CUBE.Timer( this );
-	    this.preferences = new CUBE.Preferences( this );
-	    this.icons = new CUBE.Icons();
+	    this.confetti = new CUBE.Confetti( this );
 
-	    this.initStart();
-	    // this.initPause();
-	    this.initPrefs();
+	    this.world.camera.position.set( 0, 0, -15 );
+	    this.world.camera.lookAt( 0, 0, 0 );
 
-	    this.saved = this.cube.loadState();
-	    this.playing = false;
+	    // this.world = new CUBE.World( this );
+	    // this.cube = new CUBE.Cube( this );
+	    // this.controls = new CUBE.Controls( this );
+	    // this.scrambler = new CUBE.Scrambler( this );
+	    // this.transition = new CUBE.Transition( this );
+	    // this.audio = new CUBE.Audio( this );
+	    // this.timer = new CUBE.Timer( this );
+	    // this.preferences = new CUBE.Preferences( this );
+	    // this.icons = new CUBE.Icons();
 
-	    this.transition.float();
-	    this.transition.cube( true );
+	    // this.initStart();
+	    // // this.initPause();
+	    // this.initPrefs();
 
-	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
-	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
+	    // this.saved = this.cube.loadState();
+	    // this.playing = false;
+
+	    // this.transition.float();
+	    // this.transition.cube( true );
+
+	    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
+	    // this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
 	  }
 
@@ -2308,7 +2334,7 @@
 	  //     if ( !this.playing ) return;
 
 	  //     this.playing = false;
-	  //     this.controls.disabled = true;
+	  //     this.controls.disable();
 
 	  //     this.transition.title( true );
 	  //     setTimeout( () => this.transition.timer( false ), 500 );
@@ -2353,7 +2379,7 @@
 	      this.transition.zoom( true, duration, () => {
 
 	        this.playing = true;
-	        this.controls.disabled = false;
+	        this.controls.enable();
 	        this.timer.start( this.saved );
 	        this.saved = true;
 
@@ -2782,6 +2808,153 @@
 
 	}
 
+	class Particle {
+
+	  constructor( position, geometry, material, holder, options ) {
+
+	    this._options = Object.assign( {
+	      velocity: 15,
+	      angle: 90,
+	      spread: 90,
+	      radius: 15,
+	      mass: 0.1,
+	      colors: [ 0x41aac8, 0x82ca38, 0xfff7ff, 0xffef48, 0xef3923, 0xff8c0a ],
+	    }, options || {} );
+
+	    const Va = THREE.Math.randFloat( this._options.angle - this._options.spread / 2, this._options.angle + this._options.spread / 2 ) * THREE.Math.DEG2RAD;
+	    const Vs = THREE.Math.randFloat( this._options.velocity / 4, this._options.velocity );
+
+	    this._velocity = new THREE.Vector3(
+	      Math.cos( Va ) * Vs,
+	      Math.sin( Va ) * Vs,
+	      Math.cos( Math.random() * Math.PI * 2 ) * Vs,
+	    );
+
+	    this._mass = THREE.Math.randFloat( this._options.mass / 2, this._options.mass );
+
+	    this._radius = THREE.Math.randFloat( this._options.radius / 2, this._options.radius );
+
+	    this._position = position.clone(),
+
+	    this._color = new THREE.Color( this._options.colors[ Math.floor( Math.random() * this._options.colors.length ) ] );
+	    // new THREE.Color(
+	    //   THREE.Math.randFloat( 0.2, 0.9 ),
+	    //   THREE.Math.randFloat( 0.2, 0.9 ),
+	    //   THREE.Math.randFloat( 0.2, 0.9 )
+	    // );
+
+	    this._revolution = new THREE.Vector3( Math.random() * 0.05, Math.random() * 0.05, Math.random() * 0.05 );
+
+	    this._force = new THREE.Vector3();
+
+	    this._mesh = new THREE.Mesh( geometry, material.clone() );
+	    this._mesh.position.copy( this._position );
+	    this._mesh.scale.set( this._radius / 200, this._radius / 200, this._radius / 200 );
+	    this._mesh.material.color.set( this._color );
+	    this._mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 );
+
+	    this._holder = holder;
+	    this._holder.add( this._mesh );
+
+	    // Static physics variables
+
+	    this._Cd = 0.47;
+	    this._rho = 1.22;
+	    this._A = Math.PI * this._radius * this._radius / 10000;
+	    this._ag = -9.81;
+
+
+	    return this;
+
+	  }
+
+	  update( delta ) {
+
+	    delta = 16 / 1000;
+
+	    let Fy = -0.5 * this._Cd * this._A * this._rho * Math.pow( this._velocity.y, 3 ) / Math.abs( this._velocity.y );
+	    let Fx = -0.5 * this._Cd * this._A * this._rho * Math.pow( this._velocity.x, 3 ) / Math.abs( this._velocity.x );
+	    let Fz = -0.5 * this._Cd * this._A * this._rho * Math.pow( this._velocity.z, 3 ) / Math.abs( this._velocity.z );
+	    
+	    Fy = ( isNaN( Fy ) ? 0 : Fy );
+	    Fx = ( isNaN( Fx ) ? 0 : Fx );
+	    Fz = ( isNaN( Fz ) ? 0 : Fz );
+
+	    const ay = this._ag + (Fy / this._mass);
+	    const ax = Fx / this._mass;
+	    const az = Fz / this._mass;
+
+	    this._force.set( ax, ay, az ).multiplyScalar( delta );
+	    this._velocity.add( this._force );
+	    this._position.add( this._velocity.clone().multiplyScalar( delta / 3 ) );
+
+	    this._mesh.position.copy( this._position );
+	    this._mesh.rotateX( this._revolution.x ).rotateY( this._revolution.y ).rotateZ( this._revolution.y );
+
+	  }
+
+	}
+
+	class Confetti {
+
+	  constructor( game ) {
+
+	    this._game = game;
+
+	    this._object = new THREE.Object3D();
+	    this._game.world.scene.add( this._object );
+
+	    this._particles = [];
+
+	    this._count = 50;
+
+	    this._position = new THREE.Vector3( 0, 0, 0 );
+
+	    this._geometry = new THREE.PlaneGeometry( 1, 1 );
+	    this._material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide} );
+
+	    let i = this._count;
+
+	    while ( i-- ) {
+
+	      const particle = new Particle( this._position, this._geometry, this._material, this._object );
+
+	      this._particles.push( particle );
+
+	    }
+
+	    this.update = this.update.bind( this );
+
+	    return this;
+
+	  }
+
+	  start() {
+
+	    this._time = performance.now();
+
+	    requestAnimationFrame( this.update );
+
+	  }
+
+	  update() {
+
+	    const now = performance.now();
+
+	    const delta = now - this._time;
+
+	    this._time = now;
+
+	    let i = this._count;
+
+	    while ( i-- ) this._particles[ i ].update( delta );
+
+	    requestAnimationFrame( this.update );
+
+	  }
+	  
+	}
+
 	exports.World = World;
 	exports.Cube = Cube;
 	exports.Controls = Controls;
@@ -2795,6 +2968,7 @@
 	exports.Audio = Audio;
 	exports.Preferences = Preferences;
 	exports.Range = Range;
+	exports.Confetti = Confetti;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

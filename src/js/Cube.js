@@ -10,3 +10,4 @@ export { Icons } from './components/Icons.js';
 export { Audio } from './components/Audio.js';
 export { Preferences } from './components/Preferences.js';
 export { Range } from './components/Range.js';
+export { Confetti } from './components/Confetti.js';

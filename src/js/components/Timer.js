@@ -9,6 +9,8 @@ class Timer {
 		this.converted = '0:00';
 		this.animate = null;
 
+		this.update = this.update.bind( this );
+
 	}
 
 	start( continueGame ) {
@@ -17,7 +19,7 @@ class Timer {
 		this.deltaTime = 0;
 		this.converted = this.convert();
 
-		this.animate = requestAnimationFrame( () => this.update() );
+		this.animate = requestAnimationFrame( this.update );
 
 	}
 
@@ -48,7 +50,7 @@ class Timer {
 
 		}
 
-		this.animate = requestAnimationFrame( () => this.update() );
+		this.animate = requestAnimationFrame( this.update );
 
 	}
 

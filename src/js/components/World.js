@@ -22,7 +22,8 @@ class World {
 		this.resize();
 		window.addEventListener( 'resize', () => this.resize(), false );
 
-		requestAnimationFrame( () => this.render() );
+		this.render = this.render.bind( this );
+		requestAnimationFrame( this.render );
 
 	}
 
@@ -30,7 +31,7 @@ class World {
 
 		this.renderer.render( this.scene, this.camera );
 
-		requestAnimationFrame( () => this.render() );
+		requestAnimationFrame( this.render );
 
 	}
 

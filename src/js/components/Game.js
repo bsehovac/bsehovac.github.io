@@ -17,27 +17,33 @@ class Game {
     };
 
     this.world = new CUBE.World( this );
-    this.cube = new CUBE.Cube( this );
-    this.controls = new CUBE.Controls( this );
-    this.scrambler = new CUBE.Scrambler( this );
-    this.transition = new CUBE.Transition( this );
-    this.audio = new CUBE.Audio( this );
-    this.timer = new CUBE.Timer( this );
-    this.preferences = new CUBE.Preferences( this );
-    this.icons = new CUBE.Icons();
+    this.confetti = new CUBE.Confetti( this );
 
-    this.initStart();
-    // this.initPause();
-    this.initPrefs();
+    this.world.camera.position.set( 0, 0, -15 )
+    this.world.camera.lookAt( 0, 0, 0 )
 
-    this.saved = this.cube.loadState();
-    this.playing = false;
+    // this.world = new CUBE.World( this );
+    // this.cube = new CUBE.Cube( this );
+    // this.controls = new CUBE.Controls( this );
+    // this.scrambler = new CUBE.Scrambler( this );
+    // this.transition = new CUBE.Transition( this );
+    // this.audio = new CUBE.Audio( this );
+    // this.timer = new CUBE.Timer( this );
+    // this.preferences = new CUBE.Preferences( this );
+    // this.icons = new CUBE.Icons();
 
-    this.transition.float();
-    this.transition.cube( true );
+    // this.initStart();
+    // // this.initPause();
+    // this.initPrefs();
 
-    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
-    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
+    // this.saved = this.cube.loadState();
+    // this.playing = false;
+
+    // this.transition.float();
+    // this.transition.cube( true );
+
+    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
+    // this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
   }
 
@@ -49,7 +55,7 @@ class Game {
   //     if ( !this.playing ) return;
 
   //     this.playing = false;
-  //     this.controls.disabled = true;
+  //     this.controls.disable();
 
   //     this.transition.title( true );
   //     setTimeout( () => this.transition.timer( false ), 500 );
@@ -96,7 +102,7 @@ class Game {
       this.transition.zoom( true, duration, () => {
 
         this.playing = true;
-        this.controls.disabled = false;
+        this.controls.enable();
         this.timer.start( this.saved );
         this.saved = true;
 

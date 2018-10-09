@@ -35,10 +35,12 @@ class Tween {
 
     }
 
+    this.update = this.update.bind( this );
+
     setTimeout( () => {
 
       this.start = performance.now();
-      this.animate = requestAnimationFrame( () => this.update() );
+      this.animate = requestAnimationFrame( this.update );
 
     }, this.delay );
 
@@ -94,7 +96,7 @@ class Tween {
 
     }
 
-    this.animate = requestAnimationFrame( () => this.update() );
+    this.animate = requestAnimationFrame( this.update );
 
   }
 

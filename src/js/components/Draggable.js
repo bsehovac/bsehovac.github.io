@@ -21,7 +21,7 @@ class Draggable {
 
     // if ( this.options.calcMomentum ) this.options.calcDelta = true;
 
-    this.element = null;
+    this.element = element;
     this.touch = null;
 
     this.drag = {
@@ -102,15 +102,14 @@ class Draggable {
     this.onDragMove = () => {};
     this.onDragEnd = () => {};
 
-    if ( typeof element !== 'undefined' ) this.init( element );
+    this.enable();
 
     return this;
 
   }
 
-  init( element ) {
+  enable() {
 
-    this.element = element;
     this.element.addEventListener( 'touchstart', this.drag.start, false );
     this.element.addEventListener( 'mousedown', this.drag.start, false );
 
@@ -118,7 +117,7 @@ class Draggable {
 
   }
 
-  dispose() {
+  disable() {
 
     this.element.removeEventListener( 'touchstart', this.drag.start, false );
     this.element.removeEventListener( 'mousedown', this.drag.start, false );

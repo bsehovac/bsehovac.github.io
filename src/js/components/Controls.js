@@ -42,7 +42,6 @@ class Controls {
     this._momentum = [];
     this._moves = [];
 
-    this.disabled = false;
     this._scramble = null;
     this._state = STILL;
 
@@ -50,13 +49,25 @@ class Controls {
 
   }
 
+  enable() {
+
+    this._draggable.enable();
+
+  }
+
+  disable() {
+
+    this._draggable.disable();
+
+  }
+
   initDraggable() {
 
-    this.draggable = new Draggable( this.game.dom.game );
+    this._draggable = new Draggable( this.game.dom.game );
 
-    this.draggable.onDragStart = position => {
+    this._draggable.onDragStart = position => {
 
-      if ( this.disabled || this._scramble !== null ) return;
+      if ( this._scramble !== null ) return;
       if ( this._state === PREPARING || this._state === ROTATING ) return;
 
       this._gettingDrag = this._state === ANIMATING;
@@ -98,9 +109,9 @@ class Controls {
 
     };
 
-    this.draggable.onDragMove = position => {
+    this._draggable.onDragMove = position => {
 
-      if ( this.disabled || this._scramble !== null ) return;
+      if ( this._scramble !== null ) return;
       if ( this._state === STILL || ( this._state === ANIMATING && this._gettingDrag === false ) ) return;
 
       const planeIntersect = this.getIntersect( position.current, this.helper, false );
@@ -166,9 +177,9 @@ class Controls {
 
     };
 
-    this.draggable.onDragEnd = position => {
+    this._draggable.onDragEnd = position => {
 
-      if ( this.disabled || this._scramble !== null ) return;
+      if ( this._scramble !== null ) return;
       if ( this._state !== ROTATING ) {
 
         this._gettingDrag = false;
@@ -487,7 +498,7 @@ class Controls {
   getIntersect( position, object, multiple ) {
 
     this.raycaster.setFromCamera(
-      this.draggable.convertPosition( position.clone() ),
+      this._draggable.convertPosition( position.clone() ),
       this.game.world.camera
     );
 

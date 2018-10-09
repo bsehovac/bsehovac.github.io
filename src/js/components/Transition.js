@@ -19,7 +19,7 @@ class Transition {
     this.data.cubeY = -0.2;
     this.data.cameraZoom = 0.85;
 
-    this.game.controls.disabled = true;
+    this.game.controls.disable();
 
     this.game.cube.object.position.y = this.data.cubeY;
     this.game.controls.edges.position.y = this.data.cubeY;
@@ -57,7 +57,7 @@ class Transition {
 
         setTimeout( () => {
 
-          this.game.controls.disabled = false;
+          this.game.controls.enable();
           this.game.timer.start( true );
 
         }, 1500 );
@@ -70,7 +70,7 @@ class Transition {
 
     } else {
 
-      this.game.controls.disabled = true;
+      this.game.controls.disable();
 
       if ( this.game.playing ) {
 
