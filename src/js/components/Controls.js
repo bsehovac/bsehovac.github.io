@@ -58,7 +58,8 @@ class Controls {
 
       if ( this.disabled || this._scramble !== null ) return;
       if ( this._state === PREPARING || this._state === ROTATING ) return;
-      if ( this._state === ANIMATING && ( this._flipProgress < 0.9 || this._flipProgress > 1.1 ) ) return;
+
+      this._gettingDrag = this._state === ANIMATING;
 
       const edgeIntersect = this.getIntersect( position.current, this.edges, false );
 
@@ -67,7 +68,7 @@ class Controls {
         this._dragNormal = edgeIntersect.face.normal.round();
         this._flipType = 'layer';
 
-        this.attach( this.helper, this.game.cube.object )
+        this.attach( this.helper, this.game.controls.edges )
 
         this.helper.rotation.set( 0, 0, 0 );
         this.helper.position.set( 0, 0, 0 );
@@ -75,11 +76,7 @@ class Controls {
         this.helper.translateZ( 0.5 );
         this.helper.updateMatrixWorld();
 
-        this.detach( this.helper, this.game.cube.object );
-
-        this.helper.rotation.setFromVector3( this.snapRotation( this.helper.rotation.toVector3() ) );
-
-        this._dragIntersect = this.getIntersect( position.current, this.game.cube.cubes, true );
+        this.detach( this.helper, this.game.controls.edges );
 
       } else {
 
@@ -97,15 +94,14 @@ class Controls {
 
       this._dragCurrent = this.helper.worldToLocal( planeIntersect );
       this._dragTotal = new THREE.Vector3();
-      this._state = ( this._state === ANIMATING ) ? ANIMATING : PREPARING;
-      this._nextState = ( this._state === ANIMATING ) ? PREPARING : STILL;
+      this._state = ( this._state === STILL ) ? PREPARING : this._state;
 
     };
 
     this.draggable.onDragMove = position => {
 
       if ( this.disabled || this._scramble !== null ) return;
-      if ( this._state === STILL ) return;
+      if ( this._state === STILL || ( this._state === ANIMATING && this._gettingDrag === false ) ) return;
 
       const planeIntersect = this.getIntersect( position.current, this.helper, false );
       if ( planeIntersect === false ) return;
@@ -131,7 +127,9 @@ class Controls {
 
           this._flipAxis = objectDirection.cross( this._dragNormal ).negate();
 
-          this.selectLayer( this.getLayer() );
+          this._dragIntersect = this.getIntersect( position.current, this.game.cube.cubes, true );
+
+          this.selectLayer( this.getLayer( false ) );
 
         } else {
 
@@ -170,10 +168,16 @@ class Controls {
 
     this.draggable.onDragEnd = position => {
 
-      if ( this._state !== ROTATING || this.disabled || this._scramble !== null ) return;
+      if ( this.disabled || this._scramble !== null ) return;
+      if ( this._state !== ROTATING ) {
+
+        this._gettingDrag = false;
+        this._state = STILL;
+        return;
+
+      }
 
       this._state = ANIMATING;
-      this._flipProgress = 0;
 
       const momentum = this.getMomentum()[ this._dragDirection ];
       const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this._flipAngle ) < Math.PI / 2 );
@@ -188,9 +192,11 @@ class Controls {
 
         this.rotateLayer( delta, false, layer => {
 
-          this.addMove( angle, layer );
-          this.checkIsSolved();
-          this._state = this._nextState;
+          // this.addMove( angle, layer );
+          // this.checkIsSolved();
+          
+          this._state = this._gettingDrag ? PREPARING : STILL;
+          this._gettingDrag = false;
 
         } );
 
@@ -198,7 +204,8 @@ class Controls {
 
         this.rotateCube( delta, () => {
 
-          this._state = this._nextState;
+          this._state = this._gettingDrag ? PREPARING : STILL;
+          this._gettingDrag = false;
 
         } );
 
@@ -218,7 +225,6 @@ class Controls {
       easing: CUBE.Easing.Back.Out( bounce ),
       onUpdate: tween => {
 
-        this._flipProgress = tween.progress;
         let deltaAngle = tween.delta * rotation;
         this.group.rotateOnAxis( this._flipAxis, deltaAngle );
         bounceCube( tween.progress, deltaAngle, rotation );
@@ -270,7 +276,6 @@ class Controls {
       easing: CUBE.Easing.Back.Out( this._flipBounce ),
       onUpdate: tween => {
 
-        this._flipProgress = tween.progress;
         this.edges.rotateOnWorldAxis( this._flipAxis, tween.delta * rotation );
         this.game.cube.object.rotation.copy( this.edges.rotation );
 
@@ -410,7 +415,7 @@ class Controls {
     const layer = [];
     let axis;
 
-    if ( typeof position === 'undefined' ) {
+    if ( position === false ) {
 
       axis = this.getMainAxis( this._flipAxis );
       position = this.getPiecePosition( this._dragIntersect.object );
