@@ -5,9 +5,11 @@
   text-align: center
   line-height: 0.75
   perspective: 100rem
+  opacity: 0
 
   i
     display: inline-block
+    opacity: 0
 
   &--title
     bottom: 75%
@@ -25,7 +27,6 @@
   &--note
     top: 87%
     font-size: 1em
-    opacity: 0 !important
     z-index: 2
 
   &--timer
@@ -38,103 +39,9 @@
     bottom: 72%
     font-size: 1.5em
     z-index: 4
-    opacity: 0
 
     i
       position: relative
       display: inline-block
       font-size: 0.9em
       top: -0.05em
-
-// ANIMATIONS
-
-.text
-  &--title,
-  &--timer
-    $duration-show: 800ms
-    $duration-hide: 400ms
-    $letters: 6
-    $letter-delay: 50ms
-
-    opacity: 0
-
-    i
-      will-change: opacity, transform
-      opacity: 0
-
-    &.show
-      animation-duration: ($letters + 1) * $letter-delay + $duration-show
-      opacity: 1
-
-      i
-        opacity: 0
-        animation: text-flip-in $duration-show $easeOutSine forwards
-        @for $i from 1 to ($letters + 1)
-          &:nth-child(#{$i})
-            animation-delay: $letter-delay * $i
-
-    &.hide
-      animation-duration: ($letters + 1) * $letter-delay + $duration-hide
-      opacity: 1
-
-      i
-        opacity: 1
-        animation: text-flip-out $duration-hide $easeOutSine forwards
-        @for $i from 1 to ($letters + 1)
-          &:nth-child(#{$i})
-            animation-delay: $letter-delay * $i
-
-  &--note
-    $duration-blink: 800ms
-    $duration-show: 800ms
-    $duration-hide: 400ms
-
-    will-change: opacity
-    opacity: 0
-
-    span
-      animation: text-blink $duration-blink $easeInOutSine infinite alternate
-      will-change: opacity
-      opacity: 0
-
-    &.show
-      animation: text-fade-in $duration-show $easeInOutSine forwards
-
-    &.hide
-      animation: text-fade-out $duration-hide $easeInOutSine forwards
-
-  // KEYFRAMES
-
-  @keyframes text-flip-in
-    from
-      opacity: 0
-      transform: rotate3d(0, 1, 0, -80deg)
-    to
-      opacity: 1
-      transform: rotate3d(0, 1, 0, 0deg)
-
-  @keyframes text-flip-out
-    from
-      opacity: 1
-      transform: rotate3d(0, 1, 0, 0deg)
-    to
-      opacity: 0
-      transform: rotate3d(0, 1, 0, 80deg)
-
-  @keyframes text-fade-in
-    from
-      opacity: 0
-    to
-      opacity: 1
-
-  @keyframes text-fade-out
-    from
-      opacity: 1
-    to
-      opacity: 0
-
-  @keyframes text-blink
-        from
-          opacity: 0
-        to
-          opacity: 1

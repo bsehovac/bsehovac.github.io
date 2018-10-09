@@ -32,7 +32,6 @@ class Game {
 
     this.saved = this.cube.loadState();
     this.playing = false;
-    this.animating = true;
 
     this.transition.float();
     this.transition.cube( true );
@@ -42,25 +41,24 @@ class Game {
 
   }
 
-  initPause() {
+  // initPause() {
 
-    this.dom.buttons.home.onclick = e => {
+  //   this.dom.buttons.home.onclick = e => {
 
-      e.stopPropagation();
-      if ( !this.playing ) return;
+  //     e.stopPropagation();
+  //     if ( !this.playing ) return;
 
-      this.playing = false;
-      this.timer.stop();
-      this.controls.disabled = true;
+  //     this.playing = false;
+  //     this.controls.disabled = true;
 
-      this.transition.title( true );
-      setTimeout( () => this.transition.timer( false ), 500 );
+  //     this.transition.title( true );
+  //     setTimeout( () => this.transition.timer( false ), 500 );
 
-      this.transition.zoom( false, 0, () => {} );
+  //     this.transition.zoom( false, 0, () => {} );
 
-    }
+  //   }
 
-  }
+  // }
 
   initStart() {
 
@@ -78,35 +76,26 @@ class Game {
 
       }
 
-      if ( this.playing || this.animating ) return;
-      this.animating = true;
+      if ( this.playing ) return;
 
       const start = Date.now();
       let duration = 0;
 
       if ( ! this.saved ) {
 
-        this.dom.timer.innerHTML = '0:00';
-
         this.scrambler.scramble();
         this.controls.scrambleCube( () => {} );
 
         duration = this.scrambler.converted.length * this.controls._scrambleSpeed;
 
-      } else {
-
-        this.dom.timer.classList.remove( 'hide' );
-        this.dom.timer.innerHTML = this.timer.convert( this.timer.deltaTime );
-
       }
 
-      this.transition.title( false );
-      setTimeout( () => this.transition.timer( true ), 500 );
+      this.transition.title( false, 0 );
+      this.transition.timer( true, 500 );
 
       this.transition.zoom( true, duration, () => {
 
         this.playing = true;
-        this.animating = false;
         this.controls.disabled = false;
         this.timer.start( this.saved );
         this.saved = true;

@@ -4,15 +4,18 @@ class Timer {
 
 		this.game = game;
 
-		this.startTime = null;
+		this.startTime = 0;
+		this.currentTime = 0;
+		this.converted = '0:00';
+		this.animate = null;
 
 	}
 
 	start( continueGame ) {
 
-		this.startTime = ( continueGame ) ? ( Date.now() - this.deltaTime ) : Date.now();
+		this.startTime = continueGame ? ( Date.now() - this.deltaTime ) : Date.now();
 		this.deltaTime = 0;
-		this.converted = this.convert( this.deltaTime );
+		this.converted = this.convert();
 
 		this.animate = requestAnimationFrame( () => this.update() );
 
@@ -22,10 +25,11 @@ class Timer {
 
 		this.currentTime = Date.now();
 		this.deltaTime = this.currentTime - this.startTime;
+		this.convert();
 
 		cancelAnimationFrame( this.animate );
 
-		return { time: this.convert( this.deltaTime ), millis: this.deltaTime };
+		return { time: this.converted, millis: this.deltaTime };
 
 	}
 
@@ -35,12 +39,12 @@ class Timer {
 
 		this.currentTime = Date.now();
 		this.deltaTime = this.currentTime - this.startTime;
-		this.converted = this.convert( this.deltaTime );
+		this.convert();
 
 		if ( this.converted != old ) {
 
 			localStorage.setItem( 'gameTime', JSON.stringify( this.deltaTime ) );
-			this.game.dom.timer.innerHTML = this.converted;
+			this.setText();
 
 		}
 
@@ -48,12 +52,18 @@ class Timer {
 
 	}
 
-	convert( time ) {
+	convert() {
 
-		this.seconds = parseInt( ( time / 1000 ) % 60 );
-		this.minutes = parseInt( ( time / ( 1000 * 60 ) ) );
+		this.seconds = parseInt( ( this.deltaTime / 1000 ) % 60 );
+		this.minutes = parseInt( ( this.deltaTime / ( 1000 * 60 ) ) );
 
-		return this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
+		this.converted = this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
+
+	}
+
+	setText() {
+
+		this.game.dom.timer.innerHTML = this.converted;
 
 	}
 

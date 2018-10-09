@@ -11,7 +11,7 @@ class Tween {
     this.onUpdate = options.onUpdate || ( () => {} );
     this.yoyo = options.yoyo || null;
 
-    if ( typeof options.easing == 'undefined' ) options.easing = p => p; 
+    if ( typeof options.easing == 'undefined' ) options.easing = t => p; 
 
     this.easing = ( typeof options.easing !== 'function' ) 
       ? this.constructor.Easings[ options.easing ]
@@ -100,174 +100,81 @@ class Tween {
 
 }
 
-Tween.Easings = {
+var Easing = {
 
-  linear: p => p,
+  // Linear 1, Quad 2, Cubic 3, Quart 4, Quint 5
 
-  easeInQuad: p => {
-    return Math.pow(p, 2);
-  },
+  Power: {
 
-  easeOutQuad: p => {
-    return -(Math.pow((p-1), 2) -1);
-  },
+    In: power => {
 
-  easeInOutQuad: p => {
-    if ((p/=0.5) < 1) return 0.5*Math.pow(p,2);
-    return -0.5 * ((p-=2)*p - 2);
-  },
+      power = Math.round( power || 1 );
 
-  easeInCubic: p => {
-    return Math.pow(p, 3);
-  },
+      return t => Math.pow( t, power );
 
-  easeOutCubic: p => {
-    return (Math.pow((p-1), 3) +1);
-  },
+    },
 
-  easeInOutCubic: p => {
-    if ((p/=0.5) < 1) return 0.5*Math.pow(p,3);
-    return 0.5 * (Math.pow((p-2),3) + 2);
-  },
+    Out: power => {
 
-  easeInQuart: p => {
-    return Math.pow(p, 4);
-  },
+      power = Math.round( power || 1 );
 
-  easeOutQuart: p => {
-    return -(Math.pow((p-1), 4) -1);
-  },
+      return t => 1 - Math.abs( Math.pow( t - 1, power ) );
 
-  easeInOutQuart: p => {
-    if ((p/=0.5) < 1) return 0.5*Math.pow(p,4);
-    return -0.5 * ((p-=2)*Math.pow(p,3) - 2);
-  },
+    },
 
-  easeInQuint: p => {
-    return Math.pow(p, 5);
-  },
+    InOut: power => {
 
-  easeOutQuint: p => {
-    return (Math.pow((p-1), 5) +1);
-  },
+      power = Math.round( power || 1 );
 
-  easeInOutQuint: p => {
-    if ((p/=0.5) < 1) return 0.5*Math.pow(p,5);
-    return 0.5 * (Math.pow((p-2),5) + 2);
-  },
+      return t => ( t < 0.5 )
+        ? Math.pow( t * 2, power ) / 2
+        : ( 1 - Math.abs( Math.pow( ( t * 2 - 1 ) - 1, power ) ) ) / 2 + 0.5;
 
-  easeInSine: p => {
-    return -Math.cos(p * (Math.PI/2)) + 1;
-  },
-
-  easeOutSine: p => {
-    return Math.sin(p * (Math.PI/2));
-  },
-
-  easeInOutSine: p => {
-    return (-0.5 * (Math.cos(Math.PI*p) -1));
-  },
-
-  easeInExpo: p => {
-    return (p===0) ? 0 : Math.pow(2, 10 * (p - 1));
-  },
-
-  easeOutExpo: p => {
-    return (p===1) ? 1 : -Math.pow(2, -10 * p) + 1;
-  },
-
-  easeInOutExpo: p => {
-    if(p===0) return 0;
-    if(p===1) return 1;
-    if((p/=0.5) < 1) return 0.5 * Math.pow(2,10 * (p-1));
-    return 0.5 * (-Math.pow(2, -10 * --p) + 2);
-  },
-
-  easeInCirc: p => {
-    return -(Math.sqrt(1 - (p*p)) - 1);
-  },
-
-  easeOutCirc: p => {
-    return Math.sqrt(1 - Math.pow((p-1), 2));
-  },
-
-  easeInOutCirc: p => {
-    if((p/=0.5) < 1) return -0.5 * (Math.sqrt(1 - p*p) - 1);
-    return 0.5 * (Math.sqrt(1 - (p-=2)*p) + 1);
-  },
-
-  swingFromTo: p => {
-    var s = 1.70158;
-    return ((p/=0.5) < 1) ? 0.5*(p*p*(((s*=(1.525))+1)*p - s)) :
-    0.5*((p-=2)*p*(((s*=(1.525))+1)*p + s) + 2);
-  },
-
-  swingFrom: p => {
-    var s = 1.70158;
-    return p*p*((s+1)*p - s);
-  },
-
-  swingTo: p => {
-    var s = 1.70158;
-    return (p-=1)*p*((s+1)*p + s) + 1;
-  },
-
-};
-
-const Easing = {
-
-  BackOut: s => {
-
-    if ( typeof s === 'undefined' ) s = 1.70158;
-
-    return p => { return ( p -= 1 ) * p * ( ( s + 1 ) * p + s ) + 1; };
+    },
 
   },
 
-  ElasticOut: ( amplitude, period ) => {
+  Sine: {
 
-    let PI2 = Math.PI * 2;
+    In: () => t => 1 + Math.sin( Math.PI / 2 * t - Math.PI / 2 ),
 
-    let p1 = (amplitude >= 1) ? amplitude : 1;
-    let p2 = (period || 0.3) / (amplitude < 1 ? amplitude : 1);
-    let p3 = p2 / PI2 * (Math.asin(1 / p1) || 0);
+    Out: () => t => Math.sin( Math.PI / 2 * t ),
 
-    p2 = PI2 / p2;
-
-    return (p) => { return p1 * Math.pow(2, -10 * p) * Math.sin( (p - p3) * p2 ) + 1; };
+    InOut: () => t => ( 1 + Math.sin( Math.PI * t - Math.PI / 2 ) ) / 2,
 
   },
 
-  // ElasticOut: ( amplitude, period ) => {
+  // https://greensock.com/ease-visualizer
 
-  //   if (typeof amplitude == 'undefined') amplitude = 1;
-  //   if (typeof period == 'undefined') period = 0;
+  Back: {
 
-  //   return p => {
-    
-  //     var offset = 1.70158;
+    Out: s => {
 
-  //     if ( p == 0 ) return 0;
-  //     if ( p == 1 ) return 1;
+      s = s || 1.70158;
 
-  //     if ( ! period ) period = .3;
+      return t => { return ( t -= 1 ) * t * ( ( s + 1 ) * t + s ) + 1; };
 
-  //     if ( amplitude < 1 ) {
+    },
 
-  //       amplitude = 1;
-  //       offset = period / 4;
+  },
 
-  //     } else {
+  Elastic: {
 
-  //       offset = period / ( 2 * Math.PI ) * Math.asin( 1 / amplitude );
+    Out: ( amplitude, period ) => {
 
-  //     }
+      let PI2 = Math.PI * 2;
 
-  //     return amplitude * Math.pow( 2, -10 * p ) * Math.sin( ( p - offset ) * ( Math.PI * 2 ) / period ) + 1;
+      let p1 = ( amplitude >= 1 ) ? amplitude : 1;
+      let p2 = ( period || 0.3 ) / ( amplitude < 1 ? amplitude : 1 );
+      let p3 = p2 / PI2 * ( Math.asin( 1 / p1 ) || 0 );
 
-  //   };
+      p2 = PI2 / p2;
 
-  // },
+      return t => { return p1 * Math.pow( 2, -10 * t ) * Math.sin( ( t - p3 ) * p2 ) + 1 }
+
+    },
+
+  },
 
 }
 

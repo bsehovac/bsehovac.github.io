@@ -76,6 +76,7 @@ class Controls {
         this.helper.updateMatrixWorld();
 
         this.detach( this.helper, this.game.cube.object );
+
         this.helper.rotation.setFromVector3( this.snapRotation( this.helper.rotation.toVector3() ) );
 
         this._dragIntersect = this.getIntersect( position.current, this.game.cube.cubes, true );
@@ -214,7 +215,7 @@ class Controls {
 
     this.rotationTween = new CUBE.Tween( {
       duration:scramble ? this._scrambleSpeed : this._flipSpeed,
-      easing: CUBE.Easing.BackOut( bounce ),
+      easing: CUBE.Easing.Back.Out( bounce ),
       onUpdate: tween => {
 
         this._flipProgress = tween.progress;
@@ -264,14 +265,9 @@ class Controls {
 
   rotateCube( rotation, callback ) {
 
-    const easing = p => {
-      var s = this._flipBounce;
-      return (p-=1)*p*((s+1)*p + s) + 1;
-    };
-
     this.rotationTween = new CUBE.Tween( {
       duration: this._flipSpeed,
-      easing: easing,
+      easing: CUBE.Easing.Back.Out( this._flipBounce ),
       onUpdate: tween => {
 
         this._flipProgress = tween.progress;

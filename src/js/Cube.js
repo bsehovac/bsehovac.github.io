@@ -6,7 +6,6 @@ export { Tween, Easing } from './components/Tween.js';
 export { Transition } from './components/Transition.js';
 export { Timer } from './components/Timer.js';
 export { Game } from './components/Game.js';
-export { Lettering } from './components/Lettering.js';
 export { Icons } from './components/Icons.js';
 export { Audio } from './components/Audio.js';
 export { Preferences } from './components/Preferences.js';

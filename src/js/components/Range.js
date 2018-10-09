@@ -5,6 +5,7 @@ const RangeHTML = [
   '<div class="range">',
     '<div class="range__label"></div>',
     '<div class="range__track">',
+      '<div class="range__track-line"></div>',
       '<div class="range__handle"></div>',
     '</div>',
     '<div class="range__list"></div>',
