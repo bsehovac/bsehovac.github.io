@@ -4,14 +4,136 @@
 	(factory((global.CUBE = {})));
 }(this, (function (exports) { 'use strict';
 
-	class World {
+	const div = document.createElement( 'div' );
+	div.innerHTML = 'Animations: <i></i><div></div>';
+	document.body.appendChild( div );
+	const animationCount = div.querySelector( 'i' );
+	div.classList.add( 'animation-test' );
+	div.style.cssText = 'position: fixed; z-index: 9999; left: 10px; top: 10px; font-size: 0.5em';
+	const animationInfo = div.querySelector( 'div' );
+
+	let Animation;
+
+	{
+
+	  class AnimationEngine {
+
+	    constructor() {
+
+	      this.ids = [];
+	      this.animations = {};
+	      this.update = this.update.bind( this );
+	      this.animating = false;
+	      this.animation = null;
+	      this.time = 0;
+
+	      return this;
+
+	    }
+
+	    update() {
+
+	      let i = this.ids.length;
+
+	      if ( i > 0 ) requestAnimationFrame( this.update );
+	      else this.animating = false;
+
+	      const now = performance.now();
+	      const delta = now - this.time;
+	      this.time = now;
+
+	      animationCount.innerHTML = i; // <===--- FOR DEBUGGING
+	      animationInfo.innerHTML = ''; // <===--- FOR DEBUGGING
+
+	      while ( i-- ) {
+
+	        animationInfo.innerHTML += this.animations[ this.ids[ i ] ].name + '<br>'; // <===--- FOR DEBUGGING
+	        this.animations[ this.ids[ i ] ].update( delta );
+
+	      }
+
+	    }
+
+	    add( animation ) {
+
+	      Object.assign( this.animations, {
+
+	        [ animation.id ]: animation
+
+	      } );
+
+	      this.ids.push( animation.id );
+
+	      if ( ! this.animating ) {
+
+	        requestAnimationFrame( this.update );
+	        this.time = performance.now();
+	        this.animating = true;
+
+	      }
+
+	    }
+
+	    remove( animation ) {
+
+	      const index = this.ids.indexOf( animation.id );
+
+	      if ( index < 0 ) return;
+
+	      this.ids.splice( index, 1 );
+
+	      // this.animations[ animation.id ].complete();
+
+	      delete this.animations[ animation.id ];
+
+	    }
+
+	  }
+
+	  const animationEngine = new AnimationEngine();
+
+	  let uniqueID = 0;
+
+	  Animation = class {
+
+	    constructor( start ) {
+
+	      this.id = uniqueID ++;
+	      this.update = this.update.bind( this );
+
+	      if ( start === true ) this.start();
+
+	    }
+
+	    start() {
+
+	      animationEngine.add( this );
+
+	    }
+
+	    stop() {
+
+	      animationEngine.remove( this );
+
+	    }
+
+	    update( delta ) {} // those should be extended
+
+	  };
+
+	}
+
+	class World extends Animation {
 
 		constructor( game ) {
+
+			super( true );
+
+			this.name = 'World';
 
 			this.game = game;
 
 			this.container = this.game.dom.game;
-
 			this.scene = new THREE.Scene();
 
 			this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
@@ -28,16 +150,11 @@
 			this.resize();
 			window.addEventListener( 'resize', () => this.resize(), false );
 
-			this.render = this.render.bind( this );
-			requestAnimationFrame( this.render );
-
 		}
 
-		render() {
+		update() {
 
 			this.renderer.render( this.scene, this.camera );
-
-			requestAnimationFrame( this.render );
 
 		}
 
@@ -134,13 +251,11 @@
 	    vertex = new THREE.Vector3(),
 	    vertexPool = [],
 	    normalPool = [],
-	    indices = []
-	  ;
+	    indices = [];
 
 	  var
 	    lastVertex = rs1 * radiusSegments,
-	    cornerVertNumber = rs1 * radiusSegments + 1
-	  ;
+	    cornerVertNumber = rs1 * radiusSegments + 1;
 
 	  doVertices();
 	  doFaces();
@@ -235,16 +350,7 @@
 
 	  function doCorners() {
 
-	    var flips = [
-	      true,
-	      false,
-	      true,
-	      false,
-	      false,
-	      true,
-	      false,
-	      true
-	    ];
+	    var flips = [ true, false, true, false, false, true, false, true ];
 
 	    var lastRowOffset = rs1 * ( radiusSegments - 1 );
 
@@ -265,27 +371,8 @@
 	          var c = cornerOffset + r2 + u;
 	          var d = cornerOffset + r2 + u1;
 
-	          if ( ! flips[ i ] ) {
-
-	            indices.push( a );
-	            indices.push( b );
-	            indices.push( c );
-
-	            indices.push( b );
-	            indices.push( d );
-	            indices.push( c );
-
-	          } else {
-
-	            indices.push( a );
-	            indices.push( c );
-	            indices.push( b );
-
-	            indices.push( b );
-	            indices.push( c );
-	            indices.push( d );
-
-	          }
+	          if ( ! flips[ i ] ) indices.push( a, b, c, b, d, c );
+	          else indices.push( a, c, b, b, c, d );
 
 	        }
 
@@ -297,19 +384,8 @@
 	        var b = cornerOffset + lastRowOffset + u + 1;
 	        var c = cornerOffset + lastVertex;
 
-	        if ( ! flips[ i ] ) {
-
-	          indices.push( a );
-	          indices.push( b );
-	          indices.push( c );
-
-	        } else {
-
-	          indices.push( a );
-	          indices.push( c );
-	          indices.push( b );
-
-	        }
+	        if ( ! flips[ i ] ) indices.push( a, b, c );
+	        else indices.push( a, c, b );
 
 	      }
 
@@ -324,72 +400,42 @@
 	    var c = lastVertex + cornerVertNumber * 2;
 	    var d = lastVertex + cornerVertNumber * 3;
 
-	    indices.push( a );
-	    indices.push( b );
-	    indices.push( c );
-	    indices.push( a );
-	    indices.push( c );
-	    indices.push( d );
+	    indices.push( a, b, c, a, c, d );
 
 	    a = lastVertex + cornerVertNumber * 4;// + cornerVertNumber * 0;
 	    b = lastVertex + cornerVertNumber * 5;// * 1;
 	    c = lastVertex + cornerVertNumber * 6;
 	    d = lastVertex + cornerVertNumber * 7;
 
-	    indices.push( a );
-	    indices.push( c );
-	    indices.push( b );
-	    indices.push( a );
-	    indices.push( d );
-	    indices.push( c );
+	    indices.push( a, c, b, a, d, c );
 
 	    a = 0;
 	    b = cornerVertNumber;
 	    c = cornerVertNumber * 4;
 	    d = cornerVertNumber * 5;
 
-	    indices.push( a );
-	    indices.push( c );
-	    indices.push( b );
-	    indices.push( b );
-	    indices.push( c );
-	    indices.push( d );
+	    indices.push( a, c, b, b, c, d );
 
 	    a = cornerVertNumber * 2;
 	    b = cornerVertNumber * 3;
 	    c = cornerVertNumber * 6;
 	    d = cornerVertNumber * 7;
 
-	    indices.push( a );
-	    indices.push( c );
-	    indices.push( b );
-	    indices.push( b );
-	    indices.push( c );
-	    indices.push( d );
+	    indices.push( a, c, b, b, c, d );
 
 	    a = radiusSegments;
 	    b = radiusSegments + cornerVertNumber * 3;
 	    c = radiusSegments + cornerVertNumber * 4;
 	    d = radiusSegments + cornerVertNumber * 7;
 
-	    indices.push( a );
-	    indices.push( b );
-	    indices.push( c );
-	    indices.push( b );
-	    indices.push( d );
-	    indices.push( c );
+	    indices.push( a, b, c, b, d, c );
 
 	    a = radiusSegments + cornerVertNumber;
 	    b = radiusSegments + cornerVertNumber * 2;
 	    c = radiusSegments + cornerVertNumber * 5;
 	    d = radiusSegments + cornerVertNumber * 6;
 
-	    indices.push( a );
-	    indices.push( c );
-	    indices.push( b );
-	    indices.push( b );
-	    indices.push( c );
-	    indices.push( d );
+	    indices.push( a, c, b, b, c, d );
 
 	  }
 
@@ -409,25 +455,8 @@
 	        var c = cRowOffset + u;
 	        var d = cRowOffset + u1;
 
-	        if ( ! needsFlip ) {
-
-	          indices.push( a );
-	          indices.push( b );
-	          indices.push( c );
-	          indices.push( b );
-	          indices.push( d );
-	          indices.push( c );
-
-	        } else {
-
-	          indices.push( a );
-	          indices.push( c );
-	          indices.push( b );
-	          indices.push( b );
-	          indices.push( c );
-	          indices.push( d );
-
-	        }
+	        if ( ! needsFlip ) indices.push( a, b, c, b, d, c );
+	        else indices.push( a, c, b, b, c, d );
 
 	      }
 
@@ -457,25 +486,8 @@
 	        var c = cEnd + urs1;
 	        var d = cEnd + u1rs1;
 
-	        if ( needsFlip ) {
-
-	          indices.push( a );
-	          indices.push( c );
-	          indices.push( b );
-	          indices.push( b );
-	          indices.push( c );
-	          indices.push( d );
-
-	        } else {
-
-	          indices.push( a );
-	          indices.push( b );
-	          indices.push( c );
-	          indices.push( b );
-	          indices.push( d );
-	          indices.push( c );
-
-	        }
+	        if ( needsFlip ) indices.push( a, c, b, b, c, d );
+	        else indices.push( a, b, c, b, d, c );
 
 	      }
 
@@ -504,25 +516,8 @@
 	        var c = cEnd + radiusSegments + u * rs1;
 	        var d = cEnd + ( u != end ? radiusSegments + ( u + 1 ) * rs1 : cornerVertNumber - 1 );
 
-	        if ( ! needsFlip[ i ] ) {
-
-	          indices.push( a );
-	          indices.push( b );
-	          indices.push( c );
-	          indices.push( b );
-	          indices.push( d );
-	          indices.push( c );
-
-	        } else {
-
-	          indices.push( a );
-	          indices.push( c );
-	          indices.push( b );
-	          indices.push( b );
-	          indices.push( c );
-	          indices.push( d );
-
-	        }
+	        if ( ! needsFlip[ i ] ) indices.push( a, c, b, d, c );
+	        else indices.push( a, c, b, b, c, d );
 
 	      }
 
@@ -534,19 +529,8 @@
 
 	  for ( var i = 0; i < vertexPool.length; i ++ ) {
 
-	    positions.setXYZ(
-	      index,
-	      vertexPool[ i ].x,
-	      vertexPool[ i ].y,
-	      vertexPool[ i ].z
-	    );
-
-	    normals.setXYZ(
-	      index,
-	      normalPool[ i ].x,
-	      normalPool[ i ].y,
-	      normalPool[ i ].z
-	    );
+	    positions.setXYZ( index, vertexPool[ i ].x, vertexPool[ i ].y, vertexPool[ i ].z );
+	    normals.setXYZ( index, normalPool[ i ].x, normalPool[ i ].y, normalPool[ i ].z );
 
 	    index ++;
 
@@ -573,7 +557,7 @@
 
 		const pieceMesh = new THREE.Mesh(
 			new RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
-			new THREE.MeshStandardMaterial( {
+			new THREE.MeshStandardMaterial( { // add MeshLambertMaterial - it has faster performance
 				color: colors.piece,
 				side: THREE.FrontSide,
 				roughness: 1,
@@ -582,7 +566,7 @@
 		);
 
 		const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
-		const edgeMaterial = new THREE.MeshStandardMaterial( {
+		const edgeMaterial = new THREE.MeshStandardMaterial( { // add MeshLambertMaterial - it has faster performance
 			color: colors.piece,
 			side: THREE.FrontSide,
 			roughness: 1,
@@ -827,6 +811,204 @@
 		}
 
 	}
+
+	const Easing = {
+
+	  // Linear 1, Quad 2, Cubic 3, Quart 4, Quint 5
+
+	  Power: {
+
+	    In: power => {
+
+	      power = Math.round( power || 1 );
+
+	      return t => Math.pow( t, power );
+
+	    },
+
+	    Out: power => {
+
+	      power = Math.round( power || 1 );
+
+	      return t => 1 - Math.abs( Math.pow( t - 1, power ) );
+
+	    },
+
+	    InOut: power => {
+
+	      power = Math.round( power || 1 );
+
+	      return t => ( t < 0.5 )
+	        ? Math.pow( t * 2, power ) / 2
+	        : ( 1 - Math.abs( Math.pow( ( t * 2 - 1 ) - 1, power ) ) ) / 2 + 0.5;
+
+	    },
+
+	  },
+
+	  Sine: {
+
+	    In: () => t => 1 + Math.sin( Math.PI / 2 * t - Math.PI / 2 ),
+
+	    Out: () => t => Math.sin( Math.PI / 2 * t ),
+
+	    InOut: () => t => ( 1 + Math.sin( Math.PI * t - Math.PI / 2 ) ) / 2,
+
+	  },
+
+	  Back: {
+
+	    Out: s => {
+
+	      s = s || 1.70158;
+
+	      return t => { return ( t -= 1 ) * t * ( ( s + 1 ) * t + s ) + 1; };
+
+	    },
+
+	  },
+
+	  Elastic: {
+
+	    Out: ( amplitude, period ) => {
+
+	      let PI2 = Math.PI * 2;
+
+	      let p1 = ( amplitude >= 1 ) ? amplitude : 1;
+	      let p2 = ( period || 0.3 ) / ( amplitude < 1 ? amplitude : 1 );
+	      let p3 = p2 / PI2 * ( Math.asin( 1 / p1 ) || 0 );
+
+	      p2 = PI2 / p2;
+
+	      return t => { return p1 * Math.pow( 2, -10 * t ) * Math.sin( ( t - p3 ) * p2 ) + 1 }
+
+	    },
+
+	  },
+
+	};
+
+	class Tween extends Animation {
+
+	  constructor( options ) {
+
+	    super( false );
+
+	    this.name = 'Tween';
+	    if ( options.name) this.name += ' : ' + options.name;
+
+	    this.duration = options.duration || 500;
+	    this.easing = options.easing || ( t => t );
+	    this.onUpdate = options.onUpdate || ( () => {} );
+	    this.onComplete = options.onComplete || ( () => {} );
+
+	    this.delay = options.delay || false;
+	    this.yoyo = options.yoyo ? false : null;
+
+	    this.time = 0;
+	    this.progress = 0;
+	    this.value = 0;
+	    this.delta = 0;
+
+	    this.getFromTo( options );
+
+	    if ( this.delay ) setTimeout( () => super.start() );
+	    else super.start();
+
+	    this.onUpdate( this );
+
+	  }
+
+	  update( delta ) {
+
+	    const old = this.value * 1;
+
+	    this.time += delta;
+
+	    this.progress = ( this.yoyo === true )
+	      ? 1 - ( this.time / this.duration )
+	      : this.time / this.duration;
+
+	    this.value = this.easing( this.progress );
+	    this.delta = this.value - old;
+
+	    if ( this.values !== null ) this.updateFromTo();
+
+	    if ( this.yoyo !== null ) this.updateYoyo();
+	    else if ( this.progress < 1 ) this.onUpdate( this );
+	    else {
+
+	      this.progress = 1;
+	      this.value = 1;
+	      this.onUpdate( this );
+	      this.onComplete( this );
+	      super.stop();
+
+	    } 
+
+	  }
+
+	  updateYoyo() {
+
+	    if ( this.progress >= 1 || this.progress <= 0 ) {
+
+	      this.value = this.progress = ( this.progress > 1 ) ? 1 : 0;
+	      this.yoyo = ! this.yoyo;
+	      this.time = 0;
+
+	    }
+
+	  }
+
+	  updateFromTo() {
+
+	    this.values.forEach( key => {
+
+	      this.target[ key ] = this.from[ key ] + ( this.to[ key ] - this.from[ key ] ) * this.value;
+
+	    } );
+
+	  }
+
+	  getFromTo( options ) {
+
+	    if ( ! options.target || ! options.to ) {
+
+	      this.values = null;
+	      return;
+
+	    }
+
+	    this.target = options.target || null;
+	    this.from = options.from || {};
+	    this.to = options.to || null;
+	    this.values = [];
+
+	    if ( Object.keys( this.from ).length < 1 )
+	      Object.keys( this.to ).forEach( key => { this.from[ key ] = this.target[ key ]; } );
+
+	    Object.keys( this.to ).forEach( key => { this.values.push( key ); } );
+
+	  }
+
+	}
+
+	window.tween = Tween;
+	window.easing = Easing;
+
+	/*
+
+	a = new tween( {
+	  duration: 2000,
+	  easing: easing.Elastic.Out(),
+	  onUpdate: tween => {
+	    console.log( tween.value );
+	  }, onComplete: () => {
+	    console.log( 'completed' );
+	  }
+	} );
+
+	*/
 
 	window.addEventListener( 'touchmove', () => {} );
 	document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
@@ -1240,14 +1422,14 @@
 	    const bounce = scramble ? this._scrambleBounce : this._flipBounce;
 	    const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
 
-	    this.rotationTween = new CUBE.Tween( {
+	    this.rotationTween = new Tween( {
 	      duration:scramble ? this._scrambleSpeed : this._flipSpeed,
-	      easing: CUBE.Easing.Back.Out( bounce ),
+	      easing: Easing.Back.Out( bounce ),
 	      onUpdate: tween => {
 
 	        let deltaAngle = tween.delta * rotation;
 	        this.group.rotateOnAxis( this._flipAxis, deltaAngle );
-	        bounceCube( tween.progress, deltaAngle, rotation );
+	        bounceCube( tween.value, deltaAngle, rotation );
 
 	      },
 	      onComplete: () => {
@@ -1291,9 +1473,9 @@
 
 	  rotateCube( rotation, callback ) {
 
-	    this.rotationTween = new CUBE.Tween( {
+	    this.rotationTween = new Tween( {
 	      duration: this._flipSpeed,
-	      easing: CUBE.Easing.Back.Out( this._flipBounce ),
+	      easing: Easing.Back.Out( this._flipBounce ),
 	      onUpdate: tween => {
 
 	        this.edges.rotateOnWorldAxis( this._flipAxis, tween.delta * rotation );
@@ -1664,188 +1846,6 @@
 
 	}
 
-	class Tween {
-
-	  constructor( options ) {
-
-	    this.target = options.target || null;
-	    this.duration = options.duration || 500;
-	    this.delay = options.delay || 0;
-	    this.from = options.from || {};
-	    this.to = options.to || null;
-	    this.onComplete = options.onComplete || ( () => {} );
-	    this.onUpdate = options.onUpdate || ( () => {} );
-	    this.yoyo = options.yoyo || null;
-
-	    if ( typeof options.easing == 'undefined' ) options.easing = t => p; 
-
-	    this.easing = ( typeof options.easing !== 'function' ) 
-	      ? this.constructor.Easings[ options.easing ]
-	      : options.easing;
-
-	    this.progress = 0;
-	    this.delta = 0;
-	    this.values = [];
-
-	    if ( this.yoyo != null ) this.yoyo = false;
-
-	    if ( this.target !== null && this.to !== null ) {
-
-	      if ( Object.keys( this.from ).length < 1 ) {
-
-	        Object.keys( this.to ).forEach( key => { this.from[ key ] = this.target[ key ]; } );
-
-	      }
-
-	      Object.keys( this.to ).forEach( key => { this.values.push( key ); } );
-
-	    }
-
-	    this.update = this.update.bind( this );
-
-	    setTimeout( () => {
-
-	      this.start = performance.now();
-	      this.animate = requestAnimationFrame( this.update );
-
-	    }, this.delay );
-
-	    return this;
-
-	  }
-
-	  kill() {
-
-	    cancelAnimationFrame( this.animate );
-
-	  }
-
-	  update() {
-
-	    const now = performance.now();
-	    const old = this.progress * 1;
-	    const delta = now - this.start;
-
-	    let progress = delta / this.duration;
-
-	    if ( this.yoyo == true ) progress = 1 - progress;
-
-	    if ( this.yoyo == null && delta > this.duration - 1000 / 60 ) progress = 1;
-
-	    if ( progress >= 1 ) { progress = 1; /*this.progress = 1;*/ }
-	    else if ( progress <= 0 ) { progress = 0; /*this.progress = 0;*/ }
-	    this.progress = this.easing( progress );
-
-	    this.delta = this.progress - old;
-
-	    this.values.forEach( key => {
-
-	      this.target[ key ] = this.from[ key ] + ( this.to[ key ] - this.from[ key ] ) * this.progress;
-
-	    } );
-
-	    this.onUpdate( this );
-
-	    if ( progress == 1 || progress == 0 ) {
-
-	      if ( this.yoyo != null ) {
-
-	        this.yoyo = ! this.yoyo;
-	        this.start = now;
-
-	      } else {
-
-	        this.onComplete( this );
-	        return;
-
-	      }
-
-	    }
-
-	    this.animate = requestAnimationFrame( this.update );
-
-	  }
-
-	}
-
-	var Easing = {
-
-	  // Linear 1, Quad 2, Cubic 3, Quart 4, Quint 5
-
-	  Power: {
-
-	    In: power => {
-
-	      power = Math.round( power || 1 );
-
-	      return t => Math.pow( t, power );
-
-	    },
-
-	    Out: power => {
-
-	      power = Math.round( power || 1 );
-
-	      return t => 1 - Math.abs( Math.pow( t - 1, power ) );
-
-	    },
-
-	    InOut: power => {
-
-	      power = Math.round( power || 1 );
-
-	      return t => ( t < 0.5 )
-	        ? Math.pow( t * 2, power ) / 2
-	        : ( 1 - Math.abs( Math.pow( ( t * 2 - 1 ) - 1, power ) ) ) / 2 + 0.5;
-
-	    },
-
-	  },
-
-	  Sine: {
-
-	    In: () => t => 1 + Math.sin( Math.PI / 2 * t - Math.PI / 2 ),
-
-	    Out: () => t => Math.sin( Math.PI / 2 * t ),
-
-	    InOut: () => t => ( 1 + Math.sin( Math.PI * t - Math.PI / 2 ) ) / 2,
-
-	  },
-
-	  // https://greensock.com/ease-visualizer
-
-	  Back: {
-
-	    Out: s => {
-
-	      s = s || 1.70158;
-
-	      return t => { return ( t -= 1 ) * t * ( ( s + 1 ) * t + s ) + 1; };
-
-	    },
-
-	  },
-
-	  Elastic: {
-
-	    Out: ( amplitude, period ) => {
-
-	      let PI2 = Math.PI * 2;
-
-	      let p1 = ( amplitude >= 1 ) ? amplitude : 1;
-	      let p2 = ( period || 0.3 ) / ( amplitude < 1 ? amplitude : 1 );
-	      let p3 = p2 / PI2 * ( Math.asin( 1 / p1 ) || 0 );
-
-	      p2 = PI2 / p2;
-
-	      return t => { return p1 * Math.pow( 2, -10 * t ) * Math.sin( ( t - p3 ) * p2 ) + 1 }
-
-	    },
-
-	  },
-
-	};
-
 	class Transition {
 
 	  constructor( game ) {
@@ -1883,18 +1883,20 @@
 
 	  cube( show ) {
 
-	    if ( typeof this.tweens.cube !== 'undefined' ) this.tweens.cube.kill();
+	    if ( typeof this.tweens.cube !== 'undefined' ) this.tweens.cube.stop();
 
 	    if ( show ) {
 
 	      if ( ! this.initialized ) this.initialize();
 
-	      this.tweens.cube = new CUBE.Tween( {
-	        duration: 3000, easing: CUBE.Easing.Elastic.Out( 0.5, 0.5 ),
+	      this.tweens.cube = new Tween( {
+	        name: 'Show Cube',
+	        duration: 3000,
+	        easing: Easing.Elastic.Out( 0.5, 0.5 ),
 	        onUpdate: tween => {
 
-	          this.game.cube.animator.position.y = ( 1 - tween.progress ) * 4;
-	          this.game.cube.animator.rotation.x = ( 1 - tween.progress ) * - Math.PI / 3;
+	          this.game.cube.animator.position.y = ( 1 - tween.value ) * 4;
+	          this.game.cube.animator.rotation.x = ( 1 - tween.value ) * - Math.PI / 3;
 
 	        }
 	      } );
@@ -1931,12 +1933,14 @@
 
 	      }
 
-	      this.tweens.cube = new CUBE.Tween( {
-	        duration: 2000, easing: CUBE.Easing.Back.Out( 0.5 ),
+	      this.tweens.cube = new Tween( {
+	        name: 'Hide Cube',
+	        duration: 2000,
+	        easing: Easing.Back.Out( 0.5 ),
 	        onUpdate: tween => {
 
-	          this.game.cube.animator.position.y = tween.progress * 4;
-	          this.game.cube.animator.rotation.x = tween.progress * Math.PI / 3;
+	          this.game.cube.animator.position.y = tween.value * 4;
+	          this.game.cube.animator.rotation.x = tween.value * Math.PI / 3;
 
 	        }
 	      } );
@@ -1947,16 +1951,17 @@
 
 	  float() {
 
-	    if ( typeof this.tweens.float !== 'undefined' ) this.tweens.float.kill();
+	    if ( typeof this.tweens.float !== 'undefined' ) this.tweens.float.stop();
 
-	    this.tweens.float = new CUBE.Tween( {
+	    this.tweens.float = new Tween( {
+	      name: 'Float Cube',
 	      duration: 1500,
-	      easing: CUBE.Easing.Sine.InOut(),
+	      easing: Easing.Sine.InOut(),
 	      yoyo: true,
 	      onUpdate: tween => {
 
-	        this.game.cube.holder.position.y = - 0.02 + tween.progress * 0.04;
-	        this.game.cube.holder.rotation.x = 0.005 - tween.progress * 0.01;
+	        this.game.cube.holder.position.y = - 0.02 + tween.value * 0.04;
+	        this.game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
 	        this.game.cube.holder.rotation.z = - this.game.cube.holder.rotation.x;
 	        this.game.cube.holder.rotation.y = this.game.cube.holder.rotation.x;
 
@@ -1971,9 +1976,10 @@
 	    const cubeY = ( game ) ? -0.3 : this.data.cubeY;
 	    const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
 	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
-	    const easing = CUBE.Easing.Power.InOut( ( time > 0 ) ? 2 : 3 );
+	    const easing = Easing.Power.InOut( ( time > 0 ) ? 2 : 3 );
 
-	    this.tweens.zoom = new CUBE.Tween( {
+	    this.tweens.zoom = new Tween( {
+	      name: 'Zooming Cube',
 	      target: this.game.world.camera,
 	      duration: duration,
 	      easing: easing,
@@ -1981,7 +1987,8 @@
 	      onUpdate: () => { this.game.world.camera.updateProjectionMatrix(); },
 	    } );
 
-	    this.tweens.rotate = new CUBE.Tween( {
+	    this.tweens.rotate = new Tween( {
+	      name: 'Rotating Cube',
 	      target: this.game.cube.animator.rotation,
 	      duration: duration,
 	      easing: easing,
@@ -1989,7 +1996,7 @@
 	      onComplete: () => { this.game.cube.animator.rotation.y = 0; callback(); },
 	    } );
 
-	    // this.tweens.cubeY = new CUBE.Tween( {
+	    // this.tweens.cubeY = new Tween( {
 	    //   target: this.data,
 	    //   duration: duration,
 	    //   easing: easing,
@@ -2007,13 +2014,13 @@
 	  preferences( show ) {
 
 	    if ( typeof this.tweens.range === 'undefined' ) this.tweens.range = [];  
-	    else this.tweens.range.forEach( tween => { tween.kill(); tween = null; } );
+	    else this.tweens.range.forEach( tween => { tween.stop(); tween = null; } );
 
 	    let tweenId = -1;
 	    let listMax = 0;
 
 	    const ranges = this.game.dom.prefs.querySelectorAll( '.range' );
-	    const easing = show ? CUBE.Easing.Power.Out(2) : CUBE.Easing.Power.Out(1);
+	    const easing = show ? Easing.Power.Out(2) : Easing.Power.Out(1);
 
 	    ranges.forEach( ( range, rangeIndex ) => {
 
@@ -2029,14 +2036,14 @@
 	      handle.style.opacity = show ? 0 : 1;
 	      handle.style.pointerEvents = show ? 'all' : 'none';
 
-	      this.tweens.range[ tweenId++ ] = new CUBE.Tween( {
+	      this.tweens.range[ tweenId++ ] = new Tween( {
 	        delay: show ? delay : delay,
 	        duration: 400,
 	        easing: easing,
 	        onUpdate: tween => {
 
-	          const translate = show ? ( 1 - tween.progress ) : tween.progress;
-	          const opacity = show ? tween.progress : ( 1 - tween.progress );
+	          const translate = show ? ( 1 - tween.value ) : tween.value;
+	          const opacity = show ? tween.value : ( 1 - tween.value );
 
 	          label.style.transform = `translate3d(0, ${translate}em, 0)`;
 	          label.style.opacity = opacity;
@@ -2044,14 +2051,14 @@
 	        }
 	      } );
 
-	      this.tweens.range[ tweenId++ ] = new CUBE.Tween( {
+	      this.tweens.range[ tweenId++ ] = new Tween( {
 	        delay: show ? delay + 100 : delay,
 	        duration: 400,
 	        easing: easing,
 	        onUpdate: tween => {
 
-	          const translate = show ? ( 1 - tween.progress ) : tween.progress;
-	          const scale = show ? tween.progress : ( 1 - tween.progress );
+	          const translate = show ? ( 1 - tween.value ) : tween.value;
+	          const scale = show ? tween.value : ( 1 - tween.value );
 	          const opacity = scale;
 
 	          track.style.transform = `translate3d(0, ${translate}em, 0) scale3d(${scale}, 1, 1)`;
@@ -2060,13 +2067,13 @@
 	        }
 	      } );
 
-	      this.tweens.range[ tweenId++ ] = new CUBE.Tween( {
+	      this.tweens.range[ tweenId++ ] = new Tween( {
 	        delay: show ? delay + 100 : delay,
 	        duration: 400,
 	        easing: easing,
 	        onUpdate: tween => {
 
-	          const translate = show ? ( 1 - tween.progress ) : tween.progress;
+	          const translate = show ? ( 1 - tween.value ) : tween.value;
 	          const opacity = 1 - translate;
 	          const scale = 0.5 + opacity * 0.5;
 
@@ -2080,14 +2087,14 @@
 
 	        listItem.style.opacity = show ? 0 : 1;
 
-	        this.tweens.range[ tweenId++ ] = new CUBE.Tween( {
+	        this.tweens.range[ tweenId++ ] = new Tween( {
 	          delay: show ? delay + 200 + labelIndex * 50 : delay,
 	          duration: 400,
 	          easing: easing,
 	          onUpdate: tween => {
 
-	            const translate = show ? ( 1 - tween.progress ) : tween.progress;
-	            const opacity = show ? tween.progress : ( 1 - tween.progress );
+	            const translate = show ? ( 1 - tween.value ) : tween.value;
+	            const opacity = show ? tween.value : ( 1 - tween.value );
 
 	            listItem.style.transform = `translate3d(0, ${translate}em, 0)`;
 	            listItem.style.opacity = opacity;
@@ -2124,9 +2131,10 @@
 
 	    const note = this.game.dom.note;
 
-	    this.tweens.title[ letters.length ] = new CUBE.Tween( {
+	    this.tweens.title[ letters.length ] = new Tween( {
+	      name: 'Blinking text',
 	      target: note.style,
-	      easing: CUBE.Easing.Sine.InOut(),
+	      easing: Easing.Sine.InOut(),
 	      duration: show ? 800 : 400,
 	      yoyo: show ? true : null,
 	      from: { opacity: show ? 0 : ( parseFloat( getComputedStyle( note ).opacity ) ) },
@@ -2176,22 +2184,22 @@
 	  flipLetters( type, letters, show ) {
 
 	    if ( typeof this.tweens[ type ] === 'undefined' ) this.tweens[ type ] = [];  
-	    else this.tweens[ type ].forEach( tween => { tween.kill(); tween = null; } );
+	    else this.tweens[ type ].forEach( tween => { tween.stop(); tween = null; } );
 
 	    letters.forEach( ( letter, index ) => {
 
 	      letter.style.opacity = show ? 0 : 1;
 
-	      this.tweens[ type ][ index ] = new CUBE.Tween( {
-	        easing: CUBE.Easing.Sine.Out(),
+	      this.tweens[ type ][ index ] = new Tween( {
+	        easing: Easing.Sine.Out(),
 	        duration: show ? 800 : 400,
 	        delay: index * 50,
 	        onUpdate: tween => {
 
-	          const rotation = show ? ( 1 - tween.progress ) * -80 : tween.progress * 80;
+	          const rotation = show ? ( 1 - tween.value ) * -80 : tween.value * 80;
 
 	          letter.style.transform = `rotate3d(0, 1, 0, ${rotation}deg)`;
-	          letter.style.opacity = show ? tween.progress : ( 1 - tween.progress );
+	          letter.style.opacity = show ? tween.value : ( 1 - tween.value );
 
 	        },
 	      } );
@@ -2204,9 +2212,13 @@
 	  
 	}
 
-	class Timer {
+	class Timer extends Animation {
 
 		constructor( game ) {
+
+			super( false );
+
+			this.name = 'Timer';
 
 			this.game = game;
 
@@ -2214,8 +2226,6 @@
 			this.currentTime = 0;
 			this.converted = '0:00';
 			this.animate = null;
-
-			this.update = this.update.bind( this );
 
 		}
 
@@ -2225,7 +2235,7 @@
 			this.deltaTime = 0;
 			this.converted = this.convert();
 
-			this.animate = requestAnimationFrame( this.update );
+			super.start();
 
 		}
 
@@ -2235,7 +2245,7 @@
 			this.deltaTime = this.currentTime - this.startTime;
 			this.convert();
 
-			cancelAnimationFrame( this.animate );
+			super.stop();
 
 			return { time: this.converted, millis: this.deltaTime };
 
@@ -2255,8 +2265,6 @@
 				this.setText();
 
 			}
-
-			this.animate = requestAnimationFrame( this.update );
 
 		}
 
@@ -2281,6 +2289,14 @@
 
 	  constructor() {
 
+	    /*
+	    ███████ ███████ ████████     ██       █████  ███    ███ ██████  ███████ ██████  ████████ 
+	    ██      ██         ██        ██      ██   ██ ████  ████ ██   ██ ██      ██   ██    ██    
+	    ███████ █████      ██        ██      ███████ ██ ████ ██ ██████  █████   ██████     ██    
+	         ██ ██         ██        ██      ██   ██ ██  ██  ██ ██   ██ ██      ██   ██    ██    
+	    ███████ ███████    ██        ███████ ██   ██ ██      ██ ██████  ███████ ██   ██    ██        
+	    */
+
 	    this.dom = {
 	      game: document.querySelector( '.ui__game' ),
 	      texts: document.querySelector( '.ui__texts' ),
@@ -2295,45 +2311,45 @@
 	      }
 	    };
 
-	    this.world = new CUBE.World( this );
-	    this.confetti = new CUBE.Confetti( this );
-
-	    // this.world.camera.position.set( 0, 0, -15 )
-	    // this.world.camera.lookAt( 0, 0, 0 )
-
-	    let active = false;
-
-	    this.dom.game.onclick = e => {
-
-	      active = ! active;
-
-	      if ( active ) game.confetti.start();
-	      else game.confetti.stop();
-
-	    };
-
 	    // this.world = new CUBE.World( this );
-	    // this.cube = new CUBE.Cube( this );
-	    // this.controls = new CUBE.Controls( this );
-	    // this.scrambler = new CUBE.Scrambler( this );
-	    // this.transition = new CUBE.Transition( this );
-	    // this.audio = new CUBE.Audio( this );
-	    // this.timer = new CUBE.Timer( this );
-	    // this.preferences = new CUBE.Preferences( this );
-	    // this.icons = new CUBE.Icons();
+	    // this.confetti = new CUBE.Confetti( this );
 
-	    // this.initStart();
-	    // // this.initPause();
-	    // this.initPrefs();
+	    // // this.world.camera.position.set( 0, 0, -15 )
+	    // // this.world.camera.lookAt( 0, 0, 0 )
 
-	    // this.saved = this.cube.loadState();
-	    // this.playing = false;
+	    // let active = false;
 
-	    // this.transition.float();
-	    // this.transition.cube( true );
+	    // this.dom.game.onclick = e => {
 
-	    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
-	    // this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
+	    //   active = ! active;
+
+	    //   if ( active ) game.confetti.start();
+	    //   else game.confetti.stop();
+
+	    // }
+
+	    this.world = new CUBE.World( this );
+	    this.cube = new CUBE.Cube( this );
+	    this.controls = new CUBE.Controls( this );
+	    this.scrambler = new CUBE.Scrambler( this );
+	    this.transition = new CUBE.Transition( this );
+	    this.audio = new CUBE.Audio( this );
+	    this.timer = new CUBE.Timer( this );
+	    this.preferences = new CUBE.Preferences( this );
+	    this.icons = new CUBE.Icons();
+
+	    this.initStart();
+	    // this.initPause();
+	    this.initPrefs();
+
+	    this.saved = this.cube.loadState();
+	    this.playing = false;
+
+	    this.transition.float();
+	    this.transition.cube( true );
+
+	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
+	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
 
 	  }
 
@@ -2585,92 +2601,6 @@
 
 	}
 
-	class Preferences {
-
-	  constructor( game ) {
-
-	    this.game = game;
-
-	    this.load();
-
-	    this.elements = {
-
-	      speed: new CUBE.Range( 'speed', {
-	        value: this.game.controls._flipSpeed,
-	        range: [ 300, 100 ],
-	        onComplete: value => {
-
-	          this.game.controls._flipSpeed = value;
-	          localStorage.setItem( 'flipSpeed', value );
-
-	          this.game.controls._flipBounce = ( ( value - 100 ) / 200 ) * 2;
-	          localStorage.setItem( 'flipBounce', this.game.controls._flipBounce );
-	          
-	        },
-	      } ),
-
-	      scramble: new CUBE.Range( 'scramble', {
-	        value: this.game.scrambler.scrambleLength,
-	        range: [ 20, 30 ],
-	        step: 5,
-	        onComplete: value => {
-
-	          this.game.scrambler.scrambleLength = value;
-	          localStorage.setItem( 'scrambleLength', value );
-
-	        },
-	      } ),
-
-	      fov: new CUBE.Range( 'fov', {
-	        value: this.game.world.fov,
-	        range: [ 2, 45 ],
-	        onUpdate: value => {
-
-	          this.game.world.fov = value;
-	          this.game.world.resize();
-
-	        },
-	        onComplete: value => {
-
-	          localStorage.setItem( 'fov', value );
-
-	        },
-	      } ),
-
-	      theme: new CUBE.Range( 'theme', {
-	        value: 0,
-	        range: [ 0, 1 ],
-	        step: 1,
-	        onUpdate: value => {},
-	      } ),
-
-	    };
-
-	  }
-
-	  load() {
-
-	    const flipSpeed = localStorage.getItem( 'flipSpeed' );
-	    const flipBounce = localStorage.getItem( 'flipBounce' );
-	    const scrambleLength = localStorage.getItem( 'scrambleLength' );
-	    const fov = localStorage.getItem( 'fov' );
-	    // const theme = localStorage.getItem( 'theme' );
-
-	    if ( flipSpeed != null ) this.game.controls._flipSpeed = parseFloat( flipSpeed );
-	    if ( flipBounce != null ) this.game.controls._flipBounce = parseFloat( flipBounce );
-	    if ( scrambleLength != null ) this.game.scrambler.scrambleLength = parseInt( scrambleLength );
-
-	    if ( fov != null ) {
-
-	      this.game.world.fov = parseFloat( fov );
-	      this.game.world.resize();
-
-	    }
-
-	  }
-
-	}
-
 	const RangeHTML = [
 
 	  '<div class="range">',
@@ -2819,6 +2749,171 @@
 
 	}
 
+	class Preferences {
+
+	  constructor( game ) {
+
+	    this.game = game;
+
+	    this.load();
+
+	    this.elements = {
+
+	      speed: new Range( 'speed', {
+	        value: this.game.controls._flipSpeed,
+	        range: [ 300, 100 ],
+	        onComplete: value => {
+
+	          this.game.controls._flipSpeed = value;
+	          localStorage.setItem( 'flipSpeed', value );
+
+	          this.game.controls._flipBounce = ( ( value - 100 ) / 200 ) * 2;
+	          localStorage.setItem( 'flipBounce', this.game.controls._flipBounce );
+	          
+	        },
+	      } ),
+
+	      scramble: new Range( 'scramble', {
+	        value: this.game.scrambler.scrambleLength,
+	        range: [ 20, 30 ],
+	        step: 5,
+	        onComplete: value => {
+
+	          this.game.scrambler.scrambleLength = value;
+	          localStorage.setItem( 'scrambleLength', value );
+
+	        },
+	      } ),
+
+	      fov: new Range( 'fov', {
+	        value: this.game.world.fov,
+	        range: [ 2, 45 ],
+	        onUpdate: value => {
+
+	          this.game.world.fov = value;
+	          this.game.world.resize();
+
+	        },
+	        onComplete: value => {
+
+	          localStorage.setItem( 'fov', value );
+
+	        },
+	      } ),
+
+	      theme: new Range( 'theme', {
+	        value: 0,
+	        range: [ 0, 1 ],
+	        step: 1,
+	        onUpdate: value => {},
+	      } ),
+
+	    };
+
+	  }
+
+	  load() {
+
+	    const flipSpeed = localStorage.getItem( 'flipSpeed' );
+	    const flipBounce = localStorage.getItem( 'flipBounce' );
+	    const scrambleLength = localStorage.getItem( 'scrambleLength' );
+	    const fov = localStorage.getItem( 'fov' );
+	    // const theme = localStorage.getItem( 'theme' );
+
+	    if ( flipSpeed != null ) this.game.controls._flipSpeed = parseFloat( flipSpeed );
+	    if ( flipBounce != null ) this.game.controls._flipBounce = parseFloat( flipBounce );
+	    if ( scrambleLength != null ) this.game.scrambler.scrambleLength = parseInt( scrambleLength );
+
+	    if ( fov != null ) {
+
+	      this.game.world.fov = parseFloat( fov );
+	      this.game.world.resize();
+
+	    }
+
+	  }
+
+	}
+
+	class Confetti extends Animation {
+
+	  constructor( game ) {
+
+	    super( false );
+
+	    this.name = 'Confetti';
+
+	    this._game = game;
+
+	    this._count = 100;
+	    this._particles = [];
+
+	    this._object = new THREE.Object3D();
+	    this._game.world.scene.add( this._object );
+
+	    this._geometry = new THREE.PlaneGeometry( 1, 1 );
+	    this._material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
+	    this._opacity = 0;
+
+	    this._particleOptions = {
+	      geometry: this._geometry,
+	      material: this._material,
+	      holder: this._object,
+	      velocity: { min: 5, max: 15 },
+	      revolution: { min: 0, max: 0.05 },
+	      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 45 },
+	      radius: { min: 10, max: 15 },
+	      mass: { min: 0.05, max: 0.1 },
+	      gravity: -9.81,
+	      geometryScale: 0.0035, // used to scale in threejs world
+	      positionScale: 0.3333, // used to scale in threejs world
+	      colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
+	    };
+
+	    let i = this._count;
+	    while ( i-- )  this._particles.push( new Particle( this._particleOptions ) );
+
+	  }
+
+	  start() {
+
+	    this._opacity = 0;
+	    this._done = 0;
+	    this._time = performance.now();
+	    super.start();
+
+	  }
+
+	  stop() {
+
+	    super.stop();
+
+	    let i = this._count;
+	    while ( i-- ) this._particles[ i ].reset();
+
+	  }
+
+	  update() {
+
+	    const now = performance.now();
+	    const delta = now - this._time;
+	    this._time = now;
+
+	    this._opacity += ( 1 - this._opacity ) * 0.1;
+
+	    let i = this._count;
+	    while ( i-- ) {
+
+	      if ( this._particles[ i ].update( delta, this._opacity ) ) this._done++;
+
+	    }
+
+	    if ( this._done == this._count) this.stop();
+
+	  }
+	  
+	}
+
 	const rnd = THREE.Math.randFloat;
 
 	class Particle {
@@ -2828,28 +2923,51 @@
 	    this._options = options;
 
 	    this._velocity = new THREE.Vector3();
-	    this._color = new THREE.Color( options.colors[ Math.floor( Math.random() * options.colors.length ) ] );
-	    this._positionScale = options.positionScale;
 	    this._force = new THREE.Vector3();
-	    this._mass = rnd( options.mass.min, options.mass.max );
-	    this._radius = rnd( options.radius.min, options.radius.max );
-	    this._scale = this._radius * options.geometryScale;
-	    this._life = 0;
-	    this._done = false;
 
 	    this._mesh = new THREE.Mesh( options.geometry, options.material.clone() );
-	    this._mesh.scale.set( this._scale, this._scale, this._scale );
-	    this._mesh.material.color.set( this._color );
-	    this._mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 );
 
 	    options.holder.add( this._mesh );
 
-	    this._physics = this.getPhysics( this._radius );
-	    this._ag = options.gravity; // -9.81
-
 	    this.reset();
 
+	    this._ag = options.gravity; // -9.81
+
 	    return this;
+
+	  }
+
+	  reset() {
+
+	    const axis = this._velocity.clone();
+
+	    this._velocity.copy( this._options.angle.direction ).multiplyScalar( rnd( this._options.velocity.min, this._options.velocity.max ) );
+	    this._velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+	    this._velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+
+	    this._color = new THREE.Color( this._options.colors[ Math.floor( Math.random() * this._options.colors.length ) ] );
+
+	    this._revolution = new THREE.Vector3(
+	      rnd( this._options.revolution.min, this._options.revolution.max ),
+	      rnd( this._options.revolution.min, this._options.revolution.max ),
+	      rnd( this._options.revolution.min, this._options.revolution.max )
+	    );
+
+	    this._mesh.position.set( 0, 0, 0 );
+
+	    this._positionScale = this._options.positionScale;
+	    this._mass = rnd( this._options.mass.min, this._options.mass.max );
+	    this._radius = rnd( this._options.radius.min, this._options.radius.max );
+	    this._scale = this._radius * this._options.geometryScale;
+
+	    this._mesh.scale.set( this._scale, this._scale, this._scale );
+	    this._mesh.material.color.set( this._color );
+	    this._mesh.material.opacity = 0;
+	    this._mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 );
+
+	    this._physics = this.getPhysics( this._radius );
+
+	    this._done = false;
 
 	  }
 
@@ -2882,31 +3000,6 @@
 
 	  }
 
-	  reset() {
-
-	    this._mesh.material.opacity = 0;
-
-	    const axis = this._velocity.clone();
-
-	    this._velocity.copy( this._options.angle.direction ).multiplyScalar( rnd( this._options.velocity.min, this._options.velocity.max ) );
-	    this._velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
-	    this._velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
-
-	    // const arrowHelper = new THREE.ArrowHelper( this._velocity.clone().normalize(), new THREE.Vector3( 0, 0, 0 ), this._velocity.length() / 10, 0x666666 );
-	    // this._options.holder.add( arrowHelper );
-
-	    this._revolution = new THREE.Vector3(
-	      rnd( this._options.revolution.min, this._options.revolution.max ),
-	      rnd( this._options.revolution.min, this._options.revolution.max ),
-	      rnd( this._options.revolution.min, this._options.revolution.max )
-	    );
-
-	    this._mesh.position.set( 0, 0, 0 );
-
-	    this._done = false;
-
-	  }
-
 	  getPhysics( r ) {
 
 	    const Cd = 0.47;
@@ -2931,86 +3024,6 @@
 
 	}
 
-	class Confetti {
-
-	  constructor( game ) {
-
-	    this._game = game;
-
-	    this._count = 100;
-	    this._particles = [];
-
-	    this._object = new THREE.Object3D();
-	    this._game.world.scene.add( this._object );
-
-	    this._geometry = new THREE.PlaneGeometry( 1, 1 );
-	    this._material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
-	    this._opacity = 0;
-
-	    this._particleOptions = {
-	      geometry: this._geometry,
-	      material: this._material,
-	      holder: this._object,
-	      velocity: { min: 5, max: 15 },
-	      revolution: { min: 0, max: 0.05 },
-	      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 45 },
-	      radius: { min: 10, max: 15 },
-	      mass: { min: 0.05, max: 0.1 },
-	      gravity: -9.81,
-	      geometryScale: 0.0035, // used to scale in threejs world
-	      positionScale: 0.3333, // used to scale in threejs world
-	      colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
-	    };
-
-	    let i = this._count;
-	    while ( i-- )  this._particles.push( new Particle( this._particleOptions ) );
-
-	    this.update = this.update.bind( this );
-
-	    return this;
-
-	  }
-
-	  start() {
-
-	    this._opacity = 0;
-	    this._done = 0;
-	    this._time = performance.now();
-	    this._animation = requestAnimationFrame( this.update );
-
-	  }
-
-	  stop() {
-
-	    cancelAnimationFrame( this._animation );
-
-	    let i = this._count;
-	    while ( i-- ) this._particles[ i ].reset();
-
-	  }
-
-	  update() {
-
-	    const now = performance.now();
-	    const delta = now - this._time;
-	    this._time = now;
-
-	    this._opacity += ( 1 - this._opacity ) * 0.1;
-
-	    let i = this._count;
-	    while ( i-- ) {
-
-	      if ( this._particles[ i ].update( delta, this._opacity ) ) this._done++;
-
-	    }
-
-	    this._animation = requestAnimationFrame( this.update );
-	    if ( this._done == this._count) this.stop();
-
-	  }
-	  
-	}
-
 	exports.World = World;
 	exports.Cube = Cube;
 	exports.Controls = Controls;
@@ -3023,7 +3036,6 @@
 	exports.Icons = Icons;
 	exports.Audio = Audio;
 	exports.Preferences = Preferences;
-	exports.Range = Range;
 	exports.Confetti = Confetti;
 
 	Object.defineProperty(exports, '__esModule', { value: true });

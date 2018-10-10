@@ -38,13 +38,11 @@ function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
     vertex = new THREE.Vector3(),
     vertexPool = [],
     normalPool = [],
-    indices = []
-  ;
+    indices = [];
 
   var
     lastVertex = rs1 * radiusSegments,
-    cornerVertNumber = rs1 * radiusSegments + 1
-  ;
+    cornerVertNumber = rs1 * radiusSegments + 1;
 
   doVertices();
   doFaces();
@@ -141,16 +139,7 @@ function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
 
     var indexInd = 0;
 
-    var flips = [
-      true,
-      false,
-      true,
-      false,
-      false,
-      true,
-      false,
-      true
-    ];
+    var flips = [ true, false, true, false, false, true, false, true ];
 
     var lastRowOffset = rs1 * ( radiusSegments - 1 );
 
@@ -171,27 +160,8 @@ function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
           var c = cornerOffset + r2 + u;
           var d = cornerOffset + r2 + u1;
 
-          if ( ! flips[ i ] ) {
-
-            indices.push( a );
-            indices.push( b );
-            indices.push( c );
-
-            indices.push( b );
-            indices.push( d );
-            indices.push( c );
-
-          } else {
-
-            indices.push( a );
-            indices.push( c );
-            indices.push( b );
-
-            indices.push( b );
-            indices.push( c );
-            indices.push( d );
-
-          }
+          if ( ! flips[ i ] ) indices.push( a, b, c, b, d, c );
+          else indices.push( a, c, b, b, c, d );
 
         }
 
@@ -203,19 +173,8 @@ function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
         var b = cornerOffset + lastRowOffset + u + 1;
         var c = cornerOffset + lastVertex;
 
-        if ( ! flips[ i ] ) {
-
-          indices.push( a );
-          indices.push( b );
-          indices.push( c );
-
-        } else {
-
-          indices.push( a );
-          indices.push( c );
-          indices.push( b );
-
-        }
+        if ( ! flips[ i ] ) indices.push( a, b, c );
+        else indices.push( a, c, b );
 
       }
 
@@ -230,72 +189,42 @@ function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
     var c = lastVertex + cornerVertNumber * 2;
     var d = lastVertex + cornerVertNumber * 3;
 
-    indices.push( a );
-    indices.push( b );
-    indices.push( c );
-    indices.push( a );
-    indices.push( c );
-    indices.push( d );
+    indices.push( a, b, c, a, c, d );
 
     a = lastVertex + cornerVertNumber * 4;// + cornerVertNumber * 0;
     b = lastVertex + cornerVertNumber * 5;// * 1;
     c = lastVertex + cornerVertNumber * 6;
     d = lastVertex + cornerVertNumber * 7;
 
-    indices.push( a );
-    indices.push( c );
-    indices.push( b );
-    indices.push( a );
-    indices.push( d );
-    indices.push( c );
+    indices.push( a, c, b, a, d, c );
 
     a = 0;
     b = cornerVertNumber;
     c = cornerVertNumber * 4;
     d = cornerVertNumber * 5;
 
-    indices.push( a );
-    indices.push( c );
-    indices.push( b );
-    indices.push( b );
-    indices.push( c );
-    indices.push( d );
+    indices.push( a, c, b, b, c, d );
 
     a = cornerVertNumber * 2;
     b = cornerVertNumber * 3;
     c = cornerVertNumber * 6;
     d = cornerVertNumber * 7;
 
-    indices.push( a );
-    indices.push( c );
-    indices.push( b );
-    indices.push( b );
-    indices.push( c );
-    indices.push( d );
+    indices.push( a, c, b, b, c, d );
 
     a = radiusSegments;
     b = radiusSegments + cornerVertNumber * 3;
     c = radiusSegments + cornerVertNumber * 4;
     d = radiusSegments + cornerVertNumber * 7;
 
-    indices.push( a );
-    indices.push( b );
-    indices.push( c );
-    indices.push( b );
-    indices.push( d );
-    indices.push( c );
+    indices.push( a, b, c, b, d, c );
 
     a = radiusSegments + cornerVertNumber;
     b = radiusSegments + cornerVertNumber * 2;
     c = radiusSegments + cornerVertNumber * 5;
     d = radiusSegments + cornerVertNumber * 6;
 
-    indices.push( a );
-    indices.push( c );
-    indices.push( b );
-    indices.push( b );
-    indices.push( c );
-    indices.push( d );
+    indices.push( a, c, b, b, c, d );
 
   }
 
@@ -315,25 +244,8 @@ function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
         var c = cRowOffset + u;
         var d = cRowOffset + u1;
 
-        if ( ! needsFlip ) {
-
-          indices.push( a );
-          indices.push( b );
-          indices.push( c );
-          indices.push( b );
-          indices.push( d );
-          indices.push( c );
-
-        } else {
-
-          indices.push( a );
-          indices.push( c );
-          indices.push( b );
-          indices.push( b );
-          indices.push( c );
-          indices.push( d );
-
-        }
+        if ( ! needsFlip ) indices.push( a, b, c, b, d, c );
+        else indices.push( a, c, b, b, c, d );
 
       }
 
@@ -363,25 +275,8 @@ function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
         var c = cEnd + urs1;
         var d = cEnd + u1rs1;
 
-        if ( needsFlip ) {
-
-          indices.push( a );
-          indices.push( c );
-          indices.push( b );
-          indices.push( b );
-          indices.push( c );
-          indices.push( d );
-
-        } else {
-
-          indices.push( a );
-          indices.push( b );
-          indices.push( c );
-          indices.push( b );
-          indices.push( d );
-          indices.push( c );
-
-        }
+        if ( needsFlip ) indices.push( a, c, b, b, c, d );
+        else indices.push( a, b, c, b, d, c );
 
       }
 
@@ -410,25 +305,8 @@ function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
         var c = cEnd + radiusSegments + u * rs1;
         var d = cEnd + ( u != end ? radiusSegments + ( u + 1 ) * rs1 : cornerVertNumber - 1 );
 
-        if ( ! needsFlip[ i ] ) {
-
-          indices.push( a );
-          indices.push( b );
-          indices.push( c );
-          indices.push( b );
-          indices.push( d );
-          indices.push( c );
-
-        } else {
-
-          indices.push( a );
-          indices.push( c );
-          indices.push( b );
-          indices.push( b );
-          indices.push( c );
-          indices.push( d );
-
-        }
+        if ( ! needsFlip[ i ] ) indices.push( a, c, b, d, c );
+        else indices.push( a, c, b, b, c, d );
 
       }
 
@@ -440,19 +318,8 @@ function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
 
   for ( var i = 0; i < vertexPool.length; i ++ ) {
 
-    positions.setXYZ(
-      index,
-      vertexPool[ i ].x,
-      vertexPool[ i ].y,
-      vertexPool[ i ].z
-    );
-
-    normals.setXYZ(
-      index,
-      normalPool[ i ].x,
-      normalPool[ i ].y,
-      normalPool[ i ].z
-    );
+    positions.setXYZ( index, vertexPool[ i ].x, vertexPool[ i ].y, vertexPool[ i ].z );
+    normals.setXYZ( index, normalPool[ i ].x, normalPool[ i ].y, normalPool[ i ].z );
 
     index ++;
 

@@ -1,11 +1,16 @@
-class World {
+import { Animation } from './plugins/Animation.js';
+
+class World extends Animation {
 
 	constructor( game ) {
+
+		super( true );
+
+		this.name = 'World';
 
 		this.game = game;
 
 		this.container = this.game.dom.game;
-
 		this.scene = new THREE.Scene();
 
 		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
@@ -22,16 +27,11 @@ class World {
 		this.resize();
 		window.addEventListener( 'resize', () => this.resize(), false );
 
-		this.render = this.render.bind( this );
-		requestAnimationFrame( this.render );
-
 	}
 
-	render() {
+	update() {
 
 		this.renderer.render( this.scene, this.camera );
-
-		requestAnimationFrame( this.render );
 
 	}
 

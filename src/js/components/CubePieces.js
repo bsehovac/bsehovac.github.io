@@ -13,7 +13,7 @@ function CubePieces( size, positions, colors ) {
 
 	const pieceMesh = new THREE.Mesh(
 		new RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
-		new THREE.MeshStandardMaterial( {
+		new THREE.MeshStandardMaterial( { // add MeshLambertMaterial - it has faster performance
 			color: colors.piece,
 			side: THREE.FrontSide,
 			roughness: 1,
@@ -22,7 +22,7 @@ function CubePieces( size, positions, colors ) {
 	);
 
 	const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
-	const edgeMaterial = new THREE.MeshStandardMaterial( {
+	const edgeMaterial = new THREE.MeshStandardMaterial( { // add MeshLambertMaterial - it has faster performance
 		color: colors.piece,
 		side: THREE.FrontSide,
 		roughness: 1,

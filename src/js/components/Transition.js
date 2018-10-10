@@ -1,3 +1,5 @@
+import { Tween, Easing } from './Tween.js';
+
 class Transition {
 
   constructor( game ) {
@@ -35,18 +37,20 @@ class Transition {
 
   cube( show ) {
 
-    if ( typeof this.tweens.cube !== 'undefined' ) this.tweens.cube.kill();
+    if ( typeof this.tweens.cube !== 'undefined' ) this.tweens.cube.stop();
 
     if ( show ) {
 
       if ( ! this.initialized ) this.initialize();
 
-      this.tweens.cube = new CUBE.Tween( {
-        duration: 3000, easing: CUBE.Easing.Elastic.Out( 0.5, 0.5 ),
+      this.tweens.cube = new Tween( {
+        name: 'Show Cube',
+        duration: 3000,
+        easing: Easing.Elastic.Out( 0.5, 0.5 ),
         onUpdate: tween => {
 
-          this.game.cube.animator.position.y = ( 1 - tween.progress ) * 4;
-          this.game.cube.animator.rotation.x = ( 1 - tween.progress ) * - Math.PI / 3
+          this.game.cube.animator.position.y = ( 1 - tween.value ) * 4;
+          this.game.cube.animator.rotation.x = ( 1 - tween.value ) * - Math.PI / 3
 
         }
       } );
@@ -83,12 +87,14 @@ class Transition {
 
       }
 
-      this.tweens.cube = new CUBE.Tween( {
-        duration: 2000, easing: CUBE.Easing.Back.Out( 0.5 ),
+      this.tweens.cube = new Tween( {
+        name: 'Hide Cube',
+        duration: 2000,
+        easing: Easing.Back.Out( 0.5 ),
         onUpdate: tween => {
 
-          this.game.cube.animator.position.y = tween.progress * 4;
-          this.game.cube.animator.rotation.x = tween.progress * Math.PI / 3
+          this.game.cube.animator.position.y = tween.value * 4;
+          this.game.cube.animator.rotation.x = tween.value * Math.PI / 3
 
         }
       } );
@@ -99,16 +105,17 @@ class Transition {
 
   float() {
 
-    if ( typeof this.tweens.float !== 'undefined' ) this.tweens.float.kill();
+    if ( typeof this.tweens.float !== 'undefined' ) this.tweens.float.stop();
 
-    this.tweens.float = new CUBE.Tween( {
+    this.tweens.float = new Tween( {
+      name: 'Float Cube',
       duration: 1500,
-      easing: CUBE.Easing.Sine.InOut(),
+      easing: Easing.Sine.InOut(),
       yoyo: true,
       onUpdate: tween => {
 
-        this.game.cube.holder.position.y = - 0.02 + tween.progress * 0.04;
-        this.game.cube.holder.rotation.x = 0.005 - tween.progress * 0.01;
+        this.game.cube.holder.position.y = - 0.02 + tween.value * 0.04;
+        this.game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
         this.game.cube.holder.rotation.z = - this.game.cube.holder.rotation.x;
         this.game.cube.holder.rotation.y = this.game.cube.holder.rotation.x;
 
@@ -123,9 +130,10 @@ class Transition {
     const cubeY = ( game ) ? -0.3 : this.data.cubeY;
     const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
     const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
-    const easing = CUBE.Easing.Power.InOut( ( time > 0 ) ? 2 : 3 );
+    const easing = Easing.Power.InOut( ( time > 0 ) ? 2 : 3 );
 
-    this.tweens.zoom = new CUBE.Tween( {
+    this.tweens.zoom = new Tween( {
+      name: 'Zooming Cube',
       target: this.game.world.camera,
       duration: duration,
       easing: easing,
@@ -133,7 +141,8 @@ class Transition {
       onUpdate: () => { this.game.world.camera.updateProjectionMatrix(); },
     } );
 
-    this.tweens.rotate = new CUBE.Tween( {
+    this.tweens.rotate = new Tween( {
+      name: 'Rotating Cube',
       target: this.game.cube.animator.rotation,
       duration: duration,
       easing: easing,
@@ -141,7 +150,7 @@ class Transition {
       onComplete: () => { this.game.cube.animator.rotation.y = 0; callback(); },
     } );
 
-    // this.tweens.cubeY = new CUBE.Tween( {
+    // this.tweens.cubeY = new Tween( {
     //   target: this.data,
     //   duration: duration,
     //   easing: easing,
@@ -159,13 +168,13 @@ class Transition {
   preferences( show ) {
 
     if ( typeof this.tweens.range === 'undefined' ) this.tweens.range = [];  
-    else this.tweens.range.forEach( tween => { tween.kill(); tween = null; } )
+    else this.tweens.range.forEach( tween => { tween.stop(); tween = null; } )
 
     let tweenId = -1;
     let listMax = 0;
 
     const ranges = this.game.dom.prefs.querySelectorAll( '.range' );
-    const easing = show ? CUBE.Easing.Power.Out(2) : CUBE.Easing.Power.Out(1);
+    const easing = show ? Easing.Power.Out(2) : Easing.Power.Out(1);
 
     ranges.forEach( ( range, rangeIndex ) => {
 
@@ -181,14 +190,14 @@ class Transition {
       handle.style.opacity = show ? 0 : 1;
       handle.style.pointerEvents = show ? 'all' : 'none';
 
-      this.tweens.range[ tweenId++ ] = new CUBE.Tween( {
+      this.tweens.range[ tweenId++ ] = new Tween( {
         delay: show ? delay : delay,
         duration: 400,
         easing: easing,
         onUpdate: tween => {
 
-          const translate = show ? ( 1 - tween.progress ) : tween.progress;
-          const opacity = show ? tween.progress : ( 1 - tween.progress );
+          const translate = show ? ( 1 - tween.value ) : tween.value;
+          const opacity = show ? tween.value : ( 1 - tween.value );
 
           label.style.transform = `translate3d(0, ${translate}em, 0)`;
           label.style.opacity = opacity;
@@ -196,14 +205,14 @@ class Transition {
         }
       } );
 
-      this.tweens.range[ tweenId++ ] = new CUBE.Tween( {
+      this.tweens.range[ tweenId++ ] = new Tween( {
         delay: show ? delay + 100 : delay,
         duration: 400,
         easing: easing,
         onUpdate: tween => {
 
-          const translate = show ? ( 1 - tween.progress ) : tween.progress;
-          const scale = show ? tween.progress : ( 1 - tween.progress );
+          const translate = show ? ( 1 - tween.value ) : tween.value;
+          const scale = show ? tween.value : ( 1 - tween.value );
           const opacity = scale;
 
           track.style.transform = `translate3d(0, ${translate}em, 0) scale3d(${scale}, 1, 1)`;
@@ -212,13 +221,13 @@ class Transition {
         }
       } );
 
-      this.tweens.range[ tweenId++ ] = new CUBE.Tween( {
+      this.tweens.range[ tweenId++ ] = new Tween( {
         delay: show ? delay + 100 : delay,
         duration: 400,
         easing: easing,
         onUpdate: tween => {
 
-          const translate = show ? ( 1 - tween.progress ) : tween.progress;
+          const translate = show ? ( 1 - tween.value ) : tween.value;
           const opacity = 1 - translate;
           const scale = 0.5 + opacity * 0.5;
 
@@ -232,14 +241,14 @@ class Transition {
 
         listItem.style.opacity = show ? 0 : 1;
 
-        this.tweens.range[ tweenId++ ] = new CUBE.Tween( {
+        this.tweens.range[ tweenId++ ] = new Tween( {
           delay: show ? delay + 200 + labelIndex * 50 : delay,
           duration: 400,
           easing: easing,
           onUpdate: tween => {
 
-            const translate = show ? ( 1 - tween.progress ) : tween.progress;
-            const opacity = show ? tween.progress : ( 1 - tween.progress );
+            const translate = show ? ( 1 - tween.value ) : tween.value;
+            const opacity = show ? tween.value : ( 1 - tween.value );
 
             listItem.style.transform = `translate3d(0, ${translate}em, 0)`;
             listItem.style.opacity = opacity;
@@ -276,9 +285,10 @@ class Transition {
 
     const note = this.game.dom.note;
 
-    this.tweens.title[ letters.length ] = new CUBE.Tween( {
+    this.tweens.title[ letters.length ] = new Tween( {
+      name: 'Blinking text',
       target: note.style,
-      easing: CUBE.Easing.Sine.InOut(),
+      easing: Easing.Sine.InOut(),
       duration: show ? 800 : 400,
       yoyo: show ? true : null,
       from: { opacity: show ? 0 : ( parseFloat( getComputedStyle( note ).opacity ) ) },
@@ -328,22 +338,22 @@ class Transition {
   flipLetters( type, letters, show ) {
 
     if ( typeof this.tweens[ type ] === 'undefined' ) this.tweens[ type ] = [];  
-    else this.tweens[ type ].forEach( tween => { tween.kill(); tween = null; } )
+    else this.tweens[ type ].forEach( tween => { tween.stop(); tween = null; } )
 
     letters.forEach( ( letter, index ) => {
 
       letter.style.opacity = show ? 0 : 1;
 
-      this.tweens[ type ][ index ] = new CUBE.Tween( {
-        easing: CUBE.Easing.Sine.Out(),
+      this.tweens[ type ][ index ] = new Tween( {
+        easing: Easing.Sine.Out(),
         duration: show ? 800 : 400,
         delay: index * 50,
         onUpdate: tween => {
 
-          const rotation = show ? ( 1 - tween.progress ) * -80 : tween.progress * 80;
+          const rotation = show ? ( 1 - tween.value ) * -80 : tween.value * 80;
 
           letter.style.transform = `rotate3d(0, 1, 0, ${rotation}deg)`;
-          letter.style.opacity = show ? tween.progress : ( 1 - tween.progress );
+          letter.style.opacity = show ? tween.value : ( 1 - tween.value );
 
         },
       } );

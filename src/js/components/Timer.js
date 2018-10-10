@@ -1,6 +1,12 @@
-class Timer {
+import { Animation } from './plugins/Animation.js';
+
+class Timer extends Animation {
 
 	constructor( game ) {
+
+		super( false );
+
+		this.name = 'Timer';
 
 		this.game = game;
 
@@ -8,8 +14,6 @@ class Timer {
 		this.currentTime = 0;
 		this.converted = '0:00';
 		this.animate = null;
-
-		this.update = this.update.bind( this );
 
 	}
 
@@ -19,7 +23,7 @@ class Timer {
 		this.deltaTime = 0;
 		this.converted = this.convert();
 
-		this.animate = requestAnimationFrame( this.update );
+		super.start();
 
 	}
 
@@ -29,7 +33,7 @@ class Timer {
 		this.deltaTime = this.currentTime - this.startTime;
 		this.convert();
 
-		cancelAnimationFrame( this.animate );
+		super.stop();
 
 		return { time: this.converted, millis: this.deltaTime };
 
@@ -49,8 +53,6 @@ class Timer {
 			this.setText();
 
 		}
-
-		this.animate = requestAnimationFrame( this.update );
 
 	}
 

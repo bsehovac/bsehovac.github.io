@@ -1,9 +1,10 @@
+import { Tween, Easing } from './Tween.js';
+import { Draggable } from './plugins/Draggable.js';
+
 const STILL = 0;
 const PREPARING = 1;
 const ROTATING = 2
 const ANIMATING = 3;
-
-import { Draggable } from './Draggable.js';
 
 class Controls {
 
@@ -231,14 +232,14 @@ class Controls {
     const bounce = scramble ? this._scrambleBounce : this._flipBounce;
     const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
 
-    this.rotationTween = new CUBE.Tween( {
+    this.rotationTween = new Tween( {
       duration:scramble ? this._scrambleSpeed : this._flipSpeed,
-      easing: CUBE.Easing.Back.Out( bounce ),
+      easing: Easing.Back.Out( bounce ),
       onUpdate: tween => {
 
         let deltaAngle = tween.delta * rotation;
         this.group.rotateOnAxis( this._flipAxis, deltaAngle );
-        bounceCube( tween.progress, deltaAngle, rotation );
+        bounceCube( tween.value, deltaAngle, rotation );
 
       },
       onComplete: () => {
@@ -282,9 +283,9 @@ class Controls {
 
   rotateCube( rotation, callback ) {
 
-    this.rotationTween = new CUBE.Tween( {
+    this.rotationTween = new Tween( {
       duration: this._flipSpeed,
-      easing: CUBE.Easing.Back.Out( this._flipBounce ),
+      easing: Easing.Back.Out( this._flipBounce ),
       onUpdate: tween => {
 
         this.edges.rotateOnWorldAxis( this._flipAxis, tween.delta * rotation );

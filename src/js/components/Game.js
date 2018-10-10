@@ -2,6 +2,14 @@ class Game {
 
   constructor() {
 
+    /*
+    ███████ ███████ ████████     ██       █████  ███    ███ ██████  ███████ ██████  ████████ 
+    ██      ██         ██        ██      ██   ██ ████  ████ ██   ██ ██      ██   ██    ██    
+    ███████ █████      ██        ██      ███████ ██ ████ ██ ██████  █████   ██████     ██    
+         ██ ██         ██        ██      ██   ██ ██  ██  ██ ██   ██ ██      ██   ██    ██    
+    ███████ ███████    ██        ███████ ██   ██ ██      ██ ██████  ███████ ██   ██    ██        
+    */
+
     this.dom = {
       game: document.querySelector( '.ui__game' ),
       texts: document.querySelector( '.ui__texts' ),
@@ -16,45 +24,45 @@ class Game {
       }
     };
 
-    this.world = new CUBE.World( this );
-    this.confetti = new CUBE.Confetti( this );
-
-    // this.world.camera.position.set( 0, 0, -15 )
-    // this.world.camera.lookAt( 0, 0, 0 )
-
-    let active = false;
-
-    this.dom.game.onclick = e => {
-
-      active = ! active;
-
-      if ( active ) game.confetti.start();
-      else game.confetti.stop();
-
-    }
-
     // this.world = new CUBE.World( this );
-    // this.cube = new CUBE.Cube( this );
-    // this.controls = new CUBE.Controls( this );
-    // this.scrambler = new CUBE.Scrambler( this );
-    // this.transition = new CUBE.Transition( this );
-    // this.audio = new CUBE.Audio( this );
-    // this.timer = new CUBE.Timer( this );
-    // this.preferences = new CUBE.Preferences( this );
-    // this.icons = new CUBE.Icons();
+    // this.confetti = new CUBE.Confetti( this );
 
-    // this.initStart();
-    // // this.initPause();
-    // this.initPrefs();
+    // // this.world.camera.position.set( 0, 0, -15 )
+    // // this.world.camera.lookAt( 0, 0, 0 )
 
-    // this.saved = this.cube.loadState();
-    // this.playing = false;
+    // let active = false;
 
-    // this.transition.float();
-    // this.transition.cube( true );
+    // this.dom.game.onclick = e => {
 
-    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
-    // this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
+    //   active = ! active;
+
+    //   if ( active ) game.confetti.start();
+    //   else game.confetti.stop();
+
+    // }
+
+    this.world = new CUBE.World( this );
+    this.cube = new CUBE.Cube( this );
+    this.controls = new CUBE.Controls( this );
+    this.scrambler = new CUBE.Scrambler( this );
+    this.transition = new CUBE.Transition( this );
+    this.audio = new CUBE.Audio( this );
+    this.timer = new CUBE.Timer( this );
+    this.preferences = new CUBE.Preferences( this );
+    this.icons = new CUBE.Icons();
+
+    this.initStart();
+    // this.initPause();
+    this.initPrefs();
+
+    this.saved = this.cube.loadState();
+    this.playing = false;
+
+    this.transition.float();
+    this.transition.cube( true );
+
+    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
+    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
   }
 

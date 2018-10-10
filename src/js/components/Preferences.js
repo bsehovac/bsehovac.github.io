@@ -1,3 +1,5 @@
+import { Range } from './plugins/Range.js';
+
 class Preferences {
 
   constructor( game ) {
@@ -8,7 +10,7 @@ class Preferences {
 
     this.elements = {
 
-      speed: new CUBE.Range( 'speed', {
+      speed: new Range( 'speed', {
         value: this.game.controls._flipSpeed,
         range: [ 300, 100 ],
         onComplete: value => {
@@ -22,7 +24,7 @@ class Preferences {
         },
       } ),
 
-      scramble: new CUBE.Range( 'scramble', {
+      scramble: new Range( 'scramble', {
         value: this.game.scrambler.scrambleLength,
         range: [ 20, 30 ],
         step: 5,
@@ -34,7 +36,7 @@ class Preferences {
         },
       } ),
 
-      fov: new CUBE.Range( 'fov', {
+      fov: new Range( 'fov', {
         value: this.game.world.fov,
         range: [ 2, 45 ],
         onUpdate: value => {
@@ -50,7 +52,7 @@ class Preferences {
         },
       } ),
 
-      theme: new CUBE.Range( 'theme', {
+      theme: new Range( 'theme', {
         value: 0,
         range: [ 0, 1 ],
         step: 1,
