@@ -1,9 +1,10 @@
+import { Tween, Easing } from './Tween.js';
+import { Draggable } from './plugins/Draggable.js';
+
 const STILL = 0;
 const PREPARING = 1;
 const ROTATING = 2
 const ANIMATING = 3;
-
-import { Draggable } from './Draggable.js';
 
 class Controls {
 
@@ -42,7 +43,6 @@ class Controls {
     this._momentum = [];
     this._moves = [];
 
-    this.disabled = false;
     this._scramble = null;
     this._state = STILL;
 
@@ -50,13 +50,25 @@ class Controls {
 
   }
 
+  enable() {
+
+    this._draggable.enable();
+
+  }
+
+  disable() {
+
+    this._draggable.disable();
+
+  }
+
   initDraggable() {
 
-    this.draggable = new Draggable( this.game.dom.game );
+    this._draggable = new Draggable( this.game.dom.game );
 
-    this.draggable.onDragStart = position => {
+    this._draggable.onDragStart = position => {
 
-      if ( this.disabled || this._scramble !== null ) return;
+      if ( this._scramble !== null ) return;
       if ( this._state === PREPARING || this._state === ROTATING ) return;
 
       this._gettingDrag = this._state === ANIMATING;
@@ -98,9 +110,9 @@ class Controls {
 
     };
 
-    this.draggable.onDragMove = position => {
+    this._draggable.onDragMove = position => {
 
-      if ( this.disabled || this._scramble !== null ) return;
+      if ( this._scramble !== null ) return;
       if ( this._state === STILL || ( this._state === ANIMATING && this._gettingDrag === false ) ) return;
 
       const planeIntersect = this.getIntersect( position.current, this.helper, false );
@@ -166,9 +178,9 @@ class Controls {
 
     };
 
-    this.draggable.onDragEnd = position => {
+    this._draggable.onDragEnd = position => {
 
-      if ( this.disabled || this._scramble !== null ) return;
+      if ( this._scramble !== null ) return;
       if ( this._state !== ROTATING ) {
 
         this._gettingDrag = false;
@@ -220,14 +232,14 @@ class Controls {
     const bounce = scramble ? this._scrambleBounce : this._flipBounce;
     const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
 
-    this.rotationTween = new CUBE.Tween( {
+    this.rotationTween = new Tween( {
       duration:scramble ? this._scrambleSpeed : this._flipSpeed,
-      easing: CUBE.Easing.Back.Out( bounce ),
+      easing: Easing.Back.Out( bounce ),
       onUpdate: tween => {
 
         let deltaAngle = tween.delta * rotation;
         this.group.rotateOnAxis( this._flipAxis, deltaAngle );
-        bounceCube( tween.progress, deltaAngle, rotation );
+        bounceCube( tween.value, deltaAngle, rotation );
 
       },
       onComplete: () => {
@@ -271,9 +283,9 @@ class Controls {
 
   rotateCube( rotation, callback ) {
 
-    this.rotationTween = new CUBE.Tween( {
+    this.rotationTween = new Tween( {
       duration: this._flipSpeed,
-      easing: CUBE.Easing.Back.Out( this._flipBounce ),
+      easing: Easing.Back.Out( this._flipBounce ),
       onUpdate: tween => {
 
         this.edges.rotateOnWorldAxis( this._flipAxis, tween.delta * rotation );
@@ -487,7 +499,7 @@ class Controls {
   getIntersect( position, object, multiple ) {
 
     this.raycaster.setFromCamera(
-      this.draggable.convertPosition( position.clone() ),
+      this._draggable.convertPosition( position.clone() ),
       this.game.world.camera
     );
 

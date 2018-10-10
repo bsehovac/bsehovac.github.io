@@ -1,3 +1,29 @@
+/*
+ ██████ ██   ██ ███████  ██████ ██   ██     ████████ ██ ███    ███ ███████ ██████  
+██      ██   ██ ██      ██      ██  ██         ██    ██ ████  ████ ██      ██   ██ 
+██      ███████ █████   ██      █████          ██    ██ ██ ████ ██ █████   ██████  
+██      ██   ██ ██      ██      ██  ██         ██    ██ ██  ██  ██ ██      ██   ██ 
+ ██████ ██   ██ ███████  ██████ ██   ██        ██    ██ ██      ██ ███████ ██   ██ 
+
+███    ██  ██████  ████████      ██████  ██ ██    ██ ██ ███    ██  ██████  
+████   ██ ██    ██    ██        ██       ██ ██    ██ ██ ████   ██ ██       
+██ ██  ██ ██    ██    ██        ██   ███ ██ ██    ██ ██ ██ ██  ██ ██   ███ 
+██  ██ ██ ██    ██    ██        ██    ██ ██  ██  ██  ██ ██  ██ ██ ██    ██ 
+██   ████  ██████     ██         ██████  ██   ████   ██ ██   ████  ██████  
+
+██████  ███████  █████  ██          ██    ██  █████  ██      ██    ██ ███████ 
+██   ██ ██      ██   ██ ██          ██    ██ ██   ██ ██      ██    ██ ██      
+██████  █████   ███████ ██          ██    ██ ███████ ██      ██    ██ █████   
+██   ██ ██      ██   ██ ██           ██  ██  ██   ██ ██      ██    ██ ██      
+██   ██ ███████ ██   ██ ███████       ████   ██   ██ ███████  ██████  ███████ 
+
+██████  ███████ ███████  ██████  ██████  ███████     ███████ ████████  █████  ██████  ████████ ██ ███    ██  ██████       ██████   █████  ███    ███ ███████ 
+██   ██ ██      ██      ██    ██ ██   ██ ██          ██         ██    ██   ██ ██   ██    ██    ██ ████   ██ ██           ██       ██   ██ ████  ████ ██      
+██████  █████   █████   ██    ██ ██████  █████       ███████    ██    ███████ ██████     ██    ██ ██ ██  ██ ██   ███     ██   ███ ███████ ██ ████ ██ █████   
+██   ██ ██      ██      ██    ██ ██   ██ ██               ██    ██    ██   ██ ██   ██    ██    ██ ██  ██ ██ ██    ██     ██    ██ ██   ██ ██  ██  ██ ██      
+██████  ███████ ██       ██████  ██   ██ ███████     ███████    ██    ██   ██ ██   ██    ██    ██ ██   ████  ██████       ██████  ██   ██ ██      ██ ███████ 
+*/
+
 class Game {
 
   constructor() {
@@ -13,6 +39,7 @@ class Game {
 
       buttons: {
         settings: document.querySelector( '.btn--settings' ),
+        home: document.querySelector( '.btn--home' ),
       }
     };
 
@@ -25,40 +52,23 @@ class Game {
     this.timer = new CUBE.Timer( this );
     this.preferences = new CUBE.Preferences( this );
     this.icons = new CUBE.Icons();
+    // this.confetti = new CUBE.Confetti( this );
 
     this.initStart();
-    // this.initPause();
+    this.initPause();
     this.initPrefs();
 
     this.saved = this.cube.loadState();
     this.playing = false;
 
-    this.transition.float();
+    this.transition.initialize();
     this.transition.cube( true );
+    this.transition.float();
 
     this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
     this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
 
   }
-
-  // initPause() {
-
-  //   this.dom.buttons.home.onclick = e => {
-
-  //     e.stopPropagation();
-  //     if ( !this.playing ) return;
-
-  //     this.playing = false;
-  //     this.controls.disabled = true;
-
-  //     this.transition.title( true );
-  //     setTimeout( () => this.transition.timer( false ), 500 );
-
-  //     this.transition.zoom( false, 0, () => {} );
-
-  //   }
-
-  // }
 
   initStart() {
 
@@ -76,7 +86,7 @@ class Game {
 
       }
 
-      if ( this.playing ) return;
+      if ( this.playing || this.transition.active > 0 ) return;
 
       const start = Date.now();
       let duration = 0;
@@ -90,13 +100,15 @@ class Game {
 
       }
 
-      this.transition.title( false, 0 );
-      this.transition.timer( true, 500 );
+      // AKO JE IGRA U PROGRESU ONDA OVAJ TIMEOUT ZA TIMER
+      // AKO SE SCRAMBLA POVECATI JOS TIMEOUT ZA TIMER DA GA POKAZE TEK POSLE SCRAMBLA
+      this.transition.title( false );
+      setTimeout( () => this.transition.timer( true ), 500 );
 
       this.transition.zoom( true, duration, () => {
 
         this.playing = true;
-        this.controls.disabled = false;
+        this.controls.enable();
         this.timer.start( this.saved );
         this.saved = true;
 
@@ -109,23 +121,43 @@ class Game {
 
   }
 
+  initPause() {
+
+    this.dom.buttons.home.onclick = () => {
+
+      if ( !this.playing ) return;
+
+      this.playing = false;
+      this.controls.disable();
+
+      this.transition.timer( false );
+      setTimeout( () => this.transition.title( true ), 500 );
+
+      this.transition.zoom( false, 0, () => {} );
+
+    }
+
+  }
+
   initPrefs() {
 
     const button = this.dom.buttons.settings;
 
     button.addEventListener( 'click', () => {
 
+      if ( this.transition.active > 0 ) return;
+
       button.classList.toggle( 'active' );
 
       if ( button.classList.contains( 'active' ) ) {
 
         this.transition.cube( false );
-        setTimeout( () => this.transition.preferences( true ), 300 );
+        setTimeout( () => this.transition.preferences( true ), 1000 );
 
       } else {
 
         this.transition.preferences( false )
-        this.transition.cube( true );
+        setTimeout( () => this.transition.cube( true ), 500 );
 
       }
 

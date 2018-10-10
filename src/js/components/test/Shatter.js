@@ -27,7 +27,7 @@ class Shatter {
 		const cube = shatter.cube;
 		const controls = shatter.controls;
 
-		controls.disabled = true;
+		controls.disable();
 
 		cube.pieces.forEach( piece => {
 
@@ -57,7 +57,7 @@ class Shatter {
 		const cube = shatter.cube;
 		const controls = shatter.controls;
 
-		controls.disabled = false;
+		controls.enable();
 
 		cube.pieces.forEach( piece => {
 

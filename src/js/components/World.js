@@ -1,11 +1,16 @@
-class World {
+import { Animation } from './plugins/Animation.js';
+
+class World extends Animation {
 
 	constructor( game ) {
+
+		super( true );
+
+		this.name = 'RENDERER';
 
 		this.game = game;
 
 		this.container = this.game.dom.game;
-
 		this.scene = new THREE.Scene();
 
 		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
@@ -18,19 +23,17 @@ class World {
 		this.fov = 10;
 
 		this.createLights();
+		this.onUpdate = () => {}; // <===--- FOR DEBUGGING
 
 		this.resize();
 		window.addEventListener( 'resize', () => this.resize(), false );
 
-		requestAnimationFrame( () => this.render() );
-
 	}
 
-	render() {
+	update() {
 
 		this.renderer.render( this.scene, this.camera );
-
-		requestAnimationFrame( () => this.render() );
+		this.onUpdate(); // <===--- FOR DEBUGGING
 
 	}
 
@@ -69,9 +72,9 @@ class World {
 
 		this.lights = {
 			holder:  new THREE.Object3D,
-			ambient: new THREE.AmbientLight( 0xffffff, 1.25 ),
-			front:   new THREE.DirectionalLight( 0xffffff, 0.65 ),
-			back:    new THREE.DirectionalLight( 0xffffff, 0.35 ),
+			ambient: new THREE.AmbientLight( 0xffffff, 0.69 ),
+			front:   new THREE.DirectionalLight( 0xffffff, 0.36 ),
+			back:    new THREE.DirectionalLight( 0xffffff, 0.19 ),
 		};
 
 		this.lights.front.position.set( 0.3, 1,  0.6 );
