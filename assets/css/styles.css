@@ -191,8 +191,7 @@ body {
 .ui {
   pointer-events: none;
   background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%);
-  color: #070d15;
-  opacity: 0.01 !important; }
+  color: #070d15; }
   .ui, .ui__game, .ui__texts, .ui__prefs, .ui__buttons {
     position: absolute;
     top: 0;

@@ -4,6 +4,7 @@
 	(factory((global.CUBE = {})));
 }(this, (function (exports) { 'use strict';
 
+	// <===--- FOR DEBUGGING BLOCK
 	const div = document.createElement( 'div' );
 	div.innerHTML = 'Animations: <i></i><div></div>';
 	document.body.appendChild( div );
@@ -11,115 +12,109 @@
 	div.classList.add( 'animation-test' );
 	div.style.cssText = 'position: fixed; z-index: 9999; left: 10px; top: 10px; font-size: 0.5em';
 	const animationInfo = div.querySelector( 'div' );
+	animationInfo.style.cssText = 'opacity: 0.5; font-size: 0.66em;';
+	// <===--- FOR DEBUGGING BLOCK
 
-	let Animation;
+	class AnimationEngine {
 
-	{
+	  constructor() {
 
-	  class AnimationEngine {
+	    this.ids = [];
+	    this.animations = {};
+	    this.update = this.update.bind( this );
+	    this.animating = false;
+	    this.animation = null;
+	    this.time = 0;
 
-	    constructor() {
+	    return this;
 
-	      this.ids = [];
-	      this.animations = {};
-	      this.update = this.update.bind( this );
-	      this.animating = false;
-	      this.animation = null;
-	      this.time = 0;
+	  }
 
-	      return this;
+	  update() {
 
-	    }
+	    let i = this.ids.length;
 
-	    update() {
+	    if ( i > 0 ) requestAnimationFrame( this.update );
+	    else this.animating = false;
 
-	      let i = this.ids.length;
+	    const now = performance.now();
+	    const delta = now - this.time;
+	    this.time = now;
 
-	      if ( i > 0 ) requestAnimationFrame( this.update );
-	      else this.animating = false;
+	    animationCount.innerHTML = i; // <===--- FOR DEBUGGING
+	    animationInfo.innerHTML = ''; // <===--- FOR DEBUGGING
 
-	      const now = performance.now();
-	      const delta = now - this.time;
-	      this.time = now;
+	    while ( i-- ) {
 
-	      animationCount.innerHTML = i; // <===--- FOR DEBUGGING
-	      animationInfo.innerHTML = ''; // <===--- FOR DEBUGGING
-
-	      while ( i-- ) {
-
-	        animationInfo.innerHTML += this.animations[ this.ids[ i ] ].name + '<br>'; // <===--- FOR DEBUGGING
-	        this.animations[ this.ids[ i ] ].update( delta );
-
-	      }
-
-	    }
-
-	    add( animation ) {
-
-	      Object.assign( this.animations, {
-
-	        [ animation.id ]: animation
-
-	      } );
-
-	      this.ids.push( animation.id );
-
-	      if ( ! this.animating ) {
-
-	        requestAnimationFrame( this.update );
-	        this.time = performance.now();
-	        this.animating = true;
-
-	      }
-
-	    }
-
-	    remove( animation ) {
-
-	      const index = this.ids.indexOf( animation.id );
-
-	      if ( index < 0 ) return;
-
-	      this.ids.splice( index, 1 );
-
-	      // this.animations[ animation.id ].complete();
-
-	      delete this.animations[ animation.id ];
+	      animationInfo.innerHTML += this.animations[ this.ids[ i ] ].name + '<br>'; // <===--- FOR DEBUGGING
+	      this.animations[ this.ids[ i ] ].update( delta );
 
 	    }
 
 	  }
 
-	  const animationEngine = new AnimationEngine();
+	  add( animation ) {
 
-	  let uniqueID = 0;
+	    Object.assign( this.animations, {
 
-	  Animation = class {
+	      [ animation.id ]: animation
 
-	    constructor( start ) {
+	    } );
 
-	      this.id = uniqueID ++;
-	      this.update = this.update.bind( this );
+	    this.ids.push( animation.id );
 
-	      if ( start === true ) this.start();
+	    if ( ! this.animating ) {
 
-	    }
-
-	    start() {
-
-	      animationEngine.add( this );
+	      requestAnimationFrame( this.update );
+	      this.time = performance.now();
+	      this.animating = true;
 
 	    }
 
-	    stop() {
+	  }
 
-	      animationEngine.remove( this );
+	  remove( animation ) {
 
-	    }
+	    const index = this.ids.indexOf( animation.id );
 
-	    update( delta ) {} // those should be extended
+	    if ( index < 0 ) return;
 
-	  };
+	    this.ids.splice( index, 1 );
+
+	    delete this.animations[ animation.id ];
+
+	  }
+
+	}
+
+	const animationEngine = new AnimationEngine();
+
+	let uniqueID = 0;
+
+	class Animation {
+
+	  constructor( start ) {
+
+	    this.id = uniqueID ++;
+	    this.update = this.update.bind( this );
+
+	    if ( start === true ) this.start();
+
+	  }
+
+	  start() {
+
+	    animationEngine.add( this );
+
+	  }
+
+	  stop() {
+
+	    animationEngine.remove( this );
+
+	  }
+
+	  update( delta ) {}
 
 	}
 
@@ -129,7 +124,7 @@
 
 			super( true );
 
-			this.name = 'World';
+			this.name = 'RENDERER';
 
 			this.game = game;
 
@@ -146,6 +141,7 @@
 			this.fov = 10;
 
 			this.createLights();
+			this.onUpdate = () => {}; // <===--- FOR DEBUGGING
 
 			this.resize();
 			window.addEventListener( 'resize', () => this.resize(), false );
@@ -155,6 +151,7 @@
 		update() {
 
 			this.renderer.render( this.scene, this.camera );
+			this.onUpdate(); // <===--- FOR DEBUGGING
 
 		}
 
@@ -193,9 +190,9 @@
 
 			this.lights = {
 				holder:  new THREE.Object3D,
-				ambient: new THREE.AmbientLight( 0xffffff, 1.25 ),
-				front:   new THREE.DirectionalLight( 0xffffff, 0.65 ),
-				back:    new THREE.DirectionalLight( 0xffffff, 0.35 ),
+				ambient: new THREE.AmbientLight( 0xffffff, 0.69 ),
+				front:   new THREE.DirectionalLight( 0xffffff, 0.36 ),
+				back:    new THREE.DirectionalLight( 0xffffff, 0.19 ),
 			};
 
 			this.lights.front.position.set( 0.3, 1,  0.6 );
@@ -251,11 +248,13 @@
 	    vertex = new THREE.Vector3(),
 	    vertexPool = [],
 	    normalPool = [],
-	    indices = [];
+	    indices = []
+	  ;
 
 	  var
 	    lastVertex = rs1 * radiusSegments,
-	    cornerVertNumber = rs1 * radiusSegments + 1;
+	    cornerVertNumber = rs1 * radiusSegments + 1
+	  ;
 
 	  doVertices();
 	  doFaces();
@@ -350,7 +349,16 @@
 
 	  function doCorners() {
 
-	    var flips = [ true, false, true, false, false, true, false, true ];
+	    var flips = [
+	      true,
+	      false,
+	      true,
+	      false,
+	      false,
+	      true,
+	      false,
+	      true
+	    ];
 
 	    var lastRowOffset = rs1 * ( radiusSegments - 1 );
 
@@ -371,8 +379,27 @@
 	          var c = cornerOffset + r2 + u;
 	          var d = cornerOffset + r2 + u1;
 
-	          if ( ! flips[ i ] ) indices.push( a, b, c, b, d, c );
-	          else indices.push( a, c, b, b, c, d );
+	          if ( ! flips[ i ] ) {
+
+	            indices.push( a );
+	            indices.push( b );
+	            indices.push( c );
+
+	            indices.push( b );
+	            indices.push( d );
+	            indices.push( c );
+
+	          } else {
+
+	            indices.push( a );
+	            indices.push( c );
+	            indices.push( b );
+
+	            indices.push( b );
+	            indices.push( c );
+	            indices.push( d );
+
+	          }
 
 	        }
 
@@ -384,8 +411,19 @@
 	        var b = cornerOffset + lastRowOffset + u + 1;
 	        var c = cornerOffset + lastVertex;
 
-	        if ( ! flips[ i ] ) indices.push( a, b, c );
-	        else indices.push( a, c, b );
+	        if ( ! flips[ i ] ) {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+
+	        }
 
 	      }
 
@@ -400,42 +438,72 @@
 	    var c = lastVertex + cornerVertNumber * 2;
 	    var d = lastVertex + cornerVertNumber * 3;
 
-	    indices.push( a, b, c, a, c, d );
+	    indices.push( a );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( d );
 
 	    a = lastVertex + cornerVertNumber * 4;// + cornerVertNumber * 0;
 	    b = lastVertex + cornerVertNumber * 5;// * 1;
 	    c = lastVertex + cornerVertNumber * 6;
 	    d = lastVertex + cornerVertNumber * 7;
 
-	    indices.push( a, c, b, a, d, c );
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( a );
+	    indices.push( d );
+	    indices.push( c );
 
 	    a = 0;
 	    b = cornerVertNumber;
 	    c = cornerVertNumber * 4;
 	    d = cornerVertNumber * 5;
 
-	    indices.push( a, c, b, b, c, d );
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( d );
 
 	    a = cornerVertNumber * 2;
 	    b = cornerVertNumber * 3;
 	    c = cornerVertNumber * 6;
 	    d = cornerVertNumber * 7;
 
-	    indices.push( a, c, b, b, c, d );
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( d );
 
 	    a = radiusSegments;
 	    b = radiusSegments + cornerVertNumber * 3;
 	    c = radiusSegments + cornerVertNumber * 4;
 	    d = radiusSegments + cornerVertNumber * 7;
 
-	    indices.push( a, b, c, b, d, c );
+	    indices.push( a );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( d );
+	    indices.push( c );
 
 	    a = radiusSegments + cornerVertNumber;
 	    b = radiusSegments + cornerVertNumber * 2;
 	    c = radiusSegments + cornerVertNumber * 5;
 	    d = radiusSegments + cornerVertNumber * 6;
 
-	    indices.push( a, c, b, b, c, d );
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( d );
 
 	  }
 
@@ -455,8 +523,25 @@
 	        var c = cRowOffset + u;
 	        var d = cRowOffset + u1;
 
-	        if ( ! needsFlip ) indices.push( a, b, c, b, d, c );
-	        else indices.push( a, c, b, b, c, d );
+	        if ( ! needsFlip ) {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( d );
+	          indices.push( c );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( d );
+
+	        }
 
 	      }
 
@@ -486,8 +571,25 @@
 	        var c = cEnd + urs1;
 	        var d = cEnd + u1rs1;
 
-	        if ( needsFlip ) indices.push( a, c, b, b, c, d );
-	        else indices.push( a, b, c, b, d, c );
+	        if ( needsFlip ) {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( d );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( d );
+	          indices.push( c );
+
+	        }
 
 	      }
 
@@ -516,8 +618,25 @@
 	        var c = cEnd + radiusSegments + u * rs1;
 	        var d = cEnd + ( u != end ? radiusSegments + ( u + 1 ) * rs1 : cornerVertNumber - 1 );
 
-	        if ( ! needsFlip[ i ] ) indices.push( a, c, b, d, c );
-	        else indices.push( a, c, b, b, c, d );
+	        if ( ! needsFlip[ i ] ) {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( d );
+	          indices.push( c );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( d );
+
+	        }
 
 	      }
 
@@ -529,8 +648,19 @@
 
 	  for ( var i = 0; i < vertexPool.length; i ++ ) {
 
-	    positions.setXYZ( index, vertexPool[ i ].x, vertexPool[ i ].y, vertexPool[ i ].z );
-	    normals.setXYZ( index, normalPool[ i ].x, normalPool[ i ].y, normalPool[ i ].z );
+	    positions.setXYZ(
+	      index,
+	      vertexPool[ i ].x,
+	      vertexPool[ i ].y,
+	      vertexPool[ i ].z
+	    );
+
+	    normals.setXYZ(
+	      index,
+	      normalPool[ i ].x,
+	      normalPool[ i ].y,
+	      normalPool[ i ].z
+	    );
 
 	    index ++;
 
@@ -557,21 +687,11 @@
 
 		const pieceMesh = new THREE.Mesh(
 			new RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
-			new THREE.MeshStandardMaterial( { // add MeshLambertMaterial - it has faster performance
-				color: colors.piece,
-				side: THREE.FrontSide,
-				roughness: 1,
-				metalness: 0.5,
-			} )
+			new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } )
 		);
 
 		const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
-		const edgeMaterial = new THREE.MeshStandardMaterial( { // add MeshLambertMaterial - it has faster performance
-			color: colors.piece,
-			side: THREE.FrontSide,
-			roughness: 1,
-			metalness: 0.5,
-		} );
+		const edgeMaterial = new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } );
 
 		positions.forEach( ( position, index ) => {
 
@@ -866,6 +986,14 @@
 
 	    },
 
+	    In: s => {
+
+	      s = s || 1.70158;
+
+	      return t => { return t * t * ( ( s + 1 ) * t - s ); };
+
+	    }
+
 	  },
 
 	  Elastic: {
@@ -905,14 +1033,14 @@
 	    this.delay = options.delay || false;
 	    this.yoyo = options.yoyo ? false : null;
 
-	    this.time = 0;
+	    // this.time = 0;
 	    this.progress = 0;
 	    this.value = 0;
 	    this.delta = 0;
 
 	    this.getFromTo( options );
 
-	    if ( this.delay ) setTimeout( () => super.start() );
+	    if ( this.delay ) setTimeout( () => super.start(), this.delay );
 	    else super.start();
 
 	    this.onUpdate( this );
@@ -923,11 +1051,15 @@
 
 	    const old = this.value * 1;
 
-	    this.time += delta;
+	    // this.time += delta;
 
-	    this.progress = ( this.yoyo === true )
-	      ? 1 - ( this.time / this.duration )
-	      : this.time / this.duration;
+	    this.progress += ( this.yoyo === true )
+	      ? - ( delta / this.duration )
+	      : delta / this.duration;
+
+	    // this.progress = ( this.yoyo === true )
+	    //   ? 1 - ( this.time / this.duration )
+	    //   : this.time / this.duration;
 
 	    this.value = this.easing( this.progress );
 	    this.delta = this.value - old;
@@ -935,28 +1067,30 @@
 	    if ( this.values !== null ) this.updateFromTo();
 
 	    if ( this.yoyo !== null ) this.updateYoyo();
-	    else if ( this.progress < 1 ) this.onUpdate( this );
+	    else if ( this.progress <= 1 ) this.onUpdate( this );
 	    else {
 
 	      this.progress = 1;
 	      this.value = 1;
-	      this.onUpdate( this );
 	      this.onComplete( this );
-	      super.stop();
+	      this.onUpdate( this );
+	      super.stop();      
 
-	    } 
+	    }
 
 	  }
 
 	  updateYoyo() {
 
-	    if ( this.progress >= 1 || this.progress <= 0 ) {
+	    if ( this.progress > 1 || this.progress < 0 ) {
 
 	      this.value = this.progress = ( this.progress > 1 ) ? 1 : 0;
 	      this.yoyo = ! this.yoyo;
-	      this.time = 0;
+	      // this.time = 0;
 
 	    }
+
+	    this.onUpdate( this );
 
 	  }
 
@@ -1009,6 +1143,10 @@
 	} );
 
 	*/
+
+	new tween({
+	  duration: 222
+	});
 
 	window.addEventListener( 'touchmove', () => {} );
 	document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
@@ -1846,6 +1984,16 @@
 
 	}
 
+	// <===--- FOR DEBUGGING BLOCK
+	const div$1 = document.createElement( 'div' );
+	div$1.innerHTML = 'Transitions: <i></i><div></div>';
+	document.body.appendChild( div$1 );
+	const transitionCount = div$1.querySelector( 'i' );
+	div$1.classList.add( 'animation-test' );
+	div$1.style.cssText = 'position: fixed; z-index: 9999; right: 10px; top: 10px; font-size: 0.5em';
+	const transitionInfo = div$1.querySelector( 'div' );
+	transitionInfo.style.cssText = 'opacity: 0.5; font-size: 0.66em;';
+
 	class Transition {
 
 	  constructor( game ) {
@@ -1853,12 +2001,19 @@
 	    this.game = game;
 
 	    this.tweens = {};
-
 	    this.durations = {};
-
 	    this.data = {};
-	    
-	    this.initialized = false;
+
+	    this.active = 0;
+	    this.activeNames = []; // <===--- FOR DEBUGGING
+
+	    this.game.world.onUpdate = () => { // <===--- FOR DEBUGGING
+	      transitionCount.innerHTML = this.active; // <===--- FOR DEBUGGING
+	      transitionInfo.innerHTML = ''; // <===--- FOR DEBUGGING
+	      this.activeNames.forEach( name => {// <===--- FOR DEBUGGING
+	        transitionInfo.innerHTML += name + '<br>'; // <===--- FOR DEBUGGING
+	      } );// <===--- FOR DEBUGGING
+	    }; // <===--- FOR DEBUGGING
 
 	  }
 
@@ -1873,79 +2028,53 @@
 	    this.game.controls.edges.position.y = this.data.cubeY;
 	    this.game.cube.animator.position.y = 4;
 	    this.game.cube.animator.rotation.x = - Math.PI / 3;
-	    // this.game.cube.shadow.material.opacity = 0;
 	    this.game.world.camera.zoom = this.data.cameraZoom;
 	    this.game.world.camera.updateProjectionMatrix();
-
-	    this.initialized = true;
 
 	  }
 
 	  cube( show ) {
 
+	    this.active++;
+	    this.activeNames.push( 'Show/Hide Cube' );
+
 	    if ( typeof this.tweens.cube !== 'undefined' ) this.tweens.cube.stop();
 
-	    if ( show ) {
+	    const currentY = this.game.cube.animator.position.y;
+	    const currentRotation = this.game.cube.animator.rotation.x;
 
-	      if ( ! this.initialized ) this.initialize();
+	    this.tweens.cube = new Tween( {
+	      name: 'Show/Hide Cube',
+	      duration: show ? 3000 : 1250,
+	      easing: show ? Easing.Elastic.Out( 0.8, 0.6 ) : Easing.Back.In( 1 ),
+	      onUpdate: tween => {
 
-	      this.tweens.cube = new Tween( {
-	        name: 'Show Cube',
-	        duration: 3000,
-	        easing: Easing.Elastic.Out( 0.5, 0.5 ),
-	        onUpdate: tween => {
+	        this.game.cube.animator.position.y = show
+	          ? ( 1 - tween.value ) * 4
+	          : currentY + tween.value * 4;
 
-	          this.game.cube.animator.position.y = ( 1 - tween.value ) * 4;
-	          this.game.cube.animator.rotation.x = ( 1 - tween.value ) * - Math.PI / 3;
-
-	        }
-	      } );
-
-	      if ( this.game.playing ) {
-
-	        setTimeout( () => this.timer( true ), 700 );
-
-	        setTimeout( () => {
-
-	          this.game.controls.enable();
-	          this.game.timer.start( true );
-
-	        }, 1500 );
-
-	      } else {
-
-	        setTimeout( () => this.title( true ), 700 );
+	        this.game.cube.animator.rotation.x = show
+	          ? ( 1 - tween.value ) * Math.PI / 3
+	          : currentRotation + tween.value * - Math.PI / 3;
 
 	      }
+	    } );
 
-	    } else {
+	    setTimeout( () => {
 
-	      this.game.controls.disable();
+	      if ( this.game.playing ) this.timer( show );
+	      else this.title( show );
 
-	      if ( this.game.playing ) {
+	    }, show ? 700 : 0 );
 
-	        this.game.timer.stop();
-	        this.timer( false );
+	    this.durations.cube = show ? 1500 : 1500;
 
-	      } else {
+	    setTimeout( () => {
 
-	        this.title( false );
+	      this.active--;
+	      this.activeNames.splice( this.activeNames.indexOf( 'Show/Hide Cube' ), 1 );
 
-	      }
-
-	      this.tweens.cube = new Tween( {
-	        name: 'Hide Cube',
-	        duration: 2000,
-	        easing: Easing.Back.Out( 0.5 ),
-	        onUpdate: tween => {
-
-	          this.game.cube.animator.position.y = tween.value * 4;
-	          this.game.cube.animator.rotation.x = tween.value * Math.PI / 3;
-
-	        }
-	      } );
-
-	    }
+	    }, this.durations.cube );
 
 	  }
 
@@ -1960,7 +2089,7 @@
 	      yoyo: true,
 	      onUpdate: tween => {
 
-	        this.game.cube.holder.position.y = - 0.02 + tween.value * 0.04;
+	        this.game.cube.holder.position.y = (- 0.02 + tween.value * 0.04); 
 	        this.game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
 	        this.game.cube.holder.rotation.z = - this.game.cube.holder.rotation.x;
 	        this.game.cube.holder.rotation.y = this.game.cube.holder.rotation.x;
@@ -1971,6 +2100,9 @@
 	  }
 
 	  zoom( game, time, callback ) {
+
+	    this.active++;
+	    this.activeNames.push( 'Zoom/Rotate Cube' );
 
 	    const zoom = ( game ) ? 1 : this.data.cameraZoom;
 	    const cubeY = ( game ) ? -0.3 : this.data.cubeY;
@@ -2009,9 +2141,21 @@
 	    //   },
 	    // } );
 
+	    this.durations.zoom = duration;
+
+	    setTimeout( () => {
+
+	      this.active--;
+	      this.activeNames.splice( this.activeNames.indexOf( 'Zoom/Rotate Cube' ), 1 );
+
+	    }, this.durations.zoom );
+
 	  }
 
 	  preferences( show ) {
+
+	    this.active++;
+	    this.activeNames.push( 'Preferences' );
 
 	    if ( typeof this.tweens.range === 'undefined' ) this.tweens.range = [];  
 	    else this.tweens.range.forEach( tween => { tween.stop(); tween = null; } );
@@ -2020,7 +2164,7 @@
 	    let listMax = 0;
 
 	    const ranges = this.game.dom.prefs.querySelectorAll( '.range' );
-	    const easing = show ? Easing.Power.Out(2) : Easing.Power.Out(1);
+	    const easing = show ? Easing.Power.Out(2) : Easing.Power.In(3);
 
 	    ranges.forEach( ( range, rangeIndex ) => {
 
@@ -2029,7 +2173,7 @@
 	      const handle = range.querySelector( '.range__handle' );
 	      const list = range.querySelectorAll( '.range__list div' );
 
-	      const delay = rangeIndex * 100;
+	      const delay = rangeIndex * ( show ? 120 : 100 );
 
 	      label.style.opacity = show ? 0 : 1;
 	      track.style.opacity = show ? 0 : 1;
@@ -2037,6 +2181,7 @@
 	      handle.style.pointerEvents = show ? 'all' : 'none';
 
 	      this.tweens.range[ tweenId++ ] = new Tween( {
+	        name: 'Range Label',
 	        delay: show ? delay : delay,
 	        duration: 400,
 	        easing: easing,
@@ -2052,6 +2197,7 @@
 	      } );
 
 	      this.tweens.range[ tweenId++ ] = new Tween( {
+	        name: 'Range Track',
 	        delay: show ? delay + 100 : delay,
 	        duration: 400,
 	        easing: easing,
@@ -2068,6 +2214,7 @@
 	      } );
 
 	      this.tweens.range[ tweenId++ ] = new Tween( {
+	        name: 'Range Handle',
 	        delay: show ? delay + 100 : delay,
 	        duration: 400,
 	        easing: easing,
@@ -2088,6 +2235,7 @@
 	        listItem.style.opacity = show ? 0 : 1;
 
 	        this.tweens.range[ tweenId++ ] = new Tween( {
+	          name: 'Range List',
 	          delay: show ? delay + 200 + labelIndex * 50 : delay,
 	          duration: 400,
 	          easing: easing,
@@ -2114,9 +2262,19 @@
 	      ? ( ( ranges.length - 1 ) * 100 ) + 200 + listMax * 50 + 400
 	      : ( ( ranges.length - 1 ) * 100 ) + 400;
 
+	    setTimeout( () => {
+
+	      this.active--;
+	      this.activeNames.splice( this.activeNames.indexOf( 'Preferences' ), 1 );
+
+	    }, this.durations.preferences );
+
 	  }
 
 	  title( show ) {
+
+	    this.active++;
+	    this.activeNames.push( 'Title' );
 
 	    const title = this.game.dom.title;
 
@@ -2141,23 +2299,52 @@
 	      to: { opacity: show ? 1 : 0 },
 	    } );
 
+	    setTimeout( () => {
+
+	      this.active--;
+	      this.activeNames.splice( this.activeNames.indexOf( 'Title' ), 1 );
+
+	    }, this.durations.title );
+
 	  }
 
 	  timer( show ) {
 
+	    this.active++;
+	    this.activeNames.push( 'Timer' );
+
+	    if ( ! show ) {
+
+	      this.game.controls.disable();
+	      this.game.timer.stop();
+
+	    }
+
 	    const timer = this.game.dom.timer;
 
 	    timer.style.opacity = 0;
-
+	    this.game.timer.convert();
 	    this.game.timer.setText();
 
 	    this.splitLetters( timer );
-
 	    const letters = timer.querySelectorAll( 'i' );
-
 	    this.flipLetters( 'timer', letters, show );
 
 	    timer.style.opacity = 1;
+
+	    if ( show && this.game.playing ) setTimeout( () => {
+
+	      this.game.controls.enable();
+	      this.game.timer.start( true );
+
+	    }, 1500 );
+
+	    setTimeout( () => {
+
+	      this.active--;
+	      this.activeNames.splice( this.activeNames.indexOf( 'Timer' ), 1 );
+
+	    }, this.durations.timer );
 
 	  }
 
@@ -2191,6 +2378,7 @@
 	      letter.style.opacity = show ? 0 : 1;
 
 	      this.tweens[ type ][ index ] = new Tween( {
+	        name: 'Flip Letters',
 	        easing: Easing.Sine.Out(),
 	        duration: show ? 800 : 400,
 	        delay: index * 50,
@@ -2209,7 +2397,7 @@
 	    this.durations[ type ] = ( letters.length - 1 ) * 50 + ( show ? 800 : 400 );
 
 	  }
-	  
+
 	}
 
 	class Timer extends Animation {
@@ -2285,17 +2473,35 @@
 
 	}
 
+	/*
+	 ██████ ██   ██ ███████  ██████ ██   ██     ████████ ██ ███    ███ ███████ ██████  
+	██      ██   ██ ██      ██      ██  ██         ██    ██ ████  ████ ██      ██   ██ 
+	██      ███████ █████   ██      █████          ██    ██ ██ ████ ██ █████   ██████  
+	██      ██   ██ ██      ██      ██  ██         ██    ██ ██  ██  ██ ██      ██   ██ 
+	 ██████ ██   ██ ███████  ██████ ██   ██        ██    ██ ██      ██ ███████ ██   ██ 
+
+	███    ██  ██████  ████████      ██████  ██ ██    ██ ██ ███    ██  ██████  
+	████   ██ ██    ██    ██        ██       ██ ██    ██ ██ ████   ██ ██       
+	██ ██  ██ ██    ██    ██        ██   ███ ██ ██    ██ ██ ██ ██  ██ ██   ███ 
+	██  ██ ██ ██    ██    ██        ██    ██ ██  ██  ██  ██ ██  ██ ██ ██    ██ 
+	██   ████  ██████     ██         ██████  ██   ████   ██ ██   ████  ██████  
+
+	██████  ███████  █████  ██          ██    ██  █████  ██      ██    ██ ███████ 
+	██   ██ ██      ██   ██ ██          ██    ██ ██   ██ ██      ██    ██ ██      
+	██████  █████   ███████ ██          ██    ██ ███████ ██      ██    ██ █████   
+	██   ██ ██      ██   ██ ██           ██  ██  ██   ██ ██      ██    ██ ██      
+	██   ██ ███████ ██   ██ ███████       ████   ██   ██ ███████  ██████  ███████ 
+
+	██████  ███████ ███████  ██████  ██████  ███████     ███████ ████████  █████  ██████  ████████ ██ ███    ██  ██████       ██████   █████  ███    ███ ███████ 
+	██   ██ ██      ██      ██    ██ ██   ██ ██          ██         ██    ██   ██ ██   ██    ██    ██ ████   ██ ██           ██       ██   ██ ████  ████ ██      
+	██████  █████   █████   ██    ██ ██████  █████       ███████    ██    ███████ ██████     ██    ██ ██ ██  ██ ██   ███     ██   ███ ███████ ██ ████ ██ █████   
+	██   ██ ██      ██      ██    ██ ██   ██ ██               ██    ██    ██   ██ ██   ██    ██    ██ ██  ██ ██ ██    ██     ██    ██ ██   ██ ██  ██  ██ ██      
+	██████  ███████ ██       ██████  ██   ██ ███████     ███████    ██    ██   ██ ██   ██    ██    ██ ██   ████  ██████       ██████  ██   ██ ██      ██ ███████ 
+	*/
+
 	class Game {
 
 	  constructor() {
-
-	    /*
-	    ███████ ███████ ████████     ██       █████  ███    ███ ██████  ███████ ██████  ████████ 
-	    ██      ██         ██        ██      ██   ██ ████  ████ ██   ██ ██      ██   ██    ██    
-	    ███████ █████      ██        ██      ███████ ██ ████ ██ ██████  █████   ██████     ██    
-	         ██ ██         ██        ██      ██   ██ ██  ██  ██ ██   ██ ██      ██   ██    ██    
-	    ███████ ███████    ██        ███████ ██   ██ ██      ██ ██████  ███████ ██   ██    ██        
-	    */
 
 	    this.dom = {
 	      game: document.querySelector( '.ui__game' ),
@@ -2308,25 +2514,9 @@
 
 	      buttons: {
 	        settings: document.querySelector( '.btn--settings' ),
+	        home: document.querySelector( '.btn--home' ),
 	      }
 	    };
-
-	    // this.world = new CUBE.World( this );
-	    // this.confetti = new CUBE.Confetti( this );
-
-	    // // this.world.camera.position.set( 0, 0, -15 )
-	    // // this.world.camera.lookAt( 0, 0, 0 )
-
-	    // let active = false;
-
-	    // this.dom.game.onclick = e => {
-
-	    //   active = ! active;
-
-	    //   if ( active ) game.confetti.start();
-	    //   else game.confetti.stop();
-
-	    // }
 
 	    this.world = new CUBE.World( this );
 	    this.cube = new CUBE.Cube( this );
@@ -2337,40 +2527,23 @@
 	    this.timer = new CUBE.Timer( this );
 	    this.preferences = new CUBE.Preferences( this );
 	    this.icons = new CUBE.Icons();
+	    // this.confetti = new CUBE.Confetti( this );
 
 	    this.initStart();
-	    // this.initPause();
+	    this.initPause();
 	    this.initPrefs();
 
 	    this.saved = this.cube.loadState();
 	    this.playing = false;
 
-	    this.transition.float();
+	    this.transition.initialize();
 	    this.transition.cube( true );
+	    this.transition.float();
 
 	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
 	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
 
 	  }
-
-	  // initPause() {
-
-	  //   this.dom.buttons.home.onclick = e => {
-
-	  //     e.stopPropagation();
-	  //     if ( !this.playing ) return;
-
-	  //     this.playing = false;
-	  //     this.controls.disable();
-
-	  //     this.transition.title( true );
-	  //     setTimeout( () => this.transition.timer( false ), 500 );
-
-	  //     this.transition.zoom( false, 0, () => {} );
-
-	  //   }
-
-	  // }
 
 	  initStart() {
 
@@ -2388,7 +2561,7 @@
 
 	      }
 
-	      if ( this.playing ) return;
+	      if ( this.playing || this.transition.active > 0 ) return;
 	      let duration = 0;
 
 	      if ( ! this.saved ) {
@@ -2400,8 +2573,10 @@
 
 	      }
 
-	      this.transition.title( false, 0 );
-	      this.transition.timer( true, 500 );
+	      // AKO JE IGRA U PROGRESU ONDA OVAJ TIMEOUT ZA TIMER
+	      // AKO SE SCRAMBLA POVECATI JOS TIMEOUT ZA TIMER DA GA POKAZE TEK POSLE SCRAMBLA
+	      this.transition.title( false );
+	      setTimeout( () => this.transition.timer( true ), 500 );
 
 	      this.transition.zoom( true, duration, () => {
 
@@ -2419,23 +2594,43 @@
 
 	  }
 
+	  initPause() {
+
+	    this.dom.buttons.home.onclick = () => {
+
+	      if ( !this.playing ) return;
+
+	      this.playing = false;
+	      this.controls.disable();
+
+	      this.transition.timer( false );
+	      setTimeout( () => this.transition.title( true ), 500 );
+
+	      this.transition.zoom( false, 0, () => {} );
+
+	    };
+
+	  }
+
 	  initPrefs() {
 
 	    const button = this.dom.buttons.settings;
 
 	    button.addEventListener( 'click', () => {
 
+	      if ( this.transition.active > 0 ) return;
+
 	      button.classList.toggle( 'active' );
 
 	      if ( button.classList.contains( 'active' ) ) {
 
 	        this.transition.cube( false );
-	        setTimeout( () => this.transition.preferences( true ), 300 );
+	        setTimeout( () => this.transition.preferences( true ), 1000 );
 
 	      } else {
 
 	        this.transition.preferences( false );
-	        this.transition.cube( true );
+	        setTimeout( () => this.transition.cube( true ), 500 );
 
 	      }
 
@@ -2865,7 +3060,7 @@
 	      radius: { min: 10, max: 15 },
 	      mass: { min: 0.05, max: 0.1 },
 	      gravity: -9.81,
-	      geometryScale: 0.0035, // used to scale in threejs world
+	      geometryScale: 0.01, // used to scale in threejs world
 	      positionScale: 0.3333, // used to scale in threejs world
 	      colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
 	    };

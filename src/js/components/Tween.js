@@ -18,14 +18,14 @@ class Tween extends Animation {
     this.delay = options.delay || false;
     this.yoyo = options.yoyo ? false : null;
 
-    this.time = 0;
+    // this.time = 0;
     this.progress = 0;
     this.value = 0;
     this.delta = 0;
 
     this.getFromTo( options );
 
-    if ( this.delay ) setTimeout( () => super.start() )
+    if ( this.delay ) setTimeout( () => super.start(), this.delay );
     else super.start();
 
     this.onUpdate( this );
@@ -36,11 +36,15 @@ class Tween extends Animation {
 
     const old = this.value * 1;
 
-    this.time += delta;
+    // this.time += delta;
 
-    this.progress = ( this.yoyo === true )
-      ? 1 - ( this.time / this.duration )
-      : this.time / this.duration;
+    this.progress += ( this.yoyo === true )
+      ? - ( delta / this.duration )
+      : delta / this.duration;
+
+    // this.progress = ( this.yoyo === true )
+    //   ? 1 - ( this.time / this.duration )
+    //   : this.time / this.duration;
 
     this.value = this.easing( this.progress );
     this.delta = this.value - old;
@@ -48,28 +52,30 @@ class Tween extends Animation {
     if ( this.values !== null ) this.updateFromTo();
 
     if ( this.yoyo !== null ) this.updateYoyo();
-    else if ( this.progress < 1 ) this.onUpdate( this );
+    else if ( this.progress <= 1 ) this.onUpdate( this );
     else {
 
       this.progress = 1;
       this.value = 1;
-      this.onUpdate( this );
       this.onComplete( this );
-      super.stop();
+      this.onUpdate( this );
+      super.stop();      
 
-    } 
+    }
 
   }
 
   updateYoyo() {
 
-    if ( this.progress >= 1 || this.progress <= 0 ) {
+    if ( this.progress > 1 || this.progress < 0 ) {
 
       this.value = this.progress = ( this.progress > 1 ) ? 1 : 0;
       this.yoyo = ! this.yoyo;
-      this.time = 0;
+      // this.time = 0;
 
     }
+
+    this.onUpdate( this )
 
   }
 
@@ -124,3 +130,7 @@ a = new tween( {
 } );
 
 */
+
+new tween({
+  duration: 222
+});

@@ -52,6 +52,14 @@ const Easing = {
 
     },
 
+    In: s => {
+
+      s = s || 1.70158;
+
+      return t => { return t * t * ( ( s + 1 ) * t - s ); };
+
+    }
+
   },
 
   Elastic: {

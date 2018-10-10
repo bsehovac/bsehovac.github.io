@@ -6,7 +6,7 @@ class World extends Animation {
 
 		super( true );
 
-		this.name = 'World';
+		this.name = 'RENDERER';
 
 		this.game = game;
 
@@ -23,6 +23,7 @@ class World extends Animation {
 		this.fov = 10;
 
 		this.createLights();
+		this.onUpdate = () => {}; // <===--- FOR DEBUGGING
 
 		this.resize();
 		window.addEventListener( 'resize', () => this.resize(), false );
@@ -32,6 +33,7 @@ class World extends Animation {
 	update() {
 
 		this.renderer.render( this.scene, this.camera );
+		this.onUpdate(); // <===--- FOR DEBUGGING
 
 	}
 
@@ -70,9 +72,9 @@ class World extends Animation {
 
 		this.lights = {
 			holder:  new THREE.Object3D,
-			ambient: new THREE.AmbientLight( 0xffffff, 1.25 ),
-			front:   new THREE.DirectionalLight( 0xffffff, 0.65 ),
-			back:    new THREE.DirectionalLight( 0xffffff, 0.35 ),
+			ambient: new THREE.AmbientLight( 0xffffff, 0.69 ),
+			front:   new THREE.DirectionalLight( 0xffffff, 0.36 ),
+			back:    new THREE.DirectionalLight( 0xffffff, 0.19 ),
 		};
 
 		this.lights.front.position.set( 0.3, 1,  0.6 );

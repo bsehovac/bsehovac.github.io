@@ -30,7 +30,7 @@ class Confetti extends Animation {
       radius: { min: 10, max: 15 },
       mass: { min: 0.05, max: 0.1 },
       gravity: -9.81,
-      geometryScale: 0.0035, // used to scale in threejs world
+      geometryScale: 0.01, // used to scale in threejs world
       positionScale: 0.3333, // used to scale in threejs world
       colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
     };

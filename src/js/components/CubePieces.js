@@ -13,21 +13,11 @@ function CubePieces( size, positions, colors ) {
 
 	const pieceMesh = new THREE.Mesh(
 		new RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
-		new THREE.MeshStandardMaterial( { // add MeshLambertMaterial - it has faster performance
-			color: colors.piece,
-			side: THREE.FrontSide,
-			roughness: 1,
-			metalness: 0.5,
-		} )
+		new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } )
 	);
 
 	const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
-	const edgeMaterial = new THREE.MeshStandardMaterial( { // add MeshLambertMaterial - it has faster performance
-		color: colors.piece,
-		side: THREE.FrontSide,
-		roughness: 1,
-		metalness: 0.5,
-	} );
+	const edgeMaterial = new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } );
 
 	const namesTest = [];
 
