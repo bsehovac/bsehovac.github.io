@@ -2298,8 +2298,19 @@
 	    this.world = new CUBE.World( this );
 	    this.confetti = new CUBE.Confetti( this );
 
-	    this.world.camera.position.set( 0, 0, -15 );
-	    this.world.camera.lookAt( 0, 0, 0 );
+	    // this.world.camera.position.set( 0, 0, -15 )
+	    // this.world.camera.lookAt( 0, 0, 0 )
+
+	    let active = false;
+
+	    this.dom.game.onclick = e => {
+
+	      active = ! active;
+
+	      if ( active ) game.confetti.start();
+	      else game.confetti.stop();
+
+	    };
 
 	    // this.world = new CUBE.World( this );
 	    // this.cube = new CUBE.Cube( this );
@@ -2808,89 +2819,114 @@
 
 	}
 
+	const rnd = THREE.Math.randFloat;
+
 	class Particle {
 
-	  constructor( position, geometry, material, holder, options ) {
+	  constructor( options ) {
 
-	    this._options = Object.assign( {
-	      velocity: 15,
-	      angle: 90,
-	      spread: 90,
-	      radius: 15,
-	      mass: 0.1,
-	      colors: [ 0x41aac8, 0x82ca38, 0xfff7ff, 0xffef48, 0xef3923, 0xff8c0a ],
-	    }, options || {} );
+	    this._options = options;
 
-	    const Va = THREE.Math.randFloat( this._options.angle - this._options.spread / 2, this._options.angle + this._options.spread / 2 ) * THREE.Math.DEG2RAD;
-	    const Vs = THREE.Math.randFloat( this._options.velocity / 4, this._options.velocity );
-
-	    this._velocity = new THREE.Vector3(
-	      Math.cos( Va ) * Vs,
-	      Math.sin( Va ) * Vs,
-	      Math.cos( Math.random() * Math.PI * 2 ) * Vs,
-	    );
-
-	    this._mass = THREE.Math.randFloat( this._options.mass / 2, this._options.mass );
-
-	    this._radius = THREE.Math.randFloat( this._options.radius / 2, this._options.radius );
-
-	    this._position = position.clone(),
-
-	    this._color = new THREE.Color( this._options.colors[ Math.floor( Math.random() * this._options.colors.length ) ] );
-	    // new THREE.Color(
-	    //   THREE.Math.randFloat( 0.2, 0.9 ),
-	    //   THREE.Math.randFloat( 0.2, 0.9 ),
-	    //   THREE.Math.randFloat( 0.2, 0.9 )
-	    // );
-
-	    this._revolution = new THREE.Vector3( Math.random() * 0.05, Math.random() * 0.05, Math.random() * 0.05 );
-
+	    this._velocity = new THREE.Vector3();
+	    this._color = new THREE.Color( options.colors[ Math.floor( Math.random() * options.colors.length ) ] );
+	    this._positionScale = options.positionScale;
 	    this._force = new THREE.Vector3();
+	    this._mass = rnd( options.mass.min, options.mass.max );
+	    this._radius = rnd( options.radius.min, options.radius.max );
+	    this._scale = this._radius * options.geometryScale;
+	    this._life = 0;
+	    this._done = false;
 
-	    this._mesh = new THREE.Mesh( geometry, material.clone() );
-	    this._mesh.position.copy( this._position );
-	    this._mesh.scale.set( this._radius / 200, this._radius / 200, this._radius / 200 );
+	    this._mesh = new THREE.Mesh( options.geometry, options.material.clone() );
+	    this._mesh.scale.set( this._scale, this._scale, this._scale );
 	    this._mesh.material.color.set( this._color );
 	    this._mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 );
 
-	    this._holder = holder;
-	    this._holder.add( this._mesh );
+	    options.holder.add( this._mesh );
 
-	    // Static physics variables
+	    this._physics = this.getPhysics( this._radius );
+	    this._ag = options.gravity; // -9.81
 
-	    this._Cd = 0.47;
-	    this._rho = 1.22;
-	    this._A = Math.PI * this._radius * this._radius / 10000;
-	    this._ag = -9.81;
-
+	    this.reset();
 
 	    return this;
 
 	  }
 
-	  update( delta ) {
+	  update( delta, opacity, complete ) {
+
+	    if ( this._done ) return false;
 
 	    delta = 16 / 1000;
 
-	    let Fy = -0.5 * this._Cd * this._A * this._rho * Math.pow( this._velocity.y, 3 ) / Math.abs( this._velocity.y );
-	    let Fx = -0.5 * this._Cd * this._A * this._rho * Math.pow( this._velocity.x, 3 ) / Math.abs( this._velocity.x );
-	    let Fz = -0.5 * this._Cd * this._A * this._rho * Math.pow( this._velocity.z, 3 ) / Math.abs( this._velocity.z );
-	    
-	    Fy = ( isNaN( Fy ) ? 0 : Fy );
-	    Fx = ( isNaN( Fx ) ? 0 : Fx );
-	    Fz = ( isNaN( Fz ) ? 0 : Fz );
+	    this._force.set(
+	      this.getForce( this._velocity.x ),
+	      this.getForce( this._velocity.y ) + this._ag,
+	      this.getForce( this._velocity.z )
+	    );
 
-	    const ay = this._ag + (Fy / this._mass);
-	    const ax = Fx / this._mass;
-	    const az = Fz / this._mass;
+	    this._velocity.add( this._force.multiplyScalar( delta ) );
 
-	    this._force.set( ax, ay, az ).multiplyScalar( delta );
-	    this._velocity.add( this._force );
-	    this._position.add( this._velocity.clone().multiplyScalar( delta / 3 ) );
-
-	    this._mesh.position.copy( this._position );
+	    this._mesh.position.add( this._velocity.clone().multiplyScalar( delta * this._positionScale ) );
 	    this._mesh.rotateX( this._revolution.x ).rotateY( this._revolution.y ).rotateZ( this._revolution.y );
+	    this._mesh.material.opacity = opacity * this.getProgressInRange( this._mesh.position.y, -4, -2 );
 
+	    if ( this._mesh.position.y < -4 ) { 
+	      
+	      this._done = true;
+	      return true;
+
+	    }
+
+	    return false;
+
+	  }
+
+	  reset() {
+
+	    this._mesh.material.opacity = 0;
+
+	    const axis = this._velocity.clone();
+
+	    this._velocity.copy( this._options.angle.direction ).multiplyScalar( rnd( this._options.velocity.min, this._options.velocity.max ) );
+	    this._velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+	    this._velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+
+	    // const arrowHelper = new THREE.ArrowHelper( this._velocity.clone().normalize(), new THREE.Vector3( 0, 0, 0 ), this._velocity.length() / 10, 0x666666 );
+	    // this._options.holder.add( arrowHelper );
+
+	    this._revolution = new THREE.Vector3(
+	      rnd( this._options.revolution.min, this._options.revolution.max ),
+	      rnd( this._options.revolution.min, this._options.revolution.max ),
+	      rnd( this._options.revolution.min, this._options.revolution.max )
+	    );
+
+	    this._mesh.position.set( 0, 0, 0 );
+
+	    this._done = false;
+
+	  }
+
+	  getPhysics( r ) {
+
+	    const Cd = 0.47;
+	    const rho = 1.22;
+	    const A = Math.PI * r * r / 10000;
+
+	    return -0.5 * Cd * rho * A;
+
+	  }
+
+	  getForce( velocity ) {
+
+	    return this._physics * velocity * velocity * Math.sign( velocity ) / this._mass;
+
+	  }
+
+	  getProgressInRange( value, start, end ) {
+
+	    return Math.min( Math.max( (value - start) / (end - start), 0 ), 1 );
+	    
 	  }
 
 	}
@@ -2901,27 +2937,33 @@
 
 	    this._game = game;
 
+	    this._count = 100;
+	    this._particles = [];
+
 	    this._object = new THREE.Object3D();
 	    this._game.world.scene.add( this._object );
 
-	    this._particles = [];
-
-	    this._count = 50;
-
-	    this._position = new THREE.Vector3( 0, 0, 0 );
-
 	    this._geometry = new THREE.PlaneGeometry( 1, 1 );
-	    this._material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide} );
+	    this._material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
+	    this._opacity = 0;
+
+	    this._particleOptions = {
+	      geometry: this._geometry,
+	      material: this._material,
+	      holder: this._object,
+	      velocity: { min: 5, max: 15 },
+	      revolution: { min: 0, max: 0.05 },
+	      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 45 },
+	      radius: { min: 10, max: 15 },
+	      mass: { min: 0.05, max: 0.1 },
+	      gravity: -9.81,
+	      geometryScale: 0.0035, // used to scale in threejs world
+	      positionScale: 0.3333, // used to scale in threejs world
+	      colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
+	    };
 
 	    let i = this._count;
-
-	    while ( i-- ) {
-
-	      const particle = new Particle( this._position, this._geometry, this._material, this._object );
-
-	      this._particles.push( particle );
-
-	    }
+	    while ( i-- )  this._particles.push( new Particle( this._particleOptions ) );
 
 	    this.update = this.update.bind( this );
 
@@ -2931,25 +2973,39 @@
 
 	  start() {
 
+	    this._opacity = 0;
+	    this._done = 0;
 	    this._time = performance.now();
+	    this._animation = requestAnimationFrame( this.update );
 
-	    requestAnimationFrame( this.update );
+	  }
+
+	  stop() {
+
+	    cancelAnimationFrame( this._animation );
+
+	    let i = this._count;
+	    while ( i-- ) this._particles[ i ].reset();
 
 	  }
 
 	  update() {
 
 	    const now = performance.now();
-
 	    const delta = now - this._time;
-
 	    this._time = now;
 
+	    this._opacity += ( 1 - this._opacity ) * 0.1;
+
 	    let i = this._count;
+	    while ( i-- ) {
 
-	    while ( i-- ) this._particles[ i ].update( delta );
+	      if ( this._particles[ i ].update( delta, this._opacity ) ) this._done++;
 
-	    requestAnimationFrame( this.update );
+	    }
+
+	    this._animation = requestAnimationFrame( this.update );
+	    if ( this._done == this._count) this.stop();
 
 	  }
 	  

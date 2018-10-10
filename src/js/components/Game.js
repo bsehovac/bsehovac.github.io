@@ -19,8 +19,19 @@ class Game {
     this.world = new CUBE.World( this );
     this.confetti = new CUBE.Confetti( this );
 
-    this.world.camera.position.set( 0, 0, -15 )
-    this.world.camera.lookAt( 0, 0, 0 )
+    // this.world.camera.position.set( 0, 0, -15 )
+    // this.world.camera.lookAt( 0, 0, 0 )
+
+    let active = false;
+
+    this.dom.game.onclick = e => {
+
+      active = ! active;
+
+      if ( active ) game.confetti.start();
+      else game.confetti.stop();
+
+    }
 
     // this.world = new CUBE.World( this );
     // this.cube = new CUBE.Cube( this );
