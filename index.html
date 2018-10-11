@@ -69,7 +69,15 @@
   </div>
 
   <script src="assets/js/three.js"></script>
-  <script src="assets/js/cube.js?v=1"></script>
+  <script src="assets/js/cube.js"></script>
+  <script src="upup.min.js"></script>
+  <script>
+    UpUp.start({
+      'cache-version': 'v1',
+      'content-url': 'index.html',
+      'assets': [ 'assets/css/styles.css', 'assets/js/three.js', 'assets/js/cube.js' ]
+    });
+  </script>
 
 </body>
 </html>

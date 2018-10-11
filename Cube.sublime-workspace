@@ -527,15 +527,6 @@
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
-		},
-		{
-			"file": "src/js/Game.js",
-			"settings":
-			{
-				"buffer_size": 3302,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
 		}
 	],
 	"build_system": "Libsass",
@@ -676,13 +667,13 @@
 	],
 	"file_history":
 	[
+		"/Users/boris/Sites/bsehovac.github.io/src/js/Game.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/CubePieces.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Icons.js",
 		"/Users/boris/Sites/bsehovac.github.io/assets/js/cube.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/DoubleClick.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/TapEvents.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/DoubleTap.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/js/Game.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Transition.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Cube.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Timer.js",
@@ -807,7 +798,7 @@
 	],
 	"find":
 	{
-		"height": 54.0
+		"height": 27.0
 	},
 	"find_in_files":
 	{
@@ -1138,7 +1129,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -1168,36 +1159,6 @@
 						"translation.y": 1460.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/js/Game.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3302,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								434,
-								434
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 967.0,
-						"zoom_level": 1.0
-					},
 					"stack_index": 0,
 					"type": "text"
 				}
@@ -1206,7 +1167,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 30.0
+		"height": 27.0
 	},
 	"input":
 	{
@@ -1247,7 +1208,7 @@
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 88.0
+		"height": 50.0
 	},
 	"save_all_on_build": true,
 	"select_file":

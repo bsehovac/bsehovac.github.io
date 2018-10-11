@@ -37,7 +37,7 @@ class Game {
     this.audio = new Audio( this );
     this.timer = new Timer( this );
     this.preferences = new Preferences( this );
-    // this.confetti = new Confetti( this );
+    this.confetti = new Confetti( this );
 
     this.initTapEvents();
 
