@@ -88,7 +88,7 @@ class Cube {
 			if ( !gameInProgress ) throw new Error();
 
 			const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
-			const gameTime = localStorage.getItem( 'gameTime' );
+			const gameTime = parseInt( localStorage.getItem( 'gameTime' ) );
 
 			if ( !cubeData || !gameTime ) throw new Error();
 

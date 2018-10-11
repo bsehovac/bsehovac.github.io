@@ -337,7 +337,6 @@ class Controls {
     if ( solved ) {
 
         this.onSolved();
-        //this.game.cube.clearState();
 
     }
 

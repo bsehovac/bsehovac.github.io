@@ -834,7 +834,7 @@
 				if ( !gameInProgress ) throw new Error();
 
 				const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
-				const gameTime = localStorage.getItem( 'gameTime' );
+				const gameTime = parseInt( localStorage.getItem( 'gameTime' ) );
 
 				if ( !cubeData || !gameTime ) throw new Error();
 
@@ -1603,7 +1603,6 @@
 	    if ( solved ) {
 
 	        this.onSolved();
-	        //this.game.cube.clearState();
 
 	    }
 
@@ -2248,12 +2247,8 @@
 			super( false );
 
 			this._game = game;
-
-			this._startTime = 0;
-			this._currentTime = 0;
-			this._deltaTime = 0;
-			this._converted = '0:00';
-
+			this.reset();
+			
 		}
 
 		start( continueGame ) {
@@ -2263,6 +2258,15 @@
 			this._converted = this.convert();
 
 			super.start();
+
+		}
+
+		reset() {
+
+			this._startTime = 0;
+			this._currentTime = 0;
+			this._deltaTime = 0;
+			this._converted = '0:00';
 
 		}
 
@@ -2940,7 +2944,17 @@
 	    this.transition.float();
 
 	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
-	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
+	    this.controls.onSolved = () => {
+
+	      // this.playing = false;
+	      this.saved = false;
+	      this.timer.stop();
+	      // this.scores.addTime( this.timer.getTime() );
+	      this.timer.reset();
+	      this.cube.clearState();
+	      //this.cube.clearState();
+
+	    };
 
 	  }
 

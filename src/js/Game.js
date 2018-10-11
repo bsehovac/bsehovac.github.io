@@ -38,6 +38,7 @@ class Game {
     this.timer = new Timer( this );
     this.preferences = new Preferences( this );
     this.confetti = new Confetti( this );
+    this.scores = new Scores( this );
 
     this.initTapEvents();
 
@@ -49,7 +50,17 @@ class Game {
     this.transition.float();
 
     this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
-    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); }
+    this.controls.onSolved = () => {
+
+      // this.playing = false;
+      this.saved = false;
+      this.timer.stop();
+      // this.scores.addScore( this.timer.getTime() );
+      this.timer.reset();
+      this.cube.clearState();
+      //this.cube.clearState();
+
+    }
 
   }
 

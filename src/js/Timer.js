@@ -7,12 +7,8 @@ class Timer extends Animation {
 		super( false );
 
 		this._game = game;
-
-		this._startTime = 0;
-		this._currentTime = 0;
-		this._deltaTime = 0;
-		this._converted = '0:00';
-
+		this.reset();
+		
 	}
 
 	start( continueGame ) {
@@ -22,6 +18,15 @@ class Timer extends Animation {
 		this._converted = this.convert();
 
 		super.start();
+
+	}
+
+	reset() {
+
+		this._startTime = 0;
+		this._currentTime = 0;
+		this._deltaTime = 0;
+		this._converted = '0:00';
 
 	}
 
