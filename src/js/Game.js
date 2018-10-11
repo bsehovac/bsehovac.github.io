@@ -77,7 +77,7 @@ class Game {
       if ( ! this.saved ) {
 
         this.scrambler.scramble();
-        this.controls.scrambleCube( () => {} );
+        this.controls.scrambleCube();
 
         duration = this.scrambler.converted.length * this.controls._scrambleSpeed;
 

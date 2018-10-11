@@ -88,10 +88,9 @@ class Cube {
 			if ( !gameInProgress ) throw new Error();
 
 			const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
-			// const gameMoves = JSON.parse( localStorage.getItem( 'gameMoves' ) );
 			const gameTime = localStorage.getItem( 'gameTime' );
 
-			if ( !cubeData || /*!gameMoves ||*/ !gameTime ) throw new Error();
+			if ( !cubeData || !gameTime ) throw new Error();
 
 			this.pieces.forEach( piece => {
 
@@ -104,15 +103,6 @@ class Cube {
 				piece.rotation.set( rotation.x, rotation.y, rotation.z );
 
 			} );
-
-			// this.game.controls.moves = gameMoves;
-
-			// this.game.controls.moves.forEach( move => {
-
-			// 	const angle = move[0];
-			// 	move[0] = new THREE.Vector3( angle.x, angle.y, angle.z );
-
-			// } );
 
 			this.game.timer.setDeltaTime( gameTime );
 
@@ -144,7 +134,6 @@ class Cube {
 
 		localStorage.setItem( 'gameInProgress', 'yes' );
 		localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
-		// localStorage.setItem( 'gameMoves', JSON.stringify( this.game.controls.moves ) );
 		localStorage.setItem( 'gameTime', this.game.timer.getDeltaTime() );
 
 	}
@@ -153,7 +142,6 @@ class Cube {
 
 		localStorage.removeItem( 'gameInProgress' );
 		localStorage.removeItem( 'cubeData' );
-		// localStorage.removeItem( 'gameMoves' );
 		localStorage.removeItem( 'gameTime' );
 
 	}

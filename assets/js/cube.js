@@ -834,10 +834,9 @@
 				if ( !gameInProgress ) throw new Error();
 
 				const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
-				// const gameMoves = JSON.parse( localStorage.getItem( 'gameMoves' ) );
 				const gameTime = localStorage.getItem( 'gameTime' );
 
-				if ( !cubeData || /*!gameMoves ||*/ !gameTime ) throw new Error();
+				if ( !cubeData || !gameTime ) throw new Error();
 
 				this.pieces.forEach( piece => {
 
@@ -850,15 +849,6 @@
 					piece.rotation.set( rotation.x, rotation.y, rotation.z );
 
 				} );
-
-				// this.game.controls.moves = gameMoves;
-
-				// this.game.controls.moves.forEach( move => {
-
-				// 	const angle = move[0];
-				// 	move[0] = new THREE.Vector3( angle.x, angle.y, angle.z );
-
-				// } );
 
 				this.game.timer.setDeltaTime( gameTime );
 
@@ -890,7 +880,6 @@
 
 			localStorage.setItem( 'gameInProgress', 'yes' );
 			localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
-			// localStorage.setItem( 'gameMoves', JSON.stringify( this.game.controls.moves ) );
 			localStorage.setItem( 'gameTime', this.game.timer.getDeltaTime() );
 
 		}
@@ -899,7 +888,6 @@
 
 			localStorage.removeItem( 'gameInProgress' );
 			localStorage.removeItem( 'cubeData' );
-			// localStorage.removeItem( 'gameMoves' );
 			localStorage.removeItem( 'gameTime' );
 
 		}
@@ -1319,7 +1307,6 @@
 	    this.onMove = () => {};
 
 	    this._momentum = [];
-	    this._moves = [];
 
 	    this._scramble = null;
 	    this._state = STILL;
@@ -1483,7 +1470,7 @@
 	        this.rotateLayer( delta, false, layer => {
 
 	          // this.addMove( angle, layer );
-	          // this.checkIsSolved();
+	          this.checkIsSolved();
 	          
 	          this._state = this._gettingDrag ? PREPARING : STILL;
 	          this._gettingDrag = false;
@@ -1578,51 +1565,6 @@
 
 	      },
 	    } );
-
-	  }
-
-	  addMove( angle, layer ) {
-
-	    let move = null;
-
-	    if ( angle == 0 ) return;
-
-	    if (
-	      this._moves.length > 0 &&
-	      this._moves[ this._moves.length - 1 ][ 0 ] * -1 == angle
-	    ) {
-
-	      this._moves.pop();
-
-	    } else {
-
-	      move = [ angle, layer ];
-	      this._moves.push( move );
-
-	    }
-
-	    this.onMove( { moves: this._moves, move: move, length: this._moves.length } );
-
-	  }
-
-	  undoMove() {
-
-	    if ( this._moves.length > 0 ) {
-
-	      const move = this._moves[ this._moves.length - 1 ];
-	      const angle = move[ 0 ] * -1;
-	      const layer = move[ 1 ];
-
-	      this.selectLayer( layer );
-
-	      this.rotateLayer( angle, false, () => {
-
-	        this._moves.pop();
-	        this.onMove( { moves: this._moves, move: move, length: this._moves.length } );
-
-	      } );
-
-	    }
 
 	  }
 
@@ -1738,7 +1680,7 @@
 
 	  }
 
-	  scrambleCube( callback ) {
+	  scrambleCube() {
 
 	    if ( this._scramble == null ) {
 
@@ -1765,7 +1707,6 @@
 
 	      } else {
 
-	        this._scramble.callback();
 	        this._scramble = null;
 
 	      }
@@ -3025,7 +2966,7 @@
 	      if ( ! this.saved ) {
 
 	        this.scrambler.scramble();
-	        this.controls.scrambleCube( () => {} );
+	        this.controls.scrambleCube();
 
 	        duration = this.scrambler.converted.length * this.controls._scrambleSpeed;
 

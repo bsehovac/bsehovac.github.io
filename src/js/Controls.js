@@ -41,7 +41,6 @@ class Controls {
     this.onMove = () => {};
 
     this._momentum = [];
-    this._moves = [];
 
     this._scramble = null;
     this._state = STILL;
@@ -205,7 +204,7 @@ class Controls {
         this.rotateLayer( delta, false, layer => {
 
           // this.addMove( angle, layer );
-          // this.checkIsSolved();
+          this.checkIsSolved();
           
           this._state = this._gettingDrag ? PREPARING : STILL;
           this._gettingDrag = false;
@@ -300,51 +299,6 @@ class Controls {
 
       },
     } );
-
-  }
-
-  addMove( angle, layer ) {
-
-    let move = null;
-
-    if ( angle == 0 ) return;
-
-    if (
-      this._moves.length > 0 &&
-      this._moves[ this._moves.length - 1 ][ 0 ] * -1 == angle
-    ) {
-
-      this._moves.pop();
-
-    } else {
-
-      move = [ angle, layer ];
-      this._moves.push( move );
-
-    }
-
-    this.onMove( { moves: this._moves, move: move, length: this._moves.length } );
-
-  }
-
-  undoMove() {
-
-    if ( this._moves.length > 0 ) {
-
-      const move = this._moves[ this._moves.length - 1 ];
-      const angle = move[ 0 ] * -1;
-      const layer = move[ 1 ];
-
-      this.selectLayer( layer );
-
-      this.rotateLayer( angle, false, () => {
-
-        this._moves.pop();
-        this.onMove( { moves: this._moves, move: move, length: this._moves.length } );
-
-      } );
-
-    }
 
   }
 
@@ -460,7 +414,7 @@ class Controls {
 
   }
 
-  scrambleCube( callback ) {
+  scrambleCube() {
 
     if ( this._scramble == null ) {
 
@@ -487,7 +441,6 @@ class Controls {
 
       } else {
 
-        this._scramble.callback();
         this._scramble = null;
 
       }
