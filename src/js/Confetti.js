@@ -1,12 +1,10 @@
-import { Animation } from './plugins/Animation.js';
+import { Animation } from './Animation.js';
 
 class Confetti extends Animation {
 
   constructor( game ) {
 
     super( false );
-
-    this.name = 'Confetti';
 
     this._game = game;
 

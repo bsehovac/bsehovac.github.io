@@ -1,4 +1,4 @@
-import { Range } from './plugins/Range.js';
+import { Range } from './Range.js';
 
 class Preferences {
 

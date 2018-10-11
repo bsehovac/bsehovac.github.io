@@ -1,4 +1,4 @@
-import { RoundedBoxGeometry } from './plugins/RoundedBoxGeometry.js';
+import { RoundedBoxGeometry } from './RoundedBoxGeometry.js';
 
 function CubePieces( size, positions, colors ) {
 

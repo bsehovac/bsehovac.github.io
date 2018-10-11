@@ -1,19 +1,5 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.CUBE = {})));
-}(this, (function (exports) { 'use strict';
-
-	// <===--- FOR DEBUGGING BLOCK
-	const div = document.createElement( 'div' );
-	div.innerHTML = 'Animations: <i></i><div></div>';
-	document.body.appendChild( div );
-	const animationCount = div.querySelector( 'i' );
-	div.classList.add( 'animation-test' );
-	div.style.cssText = 'position: fixed; z-index: 9999; left: 10px; top: 10px; font-size: 0.5em';
-	const animationInfo = div.querySelector( 'div' );
-	animationInfo.style.cssText = 'opacity: 0.5; font-size: 0.66em;';
-	// <===--- FOR DEBUGGING BLOCK
+(function () {
+	'use strict';
 
 	class AnimationEngine {
 
@@ -41,15 +27,7 @@
 	    const delta = now - this.time;
 	    this.time = now;
 
-	    animationCount.innerHTML = i; // <===--- FOR DEBUGGING
-	    animationInfo.innerHTML = ''; // <===--- FOR DEBUGGING
-
-	    while ( i-- ) {
-
-	      animationInfo.innerHTML += this.animations[ this.ids[ i ] ].name + '<br>'; // <===--- FOR DEBUGGING
-	      this.animations[ this.ids[ i ] ].update( delta );
-
-	    }
+	    while ( i-- ) this.animations[ this.ids[ i ] ].update( delta );
 
 	  }
 
@@ -124,8 +102,6 @@
 
 			super( true );
 
-			this.name = 'RENDERER';
-
 			this.game = game;
 
 			this.container = this.game.dom.game;
@@ -141,7 +117,6 @@
 			this.fov = 10;
 
 			this.createLights();
-			this.onUpdate = () => {}; // <===--- FOR DEBUGGING
 
 			this.resize();
 			window.addEventListener( 'resize', () => this.resize(), false );
@@ -151,7 +126,6 @@
 		update() {
 
 			this.renderer.render( this.scene, this.camera );
-			this.onUpdate(); // <===--- FOR DEBUGGING
 
 		}
 
@@ -886,7 +860,7 @@
 
 				// } );
 
-				this.game.timer.deltaTime = gameTime;
+				this.game.timer.setDeltaTime( gameTime );
 
 				return gameInProgress;
 
@@ -917,7 +891,7 @@
 			localStorage.setItem( 'gameInProgress', 'yes' );
 			localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
 			// localStorage.setItem( 'gameMoves', JSON.stringify( this.game.controls.moves ) );
-			localStorage.setItem( 'gameTime', this.game.timer.deltaTime );
+			localStorage.setItem( 'gameTime', this.game.timer.getDeltaTime() );
 
 		}
 
@@ -1022,9 +996,6 @@
 
 	    super( false );
 
-	    this.name = 'Tween';
-	    if ( options.name) this.name += ' : ' + options.name;
-
 	    this.duration = options.duration || 500;
 	    this.easing = options.easing || ( t => t );
 	    this.onUpdate = options.onUpdate || ( () => {} );
@@ -1126,27 +1097,6 @@
 	  }
 
 	}
-
-	window.tween = Tween;
-	window.easing = Easing;
-
-	/*
-
-	a = new tween( {
-	  duration: 2000,
-	  easing: easing.Elastic.Out(),
-	  onUpdate: tween => {
-	    console.log( tween.value );
-	  }, onComplete: () => {
-	    console.log( 'completed' );
-	  }
-	} );
-
-	*/
-
-	new tween({
-	  duration: 222
-	});
 
 	window.addEventListener( 'touchmove', () => {} );
 	document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
@@ -1408,7 +1358,7 @@
 	        this._dragNormal = edgeIntersect.face.normal.round();
 	        this._flipType = 'layer';
 
-	        this.attach( this.helper, this.game.controls.edges );
+	        this.attach( this.helper, this.edges );
 
 	        this.helper.rotation.set( 0, 0, 0 );
 	        this.helper.position.set( 0, 0, 0 );
@@ -1416,7 +1366,7 @@
 	        this.helper.translateZ( 0.5 );
 	        this.helper.updateMatrixWorld();
 
-	        this.detach( this.helper, this.game.controls.edges );
+	        this.detach( this.helper, this.edges );
 
 	      } else {
 
@@ -1984,76 +1934,55 @@
 
 	}
 
-	// <===--- FOR DEBUGGING BLOCK
-	const div$1 = document.createElement( 'div' );
-	div$1.innerHTML = 'Transitions: <i></i><div></div>';
-	document.body.appendChild( div$1 );
-	const transitionCount = div$1.querySelector( 'i' );
-	div$1.classList.add( 'animation-test' );
-	div$1.style.cssText = 'position: fixed; z-index: 9999; right: 10px; top: 10px; font-size: 0.5em';
-	const transitionInfo = div$1.querySelector( 'div' );
-	transitionInfo.style.cssText = 'opacity: 0.5; font-size: 0.66em;';
-
 	class Transition {
 
 	  constructor( game ) {
 
-	    this.game = game;
+	    this._game = game;
 
-	    this.tweens = {};
-	    this.durations = {};
-	    this.data = {};
+	    this._tweens = {};
+	    this._durations = {};
+	    this._data = {};
 
-	    this.active = 0;
-	    this.activeNames = []; // <===--- FOR DEBUGGING
-
-	    this.game.world.onUpdate = () => { // <===--- FOR DEBUGGING
-	      transitionCount.innerHTML = this.active; // <===--- FOR DEBUGGING
-	      transitionInfo.innerHTML = ''; // <===--- FOR DEBUGGING
-	      this.activeNames.forEach( name => {// <===--- FOR DEBUGGING
-	        transitionInfo.innerHTML += name + '<br>'; // <===--- FOR DEBUGGING
-	      } );// <===--- FOR DEBUGGING
-	    }; // <===--- FOR DEBUGGING
+	    this._activeTransitions = 0;
 
 	  }
 
 	  initialize() {
 
-	    this.data.cubeY = -0.2;
-	    this.data.cameraZoom = 0.85;
+	    this._data.cubeY = -0.2;
+	    this._data.cameraZoom = 0.85;
 
-	    this.game.controls.disable();
+	    this._game.controls.disable();
 
-	    this.game.cube.object.position.y = this.data.cubeY;
-	    this.game.controls.edges.position.y = this.data.cubeY;
-	    this.game.cube.animator.position.y = 4;
-	    this.game.cube.animator.rotation.x = - Math.PI / 3;
-	    this.game.world.camera.zoom = this.data.cameraZoom;
-	    this.game.world.camera.updateProjectionMatrix();
+	    this._game.cube.object.position.y = this._data.cubeY;
+	    this._game.controls.edges.position.y = this._data.cubeY;
+	    this._game.cube.animator.position.y = 4;
+	    this._game.cube.animator.rotation.x = - Math.PI / 3;
+	    this._game.world.camera.zoom = this._data.cameraZoom;
+	    this._game.world.camera.updateProjectionMatrix();
 
 	  }
 
 	  cube( show ) {
 
-	    this.active++;
-	    this.activeNames.push( 'Show/Hide Cube' );
+	    this._activeTransitions++;
 
-	    if ( typeof this.tweens.cube !== 'undefined' ) this.tweens.cube.stop();
+	    if ( typeof this._tweens.cube !== 'undefined' ) this._tweens.cube.stop();
 
-	    const currentY = this.game.cube.animator.position.y;
-	    const currentRotation = this.game.cube.animator.rotation.x;
+	    const currentY = this._game.cube.animator.position.y;
+	    const currentRotation = this._game.cube.animator.rotation.x;
 
-	    this.tweens.cube = new Tween( {
-	      name: 'Show/Hide Cube',
+	    this._tweens.cube = new Tween( {
 	      duration: show ? 3000 : 1250,
 	      easing: show ? Easing.Elastic.Out( 0.8, 0.6 ) : Easing.Back.In( 1 ),
 	      onUpdate: tween => {
 
-	        this.game.cube.animator.position.y = show
+	        this._game.cube.animator.position.y = show
 	          ? ( 1 - tween.value ) * 4
 	          : currentY + tween.value * 4;
 
-	        this.game.cube.animator.rotation.x = show
+	        this._game.cube.animator.rotation.x = show
 	          ? ( 1 - tween.value ) * Math.PI / 3
 	          : currentRotation + tween.value * - Math.PI / 3;
 
@@ -2062,37 +1991,31 @@
 
 	    setTimeout( () => {
 
-	      if ( this.game.playing ) this.timer( show );
+	      if ( this._game.playing ) this.timer( show );
 	      else this.title( show );
 
 	    }, show ? 700 : 0 );
 
-	    this.durations.cube = show ? 1500 : 1500;
+	    this._durations.cube = show ? 1500 : 1500;
 
-	    setTimeout( () => {
-
-	      this.active--;
-	      this.activeNames.splice( this.activeNames.indexOf( 'Show/Hide Cube' ), 1 );
-
-	    }, this.durations.cube );
+	    setTimeout( () => this._activeTransitions--, this._durations.cube );
 
 	  }
 
 	  float() {
 
-	    if ( typeof this.tweens.float !== 'undefined' ) this.tweens.float.stop();
+	    if ( typeof this._tweens.float !== 'undefined' ) this._tweens.float.stop();
 
-	    this.tweens.float = new Tween( {
-	      name: 'Float Cube',
+	    this._tweens.float = new Tween( {
 	      duration: 1500,
 	      easing: Easing.Sine.InOut(),
 	      yoyo: true,
 	      onUpdate: tween => {
 
-	        this.game.cube.holder.position.y = (- 0.02 + tween.value * 0.04); 
-	        this.game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
-	        this.game.cube.holder.rotation.z = - this.game.cube.holder.rotation.x;
-	        this.game.cube.holder.rotation.y = this.game.cube.holder.rotation.x;
+	        this._game.cube.holder.position.y = (- 0.02 + tween.value * 0.04); 
+	        this._game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
+	        this._game.cube.holder.rotation.z = - this._game.cube.holder.rotation.x;
+	        this._game.cube.holder.rotation.y = this._game.cube.holder.rotation.x;
 
 	      },
 	    } );
@@ -2101,69 +2024,60 @@
 
 	  zoom( game, time, callback ) {
 
-	    this.active++;
-	    this.activeNames.push( 'Zoom/Rotate Cube' );
+	    this._activeTransitions++;
 
-	    const zoom = ( game ) ? 1 : this.data.cameraZoom;
-	    const cubeY = ( game ) ? -0.3 : this.data.cubeY;
+	    const zoom = ( game ) ? 1 : this._data.cameraZoom;
+	    const cubeY = ( game ) ? -0.3 : this._data.cubeY;
 	    const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
 	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
 	    const easing = Easing.Power.InOut( ( time > 0 ) ? 2 : 3 );
 
-	    this.tweens.zoom = new Tween( {
-	      name: 'Zooming Cube',
-	      target: this.game.world.camera,
+	    this._tweens.zoom = new Tween( {
+	      target: this._game.world.camera,
 	      duration: duration,
 	      easing: easing,
 	      to: { zoom: zoom },
-	      onUpdate: () => { this.game.world.camera.updateProjectionMatrix(); },
+	      onUpdate: () => { this._game.world.camera.updateProjectionMatrix(); },
 	    } );
 
-	    this.tweens.rotate = new Tween( {
-	      name: 'Rotating Cube',
-	      target: this.game.cube.animator.rotation,
+	    this._tweens.rotate = new Tween( {
+	      target: this._game.cube.animator.rotation,
 	      duration: duration,
 	      easing: easing,
 	      to: { y: - Math.PI * 2 * rotations },
-	      onComplete: () => { this.game.cube.animator.rotation.y = 0; callback(); },
+	      onComplete: () => { this._game.cube.animator.rotation.y = 0; callback(); },
 	    } );
 
-	    // this.tweens.cubeY = new Tween( {
-	    //   target: this.data,
+	    // this._tweens.cubeY = new Tween( {
+	    //   target: this._data,
 	    //   duration: duration,
 	    //   easing: easing,
 	    //   to: { cubeY: ( game ) ? -0.3 : -0.2 },
 	    //   onUpdate: () => {
 
-	    //     this.game.cube.object.position.y = this.data.cubeY;
-	    //     this.game.controls.edges.position.y = this.data.cubeY;
+	    //     this._game.cube.object.position.y = this._data.cubeY;
+	    //     this._game.controls.edges.position.y = this._data.cubeY;
 
 	    //   },
 	    // } );
 
-	    this.durations.zoom = duration;
+	    this._durations.zoom = duration;
 
-	    setTimeout( () => {
-
-	      this.active--;
-	      this.activeNames.splice( this.activeNames.indexOf( 'Zoom/Rotate Cube' ), 1 );
-
-	    }, this.durations.zoom );
+	    setTimeout( () => this._activeTransitions--, this._durations.zoom );
 
 	  }
 
 	  preferences( show ) {
 
-	    this.active++;
-	    this.activeNames.push( 'Preferences' );
+	    this._activeTransitions++;
 
-	    if ( typeof this.tweens.range === 'undefined' ) this.tweens.range = [];  
-	    else this.tweens.range.forEach( tween => { tween.stop(); tween = null; } );
+	    if ( typeof this._tweens.range === 'undefined' ) this._tweens.range = [];  
+	    else this._tweens.range.forEach( tween => { tween.stop(); tween = null; } );
 
 	    let tweenId = -1;
 	    let listMax = 0;
 
-	    const ranges = this.game.dom.prefs.querySelectorAll( '.range' );
+	    const ranges = this._game.dom.prefs.querySelectorAll( '.range' );
 	    const easing = show ? Easing.Power.Out(2) : Easing.Power.In(3);
 
 	    ranges.forEach( ( range, rangeIndex ) => {
@@ -2180,8 +2094,7 @@
 	      handle.style.opacity = show ? 0 : 1;
 	      handle.style.pointerEvents = show ? 'all' : 'none';
 
-	      this.tweens.range[ tweenId++ ] = new Tween( {
-	        name: 'Range Label',
+	      this._tweens.range[ tweenId++ ] = new Tween( {
 	        delay: show ? delay : delay,
 	        duration: 400,
 	        easing: easing,
@@ -2196,8 +2109,7 @@
 	        }
 	      } );
 
-	      this.tweens.range[ tweenId++ ] = new Tween( {
-	        name: 'Range Track',
+	      this._tweens.range[ tweenId++ ] = new Tween( {
 	        delay: show ? delay + 100 : delay,
 	        duration: 400,
 	        easing: easing,
@@ -2213,8 +2125,7 @@
 	        }
 	      } );
 
-	      this.tweens.range[ tweenId++ ] = new Tween( {
-	        name: 'Range Handle',
+	      this._tweens.range[ tweenId++ ] = new Tween( {
 	        delay: show ? delay + 100 : delay,
 	        duration: 400,
 	        easing: easing,
@@ -2234,8 +2145,7 @@
 
 	        listItem.style.opacity = show ? 0 : 1;
 
-	        this.tweens.range[ tweenId++ ] = new Tween( {
-	          name: 'Range List',
+	        this._tweens.range[ tweenId++ ] = new Tween( {
 	          delay: show ? delay + 200 + labelIndex * 50 : delay,
 	          duration: 400,
 	          easing: easing,
@@ -2258,25 +2168,19 @@
 
 	    } );
 
-	    this.durations.preferences = show
+	    this._durations.preferences = show
 	      ? ( ( ranges.length - 1 ) * 100 ) + 200 + listMax * 50 + 400
 	      : ( ( ranges.length - 1 ) * 100 ) + 400;
 
-	    setTimeout( () => {
-
-	      this.active--;
-	      this.activeNames.splice( this.activeNames.indexOf( 'Preferences' ), 1 );
-
-	    }, this.durations.preferences );
+	    setTimeout( () => this._activeTransitions--, this._durations.preferences );
 
 	  }
 
 	  title( show ) {
 
-	    this.active++;
-	    this.activeNames.push( 'Title' );
+	    this._activeTransitions++;
 
-	    const title = this.game.dom.title;
+	    const title = this._game.dom.title;
 
 	    if ( title.querySelector( 'span i' ) === null )
 	      title.querySelectorAll( 'span' ).forEach( span => this.splitLetters( span ) );
@@ -2287,10 +2191,9 @@
 
 	    title.style.opacity = 1;
 
-	    const note = this.game.dom.note;
+	    const note = this._game.dom.note;
 
-	    this.tweens.title[ letters.length ] = new Tween( {
-	      name: 'Blinking text',
+	    this._tweens.title[ letters.length ] = new Tween( {
 	      target: note.style,
 	      easing: Easing.Sine.InOut(),
 	      duration: show ? 800 : 400,
@@ -2299,32 +2202,26 @@
 	      to: { opacity: show ? 1 : 0 },
 	    } );
 
-	    setTimeout( () => {
-
-	      this.active--;
-	      this.activeNames.splice( this.activeNames.indexOf( 'Title' ), 1 );
-
-	    }, this.durations.title );
+	    setTimeout( () => this._activeTransitions--, this._durations.title );
 
 	  }
 
 	  timer( show ) {
 
-	    this.active++;
-	    this.activeNames.push( 'Timer' );
+	    this._activeTransitions++;
 
 	    if ( ! show ) {
 
-	      this.game.controls.disable();
-	      this.game.timer.stop();
+	      this._game.controls.disable();
+	      this._game.timer.stop();
 
 	    }
 
-	    const timer = this.game.dom.timer;
+	    const timer = this._game.dom.timer;
 
 	    timer.style.opacity = 0;
-	    this.game.timer.convert();
-	    this.game.timer.setText();
+	    this._game.timer.convert();
+	    this._game.timer.setText();
 
 	    this.splitLetters( timer );
 	    const letters = timer.querySelectorAll( 'i' );
@@ -2332,19 +2229,14 @@
 
 	    timer.style.opacity = 1;
 
-	    if ( show && this.game.playing ) setTimeout( () => {
+	    if ( show && this._game.playing ) setTimeout( () => {
 
-	      this.game.controls.enable();
-	      this.game.timer.start( true );
+	      this._game.controls.enable();
+	      this._game.timer.start( true );
 
 	    }, 1500 );
 
-	    setTimeout( () => {
-
-	      this.active--;
-	      this.activeNames.splice( this.activeNames.indexOf( 'Timer' ), 1 );
-
-	    }, this.durations.timer );
+	    setTimeout( () => this._activeTransitions--, this._durations.timer );
 
 	  }
 
@@ -2370,15 +2262,14 @@
 
 	  flipLetters( type, letters, show ) {
 
-	    if ( typeof this.tweens[ type ] === 'undefined' ) this.tweens[ type ] = [];  
-	    else this.tweens[ type ].forEach( tween => { tween.stop(); tween = null; } );
+	    if ( typeof this._tweens[ type ] === 'undefined' ) this._tweens[ type ] = [];  
+	    else this._tweens[ type ].forEach( tween => { tween.stop(); tween = null; } );
 
 	    letters.forEach( ( letter, index ) => {
 
 	      letter.style.opacity = show ? 0 : 1;
 
-	      this.tweens[ type ][ index ] = new Tween( {
-	        name: 'Flip Letters',
+	      this._tweens[ type ][ index ] = new Tween( {
 	        easing: Easing.Sine.Out(),
 	        duration: show ? 800 : 400,
 	        delay: index * 50,
@@ -2394,7 +2285,7 @@
 
 	    } );
 
-	    this.durations[ type ] = ( letters.length - 1 ) * 50 + ( show ? 800 : 400 );
+	    this._durations[ type ] = ( letters.length - 1 ) * 50 + ( show ? 800 : 400 );
 
 	  }
 
@@ -2406,22 +2297,20 @@
 
 			super( false );
 
-			this.name = 'Timer';
+			this._game = game;
 
-			this.game = game;
-
-			this.startTime = 0;
-			this.currentTime = 0;
-			this.converted = '0:00';
-			this.animate = null;
+			this._startTime = 0;
+			this._currentTime = 0;
+			this._deltaTime = 0;
+			this._converted = '0:00';
 
 		}
 
 		start( continueGame ) {
 
-			this.startTime = continueGame ? ( Date.now() - this.deltaTime ) : Date.now();
-			this.deltaTime = 0;
-			this.converted = this.convert();
+			this._startTime = continueGame ? ( Date.now() - this._deltaTime ) : Date.now();
+			this._deltaTime = 0;
+			this._converted = this.convert();
 
 			super.start();
 
@@ -2429,27 +2318,27 @@
 
 		stop() {
 
-			this.currentTime = Date.now();
-			this.deltaTime = this.currentTime - this.startTime;
+			this._currentTime = Date.now();
+			this._deltaTime = this._currentTime - this._startTime;
 			this.convert();
 
 			super.stop();
 
-			return { time: this.converted, millis: this.deltaTime };
+			return { time: this._converted, millis: this._deltaTime };
 
 		}
 
 		update() {
 
-			const old = this.converted;
+			const old = this._converted;
 
-			this.currentTime = Date.now();
-			this.deltaTime = this.currentTime - this.startTime;
+			this._currentTime = Date.now();
+			this._deltaTime = this._currentTime - this._startTime;
 			this.convert();
 
-			if ( this.converted != old ) {
+			if ( this._converted != old ) {
 
-				localStorage.setItem( 'gameTime', JSON.stringify( this.deltaTime ) );
+				localStorage.setItem( 'gameTime', this._deltaTime );
 				this.setText();
 
 			}
@@ -2458,281 +2347,32 @@
 
 		convert() {
 
-			this.seconds = parseInt( ( this.deltaTime / 1000 ) % 60 );
-			this.minutes = parseInt( ( this.deltaTime / ( 1000 * 60 ) ) );
+			const seconds = parseInt( ( this._deltaTime / 1000 ) % 60 );
+			const minutes = parseInt( ( this._deltaTime / ( 1000 * 60 ) ) );
 
-			this.converted = this.minutes + ':' + ( this.seconds < 10 ? '0' : '' ) + this.seconds;
+			this._converted = minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds;
 
 		}
 
 		setText() {
 
-			this.game.dom.timer.innerHTML = this.converted;
+			this._game.dom.timer.innerHTML = this._converted;
+
+		}
+
+		getDeltaTime() {
+
+			return this._deltaTime;
+
+		}
+
+		setDeltaTime( time ) {
+
+			this._deltaTime = time;
 
 		}
 
 	}
-
-	/*
-	 ██████ ██   ██ ███████  ██████ ██   ██     ████████ ██ ███    ███ ███████ ██████  
-	██      ██   ██ ██      ██      ██  ██         ██    ██ ████  ████ ██      ██   ██ 
-	██      ███████ █████   ██      █████          ██    ██ ██ ████ ██ █████   ██████  
-	██      ██   ██ ██      ██      ██  ██         ██    ██ ██  ██  ██ ██      ██   ██ 
-	 ██████ ██   ██ ███████  ██████ ██   ██        ██    ██ ██      ██ ███████ ██   ██ 
-
-	███    ██  ██████  ████████      ██████  ██ ██    ██ ██ ███    ██  ██████  
-	████   ██ ██    ██    ██        ██       ██ ██    ██ ██ ████   ██ ██       
-	██ ██  ██ ██    ██    ██        ██   ███ ██ ██    ██ ██ ██ ██  ██ ██   ███ 
-	██  ██ ██ ██    ██    ██        ██    ██ ██  ██  ██  ██ ██  ██ ██ ██    ██ 
-	██   ████  ██████     ██         ██████  ██   ████   ██ ██   ████  ██████  
-
-	██████  ███████  █████  ██          ██    ██  █████  ██      ██    ██ ███████ 
-	██   ██ ██      ██   ██ ██          ██    ██ ██   ██ ██      ██    ██ ██      
-	██████  █████   ███████ ██          ██    ██ ███████ ██      ██    ██ █████   
-	██   ██ ██      ██   ██ ██           ██  ██  ██   ██ ██      ██    ██ ██      
-	██   ██ ███████ ██   ██ ███████       ████   ██   ██ ███████  ██████  ███████ 
-
-	██████  ███████ ███████  ██████  ██████  ███████     ███████ ████████  █████  ██████  ████████ ██ ███    ██  ██████       ██████   █████  ███    ███ ███████ 
-	██   ██ ██      ██      ██    ██ ██   ██ ██          ██         ██    ██   ██ ██   ██    ██    ██ ████   ██ ██           ██       ██   ██ ████  ████ ██      
-	██████  █████   █████   ██    ██ ██████  █████       ███████    ██    ███████ ██████     ██    ██ ██ ██  ██ ██   ███     ██   ███ ███████ ██ ████ ██ █████   
-	██   ██ ██      ██      ██    ██ ██   ██ ██               ██    ██    ██   ██ ██   ██    ██    ██ ██  ██ ██ ██    ██     ██    ██ ██   ██ ██  ██  ██ ██      
-	██████  ███████ ██       ██████  ██   ██ ███████     ███████    ██    ██   ██ ██   ██    ██    ██ ██   ████  ██████       ██████  ██   ██ ██      ██ ███████ 
-	*/
-
-	class Game {
-
-	  constructor() {
-
-	    this.dom = {
-	      game: document.querySelector( '.ui__game' ),
-	      texts: document.querySelector( '.ui__texts' ),
-	      prefs: document.querySelector( '.ui__prefs' ),
-
-	      title: document.querySelector( '.text--title' ),
-	      note: document.querySelector( '.text--note' ),
-	      timer: document.querySelector( '.text--timer' ),
-
-	      buttons: {
-	        settings: document.querySelector( '.btn--settings' ),
-	        home: document.querySelector( '.btn--home' ),
-	      }
-	    };
-
-	    this.world = new CUBE.World( this );
-	    this.cube = new CUBE.Cube( this );
-	    this.controls = new CUBE.Controls( this );
-	    this.scrambler = new CUBE.Scrambler( this );
-	    this.transition = new CUBE.Transition( this );
-	    this.audio = new CUBE.Audio( this );
-	    this.timer = new CUBE.Timer( this );
-	    this.preferences = new CUBE.Preferences( this );
-	    this.icons = new CUBE.Icons();
-	    // this.confetti = new CUBE.Confetti( this );
-
-	    this.initStart();
-	    this.initPause();
-	    this.initPrefs();
-
-	    this.saved = this.cube.loadState();
-	    this.playing = false;
-
-	    this.transition.initialize();
-	    this.transition.cube( true );
-	    this.transition.float();
-
-	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
-	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
-
-	  }
-
-	  initStart() {
-
-	    let tappedTwice = false;
-
-	    const tapHandler = event => {
-
-	      event.preventDefault();
-
-	      if ( ! tappedTwice ) {
-
-	          tappedTwice = true;
-	          setTimeout( () => { tappedTwice = false; }, 300 );
-	          return false;
-
-	      }
-
-	      if ( this.playing || this.transition.active > 0 ) return;
-	      let duration = 0;
-
-	      if ( ! this.saved ) {
-
-	        this.scrambler.scramble();
-	        this.controls.scrambleCube( () => {} );
-
-	        duration = this.scrambler.converted.length * this.controls._scrambleSpeed;
-
-	      }
-
-	      // AKO JE IGRA U PROGRESU ONDA OVAJ TIMEOUT ZA TIMER
-	      // AKO SE SCRAMBLA POVECATI JOS TIMEOUT ZA TIMER DA GA POKAZE TEK POSLE SCRAMBLA
-	      this.transition.title( false );
-	      setTimeout( () => this.transition.timer( true ), 500 );
-
-	      this.transition.zoom( true, duration, () => {
-
-	        this.playing = true;
-	        this.controls.enable();
-	        this.timer.start( this.saved );
-	        this.saved = true;
-
-	      } );
-
-	    };
-
-	    this.dom.game.addEventListener( 'click', tapHandler, false );
-	    this.dom.game.addEventListener( 'touchstart', tapHandler, false );
-
-	  }
-
-	  initPause() {
-
-	    this.dom.buttons.home.onclick = () => {
-
-	      if ( !this.playing ) return;
-
-	      this.playing = false;
-	      this.controls.disable();
-
-	      this.transition.timer( false );
-	      setTimeout( () => this.transition.title( true ), 500 );
-
-	      this.transition.zoom( false, 0, () => {} );
-
-	    };
-
-	  }
-
-	  initPrefs() {
-
-	    const button = this.dom.buttons.settings;
-
-	    button.addEventListener( 'click', () => {
-
-	      if ( this.transition.active > 0 ) return;
-
-	      button.classList.toggle( 'active' );
-
-	      if ( button.classList.contains( 'active' ) ) {
-
-	        this.transition.cube( false );
-	        setTimeout( () => this.transition.preferences( true ), 1000 );
-
-	      } else {
-
-	        this.transition.preferences( false );
-	        setTimeout( () => this.transition.cube( true ), 500 );
-
-	      }
-
-	    }, false );
-
-	  }
-
-	}
-
-	class Icons {
-
-		constructor( options ) {
-
-			options = Object.assign( {
-				tagName: 'icon',
-				className: 'icon',
-				// styles: true,
-				observe: false,
-				convert: true,
-			}, options || {} );
-
-			this.tagName = options.tagName;
-			this.className = options.className;
-			this.svg = this.constructor.SVG;
-
-			this.svgTag = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
-			this.svgTag.setAttribute( 'class', this.className );
-
-			// if ( options.styles ) this.addStyles();
-			if ( options.convert ) this.convertAllIcons();
-
-			if ( options.observe ) {
-
-				const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-				this.observer = new MutationObserver( mutations => { this.convertAllIcons(); } );
-				this.observer.observe( document.documentElement, { childList: true, subtree: true } );
-
-			}
-
-			return this;
-
-		}
-
-		convertAllIcons() {
-
-			document.querySelectorAll( this.tagName ).forEach( icon => { this.convertIcon( icon ); } );
-
-		}
-
-		convertIcon( icon ) {
-
-			const svgData = this.svg[ icon.attributes[0].localName ];
-
-			if ( typeof svgData === 'undefined' ) return;
-
-			const svg = this.svgTag.cloneNode( true );
-			const viewBox = svgData.viewbox.split( ' ' );
-
-			svg.setAttributeNS( null, 'viewBox', svgData.viewbox );
-			svg.style.width = viewBox[2] / viewBox[3] + 'em';
-			svg.style.height = '1em';
-			svg.innerHTML = svgData.content;
-
-			icon.parentNode.replaceChild( svg, icon );
-
-		}
-
-		// addStyles() {
-
-		// 	const style = document.createElement( 'style' );
-		// 	style.innerHTML = `
-		// 		.${this.className} {
-		// 			display: inline-block;
-		// 			font-size: inherit;
-		// 			overflow: visible;
-		// 			vertical-align: -0.125em;
-		// 			preserveAspectRatio: none;
-		// 		}`;
-		// 	document.head.appendChild( style );
-
-		// }
-
-	}
-
-	Icons.SVG = {
-	  'audio': {
-	    viewbox: '0 0 26712 21370',
-	    content: '<g fill="currentColor"><path d="M11966 392l-4951 4950 -5680 0c-738,0 -1336,598 -1336,1336l0 8014c0,737 598,1336 1336,1336l5680 0 4951 4950c836,836 2280,249 2280,-944l0 -18696c0,-1194 -1445,-1780 -2280,-944z"/><path d="M18823 6407c-644,-352 -1457,-120 -1815,526 -356,646 -120,1458 526,1815 718,394 1165,1137 1165,1937 0,800 -446,1543 -1164,1937 -646,357 -882,1169 -526,1815 358,649 1171,879 1815,526 1571,-865 2547,-2504 2547,-4278 0,-1774 -976,-3413 -2548,-4277l0 0z"/><path d="M26712 10685c0,-3535 -1784,-6786 -4773,-8695 -623,-397 -1449,-213 -1843,415 -395,628 -210,1459 412,1857 2212,1413 3533,3814 3533,6423 0,2609 -1321,5010 -3533,6423 -623,397 -807,1228 -412,1856 362,577 1175,843 1843,415 2989,-1909 4773,-5159 4773,-8695z"/></g>',
-	  },
-	  'settings': {
-	    viewbox: '0 0 512 512',
-	    content: '<path fill="currentColor" d="M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z" class=""></path>',
-	  },
-	  'home': {
-	    viewbox: '0 0 576 512',
-	    content: '<path fill="currentColor" d="M488 312.7V456c0 13.3-10.7 24-24 24H348c-6.6 0-12-5.4-12-12V356c0-6.6-5.4-12-12-12h-72c-6.6 0-12 5.4-12 12v112c0 6.6-5.4 12-12 12H112c-13.3 0-24-10.7-24-24V312.7c0-3.6 1.6-7 4.4-9.3l188-154.8c4.4-3.6 10.8-3.6 15.3 0l188 154.8c2.7 2.3 4.3 5.7 4.3 9.3zm83.6-60.9L488 182.9V44.4c0-6.6-5.4-12-12-12h-56c-6.6 0-12 5.4-12 12V117l-89.5-73.7c-17.7-14.6-43.3-14.6-61 0L4.4 251.8c-5.1 4.2-5.8 11.8-1.6 16.9l25.5 31c4.2 5.1 11.8 5.8 16.9 1.6l235.2-193.7c4.4-3.6 10.8-3.6 15.3 0l235.2 193.7c5.1 4.2 12.7 3.5 16.9-1.6l25.5-31c4.2-5.2 3.4-12.7-1.7-16.9z" class=""></path>',
-	  },
-	  'trophy': {
-	  	viewbox: '0 0 576 512',
-	  	content: '<path fill="currentColor" d="M552 64H448V24c0-13.3-10.7-24-24-24H152c-13.3 0-24 10.7-24 24v40H24C10.7 64 0 74.7 0 88v56c0 66.5 77.9 131.7 171.9 142.4C203.3 338.5 240 360 240 360v72h-48c-35.3 0-64 20.7-64 56v12c0 6.6 5.4 12 12 12h296c6.6 0 12-5.4 12-12v-12c0-35.3-28.7-56-64-56h-48v-72s36.7-21.5 68.1-73.6C498.4 275.6 576 210.3 576 144V88c0-13.3-10.7-24-24-24zM64 144v-16h64.2c1 32.6 5.8 61.2 12.8 86.2-47.5-16.4-77-49.9-77-70.2zm448 0c0 20.2-29.4 53.8-77 70.2 7-25 11.8-53.6 12.8-86.2H512v16zm-127.3 4.7l-39.6 38.6 9.4 54.6c1.7 9.8-8.7 17.2-17.4 12.6l-49-25.8-49 25.8c-8.8 4.6-19.1-2.9-17.4-12.6l9.4-54.6-39.6-38.6c-7.1-6.9-3.2-19 6.7-20.5l54.8-8 24.5-49.6c4.4-8.9 17.1-8.9 21.5 0l24.5 49.6 54.8 8c9.6 1.5 13.5 13.6 6.4 20.5z" class=""></path>',
-	  }
-	};
 
 	class Audio {
 
@@ -3030,209 +2670,242 @@
 
 	}
 
-	class Confetti extends Animation {
-
-	  constructor( game ) {
-
-	    super( false );
-
-	    this.name = 'Confetti';
-
-	    this._game = game;
-
-	    this._count = 100;
-	    this._particles = [];
-
-	    this._object = new THREE.Object3D();
-	    this._game.world.scene.add( this._object );
-
-	    this._geometry = new THREE.PlaneGeometry( 1, 1 );
-	    this._material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
-	    this._opacity = 0;
-
-	    this._particleOptions = {
-	      geometry: this._geometry,
-	      material: this._material,
-	      holder: this._object,
-	      velocity: { min: 5, max: 15 },
-	      revolution: { min: 0, max: 0.05 },
-	      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 45 },
-	      radius: { min: 10, max: 15 },
-	      mass: { min: 0.05, max: 0.1 },
-	      gravity: -9.81,
-	      geometryScale: 0.01, // used to scale in threejs world
-	      positionScale: 0.3333, // used to scale in threejs world
-	      colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
-	    };
-
-	    let i = this._count;
-	    while ( i-- )  this._particles.push( new Particle( this._particleOptions ) );
-
-	  }
-
-	  start() {
-
-	    this._opacity = 0;
-	    this._done = 0;
-	    this._time = performance.now();
-	    super.start();
-
-	  }
-
-	  stop() {
-
-	    super.stop();
-
-	    let i = this._count;
-	    while ( i-- ) this._particles[ i ].reset();
-
-	  }
-
-	  update() {
-
-	    const now = performance.now();
-	    const delta = now - this._time;
-	    this._time = now;
-
-	    this._opacity += ( 1 - this._opacity ) * 0.1;
-
-	    let i = this._count;
-	    while ( i-- ) {
-
-	      if ( this._particles[ i ].update( delta, this._opacity ) ) this._done++;
-
-	    }
-
-	    if ( this._done == this._count) this.stop();
-
-	  }
-	  
-	}
-
 	const rnd = THREE.Math.randFloat;
 
-	class Particle {
+	class IconsConverter {
 
-	  constructor( options ) {
+		constructor( options ) {
 
-	    this._options = options;
+			options = Object.assign( {
+				tagName: 'icon',
+				className: 'icon',
+				styles: false,
+	      icons: {},
+				observe: false,
+				convert: false,
+			}, options || {} );
 
-	    this._velocity = new THREE.Vector3();
-	    this._force = new THREE.Vector3();
+			this._tagName = options.tagName;
+			this._className = options.className;
+			this._icons = options.icons;
 
-	    this._mesh = new THREE.Mesh( options.geometry, options.material.clone() );
+			this._svgTag = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
+			this._svgTag.setAttribute( 'class', this._className );
 
-	    options.holder.add( this._mesh );
+			if ( options.styles ) this.addStyles();
+			if ( options.convert ) this.convertAllIcons();
 
-	    this.reset();
+			if ( options.observe ) {
 
-	    this._ag = options.gravity; // -9.81
+				const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+				this._observer = new MutationObserver( mutations => { this.convertAllIcons(); } );
+				this._observer.observe( document.documentElement, { childList: true, subtree: true } );
 
-	    return this;
+			}
 
-	  }
+			return this;
 
-	  reset() {
+		}
 
-	    const axis = this._velocity.clone();
+		convertAllIcons() {
 
-	    this._velocity.copy( this._options.angle.direction ).multiplyScalar( rnd( this._options.velocity.min, this._options.velocity.max ) );
-	    this._velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
-	    this._velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+			document.querySelectorAll( this._tagName ).forEach( icon => { this.convertIcon( icon ); } );
 
-	    this._color = new THREE.Color( this._options.colors[ Math.floor( Math.random() * this._options.colors.length ) ] );
+		}
 
-	    this._revolution = new THREE.Vector3(
-	      rnd( this._options.revolution.min, this._options.revolution.max ),
-	      rnd( this._options.revolution.min, this._options.revolution.max ),
-	      rnd( this._options.revolution.min, this._options.revolution.max )
-	    );
+		convertIcon( icon ) {
 
-	    this._mesh.position.set( 0, 0, 0 );
+			const svgData = this._icons[ icon.attributes[0].localName ];
 
-	    this._positionScale = this._options.positionScale;
-	    this._mass = rnd( this._options.mass.min, this._options.mass.max );
-	    this._radius = rnd( this._options.radius.min, this._options.radius.max );
-	    this._scale = this._radius * this._options.geometryScale;
+			if ( typeof svgData === 'undefined' ) return;
 
-	    this._mesh.scale.set( this._scale, this._scale, this._scale );
-	    this._mesh.material.color.set( this._color );
-	    this._mesh.material.opacity = 0;
-	    this._mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 );
+			const svg = this._svgTag.cloneNode( true );
+			const viewBox = svgData.viewbox.split( ' ' );
 
-	    this._physics = this.getPhysics( this._radius );
+			svg.setAttributeNS( null, 'viewBox', svgData.viewbox );
+			svg.style.width = viewBox[2] / viewBox[3] + 'em';
+			svg.style.height = '1em';
+			svg.innerHTML = svgData.content;
 
-	    this._done = false;
+			icon.parentNode.replaceChild( svg, icon );
 
-	  }
+		}
 
-	  update( delta, opacity, complete ) {
+		addStyles() {
 
-	    if ( this._done ) return false;
+			const style = document.createElement( 'style' );
+	    style.innerHTML = `.${this._className} { display: inline-block; font-size: inherit; overflow: visible; vertical-align: -0.125em; preserveAspectRatio: none; }`;
+			document.head.appendChild( style );
 
-	    delta = 16 / 1000;
+		}
 
-	    this._force.set(
-	      this.getForce( this._velocity.x ),
-	      this.getForce( this._velocity.y ) + this._ag,
-	      this.getForce( this._velocity.z )
-	    );
+	}
 
-	    this._velocity.add( this._force.multiplyScalar( delta ) );
+	const Icons = new IconsConverter( {
 
-	    this._mesh.position.add( this._velocity.clone().multiplyScalar( delta * this._positionScale ) );
-	    this._mesh.rotateX( this._revolution.x ).rotateY( this._revolution.y ).rotateZ( this._revolution.y );
-	    this._mesh.material.opacity = opacity * this.getProgressInRange( this._mesh.position.y, -4, -2 );
-
-	    if ( this._mesh.position.y < -4 ) { 
-	      
-	      this._done = true;
-	      return true;
-
+	  icons: {
+	    'audio': {
+	      viewbox: '0 0 26712 21370',
+	      content: '<g fill="currentColor"><path d="M11966 392l-4951 4950 -5680 0c-738,0 -1336,598 -1336,1336l0 8014c0,737 598,1336 1336,1336l5680 0 4951 4950c836,836 2280,249 2280,-944l0 -18696c0,-1194 -1445,-1780 -2280,-944z"/><path d="M18823 6407c-644,-352 -1457,-120 -1815,526 -356,646 -120,1458 526,1815 718,394 1165,1137 1165,1937 0,800 -446,1543 -1164,1937 -646,357 -882,1169 -526,1815 358,649 1171,879 1815,526 1571,-865 2547,-2504 2547,-4278 0,-1774 -976,-3413 -2548,-4277l0 0z"/><path d="M26712 10685c0,-3535 -1784,-6786 -4773,-8695 -623,-397 -1449,-213 -1843,415 -395,628 -210,1459 412,1857 2212,1413 3533,3814 3533,6423 0,2609 -1321,5010 -3533,6423 -623,397 -807,1228 -412,1856 362,577 1175,843 1843,415 2989,-1909 4773,-5159 4773,-8695z"/></g>',
+	    },
+	    'settings': {
+	      viewbox: '0 0 512 512',
+	      content: '<path fill="currentColor" d="M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z" class=""></path>',
+	    },
+	    'home': {
+	      viewbox: '0 0 576 512',
+	      content: '<path fill="currentColor" d="M488 312.7V456c0 13.3-10.7 24-24 24H348c-6.6 0-12-5.4-12-12V356c0-6.6-5.4-12-12-12h-72c-6.6 0-12 5.4-12 12v112c0 6.6-5.4 12-12 12H112c-13.3 0-24-10.7-24-24V312.7c0-3.6 1.6-7 4.4-9.3l188-154.8c4.4-3.6 10.8-3.6 15.3 0l188 154.8c2.7 2.3 4.3 5.7 4.3 9.3zm83.6-60.9L488 182.9V44.4c0-6.6-5.4-12-12-12h-56c-6.6 0-12 5.4-12 12V117l-89.5-73.7c-17.7-14.6-43.3-14.6-61 0L4.4 251.8c-5.1 4.2-5.8 11.8-1.6 16.9l25.5 31c4.2 5.1 11.8 5.8 16.9 1.6l235.2-193.7c4.4-3.6 10.8-3.6 15.3 0l235.2 193.7c5.1 4.2 12.7 3.5 16.9-1.6l25.5-31c4.2-5.2 3.4-12.7-1.7-16.9z" class=""></path>',
+	    },
+	    'trophy': {
+	      viewbox: '0 0 576 512',
+	      content: '<path fill="currentColor" d="M552 64H448V24c0-13.3-10.7-24-24-24H152c-13.3 0-24 10.7-24 24v40H24C10.7 64 0 74.7 0 88v56c0 66.5 77.9 131.7 171.9 142.4C203.3 338.5 240 360 240 360v72h-48c-35.3 0-64 20.7-64 56v12c0 6.6 5.4 12 12 12h296c6.6 0 12-5.4 12-12v-12c0-35.3-28.7-56-64-56h-48v-72s36.7-21.5 68.1-73.6C498.4 275.6 576 210.3 576 144V88c0-13.3-10.7-24-24-24zM64 144v-16h64.2c1 32.6 5.8 61.2 12.8 86.2-47.5-16.4-77-49.9-77-70.2zm448 0c0 20.2-29.4 53.8-77 70.2 7-25 11.8-53.6 12.8-86.2H512v16zm-127.3 4.7l-39.6 38.6 9.4 54.6c1.7 9.8-8.7 17.2-17.4 12.6l-49-25.8-49 25.8c-8.8 4.6-19.1-2.9-17.4-12.6l9.4-54.6-39.6-38.6c-7.1-6.9-3.2-19 6.7-20.5l54.8-8 24.5-49.6c4.4-8.9 17.1-8.9 21.5 0l24.5 49.6 54.8 8c9.6 1.5 13.5 13.6 6.4 20.5z" class=""></path>',
 	    }
+	  },
 
-	    return false;
+	  convert: true,
+
+	} );
+
+	class Game {
+
+	  constructor() {
+
+	    this.dom = {
+	      game: document.querySelector( '.ui__game' ),
+	      texts: document.querySelector( '.ui__texts' ),
+	      prefs: document.querySelector( '.ui__prefs' ),
+
+	      title: document.querySelector( '.text--title' ),
+	      note: document.querySelector( '.text--note' ),
+	      timer: document.querySelector( '.text--timer' ),
+
+	      buttons: {
+	        settings: document.querySelector( '.btn--settings' ),
+	        home: document.querySelector( '.btn--home' ),
+	      }
+	    };
+
+	    this.world = new World( this );
+	    this.cube = new Cube( this );
+	    this.controls = new Controls( this );
+	    this.scrambler = new Scrambler( this );
+	    this.transition = new Transition( this );
+	    this.audio = new Audio( this );
+	    this.timer = new Timer( this );
+	    this.preferences = new Preferences( this );
+	    // this.confetti = new Confetti( this );
+
+	    this.initStart();
+	    this.initPause();
+	    this.initPrefs();
+
+	    this.saved = this.cube.loadState();
+	    this.playing = false;
+
+	    this.transition.initialize();
+	    this.transition.cube( true );
+	    this.transition.float();
+
+	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
+	    this.controls.onSolved = () => { this.timer.stop(); this.cube.clearState(); };
 
 	  }
 
-	  getPhysics( r ) {
+	  initStart() {
 
-	    const Cd = 0.47;
-	    const rho = 1.22;
-	    const A = Math.PI * r * r / 10000;
+	    let tappedTwice = false;
 
-	    return -0.5 * Cd * rho * A;
+	    const tapHandler = event => {
+
+	      event.preventDefault();
+
+	      if ( ! tappedTwice ) {
+
+	          tappedTwice = true;
+	          setTimeout( () => { tappedTwice = false; }, 300 );
+	          return false;
+
+	      }
+
+	      if ( this.playing || this.transition.active > 0 ) return;
+	      let duration = 0;
+
+	      if ( ! this.saved ) {
+
+	        this.scrambler.scramble();
+	        this.controls.scrambleCube( () => {} );
+
+	        duration = this.scrambler.converted.length * this.controls._scrambleSpeed;
+
+	      }
+
+	      // AKO JE IGRA U PROGRESU ONDA OVAJ TIMEOUT ZA TIMER
+	      // AKO SE SCRAMBLA POVECATI JOS TIMEOUT ZA TIMER DA GA POKAZE TEK POSLE SCRAMBLA
+	      this.transition.title( false );
+	      setTimeout( () => this.transition.timer( true ), 500 );
+
+	      this.transition.zoom( true, duration, () => {
+
+	        this.playing = true;
+	        this.controls.enable();
+	        this.timer.start( this.saved );
+	        this.saved = true;
+
+	      } );
+
+	    };
+
+	    this.dom.game.addEventListener( 'click', tapHandler, false );
+	    this.dom.game.addEventListener( 'touchstart', tapHandler, false );
 
 	  }
 
-	  getForce( velocity ) {
+	  initPause() {
 
-	    return this._physics * velocity * velocity * Math.sign( velocity ) / this._mass;
+	    this.dom.buttons.home.onclick = () => {
+
+	      if ( !this.playing ) return;
+
+	      this.playing = false;
+	      this.controls.disable();
+
+	      this.transition.timer( false );
+	      setTimeout( () => this.transition.title( true ), 500 );
+
+	      this.transition.zoom( false, 0, () => {} );
+
+	    };
 
 	  }
 
-	  getProgressInRange( value, start, end ) {
+	  initPrefs() {
 
-	    return Math.min( Math.max( (value - start) / (end - start), 0 ), 1 );
-	    
+	    const button = this.dom.buttons.settings;
+
+	    button.addEventListener( 'click', () => {
+
+	      if ( this.transition.active > 0 ) return;
+
+	      button.classList.toggle( 'active' );
+
+	      if ( button.classList.contains( 'active' ) ) {
+
+	        this.transition.cube( false );
+	        setTimeout( () => this.transition.preferences( true ), 1000 );
+
+	      } else {
+
+	        this.transition.preferences( false );
+	        setTimeout( () => this.transition.cube( true ), 500 );
+
+	      }
+
+	    }, false );
+
 	  }
 
 	}
 
-	exports.World = World;
-	exports.Cube = Cube;
-	exports.Controls = Controls;
-	exports.Scrambler = Scrambler;
-	exports.Tween = Tween;
-	exports.Easing = Easing;
-	exports.Transition = Transition;
-	exports.Timer = Timer;
-	exports.Game = Game;
-	exports.Icons = Icons;
-	exports.Audio = Audio;
-	exports.Preferences = Preferences;
-	exports.Confetti = Confetti;
+	const game = new Game();
 
-	Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
+}());

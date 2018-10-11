@@ -1,12 +1,10 @@
-import { Animation } from './plugins/Animation.js';
+import { Animation } from './Animation.js';
 
 class World extends Animation {
 
 	constructor( game ) {
 
 		super( true );
-
-		this.name = 'RENDERER';
 
 		this.game = game;
 
@@ -23,7 +21,6 @@ class World extends Animation {
 		this.fov = 10;
 
 		this.createLights();
-		this.onUpdate = () => {}; // <===--- FOR DEBUGGING
 
 		this.resize();
 		window.addEventListener( 'resize', () => this.resize(), false );
@@ -33,7 +30,6 @@ class World extends Animation {
 	update() {
 
 		this.renderer.render( this.scene, this.camera );
-		this.onUpdate(); // <===--- FOR DEBUGGING
 
 	}
 

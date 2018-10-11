@@ -1,76 +1,54 @@
-// <===--- FOR DEBUGGING BLOCK
-const div = document.createElement( 'div' );
-div.innerHTML = 'Transitions: <i></i><div></div>';
-document.body.appendChild( div );
-const transitionCount = div.querySelector( 'i' );
-div.classList.add( 'animation-test' );
-div.style.cssText = 'position: fixed; z-index: 9999; right: 10px; top: 10px; font-size: 0.5em';
-const transitionInfo = div.querySelector( 'div' );
-transitionInfo.style.cssText = 'opacity: 0.5; font-size: 0.66em;'
-// <===--- FOR DEBUGGING BLOCK
-
 import { Tween, Easing } from './Tween.js';
 
 class Transition {
 
   constructor( game ) {
 
-    this.game = game;
+    this._game = game;
 
-    this.tweens = {};
-    this.durations = {};
-    this.data = {};
+    this._tweens = {};
+    this._durations = {};
+    this._data = {};
 
-    this.active = 0;
-    this.activeNames = []; // <===--- FOR DEBUGGING
-
-    this.game.world.onUpdate = () => { // <===--- FOR DEBUGGING
-      transitionCount.innerHTML = this.active; // <===--- FOR DEBUGGING
-      transitionInfo.innerHTML = ''; // <===--- FOR DEBUGGING
-      this.activeNames.forEach( name => {// <===--- FOR DEBUGGING
-        transitionInfo.innerHTML += name + '<br>'; // <===--- FOR DEBUGGING
-      } );// <===--- FOR DEBUGGING
-    } // <===--- FOR DEBUGGING
+    this._activeTransitions = 0;
 
   }
 
   initialize() {
 
-    this.data.cubeY = -0.2;
-    this.data.cameraZoom = 0.85;
+    this._data.cubeY = -0.2;
+    this._data.cameraZoom = 0.85;
 
-    this.game.controls.disable();
+    this._game.controls.disable();
 
-    this.game.cube.object.position.y = this.data.cubeY;
-    this.game.controls.edges.position.y = this.data.cubeY;
-    this.game.cube.animator.position.y = 4;
-    this.game.cube.animator.rotation.x = - Math.PI / 3;
-    this.game.world.camera.zoom = this.data.cameraZoom;
-    this.game.world.camera.updateProjectionMatrix();
+    this._game.cube.object.position.y = this._data.cubeY;
+    this._game.controls.edges.position.y = this._data.cubeY;
+    this._game.cube.animator.position.y = 4;
+    this._game.cube.animator.rotation.x = - Math.PI / 3;
+    this._game.world.camera.zoom = this._data.cameraZoom;
+    this._game.world.camera.updateProjectionMatrix();
 
   }
 
   cube( show ) {
 
-    this.active++;
-    this.activeNames.push( 'Show/Hide Cube' );
+    this._activeTransitions++;
 
-    if ( typeof this.tweens.cube !== 'undefined' ) this.tweens.cube.stop();
+    if ( typeof this._tweens.cube !== 'undefined' ) this._tweens.cube.stop();
 
-    const currentY = this.game.cube.animator.position.y;
-    const currentRotation = this.game.cube.animator.rotation.x;
+    const currentY = this._game.cube.animator.position.y;
+    const currentRotation = this._game.cube.animator.rotation.x;
 
-    this.tweens.cube = new Tween( {
-      name: 'Show/Hide Cube',
+    this._tweens.cube = new Tween( {
       duration: show ? 3000 : 1250,
       easing: show ? Easing.Elastic.Out( 0.8, 0.6 ) : Easing.Back.In( 1 ),
       onUpdate: tween => {
 
-        this.game.cube.animator.position.y = show
+        this._game.cube.animator.position.y = show
           ? ( 1 - tween.value ) * 4
           : currentY + tween.value * 4;
 
-        this.game.cube.animator.rotation.x = show
+        this._game.cube.animator.rotation.x = show
           ? ( 1 - tween.value ) * Math.PI / 3
           : currentRotation + tween.value * - Math.PI / 3;
 
@@ -79,37 +57,31 @@ class Transition {
 
     setTimeout( () => {
 
-      if ( this.game.playing ) this.timer( show );
+      if ( this._game.playing ) this.timer( show );
       else this.title( show );
 
     }, show ? 700 : 0 );
 
-    this.durations.cube = show ? 1500 : 1500;
+    this._durations.cube = show ? 1500 : 1500;
 
-    setTimeout( () => {
-
-      this.active--;
-      this.activeNames.splice( this.activeNames.indexOf( 'Show/Hide Cube' ), 1 );
-
-    }, this.durations.cube );
+    setTimeout( () => this._activeTransitions--, this._durations.cube );
 
   }
 
   float() {
 
-    if ( typeof this.tweens.float !== 'undefined' ) this.tweens.float.stop();
+    if ( typeof this._tweens.float !== 'undefined' ) this._tweens.float.stop();
 
-    this.tweens.float = new Tween( {
-      name: 'Float Cube',
+    this._tweens.float = new Tween( {
       duration: 1500,
       easing: Easing.Sine.InOut(),
       yoyo: true,
       onUpdate: tween => {
 
-        this.game.cube.holder.position.y = (- 0.02 + tween.value * 0.04); 
-        this.game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
-        this.game.cube.holder.rotation.z = - this.game.cube.holder.rotation.x;
-        this.game.cube.holder.rotation.y = this.game.cube.holder.rotation.x;
+        this._game.cube.holder.position.y = (- 0.02 + tween.value * 0.04); 
+        this._game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
+        this._game.cube.holder.rotation.z = - this._game.cube.holder.rotation.x;
+        this._game.cube.holder.rotation.y = this._game.cube.holder.rotation.x;
 
       },
     } );
@@ -118,69 +90,60 @@ class Transition {
 
   zoom( game, time, callback ) {
 
-    this.active++;
-    this.activeNames.push( 'Zoom/Rotate Cube' );
+    this._activeTransitions++;
 
-    const zoom = ( game ) ? 1 : this.data.cameraZoom;
-    const cubeY = ( game ) ? -0.3 : this.data.cubeY;
+    const zoom = ( game ) ? 1 : this._data.cameraZoom;
+    const cubeY = ( game ) ? -0.3 : this._data.cubeY;
     const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
     const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
     const easing = Easing.Power.InOut( ( time > 0 ) ? 2 : 3 );
 
-    this.tweens.zoom = new Tween( {
-      name: 'Zooming Cube',
-      target: this.game.world.camera,
+    this._tweens.zoom = new Tween( {
+      target: this._game.world.camera,
       duration: duration,
       easing: easing,
       to: { zoom: zoom },
-      onUpdate: () => { this.game.world.camera.updateProjectionMatrix(); },
+      onUpdate: () => { this._game.world.camera.updateProjectionMatrix(); },
     } );
 
-    this.tweens.rotate = new Tween( {
-      name: 'Rotating Cube',
-      target: this.game.cube.animator.rotation,
+    this._tweens.rotate = new Tween( {
+      target: this._game.cube.animator.rotation,
       duration: duration,
       easing: easing,
       to: { y: - Math.PI * 2 * rotations },
-      onComplete: () => { this.game.cube.animator.rotation.y = 0; callback(); },
+      onComplete: () => { this._game.cube.animator.rotation.y = 0; callback(); },
     } );
 
-    // this.tweens.cubeY = new Tween( {
-    //   target: this.data,
+    // this._tweens.cubeY = new Tween( {
+    //   target: this._data,
     //   duration: duration,
     //   easing: easing,
     //   to: { cubeY: ( game ) ? -0.3 : -0.2 },
     //   onUpdate: () => {
 
-    //     this.game.cube.object.position.y = this.data.cubeY;
-    //     this.game.controls.edges.position.y = this.data.cubeY;
+    //     this._game.cube.object.position.y = this._data.cubeY;
+    //     this._game.controls.edges.position.y = this._data.cubeY;
 
     //   },
     // } );
 
-    this.durations.zoom = duration;
+    this._durations.zoom = duration;
 
-    setTimeout( () => {
-
-      this.active--;
-      this.activeNames.splice( this.activeNames.indexOf( 'Zoom/Rotate Cube' ), 1 );
-
-    }, this.durations.zoom );
+    setTimeout( () => this._activeTransitions--, this._durations.zoom );
 
   }
 
   preferences( show ) {
 
-    this.active++;
-    this.activeNames.push( 'Preferences' );
+    this._activeTransitions++;
 
-    if ( typeof this.tweens.range === 'undefined' ) this.tweens.range = [];  
-    else this.tweens.range.forEach( tween => { tween.stop(); tween = null; } )
+    if ( typeof this._tweens.range === 'undefined' ) this._tweens.range = [];  
+    else this._tweens.range.forEach( tween => { tween.stop(); tween = null; } )
 
     let tweenId = -1;
     let listMax = 0;
 
-    const ranges = this.game.dom.prefs.querySelectorAll( '.range' );
+    const ranges = this._game.dom.prefs.querySelectorAll( '.range' );
     const easing = show ? Easing.Power.Out(2) : Easing.Power.In(3);
 
     ranges.forEach( ( range, rangeIndex ) => {
@@ -197,8 +160,7 @@ class Transition {
       handle.style.opacity = show ? 0 : 1;
       handle.style.pointerEvents = show ? 'all' : 'none';
 
-      this.tweens.range[ tweenId++ ] = new Tween( {
-        name: 'Range Label',
+      this._tweens.range[ tweenId++ ] = new Tween( {
         delay: show ? delay : delay,
         duration: 400,
         easing: easing,
@@ -213,8 +175,7 @@ class Transition {
         }
       } );
 
-      this.tweens.range[ tweenId++ ] = new Tween( {
-        name: 'Range Track',
+      this._tweens.range[ tweenId++ ] = new Tween( {
         delay: show ? delay + 100 : delay,
         duration: 400,
         easing: easing,
@@ -230,8 +191,7 @@ class Transition {
         }
       } );
 
-      this.tweens.range[ tweenId++ ] = new Tween( {
-        name: 'Range Handle',
+      this._tweens.range[ tweenId++ ] = new Tween( {
         delay: show ? delay + 100 : delay,
         duration: 400,
         easing: easing,
@@ -251,8 +211,7 @@ class Transition {
 
         listItem.style.opacity = show ? 0 : 1;
 
-        this.tweens.range[ tweenId++ ] = new Tween( {
-          name: 'Range List',
+        this._tweens.range[ tweenId++ ] = new Tween( {
           delay: show ? delay + 200 + labelIndex * 50 : delay,
           duration: 400,
           easing: easing,
@@ -275,25 +234,19 @@ class Transition {
 
     } );
 
-    this.durations.preferences = show
+    this._durations.preferences = show
       ? ( ( ranges.length - 1 ) * 100 ) + 200 + listMax * 50 + 400
       : ( ( ranges.length - 1 ) * 100 ) + 400;
 
-    setTimeout( () => {
-
-      this.active--;
-      this.activeNames.splice( this.activeNames.indexOf( 'Preferences' ), 1 );
-
-    }, this.durations.preferences );
+    setTimeout( () => this._activeTransitions--, this._durations.preferences );
 
   }
 
   title( show ) {
 
-    this.active++;
-    this.activeNames.push( 'Title' );
+    this._activeTransitions++;
 
-    const title = this.game.dom.title;
+    const title = this._game.dom.title;
 
     if ( title.querySelector( 'span i' ) === null )
       title.querySelectorAll( 'span' ).forEach( span => this.splitLetters( span ) );
@@ -304,10 +257,9 @@ class Transition {
 
     title.style.opacity = 1;
 
-    const note = this.game.dom.note;
+    const note = this._game.dom.note;
 
-    this.tweens.title[ letters.length ] = new Tween( {
-      name: 'Blinking text',
+    this._tweens.title[ letters.length ] = new Tween( {
       target: note.style,
       easing: Easing.Sine.InOut(),
       duration: show ? 800 : 400,
@@ -316,32 +268,26 @@ class Transition {
       to: { opacity: show ? 1 : 0 },
     } );
 
-    setTimeout( () => {
-
-      this.active--;
-      this.activeNames.splice( this.activeNames.indexOf( 'Title' ), 1 );
-
-    }, this.durations.title );
+    setTimeout( () => this._activeTransitions--, this._durations.title );
 
   }
 
   timer( show ) {
 
-    this.active++;
-    this.activeNames.push( 'Timer' );
+    this._activeTransitions++;
 
     if ( ! show ) {
 
-      this.game.controls.disable();
-      this.game.timer.stop();
+      this._game.controls.disable();
+      this._game.timer.stop();
 
     }
 
-    const timer = this.game.dom.timer;
+    const timer = this._game.dom.timer;
 
     timer.style.opacity = 0;
-    this.game.timer.convert();
-    this.game.timer.setText();
+    this._game.timer.convert();
+    this._game.timer.setText();
 
     this.splitLetters( timer );
     const letters = timer.querySelectorAll( 'i' );
@@ -349,19 +295,14 @@ class Transition {
 
     timer.style.opacity = 1;
 
-    if ( show && this.game.playing ) setTimeout( () => {
+    if ( show && this._game.playing ) setTimeout( () => {
 
-      this.game.controls.enable();
-      this.game.timer.start( true );
+      this._game.controls.enable();
+      this._game.timer.start( true );
 
     }, 1500 );
 
-    setTimeout( () => {
-
-      this.active--;
-      this.activeNames.splice( this.activeNames.indexOf( 'Timer' ), 1 );
-
-    }, this.durations.timer );
+    setTimeout( () => this._activeTransitions--, this._durations.timer );
 
   }
 
@@ -387,15 +328,14 @@ class Transition {
 
   flipLetters( type, letters, show ) {
 
-    if ( typeof this.tweens[ type ] === 'undefined' ) this.tweens[ type ] = [];  
-    else this.tweens[ type ].forEach( tween => { tween.stop(); tween = null; } )
+    if ( typeof this._tweens[ type ] === 'undefined' ) this._tweens[ type ] = [];  
+    else this._tweens[ type ].forEach( tween => { tween.stop(); tween = null; } )
 
     letters.forEach( ( letter, index ) => {
 
       letter.style.opacity = show ? 0 : 1;
 
-      this.tweens[ type ][ index ] = new Tween( {
-        name: 'Flip Letters',
+      this._tweens[ type ][ index ] = new Tween( {
         easing: Easing.Sine.Out(),
         duration: show ? 800 : 400,
         delay: index * 50,
@@ -411,7 +351,7 @@ class Transition {
 
     } );
 
-    this.durations[ type ] = ( letters.length - 1 ) * 50 + ( show ? 800 : 400 );
+    this._durations[ type ] = ( letters.length - 1 ) * 50 + ( show ? 800 : 400 );
 
   }
 

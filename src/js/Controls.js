@@ -1,5 +1,5 @@
 import { Tween, Easing } from './Tween.js';
-import { Draggable } from './plugins/Draggable.js';
+import { Draggable } from './Draggable.js';
 
 const STILL = 0;
 const PREPARING = 1;
@@ -80,7 +80,7 @@ class Controls {
         this._dragNormal = edgeIntersect.face.normal.round();
         this._flipType = 'layer';
 
-        this.attach( this.helper, this.game.controls.edges )
+        this.attach( this.helper, this.edges )
 
         this.helper.rotation.set( 0, 0, 0 );
         this.helper.position.set( 0, 0, 0 );
@@ -88,7 +88,7 @@ class Controls {
         this.helper.translateZ( 0.5 );
         this.helper.updateMatrixWorld();
 
-        this.detach( this.helper, this.game.controls.edges );
+        this.detach( this.helper, this.edges );
 
       } else {
 

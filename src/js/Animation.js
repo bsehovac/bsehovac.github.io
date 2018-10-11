@@ -1,14 +1,3 @@
-// <===--- FOR DEBUGGING BLOCK
-const div = document.createElement( 'div' );
-div.innerHTML = 'Animations: <i></i><div></div>';
-document.body.appendChild( div );
-const animationCount = div.querySelector( 'i' );
-div.classList.add( 'animation-test' );
-div.style.cssText = 'position: fixed; z-index: 9999; left: 10px; top: 10px; font-size: 0.5em';
-const animationInfo = div.querySelector( 'div' );
-animationInfo.style.cssText = 'opacity: 0.5; font-size: 0.66em;'
-// <===--- FOR DEBUGGING BLOCK
-
 class AnimationEngine {
 
   constructor() {
@@ -35,15 +24,7 @@ class AnimationEngine {
     const delta = now - this.time
     this.time = now;
 
-    animationCount.innerHTML = i; // <===--- FOR DEBUGGING
-    animationInfo.innerHTML = ''; // <===--- FOR DEBUGGING
-
-    while ( i-- ) {
-
-      animationInfo.innerHTML += this.animations[ this.ids[ i ] ].name + '<br>'; // <===--- FOR DEBUGGING
-      this.animations[ this.ids[ i ] ].update( delta );
-
-    }
+    while ( i-- ) this.animations[ this.ids[ i ] ].update( delta );
 
   }
 

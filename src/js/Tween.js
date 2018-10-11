@@ -1,4 +1,4 @@
-import { Animation } from './plugins/Animation.js';
+import { Animation } from './Animation.js';
 import { Easing } from './Easing.js';
 
 class Tween extends Animation {
@@ -6,9 +6,6 @@ class Tween extends Animation {
   constructor( options ) {
 
     super( false );
-
-    this.name = 'Tween';
-    if ( options.name) this.name += ' : ' + options.name;
 
     this.duration = options.duration || 500;
     this.easing = options.easing || ( t => t );
@@ -113,24 +110,3 @@ class Tween extends Animation {
 }
 
 export { Tween, Easing };
-
-window.tween = Tween;
-window.easing = Easing;
-
-/*
-
-a = new tween( {
-  duration: 2000,
-  easing: easing.Elastic.Out(),
-  onUpdate: tween => {
-    console.log( tween.value );
-  }, onComplete: () => {
-    console.log( 'completed' );
-  }
-} );
-
-*/
-
-new tween({
-  duration: 222
-});
