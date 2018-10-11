@@ -114,20 +114,10 @@ class Transition {
       onComplete: () => { this._game.cube.animator.rotation.y = 0; callback(); },
     } );
 
-    // this._tweens.cubeY = new Tween( {
-    //   target: this._data,
-    //   duration: duration,
-    //   easing: easing,
-    //   to: { cubeY: ( game ) ? -0.3 : -0.2 },
-    //   onUpdate: () => {
-
-    //     this._game.cube.object.position.y = this._data.cubeY;
-    //     this._game.controls.edges.position.y = this._data.cubeY;
-
-    //   },
-    // } );
-
     this._durations.zoom = duration;
+
+    this.title( false );
+    setTimeout( () => this.timer( true ), duration - 700 );
 
     setTimeout( () => this._activeTransitions--, this._durations.zoom );
 
@@ -352,6 +342,12 @@ class Transition {
     } );
 
     this._durations[ type ] = ( letters.length - 1 ) * 50 + ( show ? 800 : 400 );
+
+  }
+
+  getActive() {
+
+    return this._activeTransitions;
 
   }
 

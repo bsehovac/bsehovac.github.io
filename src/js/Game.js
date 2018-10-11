@@ -7,6 +7,7 @@ import { Timer } from './Timer.js';
 import { Audio } from './Audio.js';
 import { Preferences } from './Preferences.js';
 import { Confetti } from './Confetti.js';
+
 import { Icons } from './Icons.js';
 
 class Game {
@@ -38,9 +39,7 @@ class Game {
     this.preferences = new Preferences( this );
     // this.confetti = new Confetti( this );
 
-    this.initStart();
-    this.initPause();
-    this.initPrefs();
+    this.initTapEvents();
 
     this.saved = this.cube.loadState();
     this.playing = false;
@@ -54,23 +53,23 @@ class Game {
 
   }
 
-  initStart() {
+  initTapEvents() {
 
-    let tappedTwice = false
+    let tappedTwice = false;
 
-    const tapHandler = event => {
+    this.dom.game.onclick = event => {
 
       event.preventDefault();
 
       if ( ! tappedTwice ) {
 
-          tappedTwice = true;
-          setTimeout( () => { tappedTwice = false; }, 300 );
-          return false;
+        tappedTwice = true;
+        setTimeout( () => tappedTwice = false, 300 );
+        return false;
 
       }
 
-      if ( this.playing || this.transition.active > 0 ) return;
+      if ( this.playing || this.transition.getActive() > 0 ) return;
 
       const start = Date.now();
       let duration = 0;
@@ -84,11 +83,6 @@ class Game {
 
       }
 
-      // AKO JE IGRA U PROGRESU ONDA OVAJ TIMEOUT ZA TIMER
-      // AKO SE SCRAMBLA POVECATI JOS TIMEOUT ZA TIMER DA GA POKAZE TEK POSLE SCRAMBLA
-      this.transition.title( false );
-      setTimeout( () => this.transition.timer( true ), 500 );
-
       this.transition.zoom( true, duration, () => {
 
         this.playing = true;
@@ -100,16 +94,9 @@ class Game {
 
     };
 
-    this.dom.game.addEventListener( 'click', tapHandler, false );
-    this.dom.game.addEventListener( 'touchstart', tapHandler, false );
+    this.dom.buttons.home.onclick = event => {
 
-  }
-
-  initPause() {
-
-    this.dom.buttons.home.onclick = () => {
-
-      if ( !this.playing ) return;
+      if ( !this.playing || this.transition.getActive() > 0 ) return;
 
       this.playing = false;
       this.controls.disable();
@@ -119,21 +106,15 @@ class Game {
 
       this.transition.zoom( false, 0, () => {} );
 
-    }
+    };
 
-  }
+    this.dom.buttons.settings.onclick = event => {
 
-  initPrefs() {
+      if ( this.transition.getActive() > 0 ) return;
 
-    const button = this.dom.buttons.settings;
+      event.target.classList.toggle( 'active' );
 
-    button.addEventListener( 'click', () => {
-
-      if ( this.transition.active > 0 ) return;
-
-      button.classList.toggle( 'active' );
-
-      if ( button.classList.contains( 'active' ) ) {
+      if ( event.target.classList.contains( 'active' ) ) {
 
         this.transition.cube( false );
         setTimeout( () => this.transition.preferences( true ), 1000 );
@@ -145,7 +126,7 @@ class Game {
 
       }
 
-    }, false );
+    };
 
   }
 

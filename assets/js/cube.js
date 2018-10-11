@@ -2048,20 +2048,10 @@
 	      onComplete: () => { this._game.cube.animator.rotation.y = 0; callback(); },
 	    } );
 
-	    // this._tweens.cubeY = new Tween( {
-	    //   target: this._data,
-	    //   duration: duration,
-	    //   easing: easing,
-	    //   to: { cubeY: ( game ) ? -0.3 : -0.2 },
-	    //   onUpdate: () => {
-
-	    //     this._game.cube.object.position.y = this._data.cubeY;
-	    //     this._game.controls.edges.position.y = this._data.cubeY;
-
-	    //   },
-	    // } );
-
 	    this._durations.zoom = duration;
+
+	    this.title( false );
+	    setTimeout( () => this.timer( true ), duration - 700 );
 
 	    setTimeout( () => this._activeTransitions--, this._durations.zoom );
 
@@ -2286,6 +2276,12 @@
 	    } );
 
 	    this._durations[ type ] = ( letters.length - 1 ) * 50 + ( show ? 800 : 400 );
+
+	  }
+
+	  getActive() {
+
+	    return this._activeTransitions;
 
 	  }
 
@@ -2795,9 +2791,7 @@
 	    this.preferences = new Preferences( this );
 	    // this.confetti = new Confetti( this );
 
-	    this.initStart();
-	    this.initPause();
-	    this.initPrefs();
+	    this.initTapEvents();
 
 	    this.saved = this.cube.loadState();
 	    this.playing = false;
@@ -2811,23 +2805,23 @@
 
 	  }
 
-	  initStart() {
+	  initTapEvents() {
 
 	    let tappedTwice = false;
 
-	    const tapHandler = event => {
+	    this.dom.game.onclick = event => {
 
 	      event.preventDefault();
 
 	      if ( ! tappedTwice ) {
 
-	          tappedTwice = true;
-	          setTimeout( () => { tappedTwice = false; }, 300 );
-	          return false;
+	        tappedTwice = true;
+	        setTimeout( () => tappedTwice = false, 300 );
+	        return false;
 
 	      }
 
-	      if ( this.playing || this.transition.active > 0 ) return;
+	      if ( this.playing || this.transition.getActive() > 0 ) return;
 	      let duration = 0;
 
 	      if ( ! this.saved ) {
@@ -2838,11 +2832,6 @@
 	        duration = this.scrambler.converted.length * this.controls._scrambleSpeed;
 
 	      }
-
-	      // AKO JE IGRA U PROGRESU ONDA OVAJ TIMEOUT ZA TIMER
-	      // AKO SE SCRAMBLA POVECATI JOS TIMEOUT ZA TIMER DA GA POKAZE TEK POSLE SCRAMBLA
-	      this.transition.title( false );
-	      setTimeout( () => this.transition.timer( true ), 500 );
 
 	      this.transition.zoom( true, duration, () => {
 
@@ -2855,16 +2844,9 @@
 
 	    };
 
-	    this.dom.game.addEventListener( 'click', tapHandler, false );
-	    this.dom.game.addEventListener( 'touchstart', tapHandler, false );
+	    this.dom.buttons.home.onclick = event => {
 
-	  }
-
-	  initPause() {
-
-	    this.dom.buttons.home.onclick = () => {
-
-	      if ( !this.playing ) return;
+	      if ( !this.playing || this.transition.getActive() > 0 ) return;
 
 	      this.playing = false;
 	      this.controls.disable();
@@ -2876,19 +2858,13 @@
 
 	    };
 
-	  }
+	    this.dom.buttons.settings.onclick = event => {
 
-	  initPrefs() {
+	      if ( this.transition.getActive() > 0 ) return;
 
-	    const button = this.dom.buttons.settings;
+	      event.target.classList.toggle( 'active' );
 
-	    button.addEventListener( 'click', () => {
-
-	      if ( this.transition.active > 0 ) return;
-
-	      button.classList.toggle( 'active' );
-
-	      if ( button.classList.contains( 'active' ) ) {
+	      if ( event.target.classList.contains( 'active' ) ) {
 
 	        this.transition.cube( false );
 	        setTimeout( () => this.transition.preferences( true ), 1000 );
@@ -2900,7 +2876,7 @@
 
 	      }
 
-	    }, false );
+	    };
 
 	  }
 
