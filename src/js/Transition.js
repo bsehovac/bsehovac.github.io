@@ -116,8 +116,17 @@ class Transition {
 
     this._durations.zoom = duration;
 
-    this.title( false );
-    setTimeout( () => this.timer( true ), duration - 700 );
+    if ( ! this._game.playing ) {
+
+      this.title( false );
+      setTimeout( () => this.timer( true ), duration - 1000 );
+
+    } else {
+
+      this.timer( false );
+      setTimeout( () => this.title( true ), duration - 1000 );
+
+    }
 
     setTimeout( () => this._activeTransitions--, this._durations.zoom );
 

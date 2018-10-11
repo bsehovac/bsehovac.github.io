@@ -98,13 +98,10 @@ class Game {
 
       if ( !this.playing || this.transition.getActive() > 0 ) return;
 
+      this.transition.zoom( false, 0, () => {} );
+
       this.playing = false;
       this.controls.disable();
-
-      this.transition.timer( false );
-      setTimeout( () => this.transition.title( true ), 500 );
-
-      this.transition.zoom( false, 0, () => {} );
 
     };
 
