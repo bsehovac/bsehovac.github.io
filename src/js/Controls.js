@@ -201,9 +201,10 @@ class Controls {
 
       if ( this._flipType === 'layer' ) {
 
+        if ( ! this._flipLayer ) return;
+
         this.rotateLayer( delta, false, layer => {
 
-          // this.addMove( angle, layer );
           this.checkIsSolved();
           
           this._state = this._gettingDrag ? PREPARING : STILL;
@@ -248,7 +249,7 @@ class Controls {
         this.game.cube.object.rotation.setFromVector3( this.snapRotation( this.game.cube.object.rotation.toVector3() ) );
         this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
         this.deselectLayer( this._flipLayer );
-        this.game.cube.saveState();
+        this.game.storage.saveGame();
 
         callback( layer );
 
@@ -334,11 +335,7 @@ class Controls {
 
     } );
 
-    if ( solved ) {
-
-        this.onSolved();
-
-    }
+    if ( solved ) this.onSolved();
 
   }
 

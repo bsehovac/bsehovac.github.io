@@ -7,6 +7,8 @@ import { Timer } from './Timer.js';
 import { Audio } from './Audio.js';
 import { Preferences } from './Preferences.js';
 import { Confetti } from './Confetti.js';
+import { Scores } from './Scores.js';
+import { Storage } from './Storage.js';
 
 import { Icons } from './Icons.js';
 
@@ -29,12 +31,13 @@ class Game {
       }
     };
 
+    this.storage = new Storage( this );
     this.world = new World( this );
     this.cube = new Cube( this );
     this.controls = new Controls( this );
     this.scrambler = new Scrambler( this );
     this.transition = new Transition( this );
-    this.audio = new Audio( this );
+    // this.audio = new Audio( this );
     this.timer = new Timer( this );
     this.preferences = new Preferences( this );
     this.confetti = new Confetti( this );
@@ -42,23 +45,28 @@ class Game {
 
     this.initTapEvents();
 
-    this.saved = this.cube.loadState();
     this.playing = false;
+    this.saved = false;
+
+    this.storage.loadGame();
+    this.storage.loadPreferences();
+    this.storage.loadScores();
+
+    this.preferences.init();
 
     this.transition.initialize();
     this.transition.cube( true );
     this.transition.float();
 
-    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
+    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
     this.controls.onSolved = () => {
 
       // this.playing = false;
       this.saved = false;
       this.timer.stop();
-      // this.scores.addScore( this.timer.getTime() );
+      this.scores.addScore( this.timer.getDeltaTime() );
       this.timer.reset();
-      this.cube.clearState();
-      //this.cube.clearState();
+      this.storage.clearGame();
 
     }
 
@@ -134,3 +142,5 @@ class Game {
 }
 
 const game = new Game();
+
+window.game = game;

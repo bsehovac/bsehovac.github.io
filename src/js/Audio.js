@@ -1,62 +1,62 @@
 class Audio {
 
-  constructor( game ) {
+  // constructor( game ) {
 
-    this.game = game;
+  //   this.game = game;
 
-    const listener = new THREE.AudioListener();
-    const audioLoader = new THREE.AudioLoader();
+  //   const listener = new THREE.AudioListener();
+  //   const audioLoader = new THREE.AudioLoader();
 
-    this.musicOn = localStorage.getItem( 'music' );
-    this.musicOn = ( this.musicOn == null ) ? true : ( ( this.musicOn == 'true' ) ? true : false );
+  //   this.musicOn = localStorage.getItem( 'music' );
+  //   this.musicOn = ( this.musicOn == null ) ? true : ( ( this.musicOn == 'true' ) ? true : false );
 
-    // this.music = new THREE.Audio( listener );
+  //   // this.music = new THREE.Audio( listener );
 
-    // audioLoader.load( 'assets/sounds/music.mp3', buffer => {
+  //   // audioLoader.load( 'assets/sounds/music.mp3', buffer => {
 
-    //   this.music.setBuffer( buffer );
-    //   this.music.setLoop( true );
-    //   this.music.setVolume( 0.5 );
+  //   //   this.music.setBuffer( buffer );
+  //   //   this.music.setLoop( true );
+  //   //   this.music.setVolume( 0.5 );
 
-    //   if ( this.musicOn ) {
+  //   //   if ( this.musicOn ) {
 
-    //     this.animate.audioIn( this );
+  //   //     this.animate.audioIn( this );
 
-    //   }
+  //   //   }
 
-    // });
+  //   // });
 
-    this.click = new THREE.Audio( listener );
+  //   this.click = new THREE.Audio( listener );
 
-    audioLoader.load( 'assets/sounds/click.mp3', buffer => {
+  //   audioLoader.load( 'assets/sounds/click.mp3', buffer => {
 
-      this.click.setBuffer( buffer );
-      this.click.setLoop( false );
-      this.click.setVolume( 0.1 );
+  //     this.click.setBuffer( buffer );
+  //     this.click.setLoop( false );
+  //     this.click.setVolume( 0.1 );
 
-    });
+  //   });
 
-    // this.button.addEventListener( 'click', () => {
+  //   // this.button.addEventListener( 'click', () => {
 
-    //   this.musicOn = !this.musicOn;
+  //   //   this.musicOn = !this.musicOn;
 
-    //   if ( this.musicOn && !this.button.gameStarted ) {
+  //   //   if ( this.musicOn && !this.button.gameStarted ) {
 
-    //     this.animate.audioIn( this );
+  //   //     this.animate.audioIn( this );
 
-    //   } else {
+  //   //   } else {
 
-    //     this.animate.audioOut( this );
+  //   //     this.animate.audioOut( this );
 
-    //   }
+  //   //   }
 
-    //   this.button.classList[ this.musicOn ? 'add' : 'remove' ]('is-active');
+  //   //   this.button.classList[ this.musicOn ? 'add' : 'remove' ]('is-active');
 
-    //   localStorage.setItem( 'music', this.musicOn );
+  //   //   localStorage.setItem( 'music', this.musicOn );
 
-    // }, false );
+  //   // }, false );
 
-  }
+  // }
 
 }
 

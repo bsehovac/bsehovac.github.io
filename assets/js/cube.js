@@ -825,73 +825,6 @@
 
 		}
 
-		loadState() {
-
-			try {
-
-				const gameInProgress = localStorage.getItem( 'gameInProgress' ) == 'yes';
-
-				if ( !gameInProgress ) throw new Error();
-
-				const cubeData = JSON.parse( localStorage.getItem( 'cubeData' ) );
-				const gameTime = parseInt( localStorage.getItem( 'gameTime' ) );
-
-				if ( !cubeData || !gameTime ) throw new Error();
-
-				this.pieces.forEach( piece => {
-
-					const index = cubeData.names.indexOf( piece.name );
-
-					const position = cubeData.positions[index];
-					const rotation = cubeData.rotations[index];
-
-					piece.position.set( position.x, position.y, position.z );
-					piece.rotation.set( rotation.x, rotation.y, rotation.z );
-
-				} );
-
-				this.game.timer.setDeltaTime( gameTime );
-
-				return gameInProgress;
-
-			} catch( e ) {
-
-				return false;
-
-			}
-
-		}
-
-		saveState() {
-
-			const cubeData = {
-				names: [],
-				positions: [],
-				rotations: [],
-			};
-
-			this.pieces.forEach( piece => {
-
-				cubeData.names.push( piece.name );
-			  cubeData.positions.push( piece.position );
-			  cubeData.rotations.push( piece.rotation.toVector3() );
-
-			} );
-
-			localStorage.setItem( 'gameInProgress', 'yes' );
-			localStorage.setItem( 'cubeData', JSON.stringify( cubeData ) );
-			localStorage.setItem( 'gameTime', this.game.timer.getDeltaTime() );
-
-		}
-
-		clearState() {
-
-			localStorage.removeItem( 'gameInProgress' );
-			localStorage.removeItem( 'cubeData' );
-			localStorage.removeItem( 'gameTime' );
-
-		}
-
 	}
 
 	const Easing = {
@@ -1467,9 +1400,10 @@
 
 	      if ( this._flipType === 'layer' ) {
 
+	        if ( ! this._flipLayer ) return;
+
 	        this.rotateLayer( delta, false, layer => {
 
-	          // this.addMove( angle, layer );
 	          this.checkIsSolved();
 	          
 	          this._state = this._gettingDrag ? PREPARING : STILL;
@@ -1514,7 +1448,7 @@
 	        this.game.cube.object.rotation.setFromVector3( this.snapRotation( this.game.cube.object.rotation.toVector3() ) );
 	        this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
 	        this.deselectLayer( this._flipLayer );
-	        this.game.cube.saveState();
+	        this.game.storage.saveGame();
 
 	        callback( layer );
 
@@ -1600,11 +1534,7 @@
 
 	    } );
 
-	    if ( solved ) {
-
-	        this.onSolved();
-
-	    }
+	    if ( solved ) this.onSolved();
 
 	  }
 
@@ -2328,68 +2258,6 @@
 
 	}
 
-	class Audio {
-
-	  constructor( game ) {
-
-	    this.game = game;
-
-	    const listener = new THREE.AudioListener();
-	    const audioLoader = new THREE.AudioLoader();
-
-	    this.musicOn = localStorage.getItem( 'music' );
-	    this.musicOn = ( this.musicOn == null ) ? true : ( ( this.musicOn == 'true' ) ? true : false );
-
-	    // this.music = new THREE.Audio( listener );
-
-	    // audioLoader.load( 'assets/sounds/music.mp3', buffer => {
-
-	    //   this.music.setBuffer( buffer );
-	    //   this.music.setLoop( true );
-	    //   this.music.setVolume( 0.5 );
-
-	    //   if ( this.musicOn ) {
-
-	    //     this.animate.audioIn( this );
-
-	    //   }
-
-	    // });
-
-	    this.click = new THREE.Audio( listener );
-
-	    audioLoader.load( 'assets/sounds/click.mp3', buffer => {
-
-	      this.click.setBuffer( buffer );
-	      this.click.setLoop( false );
-	      this.click.setVolume( 0.1 );
-
-	    });
-
-	    // this.button.addEventListener( 'click', () => {
-
-	    //   this.musicOn = !this.musicOn;
-
-	    //   if ( this.musicOn && !this.button.gameStarted ) {
-
-	    //     this.animate.audioIn( this );
-
-	    //   } else {
-
-	    //     this.animate.audioOut( this );
-
-	    //   }
-
-	    //   this.button.classList[ this.musicOn ? 'add' : 'remove' ]('is-active');
-
-	    //   localStorage.setItem( 'music', this.musicOn );
-
-	    // }, false );
-
-	  }
-
-	}
-
 	const RangeHTML = [
 
 	  '<div class="range">',
@@ -2542,52 +2410,48 @@
 
 	  constructor( game ) {
 
-	    this.game = game;
+	    this._game = game;
 
-	    this.load();
+	  }
 
-	    this.elements = {
+	  init() {
+
+	    this._ranges = {
 
 	      speed: new Range( 'speed', {
-	        value: this.game.controls._flipSpeed,
+	        value: this._game.controls._flipSpeed,
 	        range: [ 300, 100 ],
-	        onComplete: value => {
+	        onUpdate: value => {
 
-	          this.game.controls._flipSpeed = value;
-	          localStorage.setItem( 'flipSpeed', value );
+	          this._game.controls._flipSpeed = value;
+	          this._game.controls._flipBounce = ( ( value - 100 ) / 200 ) * 2;
 
-	          this.game.controls._flipBounce = ( ( value - 100 ) / 200 ) * 2;
-	          localStorage.setItem( 'flipBounce', this.game.controls._flipBounce );
-	          
 	        },
+	        onComplete: () => this._game.storage.savePreferences(),
 	      } ),
 
 	      scramble: new Range( 'scramble', {
-	        value: this.game.scrambler.scrambleLength,
+	        value: this._game.scrambler.scrambleLength,
 	        range: [ 20, 30 ],
 	        step: 5,
-	        onComplete: value => {
+	        onUpdate: value => {
 
-	          this.game.scrambler.scrambleLength = value;
-	          localStorage.setItem( 'scrambleLength', value );
+	          this._game.scrambler.scrambleLength = value;
 
 	        },
+	        onComplete: () => this._game.storage.savePreferences()
 	      } ),
 
 	      fov: new Range( 'fov', {
-	        value: this.game.world.fov,
+	        value: this._game.world.fov,
 	        range: [ 2, 45 ],
 	        onUpdate: value => {
 
-	          this.game.world.fov = value;
-	          this.game.world.resize();
+	          this._game.world.fov = value;
+	          this._game.world.resize();
 
 	        },
-	        onComplete: value => {
-
-	          localStorage.setItem( 'fov', value );
-
-	        },
+	        onComplete: () => this._game.storage.savePreferences()
 	      } ),
 
 	      theme: new Range( 'theme', {
@@ -2595,31 +2459,11 @@
 	        range: [ 0, 1 ],
 	        step: 1,
 	        onUpdate: value => {},
+	        // onComplete: () => this._game.storage.savePreferences()
 	      } ),
 
 	    };
-
-	  }
-
-	  load() {
-
-	    const flipSpeed = localStorage.getItem( 'flipSpeed' );
-	    const flipBounce = localStorage.getItem( 'flipBounce' );
-	    const scrambleLength = localStorage.getItem( 'scrambleLength' );
-	    const fov = localStorage.getItem( 'fov' );
-	    // const theme = localStorage.getItem( 'theme' );
-
-	    if ( flipSpeed != null ) this.game.controls._flipSpeed = parseFloat( flipSpeed );
-	    if ( flipBounce != null ) this.game.controls._flipBounce = parseFloat( flipBounce );
-	    if ( scrambleLength != null ) this.game.scrambler.scrambleLength = parseInt( scrambleLength );
-
-	    if ( fov != null ) {
-
-	      this.game.world.fov = parseFloat( fov );
-	      this.game.world.resize();
-
-	    }
-
+	    
 	  }
 
 	}
@@ -2811,6 +2655,188 @@
 
 	}
 
+	class Scores {
+
+	  constructor( game ) {
+
+	    this._game = game;
+
+	    this._scores = [];
+
+	  }
+
+	  addScore( time ) {
+
+	    this._scores.push( time );
+
+	    if ( this._scores.lenght > 100 ) this._scores.shift();
+
+	    this._game.storage.saveScores();
+
+	  }
+
+	}
+
+	class Storage {
+
+	  constructor( game ) {
+
+	    this._game = game;
+
+	  }
+
+	  // GAME
+
+	  loadGame() {
+
+	    try {
+
+	      const gameInProgress = localStorage.getItem( 'gameInProgress' ) === 'true';
+
+	      if ( ! gameInProgress ) throw new Error();
+
+	      const gameCubeData = JSON.parse( localStorage.getItem( 'gameCubeData' ) );
+	      const gameTime = parseInt( localStorage.getItem( 'gameTime' ) );
+
+	      if ( ! gameCubeData || ! gameTime ) throw new Error();
+
+	      this._game.cube.pieces.forEach( piece => {
+
+	        const index = gameCubeData.names.indexOf( piece.name );
+
+	        const position = gameCubeData.positions[index];
+	        const rotation = gameCubeData.rotations[index];
+
+	        piece.position.set( position.x, position.y, position.z );
+	        piece.rotation.set( rotation.x, rotation.y, rotation.z );
+
+	      } );
+
+	      this._game.timer.setDeltaTime( gameTime );
+
+	      this._game.saved = true;
+
+	    } catch( e ) {
+
+	      this._game.saved = false;
+
+	    }
+
+	  }
+
+	  saveGame() {
+
+	    const gameInProgress = true;
+	    const gameCubeData = { names: [], positions: [], rotations: [] };
+	    const gameTime = this._game.timer.getDeltaTime();
+
+	    this._game.cube.pieces.forEach( piece => {
+
+	      gameCubeData.names.push( piece.name );
+	      gameCubeData.positions.push( piece.position );
+	      gameCubeData.rotations.push( piece.rotation.toVector3() );
+
+	    } );
+
+	    localStorage.setItem( 'gameInProgress', gameInProgress );
+	    localStorage.setItem( 'gameCubeData', JSON.stringify( gameCubeData ) );
+	    localStorage.setItem( 'gameTime', gameTime );
+
+	  }
+
+	  clearGame() {
+
+	    localStorage.removeItem( 'gameInProgress' );
+	    localStorage.removeItem( 'gameCubeData' );
+	    localStorage.removeItem( 'gameTime' );
+
+	  }
+
+	  // SCORE
+
+	  loadScores() {
+
+	    try {
+
+	      const scoresData = JSON.parse( localStorage.getItem( 'scoresData' ) );
+
+	      if ( ! scoresData ) throw new Error();
+
+	      this._game.scores._scores = scoresData;
+
+	      return true;
+
+	    } catch( e ) {
+
+	      return false;
+
+	    }
+
+	  }
+
+	  saveScores() {
+
+	    const scoresData = this._game.scores._scores;
+
+	    localStorage.setItem( 'scoresData', JSON.stringify( scoresData ) );
+
+	  }
+
+	  clearScores() {
+
+	    localStorage.removeItem( 'scoresData' );
+
+	  }
+
+	  // PREFERENCES
+
+	  loadPreferences() {
+
+	    try {
+
+	      const preferences = JSON.parse( localStorage.getItem( 'preferences' ) );
+
+	      if ( ! preferences ) throw new Error();
+
+	      this._game.controls._flipSpeed = preferences.flipSpeed;
+	      this._game.controls._flipBounce = preferences.flipBounce;
+	      this._game.scrambler.scrambleLength = preferences.scrambleLength;
+
+	      this._game.world.fov = parseFloat( preferences.fov );
+	      this._game.world.resize();
+
+	      return true;
+
+	    } catch (e) {
+
+	      return false;
+
+	    }
+
+	  }
+
+	  savePreferences() {
+
+	    const preferences = {
+	      flipSpeed: this._game.controls._flipSpeed,
+	      flipBounce: this._game.controls._flipBounce,
+	      scrambleLength: this._game.scrambler.scrambleLength,
+	      fov: this._game.world.fov,
+	      theme: null,
+	    };
+
+	    localStorage.setItem( 'preferences', JSON.stringify( preferences ) );
+
+	  }
+
+	  clearPreferences() {
+
+	    localStorage.removeItem( 'preferences' );
+
+	  }
+
+	}
+
 	class IconsConverter {
 
 		constructor( options ) {
@@ -2924,35 +2950,42 @@
 	      }
 	    };
 
+	    this.storage = new Storage( this );
 	    this.world = new World( this );
 	    this.cube = new Cube( this );
 	    this.controls = new Controls( this );
 	    this.scrambler = new Scrambler( this );
 	    this.transition = new Transition( this );
-	    this.audio = new Audio( this );
+	    // this.audio = new Audio( this );
 	    this.timer = new Timer( this );
 	    this.preferences = new Preferences( this );
 	    this.confetti = new Confetti( this );
+	    this.scores = new Scores( this );
 
 	    this.initTapEvents();
 
-	    this.saved = this.cube.loadState();
 	    this.playing = false;
+	    this.saved = false;
+
+	    this.storage.loadGame();
+	    this.storage.loadPreferences();
+	    this.storage.loadScores();
+
+	    this.preferences.init();
 
 	    this.transition.initialize();
 	    this.transition.cube( true );
 	    this.transition.float();
 
-	    this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); };
+	    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
 	    this.controls.onSolved = () => {
 
 	      // this.playing = false;
 	      this.saved = false;
 	      this.timer.stop();
-	      // this.scores.addTime( this.timer.getTime() );
+	      this.scores.addScore( this.timer.getDeltaTime() );
 	      this.timer.reset();
-	      this.cube.clearState();
-	      //this.cube.clearState();
+	      this.storage.clearGame();
 
 	    };
 
@@ -3026,5 +3059,7 @@
 	}
 
 	const game = new Game();
+
+	window.game = game;
 
 }());
