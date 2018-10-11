@@ -88,7 +88,7 @@ class Transition {
 
   }
 
-  zoom( game, time, callback ) {
+  zoom( game, time ) {
 
     this._activeTransitions++;
 
@@ -111,15 +111,19 @@ class Transition {
       duration: duration,
       easing: easing,
       to: { y: - Math.PI * 2 * rotations },
-      onComplete: () => { this._game.cube.animator.rotation.y = 0; callback(); },
+      onComplete: () => { this._game.cube.animator.rotation.y = 0; },
     } );
 
     this._durations.zoom = duration;
 
     if ( ! this._game.playing ) {
 
+      this._game.saved = true;
+      this._game.playing = true;
+
       this.title( false );
       setTimeout( () => this.timer( true ), duration - 1000 );
+      setTimeout( () => this._game.controls.enable(), duration );
 
     } else {
 
@@ -299,7 +303,7 @@ class Transition {
       this._game.controls.enable();
       this._game.timer.start( true );
 
-    }, 1500 );
+    }, 1000 );
 
     setTimeout( () => this._activeTransitions--, this._durations.timer );
 

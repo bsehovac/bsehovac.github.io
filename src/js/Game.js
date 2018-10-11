@@ -83,14 +83,7 @@ class Game {
 
       }
 
-      this.transition.zoom( true, duration, () => {
-
-        this.playing = true;
-        this.controls.enable();
-        this.timer.start( this.saved );
-        this.saved = true;
-
-      } );
+      this.transition.zoom( true, duration );
 
     };
 
@@ -98,7 +91,7 @@ class Game {
 
       if ( !this.playing || this.transition.getActive() > 0 ) return;
 
-      this.transition.zoom( false, 0, () => {} );
+      this.transition.zoom( false, 0 );
 
       this.playing = false;
       this.controls.disable();
