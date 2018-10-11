@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"gam",
+				"_game"
+			],
+			[
 				"Icons",
 				"IconsConverter"
 			],
@@ -510,20 +514,34 @@
 			[
 				"whitep",
 				"whitepaper_hash"
-			],
-			[
-				"sub",
-				"subscriberId"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
+			"file": "src/js/Game.js",
+			"settings":
+			{
+				"buffer_size": 3041,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "src/js/Transition.js",
 			"settings":
 			{
-				"buffer_size": 9341,
+				"buffer_size": 9602,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/scss/components/_ui.sass",
+			"settings":
+			{
+				"buffer_size": 1125,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -659,14 +677,12 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/boris/Sites/bsehovac.github.io",
-		"/Users/boris/Sites/bsehovac.github.io/assets",
-		"/Users/boris/Sites/bsehovac.github.io/assets/js",
-		"/Users/boris/Sites/bsehovac.github.io/src",
-		"/Users/boris/Sites/bsehovac.github.io/src/js"
 	],
 	"file_history":
 	[
+		"/Users/boris/Sites/bsehovac.github.io/index.html",
+		"/Users/boris/Sites/bsehovac.github.io/src/scss/components/_ui.sass",
+		"/Users/boris/Sites/bsehovac.github.io/src/js/Transition.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Game.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/CubePieces.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Icons.js",
@@ -674,7 +690,6 @@
 		"/Users/boris/Sites/bsehovac.github.io/src/js/DoubleClick.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/TapEvents.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/DoubleTap.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/js/Transition.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Cube.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Timer.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/World.js",
@@ -685,8 +700,6 @@
 		"/Users/boris/Sites/bsehovac.github.io/src/js/RollupMain.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Controls.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/components/Animation.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/scss/components/_ui.sass",
-		"/Users/boris/Sites/bsehovac.github.io/index.html",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/components/Game.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/components/World.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/components/Transition.js",
@@ -798,7 +811,7 @@
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 54.0
 	},
 	"find_in_files":
 	{
@@ -856,6 +869,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"timer.start",
+			"timer.sart",
+			"timer.stop",
 			"doublecli",
 			"DoubleTap",
 			"this.transition.active",
@@ -980,10 +996,7 @@
 			"Animate",
 			"Cube.Animate",
 			"nimate.add",
-			"this.game.tween.start",
-			"this.game.tween",
-			"new CUBE.Tween",
-			"new RUBIK.Tween"
+			"this.game.tween.start"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1129,24 +1142,24 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/js/Transition.js",
+					"file": "src/js/Game.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9341,
+						"buffer_size": 3041,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3220,
-								3220
+								2357,
+								2357
 							]
 						],
 						"settings":
@@ -1156,10 +1169,70 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1460.0,
+						"translation.y": 1056.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/js/Transition.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9602,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8241,
+								8241
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4206.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/scss/components/_ui.sass",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1125,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								141,
+								141
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Sass/Syntaxes/Sass.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
