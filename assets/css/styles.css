@@ -164,29 +164,33 @@ body {
   border-width: 0;
   position: absolute;
   pointer-events: all;
-  opacity: 0.5; }
+  font-size: 1.75em;
+  transform: scale(0.6);
+  opacity: 0.25; }
   .btn:after {
     position: absolute;
     content: '';
-    width: 3em;
-    height: 3em;
+    width: 2em;
+    height: 2em;
     left: 50%;
     top: 50%;
-    margin-left: -1.5em;
-    margin-top: -1.5em;
+    margin-left: -1em;
+    margin-top: -1em;
     border-radius: 100%; }
   .btn--tr {
-    top: 1em;
-    right: 1em; }
+    top: 0.5em;
+    right: 0.5em; }
   .btn--br {
-    bottom: 1em;
-    right: 1em; }
+    bottom: 0.5em;
+    right: 0.5em; }
   .btn--tl {
-    top: 1em;
-    left: 1em; }
+    top: 0.5em;
+    left: 0.5em; }
   .btn--bl {
-    bottom: 1em;
-    left: 1em; }
+    bottom: 0.5em;
+    left: 0.5em; }
+  .btn svg {
+    display: block; }
 
 .ui {
   pointer-events: none;

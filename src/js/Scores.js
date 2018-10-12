@@ -2,19 +2,19 @@ class Scores {
 
   constructor( game ) {
 
-    this._game = game;
+    this.game = game;
 
-    this._scores = [];
+    this.scores = [];
 
   }
 
   addScore( time ) {
 
-    this._scores.push( time );
+    this.scores.push( time );
 
-    if ( this._scores.lenght > 100 ) this._scores.shift();
+    if ( this.scores.lenght > 100 ) this.scores.shift();
 
-    this._game.storage.saveScores();
+    this.game.storage.saveScores();
 
   }
 

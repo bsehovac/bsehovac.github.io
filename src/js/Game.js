@@ -4,7 +4,7 @@ import { Controls } from './Controls.js';
 import { Scrambler } from './Scrambler.js';
 import { Transition } from './Transition.js';
 import { Timer } from './Timer.js';
-import { Audio } from './Audio.js';
+// import { Audio } from './Audio.js';
 import { Preferences } from './Preferences.js';
 import { Confetti } from './Confetti.js';
 import { Scores } from './Scores.js';
@@ -28,6 +28,7 @@ class Game {
       buttons: {
         settings: document.querySelector( '.btn--settings' ),
         home: document.querySelector( '.btn--home' ),
+        stats: document.querySelector( '.btn--stats' ),
       }
     };
 
@@ -52,21 +53,29 @@ class Game {
     this.storage.loadPreferences();
     this.storage.loadScores();
 
+    // this.scrambler.scrambleLength = 1;
+
     this.preferences.init();
 
-    this.transition.initialize();
-    this.transition.cube( true );
-    this.transition.float();
+    this.transition.init();
+
+    setTimeout( () => {
+
+      this.transition.cube( true );
+      this.transition.float();
+
+    }, 500 );
 
     // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
     this.controls.onSolved = () => {
 
       // this.playing = false;
       this.saved = false;
-      this.timer.stop();
-      this.scores.addScore( this.timer.getDeltaTime() );
-      this.timer.reset();
       this.storage.clearGame();
+
+      this.timer.stop();
+      this.scores.addScore( this.timer.deltaTime );
+      this.timer.reset();
 
     }
 
@@ -88,7 +97,7 @@ class Game {
 
       }
 
-      if ( this.playing || this.transition.getActive() > 0 ) return;
+      if ( this.playing || this.transition.activeTransitions > 0 ) return;
 
       const start = Date.now();
       let duration = 0;
@@ -98,7 +107,7 @@ class Game {
         this.scrambler.scramble();
         this.controls.scrambleCube();
 
-        duration = this.scrambler.converted.length * this.controls._scrambleSpeed;
+        duration = this.scrambler.converted.length * this.controls.scrambleSpeed;
 
       }
 
@@ -106,20 +115,20 @@ class Game {
 
     };
 
-    this.dom.buttons.home.onclick = event => {
+    // this.dom.buttons.home.onclick = event => {
 
-      if ( !this.playing || this.transition.getActive() > 0 ) return;
+    //   if ( !this.playing || this.transition.activeTransitions > 0 ) return;
 
-      this.transition.zoom( false, 0 );
+    //   this.transition.zoom( false, 0 );
 
-      this.playing = false;
-      this.controls.disable();
+    //   this.playing = false;
+    //   this.controls.disable();
 
-    };
+    // };
 
     this.dom.buttons.settings.onclick = event => {
 
-      if ( this.transition.getActive() > 0 ) return;
+      if ( this.transition.activeTransitions > 0 ) return;
 
       event.target.classList.toggle( 'active' );
 

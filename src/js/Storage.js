@@ -2,7 +2,7 @@ class Storage {
 
   constructor( game ) {
 
-    this._game = game;
+    this.game = game;
 
   }
 
@@ -21,7 +21,7 @@ class Storage {
 
       if ( ! gameCubeData || ! gameTime ) throw new Error();
 
-      this._game.cube.pieces.forEach( piece => {
+      this.game.cube.pieces.forEach( piece => {
 
         const index = gameCubeData.names.indexOf( piece.name );
 
@@ -33,13 +33,13 @@ class Storage {
 
       } );
 
-      this._game.timer.setDeltaTime( gameTime );
+      this.game.timer.deltaTime = gameTime;
 
-      this._game.saved = true;
+      this.game.saved = true;
 
     } catch( e ) {
 
-      this._game.saved = false;
+      this.game.saved = false;
 
     }
 
@@ -49,9 +49,9 @@ class Storage {
 
     const gameInProgress = true;
     const gameCubeData = { names: [], positions: [], rotations: [] };
-    const gameTime = this._game.timer.getDeltaTime();
+    const gameTime = this.game.timer.deltaTime;
 
-    this._game.cube.pieces.forEach( piece => {
+    this.game.cube.pieces.forEach( piece => {
 
       gameCubeData.names.push( piece.name );
       gameCubeData.positions.push( piece.position );
@@ -83,7 +83,7 @@ class Storage {
 
       if ( ! scoresData ) throw new Error();
 
-      this._game.scores._scores = scoresData;
+      this.game.scores.scores = scoresData;
 
       return true;
 
@@ -97,7 +97,7 @@ class Storage {
 
   saveScores() {
 
-    const scoresData = this._game.scores._scores;
+    const scoresData = this.game.scores.scores;
 
     localStorage.setItem( 'scoresData', JSON.stringify( scoresData ) );
 
@@ -119,12 +119,12 @@ class Storage {
 
       if ( ! preferences ) throw new Error();
 
-      this._game.controls._flipSpeed = preferences.flipSpeed;
-      this._game.controls._flipBounce = preferences.flipBounce;
-      this._game.scrambler.scrambleLength = preferences.scrambleLength;
+      this.game.controls.flipSpeed = preferences.flipSpeed;
+      this.game.controls.flipBounce = preferences.flipBounce;
+      this.game.scrambler.scrambleLength = preferences.scrambleLength;
 
-      this._game.world.fov = parseFloat( preferences.fov );
-      this._game.world.resize();
+      this.game.world.fov = parseFloat( preferences.fov );
+      this.game.world.resize();
 
       return true;
 
@@ -139,10 +139,10 @@ class Storage {
   savePreferences() {
 
     const preferences = {
-      flipSpeed: this._game.controls._flipSpeed,
-      flipBounce: this._game.controls._flipBounce,
-      scrambleLength: this._game.scrambler.scrambleLength,
-      fov: this._game.world.fov,
+      flipSpeed: this.game.controls.flipSpeed,
+      flipBounce: this.game.controls.flipBounce,
+      scrambleLength: this.game.scrambler.scrambleLength,
+      fov: this.game.world.fov,
       theme: null,
     };
 

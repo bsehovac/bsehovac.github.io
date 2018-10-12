@@ -1,80 +1,71 @@
 (function () {
 	'use strict';
 
-	class AnimationEngine {
+	const animationEngine = ( () => {
 
-	  constructor() {
+	  let uniqueID = 0;
 
-	    this.ids = [];
-	    this.animations = {};
-	    this.update = this.update.bind( this );
-	    this.animating = false;
-	    this.animation = null;
-	    this.time = 0;
+	  class AnimationEngine {
 
-	    return this;
+	    constructor() {
 
-	  }
+	      this.ids = [];
+	      this.animations = {};
+	      this.update = this.update.bind( this );
+	      this.raf = 0;
+	      this.time = 0;
 
-	  update() {
+	    }
 
-	    let i = this.ids.length;
+	    update() {
 
-	    if ( i > 0 ) requestAnimationFrame( this.update );
-	    else this.animating = false;
+	      const now = performance.now();
+	      const delta = now - this.time;
+	      this.time = now;
 
-	    const now = performance.now();
-	    const delta = now - this.time;
-	    this.time = now;
+	      let i = this.ids.length;
 
-	    while ( i-- ) this.animations[ this.ids[ i ] ].update( delta );
+	      this.raf = i ? requestAnimationFrame( this.update ) : 0;
 
-	  }
+	      while ( i-- )
+	        this.animations[ this.ids[ i ] ] && this.animations[ this.ids[ i ] ].update( delta );
 
-	  add( animation ) {
+	    }
 
-	    Object.assign( this.animations, {
+	    add( animation ) {
 
-	      [ animation.id ]: animation
+	      animation.id = uniqueID ++;
 
-	    } );
+	      this.ids.push( animation.id );
+	      this.animations[ animation.id ] = animation;
 
-	    this.ids.push( animation.id );
+	      if ( this.raf !== 0 ) return;
 
-	    if ( ! this.animating ) {
-
-	      requestAnimationFrame( this.update );
 	      this.time = performance.now();
-	      this.animating = true;
+	      this.raf = requestAnimationFrame( this.update );
+
+	    }
+
+	    remove( animation ) {
+
+	      const index = this.ids.indexOf( animation.id );
+
+	      if ( index < 0 ) return;
+
+	      this.ids.splice( index, 1 );
+	      delete this.animations[ animation.id ];
 
 	    }
 
 	  }
 
-	  remove( animation ) {
+	  return new AnimationEngine();
 
-	    const index = this.ids.indexOf( animation.id );
-
-	    if ( index < 0 ) return;
-
-	    this.ids.splice( index, 1 );
-
-	    delete this.animations[ animation.id ];
-
-	  }
-
-	}
-
-	const animationEngine = new AnimationEngine();
-
-	let uniqueID = 0;
+	} )();
 
 	class Animation {
 
 	  constructor( start ) {
-
-	    this.id = uniqueID ++;
-	    this.update = this.update.bind( this );
 
 	    if ( start === true ) this.start();
 
@@ -925,7 +916,6 @@
 	    this.delay = options.delay || false;
 	    this.yoyo = options.yoyo ? false : null;
 
-	    // this.time = 0;
 	    this.progress = 0;
 	    this.value = 0;
 	    this.delta = 0;
@@ -942,16 +932,9 @@
 	  update( delta ) {
 
 	    const old = this.value * 1;
+	    const direction = ( this.yoyo === true ) ? - 1 : 1;
 
-	    // this.time += delta;
-
-	    this.progress += ( this.yoyo === true )
-	      ? - ( delta / this.duration )
-	      : delta / this.duration;
-
-	    // this.progress = ( this.yoyo === true )
-	    //   ? 1 - ( this.time / this.duration )
-	    //   : this.time / this.duration;
+	    this.progress += ( delta / this.duration ) * direction;
 
 	    this.value = this.easing( this.progress );
 	    this.delta = this.value - old;
@@ -964,8 +947,8 @@
 
 	      this.progress = 1;
 	      this.value = 1;
-	      this.onComplete( this );
 	      this.onUpdate( this );
+	      this.onComplete( this );
 	      super.stop();      
 
 	    }
@@ -978,7 +961,6 @@
 
 	      this.value = this.progress = ( this.progress > 1 ) ? 1 : 0;
 	      this.yoyo = ! this.yoyo;
-	      // this.time = 0;
 
 	    }
 
@@ -1211,10 +1193,10 @@
 
 	    this.game = game;
 
-	    this._flipSpeed = 300;
-	    this._flipBounce = 1.70158;
-	    this._scrambleSpeed = 150;
-	    this._scrambleBounce = 0;
+	    this.flipSpeed = 300;
+	    this.flipBounce = 1.70158;
+	    this.scrambleSpeed = 150;
+	    this.scrambleBounce = 0;
 
 	    this.raycaster = new THREE.Raycaster();
 
@@ -1239,10 +1221,10 @@
 	    this.onSolved = () => {};
 	    this.onMove = () => {};
 
-	    this._momentum = [];
+	    this.momentum = [];
 
-	    this._scramble = null;
-	    this._state = STILL;
+	    this.scramble = null;
+	    this.state = STILL;
 
 	    this.initDraggable();
 
@@ -1250,39 +1232,39 @@
 
 	  enable() {
 
-	    this._draggable.enable();
+	    this.draggable.enable();
 
 	  }
 
 	  disable() {
 
-	    this._draggable.disable();
+	    this.draggable.disable();
 
 	  }
 
 	  initDraggable() {
 
-	    this._draggable = new Draggable( this.game.dom.game );
+	    this.draggable = new Draggable( this.game.dom.game );
 
-	    this._draggable.onDragStart = position => {
+	    this.draggable.onDragStart = position => {
 
-	      if ( this._scramble !== null ) return;
-	      if ( this._state === PREPARING || this._state === ROTATING ) return;
+	      if ( this.scramble !== null ) return;
+	      if ( this.state === PREPARING || this.state === ROTATING ) return;
 
-	      this._gettingDrag = this._state === ANIMATING;
+	      this.gettingDrag = this.state === ANIMATING;
 
 	      const edgeIntersect = this.getIntersect( position.current, this.edges, false );
 
 	      if ( edgeIntersect !== false ) {
 
-	        this._dragNormal = edgeIntersect.face.normal.round();
-	        this._flipType = 'layer';
+	        this.dragNormal = edgeIntersect.face.normal.round();
+	        this.flipType = 'layer';
 
 	        this.attach( this.helper, this.edges );
 
 	        this.helper.rotation.set( 0, 0, 0 );
 	        this.helper.position.set( 0, 0, 0 );
-	        this.helper.lookAt( this._dragNormal );
+	        this.helper.lookAt( this.dragNormal );
 	        this.helper.translateZ( 0.5 );
 	        this.helper.updateMatrixWorld();
 
@@ -1290,8 +1272,8 @@
 
 	      } else {
 
-	        this._dragNormal = new THREE.Vector3( 0, 0, 1 );
-	        this._flipType = 'cube';
+	        this.dragNormal = new THREE.Vector3( 0, 0, 1 );
+	        this.flipType = 'cube';
 
 	        this.helper.position.set( 0, 0, 0 );
 	        this.helper.rotation.set( 0, Math.PI / 4, 0 );
@@ -1302,73 +1284,73 @@
 	      const planeIntersect = this.getIntersect( position.current, this.helper, false ).point;
 	      if ( planeIntersect === false ) return;
 
-	      this._dragCurrent = this.helper.worldToLocal( planeIntersect );
-	      this._dragTotal = new THREE.Vector3();
-	      this._state = ( this._state === STILL ) ? PREPARING : this._state;
+	      this.dragCurrent = this.helper.worldToLocal( planeIntersect );
+	      this.dragTotal = new THREE.Vector3();
+	      this.state = ( this.state === STILL ) ? PREPARING : this.state;
 
 	    };
 
-	    this._draggable.onDragMove = position => {
+	    this.draggable.onDragMove = position => {
 
-	      if ( this._scramble !== null ) return;
-	      if ( this._state === STILL || ( this._state === ANIMATING && this._gettingDrag === false ) ) return;
+	      if ( this.scramble !== null ) return;
+	      if ( this.state === STILL || ( this.state === ANIMATING && this.gettingDrag === false ) ) return;
 
 	      const planeIntersect = this.getIntersect( position.current, this.helper, false );
 	      if ( planeIntersect === false ) return;
 
 	      const point = this.helper.worldToLocal( planeIntersect.point.clone() );
 
-	      this._dragDelta = point.clone().sub( this._dragCurrent ).setZ( 0 );
-	      this._dragTotal.add( this._dragDelta );
-	      this._dragCurrent = point;
-	      this.addMomentumPoint( this._dragDelta );
+	      this.dragDelta = point.clone().sub( this.dragCurrent ).setZ( 0 );
+	      this.dragTotal.add( this.dragDelta );
+	      this.dragCurrent = point;
+	      this.addMomentumPoint( this.dragDelta );
 
-	      if ( this._state === PREPARING && this._dragTotal.length() > 0.05 ) {
+	      if ( this.state === PREPARING && this.dragTotal.length() > 0.05 ) {
 
-	        this._dragDirection = this.getMainAxis( this._dragTotal );
+	        this.dragDirection = this.getMainAxis( this.dragTotal );
 
-	        if ( this._flipType === 'layer' ) {
+	        if ( this.flipType === 'layer' ) {
 
 	          const direction = new THREE.Vector3();
-	          direction[ this._dragDirection ] = 1;
+	          direction[ this.dragDirection ] = 1;
 
 	          const worldDirection = this.helper.localToWorld( direction ).sub( this.helper.position );
 	          const objectDirection = this.edges.worldToLocal( worldDirection ).round();
 
-	          this._flipAxis = objectDirection.cross( this._dragNormal ).negate();
+	          this.flipAxis = objectDirection.cross( this.dragNormal ).negate();
 
-	          this._dragIntersect = this.getIntersect( position.current, this.game.cube.cubes, true );
+	          this.dragIntersect = this.getIntersect( position.current, this.game.cube.cubes, true );
 
 	          this.selectLayer( this.getLayer( false ) );
 
 	        } else {
 
-	          const axis = ( this._dragDirection != 'x' )
-	            ? ( ( this._dragDirection == 'y' && position.current.x > this.game.world.width / 2 ) ? 'z' : 'x' )
+	          const axis = ( this.dragDirection != 'x' )
+	            ? ( ( this.dragDirection == 'y' && position.current.x > this.game.world.width / 2 ) ? 'z' : 'x' )
 	            : 'y';
 
-	          this._flipAxis = new THREE.Vector3();
-	          this._flipAxis[ axis ] = 1 * ( ( axis == 'x' ) ? - 1 : 1 );
+	          this.flipAxis = new THREE.Vector3();
+	          this.flipAxis[ axis ] = 1 * ( ( axis == 'x' ) ? - 1 : 1 );
 
 	        }
 
-	        this._flipAngle = 0;
-	        this._state = ROTATING;
+	        this.flipAngle = 0;
+	        this.state = ROTATING;
 
-	      } else if ( this._state === ROTATING ) {
+	      } else if ( this.state === ROTATING ) {
 
-	        const rotation = this._dragDelta[ this._dragDirection ];// * 2.25;
+	        const rotation = this.dragDelta[ this.dragDirection ];// * 2.25;
 
-	        if ( this._flipType === 'layer' ) { 
+	        if ( this.flipType === 'layer' ) { 
 
-	          this.group.rotateOnAxis( this._flipAxis, rotation );
-	          this._flipAngle += rotation;
+	          this.group.rotateOnAxis( this.flipAxis, rotation );
+	          this.flipAngle += rotation;
 
 	        } else {
 
-	          this.edges.rotateOnWorldAxis( this._flipAxis, rotation );
+	          this.edges.rotateOnWorldAxis( this.flipAxis, rotation );
 	          this.game.cube.object.rotation.copy( this.edges.rotation );
-	          this._flipAngle += rotation;
+	          this.flipAngle += rotation;
 
 	        }
 
@@ -1376,38 +1358,38 @@
 
 	    };
 
-	    this._draggable.onDragEnd = position => {
+	    this.draggable.onDragEnd = position => {
 
-	      if ( this._scramble !== null ) return;
-	      if ( this._state !== ROTATING ) {
+	      if ( this.scramble !== null ) return;
+	      if ( this.state !== ROTATING ) {
 
-	        this._gettingDrag = false;
-	        this._state = STILL;
+	        this.gettingDrag = false;
+	        this.state = STILL;
 	        return;
 
 	      }
 
-	      this._state = ANIMATING;
+	      this.state = ANIMATING;
 
-	      const momentum = this.getMomentum()[ this._dragDirection ];
-	      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this._flipAngle ) < Math.PI / 2 );
+	      const momentum = this.getMomentum()[ this.dragDirection ];
+	      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this.flipAngle ) < Math.PI / 2 );
 
 	      const angle = flip
-	        ? this.roundAngle( this._flipAngle + Math.sign( this._flipAngle ) * ( Math.PI / 4 ) )
-	        : this.roundAngle( this._flipAngle );
+	        ? this.roundAngle( this.flipAngle + Math.sign( this.flipAngle ) * ( Math.PI / 4 ) )
+	        : this.roundAngle( this.flipAngle );
 
-	      const delta = angle - this._flipAngle;
+	      const delta = angle - this.flipAngle;
 
-	      if ( this._flipType === 'layer' ) {
-
-	        if ( ! this._flipLayer ) return;
+	      if ( this.flipType === 'layer' ) {
 
 	        this.rotateLayer( delta, false, layer => {
 
 	          this.checkIsSolved();
+
+	          this.game.storage.saveGame();
 	          
-	          this._state = this._gettingDrag ? PREPARING : STILL;
-	          this._gettingDrag = false;
+	          this.state = this.gettingDrag ? PREPARING : STILL;
+	          this.gettingDrag = false;
 
 	        } );
 
@@ -1415,8 +1397,8 @@
 
 	        this.rotateCube( delta, () => {
 
-	          this._state = this._gettingDrag ? PREPARING : STILL;
-	          this._gettingDrag = false;
+	          this.state = this.gettingDrag ? PREPARING : STILL;
+	          this.gettingDrag = false;
 
 	        } );
 
@@ -1428,27 +1410,26 @@
 
 	  rotateLayer( rotation, scramble, callback ) {
 
-	    const bounce = scramble ? this._scrambleBounce : this._flipBounce;
+	    const bounce = scramble ? this.scrambleBounce : this.flipBounce;
 	    const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
 
 	    this.rotationTween = new Tween( {
-	      duration:scramble ? this._scrambleSpeed : this._flipSpeed,
+	      duration:scramble ? this.scrambleSpeed : this.flipSpeed,
 	      easing: Easing.Back.Out( bounce ),
 	      onUpdate: tween => {
 
 	        let deltaAngle = tween.delta * rotation;
-	        this.group.rotateOnAxis( this._flipAxis, deltaAngle );
+	        this.group.rotateOnAxis( this.flipAxis, deltaAngle );
 	        bounceCube( tween.value, deltaAngle, rotation );
 
 	      },
 	      onComplete: () => {
 
-	        const layer = this._flipLayer.slice( 0 );
+	        const layer = this.flipLayer.slice( 0 );
 
 	        this.game.cube.object.rotation.setFromVector3( this.snapRotation( this.game.cube.object.rotation.toVector3() ) );
 	        this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
-	        this.deselectLayer( this._flipLayer );
-	        this.game.storage.saveGame();
+	        this.deselectLayer( this.flipLayer );
 
 	        callback( layer );
 
@@ -1472,7 +1453,7 @@
 
 	          }
 
-	          this.game.cube.object.rotateOnAxis( this._flipAxis, delta );
+	          this.game.cube.object.rotateOnAxis( this.flipAxis, delta );
 
 	        }
 
@@ -1483,11 +1464,11 @@
 	  rotateCube( rotation, callback ) {
 
 	    this.rotationTween = new Tween( {
-	      duration: this._flipSpeed,
-	      easing: Easing.Back.Out( this._flipBounce ),
+	      duration: this.flipSpeed,
+	      easing: Easing.Back.Out( this.flipBounce ),
 	      onUpdate: tween => {
 
-	        this.edges.rotateOnWorldAxis( this._flipAxis, tween.delta * rotation );
+	        this.edges.rotateOnWorldAxis( this.flipAxis, tween.delta * rotation );
 	        this.game.cube.object.rotation.copy( this.edges.rotation );
 
 	      },
@@ -1542,14 +1523,14 @@
 
 	    this.group.rotation.set( 0, 0, 0 );
 	    this.movePieces( layer, this.game.cube.object, this.group );
-	    this._flipLayer = layer;
+	    this.flipLayer = layer;
 
 	  }
 
 	  deselectLayer( layer ) {
 
 	    this.movePieces( layer, this.group, this.game.cube.object );
-	    this._flipLayer = null;
+	    this.flipLayer = null;
 
 	  }
 
@@ -1578,8 +1559,8 @@
 
 	    if ( position === false ) {
 
-	      axis = this.getMainAxis( this._flipAxis );
-	      position = this.getPiecePosition( this._dragIntersect.object );
+	      axis = this.getMainAxis( this.flipAxis );
+	      position = this.getPiecePosition( this.dragIntersect.object );
 
 	    } else {
 
@@ -1611,19 +1592,19 @@
 
 	  scrambleCube() {
 
-	    if ( this._scramble == null ) {
+	    if ( this.scramble == null ) {
 
-	      this._scramble = this.game.scrambler;
-	      this._scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
+	      this.scramble = this.game.scrambler;
+	      this.scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
 
 	    }
 
-	    const converted = this._scramble.converted;
+	    const converted = this.scramble.converted;
 	    const move = converted[ 0 ];
 	    const layer = this.getLayer( move.position );
 
-	    this._flipAxis = new THREE.Vector3();
-	    this._flipAxis[ move.axis ] = 1;
+	    this.flipAxis = new THREE.Vector3();
+	    this.flipAxis[ move.axis ] = 1;
 
 	    this.selectLayer( layer );
 	    this.rotateLayer( move.angle, true, () => {
@@ -1636,7 +1617,7 @@
 
 	      } else {
 
-	        this._scramble = null;
+	        this.scramble = null;
 
 	      }
 
@@ -1647,7 +1628,7 @@
 	  getIntersect( position, object, multiple ) {
 
 	    this.raycaster.setFromCamera(
-	      this._draggable.convertPosition( position.clone() ),
+	      this.draggable.convertPosition( position.clone() ),
 	      this.game.world.camera
 	    );
 
@@ -1687,20 +1668,20 @@
 
 	    const time = Date.now();
 
-	    this._momentum = this._momentum.filter( moment => time - moment.time < 500 );
+	    this.momentum = this.momentum.filter( moment => time - moment.time < 500 );
 
-	    if ( delta !== false ) this._momentum.push( { delta, time } );
+	    if ( delta !== false ) this.momentum.push( { delta, time } );
 
 	  }
 
 	  getMomentum() {
 
-	    const points = this._momentum.length;
+	    const points = this.momentum.length;
 	    const momentum = new THREE.Vector2();
 
 	    this.addMomentumPoint( false );
 
-	    this._momentum.forEach( ( point, index ) => {
+	    this.momentum.forEach( ( point, index ) => {
 
 	      momentum.add( point.delta.multiplyScalar( index / points ) );
 
@@ -1808,51 +1789,51 @@
 
 	  constructor( game ) {
 
-	    this._game = game;
+	    this.game = game;
 
-	    this._tweens = {};
-	    this._durations = {};
-	    this._data = {};
+	    this.tweens = {};
+	    this.durations = {};
+	    this.data = {};
 
-	    this._activeTransitions = 0;
+	    this.activeTransitions = 0;
 
 	  }
 
-	  initialize() {
+	  init() {
 
-	    this._data.cubeY = -0.2;
-	    this._data.cameraZoom = 0.85;
+	    this.data.cubeY = -0.2;
+	    this.data.cameraZoom = 0.85;
 
-	    this._game.controls.disable();
+	    this.game.controls.disable();
 
-	    this._game.cube.object.position.y = this._data.cubeY;
-	    this._game.controls.edges.position.y = this._data.cubeY;
-	    this._game.cube.animator.position.y = 4;
-	    this._game.cube.animator.rotation.x = - Math.PI / 3;
-	    this._game.world.camera.zoom = this._data.cameraZoom;
-	    this._game.world.camera.updateProjectionMatrix();
+	    this.game.cube.object.position.y = this.data.cubeY;
+	    this.game.controls.edges.position.y = this.data.cubeY;
+	    this.game.cube.animator.position.y = 4;
+	    this.game.cube.animator.rotation.x = - Math.PI / 3;
+	    this.game.world.camera.zoom = this.data.cameraZoom;
+	    this.game.world.camera.updateProjectionMatrix();
 
 	  }
 
 	  cube( show ) {
 
-	    this._activeTransitions++;
+	    this.activeTransitions++;
 
-	    if ( typeof this._tweens.cube !== 'undefined' ) this._tweens.cube.stop();
+	    if ( typeof this.tweens.cube !== 'undefined' ) this.tweens.cube.stop();
 
-	    const currentY = this._game.cube.animator.position.y;
-	    const currentRotation = this._game.cube.animator.rotation.x;
+	    const currentY = this.game.cube.animator.position.y;
+	    const currentRotation = this.game.cube.animator.rotation.x;
 
-	    this._tweens.cube = new Tween( {
+	    this.tweens.cube = new Tween( {
 	      duration: show ? 3000 : 1250,
 	      easing: show ? Easing.Elastic.Out( 0.8, 0.6 ) : Easing.Back.In( 1 ),
 	      onUpdate: tween => {
 
-	        this._game.cube.animator.position.y = show
+	        this.game.cube.animator.position.y = show
 	          ? ( 1 - tween.value ) * 4
 	          : currentY + tween.value * 4;
 
-	        this._game.cube.animator.rotation.x = show
+	        this.game.cube.animator.rotation.x = show
 	          ? ( 1 - tween.value ) * Math.PI / 3
 	          : currentRotation + tween.value * - Math.PI / 3;
 
@@ -1861,31 +1842,31 @@
 
 	    setTimeout( () => {
 
-	      if ( this._game.playing ) this.timer( show );
+	      if ( this.game.playing ) this.timer( show );
 	      else this.title( show );
 
 	    }, show ? 700 : 0 );
 
-	    this._durations.cube = show ? 1500 : 1500;
+	    this.durations.cube = show ? 1500 : 1500;
 
-	    setTimeout( () => this._activeTransitions--, this._durations.cube );
+	    setTimeout( () => this.activeTransitions--, this.durations.cube );
 
 	  }
 
 	  float() {
 
-	    if ( typeof this._tweens.float !== 'undefined' ) this._tweens.float.stop();
+	    if ( typeof this.tweens.float !== 'undefined' ) this.tweens.float.stop();
 
-	    this._tweens.float = new Tween( {
+	    this.tweens.float = new Tween( {
 	      duration: 1500,
 	      easing: Easing.Sine.InOut(),
 	      yoyo: true,
 	      onUpdate: tween => {
 
-	        this._game.cube.holder.position.y = (- 0.02 + tween.value * 0.04); 
-	        this._game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
-	        this._game.cube.holder.rotation.z = - this._game.cube.holder.rotation.x;
-	        this._game.cube.holder.rotation.y = this._game.cube.holder.rotation.x;
+	        this.game.cube.holder.position.y = (- 0.02 + tween.value * 0.04); 
+	        this.game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
+	        this.game.cube.holder.rotation.z = - this.game.cube.holder.rotation.x;
+	        this.game.cube.holder.rotation.y = this.game.cube.holder.rotation.x;
 
 	      },
 	    } );
@@ -1894,40 +1875,40 @@
 
 	  zoom( game, time ) {
 
-	    this._activeTransitions++;
+	    this.activeTransitions++;
 
-	    const zoom = ( game ) ? 1 : this._data.cameraZoom;
-	    const cubeY = ( game ) ? -0.3 : this._data.cubeY;
+	    const zoom = ( game ) ? 1 : this.data.cameraZoom;
+	    const cubeY = ( game ) ? -0.3 : this.data.cubeY;
 	    const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
 	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
 	    const easing = Easing.Power.InOut( ( time > 0 ) ? 2 : 3 );
 
-	    this._tweens.zoom = new Tween( {
-	      target: this._game.world.camera,
+	    this.tweens.zoom = new Tween( {
+	      target: this.game.world.camera,
 	      duration: duration,
 	      easing: easing,
 	      to: { zoom: zoom },
-	      onUpdate: () => { this._game.world.camera.updateProjectionMatrix(); },
+	      onUpdate: () => { this.game.world.camera.updateProjectionMatrix(); },
 	    } );
 
-	    this._tweens.rotate = new Tween( {
-	      target: this._game.cube.animator.rotation,
+	    this.tweens.rotate = new Tween( {
+	      target: this.game.cube.animator.rotation,
 	      duration: duration,
 	      easing: easing,
 	      to: { y: - Math.PI * 2 * rotations },
-	      onComplete: () => { this._game.cube.animator.rotation.y = 0; },
+	      onComplete: () => { this.game.cube.animator.rotation.y = 0; },
 	    } );
 
-	    this._durations.zoom = duration;
+	    this.durations.zoom = duration;
 
-	    if ( ! this._game.playing ) {
+	    if ( ! this.game.playing ) {
 
-	      this._game.saved = true;
-	      this._game.playing = true;
+	      this.game.saved = true;
+	      this.game.playing = true;
 
 	      this.title( false );
 	      setTimeout( () => this.timer( true ), duration - 1000 );
-	      setTimeout( () => this._game.controls.enable(), duration );
+	      setTimeout( () => this.game.controls.enable(), duration );
 
 	    } else {
 
@@ -1936,21 +1917,21 @@
 
 	    }
 
-	    setTimeout( () => this._activeTransitions--, this._durations.zoom );
+	    setTimeout( () => this.activeTransitions--, this.durations.zoom );
 
 	  }
 
 	  preferences( show ) {
 
-	    this._activeTransitions++;
+	    this.activeTransitions++;
 
-	    if ( typeof this._tweens.range === 'undefined' ) this._tweens.range = [];  
-	    else this._tweens.range.forEach( tween => { tween.stop(); tween = null; } );
+	    if ( typeof this.tweens.range === 'undefined' ) this.tweens.range = [];  
+	    else this.tweens.range.forEach( tween => { tween.stop(); tween = null; } );
 
 	    let tweenId = -1;
 	    let listMax = 0;
 
-	    const ranges = this._game.dom.prefs.querySelectorAll( '.range' );
+	    const ranges = this.game.dom.prefs.querySelectorAll( '.range' );
 	    const easing = show ? Easing.Power.Out(2) : Easing.Power.In(3);
 
 	    ranges.forEach( ( range, rangeIndex ) => {
@@ -1967,7 +1948,7 @@
 	      handle.style.opacity = show ? 0 : 1;
 	      handle.style.pointerEvents = show ? 'all' : 'none';
 
-	      this._tweens.range[ tweenId++ ] = new Tween( {
+	      this.tweens.range[ tweenId++ ] = new Tween( {
 	        delay: show ? delay : delay,
 	        duration: 400,
 	        easing: easing,
@@ -1982,7 +1963,7 @@
 	        }
 	      } );
 
-	      this._tweens.range[ tweenId++ ] = new Tween( {
+	      this.tweens.range[ tweenId++ ] = new Tween( {
 	        delay: show ? delay + 100 : delay,
 	        duration: 400,
 	        easing: easing,
@@ -1998,7 +1979,7 @@
 	        }
 	      } );
 
-	      this._tweens.range[ tweenId++ ] = new Tween( {
+	      this.tweens.range[ tweenId++ ] = new Tween( {
 	        delay: show ? delay + 100 : delay,
 	        duration: 400,
 	        easing: easing,
@@ -2018,7 +1999,7 @@
 
 	        listItem.style.opacity = show ? 0 : 1;
 
-	        this._tweens.range[ tweenId++ ] = new Tween( {
+	        this.tweens.range[ tweenId++ ] = new Tween( {
 	          delay: show ? delay + 200 + labelIndex * 50 : delay,
 	          duration: 400,
 	          easing: easing,
@@ -2041,19 +2022,19 @@
 
 	    } );
 
-	    this._durations.preferences = show
+	    this.durations.preferences = show
 	      ? ( ( ranges.length - 1 ) * 100 ) + 200 + listMax * 50 + 400
 	      : ( ( ranges.length - 1 ) * 100 ) + 400;
 
-	    setTimeout( () => this._activeTransitions--, this._durations.preferences );
+	    setTimeout( () => this.activeTransitions--, this.durations.preferences );
 
 	  }
 
 	  title( show ) {
 
-	    this._activeTransitions++;
+	    this.activeTransitions++;
 
-	    const title = this._game.dom.title;
+	    const title = this.game.dom.title;
 
 	    if ( title.querySelector( 'span i' ) === null )
 	      title.querySelectorAll( 'span' ).forEach( span => this.splitLetters( span ) );
@@ -2064,9 +2045,9 @@
 
 	    title.style.opacity = 1;
 
-	    const note = this._game.dom.note;
+	    const note = this.game.dom.note;
 
-	    this._tweens.title[ letters.length ] = new Tween( {
+	    this.tweens.title[ letters.length ] = new Tween( {
 	      target: note.style,
 	      easing: Easing.Sine.InOut(),
 	      duration: show ? 800 : 400,
@@ -2075,26 +2056,26 @@
 	      to: { opacity: show ? 1 : 0 },
 	    } );
 
-	    setTimeout( () => this._activeTransitions--, this._durations.title );
+	    setTimeout( () => this.activeTransitions--, this.durations.title );
 
 	  }
 
 	  timer( show ) {
 
-	    this._activeTransitions++;
+	    this.activeTransitions++;
 
 	    if ( ! show ) {
 
-	      this._game.controls.disable();
-	      this._game.timer.stop();
+	      this.game.controls.disable();
+	      this.game.timer.stop();
 
 	    }
 
-	    const timer = this._game.dom.timer;
+	    const timer = this.game.dom.timer;
 
 	    timer.style.opacity = 0;
-	    this._game.timer.convert();
-	    this._game.timer.setText();
+	    this.game.timer.convert();
+	    this.game.timer.setText();
 
 	    this.splitLetters( timer );
 	    const letters = timer.querySelectorAll( 'i' );
@@ -2102,14 +2083,14 @@
 
 	    timer.style.opacity = 1;
 
-	    if ( show && this._game.playing ) setTimeout( () => {
+	    if ( show && this.game.playing ) setTimeout( () => {
 
-	      this._game.controls.enable();
-	      this._game.timer.start( true );
+	      this.game.controls.enable();
+	      this.game.timer.start( true );
 
 	    }, 1000 );
 
-	    setTimeout( () => this._activeTransitions--, this._durations.timer );
+	    setTimeout( () => this.activeTransitions--, this.durations.timer );
 
 	  }
 
@@ -2135,14 +2116,14 @@
 
 	  flipLetters( type, letters, show ) {
 
-	    if ( typeof this._tweens[ type ] === 'undefined' ) this._tweens[ type ] = [];  
-	    else this._tweens[ type ].forEach( tween => { tween.stop(); tween = null; } );
+	    if ( typeof this.tweens[ type ] === 'undefined' ) this.tweens[ type ] = [];  
+	    else this.tweens[ type ].forEach( tween => { tween.stop(); tween = null; } );
 
 	    letters.forEach( ( letter, index ) => {
 
 	      letter.style.opacity = show ? 0 : 1;
 
-	      this._tweens[ type ][ index ] = new Tween( {
+	      this.tweens[ type ][ index ] = new Tween( {
 	        easing: Easing.Sine.Out(),
 	        duration: show ? 800 : 400,
 	        delay: index * 50,
@@ -2158,13 +2139,7 @@
 
 	    } );
 
-	    this._durations[ type ] = ( letters.length - 1 ) * 50 + ( show ? 800 : 400 );
-
-	  }
-
-	  getActive() {
-
-	    return this._activeTransitions;
+	    this.durations[ type ] = ( letters.length - 1 ) * 50 + ( show ? 800 : 400 );
 
 	  }
 
@@ -2176,16 +2151,16 @@
 
 			super( false );
 
-			this._game = game;
+			this.game = game;
 			this.reset();
 			
 		}
 
 		start( continueGame ) {
 
-			this._startTime = continueGame ? ( Date.now() - this._deltaTime ) : Date.now();
-			this._deltaTime = 0;
-			this._converted = this.convert();
+			this.startTime = continueGame ? ( Date.now() - this.deltaTime ) : Date.now();
+			this.deltaTime = 0;
+			this.converted = this.convert();
 
 			super.start();
 
@@ -2193,36 +2168,36 @@
 
 		reset() {
 
-			this._startTime = 0;
-			this._currentTime = 0;
-			this._deltaTime = 0;
-			this._converted = '0:00';
+			this.startTime = 0;
+			this.currentTime = 0;
+			this.deltaTime = 0;
+			this.converted = '0:00';
 
 		}
 
 		stop() {
 
-			this._currentTime = Date.now();
-			this._deltaTime = this._currentTime - this._startTime;
+			this.currentTime = Date.now();
+			this.deltaTime = this.currentTime - this.startTime;
 			this.convert();
 
 			super.stop();
 
-			return { time: this._converted, millis: this._deltaTime };
+			return { time: this.converted, millis: this.deltaTime };
 
 		}
 
 		update() {
 
-			const old = this._converted;
+			const old = this.converted;
 
-			this._currentTime = Date.now();
-			this._deltaTime = this._currentTime - this._startTime;
+			this.currentTime = Date.now();
+			this.deltaTime = this.currentTime - this.startTime;
 			this.convert();
 
-			if ( this._converted != old ) {
+			if ( this.converted != old ) {
 
-				localStorage.setItem( 'gameTime', this._deltaTime );
+				localStorage.setItem( 'gameTime', this.deltaTime );
 				this.setText();
 
 			}
@@ -2231,28 +2206,16 @@
 
 		convert() {
 
-			const seconds = parseInt( ( this._deltaTime / 1000 ) % 60 );
-			const minutes = parseInt( ( this._deltaTime / ( 1000 * 60 ) ) );
+			const seconds = parseInt( ( this.deltaTime / 1000 ) % 60 );
+			const minutes = parseInt( ( this.deltaTime / ( 1000 * 60 ) ) );
 
-			this._converted = minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds;
+			this.converted = minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds;
 
 		}
 
 		setText() {
 
-			this._game.dom.timer.innerHTML = this._converted;
-
-		}
-
-		getDeltaTime() {
-
-			return this._deltaTime;
-
-		}
-
-		setDeltaTime( time ) {
-
-			this._deltaTime = time;
+			this.game.dom.timer.innerHTML = this.converted;
 
 		}
 
@@ -2410,48 +2373,48 @@
 
 	  constructor( game ) {
 
-	    this._game = game;
+	    this.game = game;
 
 	  }
 
 	  init() {
 
-	    this._ranges = {
+	    this.ranges = {
 
 	      speed: new Range( 'speed', {
-	        value: this._game.controls._flipSpeed,
+	        value: this.game.controls.flipSpeed,
 	        range: [ 300, 100 ],
 	        onUpdate: value => {
 
-	          this._game.controls._flipSpeed = value;
-	          this._game.controls._flipBounce = ( ( value - 100 ) / 200 ) * 2;
+	          this.game.controls.flipSpeed = value;
+	          this.game.controls.flipBounce = ( ( value - 100 ) / 200 ) * 2;
 
 	        },
-	        onComplete: () => this._game.storage.savePreferences(),
+	        onComplete: () => this.game.storage.savePreferences(),
 	      } ),
 
 	      scramble: new Range( 'scramble', {
-	        value: this._game.scrambler.scrambleLength,
+	        value: this.game.scrambler.scrambleLength,
 	        range: [ 20, 30 ],
 	        step: 5,
 	        onUpdate: value => {
 
-	          this._game.scrambler.scrambleLength = value;
+	          this.game.scrambler.scrambleLength = value;
 
 	        },
-	        onComplete: () => this._game.storage.savePreferences()
+	        onComplete: () => this.game.storage.savePreferences()
 	      } ),
 
 	      fov: new Range( 'fov', {
-	        value: this._game.world.fov,
+	        value: this.game.world.fov,
 	        range: [ 2, 45 ],
 	        onUpdate: value => {
 
-	          this._game.world.fov = value;
-	          this._game.world.resize();
+	          this.game.world.fov = value;
+	          this.game.world.resize();
 
 	        },
-	        onComplete: () => this._game.storage.savePreferences()
+	        onComplete: () => this.game.storage.savePreferences()
 	      } ),
 
 	      theme: new Range( 'theme', {
@@ -2459,7 +2422,7 @@
 	        range: [ 0, 1 ],
 	        step: 1,
 	        onUpdate: value => {},
-	        // onComplete: () => this._game.storage.savePreferences()
+	        // onComplete: () => this.game.storage.savePreferences()
 	      } ),
 
 	    };
@@ -2474,22 +2437,22 @@
 
 	    super( false );
 
-	    this._game = game;
+	    this.game = game;
 
-	    this._count = 100;
-	    this._particles = [];
+	    this.count = 100;
+	    this.particles = [];
 
-	    this._object = new THREE.Object3D();
-	    this._game.world.scene.add( this._object );
+	    this.object = new THREE.Object3D();
+	    this.game.world.scene.add( this.object );
 
-	    this._geometry = new THREE.PlaneGeometry( 1, 1 );
-	    this._material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
-	    this._opacity = 0;
+	    this.geometry = new THREE.PlaneGeometry( 1, 1 );
+	    this.material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
+	    this.opacity = 0;
 
-	    this._particleOptions = {
-	      geometry: this._geometry,
-	      material: this._material,
-	      holder: this._object,
+	    this.particleOptions = {
+	      geometry: this.geometry,
+	      material: this.material,
+	      holder: this.object,
 	      velocity: { min: 5, max: 15 },
 	      revolution: { min: 0, max: 0.05 },
 	      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 45 },
@@ -2501,16 +2464,17 @@
 	      colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
 	    };
 
-	    let i = this._count;
-	    while ( i-- )  this._particles.push( new Particle( this._particleOptions ) );
+	    let i = this.count;
+	    while ( i-- )  this.particles.push( new Particle( this.particleOptions ) );
 
 	  }
 
 	  start() {
 
-	    this._opacity = 0;
-	    this._done = 0;
-	    this._time = performance.now();
+	    this.opacity = 0;
+	    this.done = 0;
+	    this.time = performance.now();
+	    
 	    super.start();
 
 	  }
@@ -2519,27 +2483,27 @@
 
 	    super.stop();
 
-	    let i = this._count;
-	    while ( i-- ) this._particles[ i ].reset();
+	    let i = this.count;
+	    while ( i-- ) this.particles[ i ].reset();
 
 	  }
 
 	  update() {
 
 	    const now = performance.now();
-	    const delta = now - this._time;
-	    this._time = now;
+	    const delta = now - this.time;
+	    this.time = now;
 
-	    this._opacity += ( 1 - this._opacity ) * 0.1;
+	    this.opacity += ( 1 - this.opacity ) * 0.1;
 
-	    let i = this._count;
+	    let i = this.count;
 	    while ( i-- ) {
 
-	      if ( this._particles[ i ].update( delta, this._opacity ) ) this._done++;
+	      if ( this.particles[ i ].update( delta, this.opacity ) ) this.done++;
 
 	    }
 
-	    if ( this._done == this._count) this.stop();
+	    if ( this.done == this.count) this.stop();
 
 	  }
 	  
@@ -2551,18 +2515,18 @@
 
 	  constructor( options ) {
 
-	    this._options = options;
+	    this.options = options;
 
-	    this._velocity = new THREE.Vector3();
-	    this._force = new THREE.Vector3();
+	    this.velocity = new THREE.Vector3();
+	    this.force = new THREE.Vector3();
 
-	    this._mesh = new THREE.Mesh( options.geometry, options.material.clone() );
+	    this.mesh = new THREE.Mesh( options.geometry, options.material.clone() );
 
-	    options.holder.add( this._mesh );
+	    options.holder.add( this.mesh );
 
 	    this.reset();
 
-	    this._ag = options.gravity; // -9.81
+	    this.ag = options.gravity; // -9.81
 
 	    return this;
 
@@ -2570,59 +2534,59 @@
 
 	  reset() {
 
-	    const axis = this._velocity.clone();
+	    const axis = this.velocity.clone();
 
-	    this._velocity.copy( this._options.angle.direction ).multiplyScalar( rnd( this._options.velocity.min, this._options.velocity.max ) );
-	    this._velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
-	    this._velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+	    this.velocity.copy( this.options.angle.direction ).multiplyScalar( rnd( this.options.velocity.min, this.options.velocity.max ) );
+	    this.velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this.options.angle.spread / 2, this.options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+	    this.velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this.options.angle.spread / 2, this.options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
 
-	    this._color = new THREE.Color( this._options.colors[ Math.floor( Math.random() * this._options.colors.length ) ] );
+	    this.color = new THREE.Color( this.options.colors[ Math.floor( Math.random() * this.options.colors.length ) ] );
 
-	    this._revolution = new THREE.Vector3(
-	      rnd( this._options.revolution.min, this._options.revolution.max ),
-	      rnd( this._options.revolution.min, this._options.revolution.max ),
-	      rnd( this._options.revolution.min, this._options.revolution.max )
+	    this.revolution = new THREE.Vector3(
+	      rnd( this.options.revolution.min, this.options.revolution.max ),
+	      rnd( this.options.revolution.min, this.options.revolution.max ),
+	      rnd( this.options.revolution.min, this.options.revolution.max )
 	    );
 
-	    this._mesh.position.set( 0, 0, 0 );
+	    this.mesh.position.set( 0, 0, 0 );
 
-	    this._positionScale = this._options.positionScale;
-	    this._mass = rnd( this._options.mass.min, this._options.mass.max );
-	    this._radius = rnd( this._options.radius.min, this._options.radius.max );
-	    this._scale = this._radius * this._options.geometryScale;
+	    this.positionScale = this.options.positionScale;
+	    this.mass = rnd( this.options.mass.min, this.options.mass.max );
+	    this.radius = rnd( this.options.radius.min, this.options.radius.max );
+	    this.scale = this.radius * this.options.geometryScale;
 
-	    this._mesh.scale.set( this._scale, this._scale, this._scale );
-	    this._mesh.material.color.set( this._color );
-	    this._mesh.material.opacity = 0;
-	    this._mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 );
+	    this.mesh.scale.set( this.scale, this.scale, this.scale );
+	    this.mesh.material.color.set( this.color );
+	    this.mesh.material.opacity = 0;
+	    this.mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 );
 
-	    this._physics = this.getPhysics( this._radius );
+	    this.physics = this.getPhysics( this.radius );
 
-	    this._done = false;
+	    this.done = false;
 
 	  }
 
 	  update( delta, opacity, complete ) {
 
-	    if ( this._done ) return false;
+	    if ( this.done ) return false;
 
 	    delta = 16 / 1000;
 
-	    this._force.set(
-	      this.getForce( this._velocity.x ),
-	      this.getForce( this._velocity.y ) + this._ag,
-	      this.getForce( this._velocity.z )
+	    this.force.set(
+	      this.getForce( this.velocity.x ),
+	      this.getForce( this.velocity.y ) + this.ag,
+	      this.getForce( this.velocity.z )
 	    );
 
-	    this._velocity.add( this._force.multiplyScalar( delta ) );
+	    this.velocity.add( this.force.multiplyScalar( delta ) );
 
-	    this._mesh.position.add( this._velocity.clone().multiplyScalar( delta * this._positionScale ) );
-	    this._mesh.rotateX( this._revolution.x ).rotateY( this._revolution.y ).rotateZ( this._revolution.y );
-	    this._mesh.material.opacity = opacity * this.getProgressInRange( this._mesh.position.y, -4, -2 );
+	    this.mesh.position.add( this.velocity.clone().multiplyScalar( delta * this.positionScale ) );
+	    this.mesh.rotateX( this.revolution.x ).rotateY( this.revolution.y ).rotateZ( this.revolution.y );
+	    this.mesh.material.opacity = opacity * this.getProgressInRange( this.mesh.position.y, -4, -2 );
 
-	    if ( this._mesh.position.y < -4 ) { 
+	    if ( this.mesh.position.y < -4 ) { 
 	      
-	      this._done = true;
+	      this.done = true;
 	      return true;
 
 	    }
@@ -2643,7 +2607,7 @@
 
 	  getForce( velocity ) {
 
-	    return this._physics * velocity * velocity * Math.sign( velocity ) / this._mass;
+	    return this.physics * velocity * velocity * Math.sign( velocity ) / this.mass;
 
 	  }
 
@@ -2659,19 +2623,19 @@
 
 	  constructor( game ) {
 
-	    this._game = game;
+	    this.game = game;
 
-	    this._scores = [];
+	    this.scores = [];
 
 	  }
 
 	  addScore( time ) {
 
-	    this._scores.push( time );
+	    this.scores.push( time );
 
-	    if ( this._scores.lenght > 100 ) this._scores.shift();
+	    if ( this.scores.lenght > 100 ) this.scores.shift();
 
-	    this._game.storage.saveScores();
+	    this.game.storage.saveScores();
 
 	  }
 
@@ -2681,7 +2645,7 @@
 
 	  constructor( game ) {
 
-	    this._game = game;
+	    this.game = game;
 
 	  }
 
@@ -2700,7 +2664,7 @@
 
 	      if ( ! gameCubeData || ! gameTime ) throw new Error();
 
-	      this._game.cube.pieces.forEach( piece => {
+	      this.game.cube.pieces.forEach( piece => {
 
 	        const index = gameCubeData.names.indexOf( piece.name );
 
@@ -2712,13 +2676,13 @@
 
 	      } );
 
-	      this._game.timer.setDeltaTime( gameTime );
+	      this.game.timer.deltaTime = gameTime;
 
-	      this._game.saved = true;
+	      this.game.saved = true;
 
 	    } catch( e ) {
 
-	      this._game.saved = false;
+	      this.game.saved = false;
 
 	    }
 
@@ -2728,9 +2692,9 @@
 
 	    const gameInProgress = true;
 	    const gameCubeData = { names: [], positions: [], rotations: [] };
-	    const gameTime = this._game.timer.getDeltaTime();
+	    const gameTime = this.game.timer.deltaTime;
 
-	    this._game.cube.pieces.forEach( piece => {
+	    this.game.cube.pieces.forEach( piece => {
 
 	      gameCubeData.names.push( piece.name );
 	      gameCubeData.positions.push( piece.position );
@@ -2762,7 +2726,7 @@
 
 	      if ( ! scoresData ) throw new Error();
 
-	      this._game.scores._scores = scoresData;
+	      this.game.scores.scores = scoresData;
 
 	      return true;
 
@@ -2776,7 +2740,7 @@
 
 	  saveScores() {
 
-	    const scoresData = this._game.scores._scores;
+	    const scoresData = this.game.scores.scores;
 
 	    localStorage.setItem( 'scoresData', JSON.stringify( scoresData ) );
 
@@ -2798,12 +2762,12 @@
 
 	      if ( ! preferences ) throw new Error();
 
-	      this._game.controls._flipSpeed = preferences.flipSpeed;
-	      this._game.controls._flipBounce = preferences.flipBounce;
-	      this._game.scrambler.scrambleLength = preferences.scrambleLength;
+	      this.game.controls.flipSpeed = preferences.flipSpeed;
+	      this.game.controls.flipBounce = preferences.flipBounce;
+	      this.game.scrambler.scrambleLength = preferences.scrambleLength;
 
-	      this._game.world.fov = parseFloat( preferences.fov );
-	      this._game.world.resize();
+	      this.game.world.fov = parseFloat( preferences.fov );
+	      this.game.world.resize();
 
 	      return true;
 
@@ -2818,10 +2782,10 @@
 	  savePreferences() {
 
 	    const preferences = {
-	      flipSpeed: this._game.controls._flipSpeed,
-	      flipBounce: this._game.controls._flipBounce,
-	      scrambleLength: this._game.scrambler.scrambleLength,
-	      fov: this._game.world.fov,
+	      flipSpeed: this.game.controls.flipSpeed,
+	      flipBounce: this.game.controls.flipBounce,
+	      scrambleLength: this.game.scrambler.scrambleLength,
+	      fov: this.game.world.fov,
 	      theme: null,
 	    };
 
@@ -2850,12 +2814,12 @@
 				convert: false,
 			}, options || {} );
 
-			this._tagName = options.tagName;
-			this._className = options.className;
-			this._icons = options.icons;
+			this.tagName = options.tagName;
+			this.className = options.className;
+			this.icons = options.icons;
 
-			this._svgTag = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
-			this._svgTag.setAttribute( 'class', this._className );
+			this.svgTag = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
+			this.svgTag.setAttribute( 'class', this.className );
 
 			if ( options.styles ) this.addStyles();
 			if ( options.convert ) this.convertAllIcons();
@@ -2863,8 +2827,8 @@
 			if ( options.observe ) {
 
 				const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-				this._observer = new MutationObserver( mutations => { this.convertAllIcons(); } );
-				this._observer.observe( document.documentElement, { childList: true, subtree: true } );
+				this.observer = new MutationObserver( mutations => { this.convertAllIcons(); } );
+				this.observer.observe( document.documentElement, { childList: true, subtree: true } );
 
 			}
 
@@ -2874,17 +2838,17 @@
 
 		convertAllIcons() {
 
-			document.querySelectorAll( this._tagName ).forEach( icon => { this.convertIcon( icon ); } );
+			document.querySelectorAll( this.tagName ).forEach( icon => { this.convertIcon( icon ); } );
 
 		}
 
 		convertIcon( icon ) {
 
-			const svgData = this._icons[ icon.attributes[0].localName ];
+			const svgData = this.icons[ icon.attributes[0].localName ];
 
 			if ( typeof svgData === 'undefined' ) return;
 
-			const svg = this._svgTag.cloneNode( true );
+			const svg = this.svgTag.cloneNode( true );
 			const viewBox = svgData.viewbox.split( ' ' );
 
 			svg.setAttributeNS( null, 'viewBox', svgData.viewbox );
@@ -2899,7 +2863,7 @@
 		addStyles() {
 
 			const style = document.createElement( 'style' );
-	    style.innerHTML = `.${this._className} { display: inline-block; font-size: inherit; overflow: visible; vertical-align: -0.125em; preserveAspectRatio: none; }`;
+	    style.innerHTML = `.${this.className} { display: inline-block; font-size: inherit; overflow: visible; vertical-align: -0.125em; preserveAspectRatio: none; }`;
 			document.head.appendChild( style );
 
 		}
@@ -2924,7 +2888,19 @@
 	    'trophy': {
 	      viewbox: '0 0 576 512',
 	      content: '<path fill="currentColor" d="M552 64H448V24c0-13.3-10.7-24-24-24H152c-13.3 0-24 10.7-24 24v40H24C10.7 64 0 74.7 0 88v56c0 66.5 77.9 131.7 171.9 142.4C203.3 338.5 240 360 240 360v72h-48c-35.3 0-64 20.7-64 56v12c0 6.6 5.4 12 12 12h296c6.6 0 12-5.4 12-12v-12c0-35.3-28.7-56-64-56h-48v-72s36.7-21.5 68.1-73.6C498.4 275.6 576 210.3 576 144V88c0-13.3-10.7-24-24-24zM64 144v-16h64.2c1 32.6 5.8 61.2 12.8 86.2-47.5-16.4-77-49.9-77-70.2zm448 0c0 20.2-29.4 53.8-77 70.2 7-25 11.8-53.6 12.8-86.2H512v16zm-127.3 4.7l-39.6 38.6 9.4 54.6c1.7 9.8-8.7 17.2-17.4 12.6l-49-25.8-49 25.8c-8.8 4.6-19.1-2.9-17.4-12.6l9.4-54.6-39.6-38.6c-7.1-6.9-3.2-19 6.7-20.5l54.8-8 24.5-49.6c4.4-8.9 17.1-8.9 21.5 0l24.5 49.6 54.8 8c9.6 1.5 13.5 13.6 6.4 20.5z" class=""></path>',
-	    }
+	    },
+	    // 'settings': {
+	    //   viewbox: '0 0 627 627',
+	    //   content: '<g fill-rule="evenodd" clip-rule="evenodd"><path fill="darkgray" d="M386 114l64 37 103 -20 38 66 -69 79 0 74 69 80 -38 66 -103 -20 -64 37 -35 99c-25,0 -50,0 -76,0l-34 -99 -64 -37 -104 20 -38 -66 69 -80 0 -74 -69 -79 38 -66 104 20 64 -37 34 -100c26,0 51,0 76,0l35 100zm-73 94l91 53 0 105 -91 52 -91 -52 0 -105 91 -53z"/><path fill="#7C7C7D" d="M313 178l118 68 0 135 -118 68 -117 -68 0 -135 117 -68zm0 98l38 37 -38 38 -37 -38 37 -37z"/></g>',
+	    // },
+	    // 'back': {
+	    //   viewbox: '0 0 656 656',
+	    //   content: '<polygon fill="darkgray" points="254,547 15,328 254,110 254,228 511,228 641,563 425,428 254,428 "/>',
+	    // },
+	    // 'trophy': {
+	    //   viewbox: '0 0 599 599',
+	    //   content: '<polygon fill="#41AAC8" points="130,14 469,14 469,144 305,335 300,316 294,335 130,144 "/><rect fill="#368DA7" x="226" y="14" width="147" height="227"/><polygon fill="darkgray" points="300,135 494,248 494,473 300,585 105,473 105,248 "/><polygon fill="#7C7C7D" points="300,213 331,311 433,310 350,370 382,467 300,407 217,467 249,370 166,310 268,311 "/>',
+	    // }
 	  },
 
 	  convert: true,
@@ -2947,6 +2923,7 @@
 	      buttons: {
 	        settings: document.querySelector( '.btn--settings' ),
 	        home: document.querySelector( '.btn--home' ),
+	        stats: document.querySelector( '.btn--stats' ),
 	      }
 	    };
 
@@ -2971,21 +2948,29 @@
 	    this.storage.loadPreferences();
 	    this.storage.loadScores();
 
+	    // this.scrambler.scrambleLength = 1;
+
 	    this.preferences.init();
 
-	    this.transition.initialize();
-	    this.transition.cube( true );
-	    this.transition.float();
+	    this.transition.init();
+
+	    setTimeout( () => {
+
+	      this.transition.cube( true );
+	      this.transition.float();
+
+	    }, 500 );
 
 	    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
 	    this.controls.onSolved = () => {
 
 	      // this.playing = false;
 	      this.saved = false;
-	      this.timer.stop();
-	      this.scores.addScore( this.timer.getDeltaTime() );
-	      this.timer.reset();
 	      this.storage.clearGame();
+
+	      this.timer.stop();
+	      this.scores.addScore( this.timer.deltaTime );
+	      this.timer.reset();
 
 	    };
 
@@ -3007,7 +2992,7 @@
 
 	      }
 
-	      if ( this.playing || this.transition.getActive() > 0 ) return;
+	      if ( this.playing || this.transition.activeTransitions > 0 ) return;
 	      let duration = 0;
 
 	      if ( ! this.saved ) {
@@ -3015,7 +3000,7 @@
 	        this.scrambler.scramble();
 	        this.controls.scrambleCube();
 
-	        duration = this.scrambler.converted.length * this.controls._scrambleSpeed;
+	        duration = this.scrambler.converted.length * this.controls.scrambleSpeed;
 
 	      }
 
@@ -3023,20 +3008,20 @@
 
 	    };
 
-	    this.dom.buttons.home.onclick = event => {
+	    // this.dom.buttons.home.onclick = event => {
 
-	      if ( !this.playing || this.transition.getActive() > 0 ) return;
+	    //   if ( !this.playing || this.transition.activeTransitions > 0 ) return;
 
-	      this.transition.zoom( false, 0 );
+	    //   this.transition.zoom( false, 0 );
 
-	      this.playing = false;
-	      this.controls.disable();
+	    //   this.playing = false;
+	    //   this.controls.disable();
 
-	    };
+	    // };
 
 	    this.dom.buttons.settings.onclick = event => {
 
-	      if ( this.transition.getActive() > 0 ) return;
+	      if ( this.transition.activeTransitions > 0 ) return;
 
 	      event.target.classList.toggle( 'active' );
 
