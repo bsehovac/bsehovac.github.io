@@ -6,37 +6,41 @@
   border-radius: 0
   border-width: 0
   position: absolute
-  pointer-events: all
-  font-size: 1.75em
-  transform: scale(0.6)
-  opacity: 0.25
+  pointer-events: none
+  font-size: 1.2em
+  color: rgba(#000, 0.25)
+  opacity: 0
 
   &:after
     position: absolute
     content: ''
-    width: 2em
-    height: 2em
+    width: 3em
+    height: 3em
     left: 50%
     top: 50%
-    margin-left: -1em
-    margin-top: -1em
+    margin-left: -1.5em
+    margin-top: -1.5em
     border-radius: 100%
 
-  &--tr
-    top: 0.5em
-    right: 0.5em
+  // &--tr
+  //   top: 0.8em
+  //   right: 0.8em
 
-  &--br
-    bottom: 0.5em
-    right: 0.5em
-
-  &--tl
-    top: 0.5em
-    left: 0.5em
+  // &--tl
+  //   top: 0.8em
+  //   left: 0.8em
 
   &--bl
-    bottom: 0.5em
-    left: 0.5em
+    bottom: 0.8em
+    left: 0.8em
+
+  &--br
+    bottom: 0.8em
+    right: 0.8em
+
+  &--bc
+    bottom: 0.8em
+    left: calc(50% - 0.5em)
 
   svg 
     display: block

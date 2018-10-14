@@ -54,6 +54,7 @@
 
 	      this.ids.splice( index, 1 );
 	      delete this.animations[ animation.id ];
+	      animation = null;
 
 	    }
 
@@ -160,14 +161,61 @@
 				back:    new THREE.DirectionalLight( 0xffffff, 0.19 ),
 			};
 
-			this.lights.front.position.set( 0.3, 1,  0.6 );
-			this.lights.back.position.set( -0.3, -1,  -0.6 );
+			this.lights.front.position.set( 1.5, 5, 3 );
+			this.lights.back.position.set( -1.5, -5, -3 );
 
 			this.lights.holder.add( this.lights.ambient );
 			this.lights.holder.add( this.lights.front );
 			this.lights.holder.add( this.lights.back );
 
 			this.scene.add( this.lights.holder );
+
+		}
+
+		enableShadows() {
+
+			this.renderer.shadowMap.enabled = true;
+			this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+			this.lights.front.castShadow = true;
+
+	    this.lights.front.shadow.mapSize.width = 512;
+	    this.lights.front.shadow.mapSize.height = 512;
+
+	    var d = 1.5;
+
+	    this.lights.front.shadow.camera.left = -d;
+	    this.lights.front.shadow.camera.right = d;
+	    this.lights.front.shadow.camera.top = d;
+	    this.lights.front.shadow.camera.bottom = -d;
+
+	    this.lights.front.shadow.camera.near = 1;
+	    this.lights.front.shadow.camera.far = 9;
+
+			// const helper = new THREE.CameraHelper( this.lights.front.shadow.camera );
+			// this.scene.add( helper );
+
+			this.game.cube.holder.traverse( node => {
+
+				if ( node instanceof THREE.Mesh ) {
+
+					node.castShadow = true;
+					node.receiveShadow = true;
+
+				}
+
+			} );
+
+			// this.ground = new THREE.Mesh(
+			// 	new THREE.PlaneBufferGeometry( 20, 20 ),
+			// 	new THREE.MeshStandardMaterial( { color: 0x00aaff } )
+			// );
+
+			// this.ground.receiveShadow = true;
+			// this.ground.rotation.x = - Math.PI / 2;
+			// this.ground.position.y = - 1.5;
+
+			// this.scene.add( this.ground );
 
 		}
 
@@ -1813,14 +1861,57 @@
 	    this.game.world.camera.zoom = this.data.cameraZoom;
 	    this.game.world.camera.updateProjectionMatrix();
 
+	    this.tweens.buttons = {};
+	    this.tweens.timer = [];
+	    this.tweens.title = [];
+	    this.tweens.range = [];
+	    this.tweens.stats = [];
+
+	  }
+
+	  buttons( show, hide ) {
+
+	    const buttonTween = ( button, show ) => {
+
+	      return new Tween( {
+	        target: button.style,
+	        duration: 300,
+	        easing: show ? Easing.Power.Out( 2 ) : Easing.Power.In( 3 ),
+	        from: { opacity: show ? 0 : 1 },
+	        to: { opacity: show ? 1 : 0 },
+	        onUpdate: tween => {
+
+	          // const scale = show ? tween.value : 1 - tween.value;
+	          const translate = show ? 1 - tween.value : tween.value;
+
+	          // button.style.transform = `scale3d(${scale}, ${scale}, 1)`;
+	          button.style.transform = `translate3d(0, ${translate * 1.5}em, 0)`;
+
+	        },
+	        onComplete: () => {
+
+	          button.style.pointerEvents = show ? 'all' : 'none';
+
+	        }
+	      } );
+
+	    };
+
+	    hide.forEach( button =>
+	      this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], false )
+	    );
+
+	    setTimeout( () => show.forEach( button =>
+	      this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], true )
+	    ), hide ? 500 : 0 );
+
 	  }
 
 	  cube( show ) {
 
 	    this.activeTransitions++;
 
-	    if ( typeof this.tweens.cube !== 'undefined' ) this.tweens.cube.stop();
-
+	    try { this.tweens.cube.stop(); } catch(e) {}
 	    const currentY = this.game.cube.animator.position.y;
 	    const currentRotation = this.game.cube.animator.rotation.x;
 
@@ -1840,13 +1931,6 @@
 	      }
 	    } );
 
-	    setTimeout( () => {
-
-	      if ( this.game.playing ) this.timer( show );
-	      else this.title( show );
-
-	    }, show ? 700 : 0 );
-
 	    this.durations.cube = show ? 1500 : 1500;
 
 	    setTimeout( () => this.activeTransitions--, this.durations.cube );
@@ -1855,8 +1939,7 @@
 
 	  float() {
 
-	    if ( typeof this.tweens.float !== 'undefined' ) this.tweens.float.stop();
-
+	    try { this.tweens.float.stop(); } catch(e) {}
 	    this.tweens.float = new Tween( {
 	      duration: 1500,
 	      easing: Easing.Sine.InOut(),
@@ -1901,23 +1984,45 @@
 
 	    this.durations.zoom = duration;
 
-	    if ( ! this.game.playing ) {
-
-	      this.game.saved = true;
-	      this.game.playing = true;
-
-	      this.title( false );
-	      setTimeout( () => this.timer( true ), duration - 1000 );
-	      setTimeout( () => this.game.controls.enable(), duration );
-
-	    } else {
-
-	      this.timer( false );
-	      setTimeout( () => this.title( true ), duration - 1000 );
-
-	    }
-
 	    setTimeout( () => this.activeTransitions--, this.durations.zoom );
+
+	  }
+
+	  stats( show ) {
+
+	    this.activeTransitions++;
+
+	    this.tweens.stats.forEach( tween => { tween.stop(); tween = null; } );
+
+	    let tweenId = -1;
+
+	    const stats = this.game.dom.stats.querySelectorAll( '.stats' );
+	    const easing = show ? Easing.Power.Out( 2 ) : Easing.Power.In( 3 );
+
+	    stats.forEach( ( stat, index ) => {
+
+	      const delay = index * ( show ? 80 : 60 );
+
+	      this.tweens.stats[ tweenId++ ] = new Tween( {
+	        delay: delay,
+	        duration: 400,
+	        easing: easing,
+	        onUpdate: tween => {
+
+	          const translate = show ? ( 1 - tween.value ) : tween.value;
+	          const opacity = show ? tween.value : ( 1 - tween.value );
+
+	          stat.style.transform = `translate3d(0, ${translate}em, 0)`;
+	          stat.style.opacity = opacity;
+
+	        }
+	      } );
+
+	    } );
+
+	    this.durations.stats = 0;
+
+	    setTimeout( () => this.activeTransitions--, this.durations.stats );
 
 	  }
 
@@ -1925,8 +2030,7 @@
 
 	    this.activeTransitions++;
 
-	    if ( typeof this.tweens.range === 'undefined' ) this.tweens.range = [];  
-	    else this.tweens.range.forEach( tween => { tween.stop(); tween = null; } );
+	    this.tweens.range.forEach( tween => { tween.stop(); tween = null; } );
 
 	    let tweenId = -1;
 	    let listMax = 0;
@@ -2034,7 +2138,7 @@
 
 	    this.activeTransitions++;
 
-	    const title = this.game.dom.title;
+	    const title = this.game.dom.texts.title;
 
 	    if ( title.querySelector( 'span i' ) === null )
 	      title.querySelectorAll( 'span' ).forEach( span => this.splitLetters( span ) );
@@ -2045,7 +2149,7 @@
 
 	    title.style.opacity = 1;
 
-	    const note = this.game.dom.note;
+	    const note = this.game.dom.texts.note;
 
 	    this.tweens.title[ letters.length ] = new Tween( {
 	      target: note.style,
@@ -2071,7 +2175,7 @@
 
 	    }
 
-	    const timer = this.game.dom.timer;
+	    const timer = this.game.dom.texts.timer;
 
 	    timer.style.opacity = 0;
 	    this.game.timer.convert();
@@ -2083,7 +2187,7 @@
 
 	    timer.style.opacity = 1;
 
-	    if ( show && this.game.playing ) setTimeout( () => {
+	    if ( show ) setTimeout( () => {
 
 	      this.game.controls.enable();
 	      this.game.timer.start( true );
@@ -2215,7 +2319,7 @@
 
 		setText() {
 
-			this.game.dom.timer.innerHTML = this.converted;
+			this.game.dom.texts.timer.innerHTML = this.converted;
 
 		}
 
@@ -2453,9 +2557,9 @@
 	      geometry: this.geometry,
 	      material: this.material,
 	      holder: this.object,
-	      velocity: { min: 5, max: 15 },
+	      velocity: { min: 5, max: 20 },
 	      revolution: { min: 0, max: 0.05 },
-	      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 45 },
+	      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 30 },
 	      radius: { min: 10, max: 15 },
 	      mass: { min: 0.05, max: 0.1 },
 	      gravity: -9.81,
@@ -2881,9 +2985,9 @@
 	      viewbox: '0 0 512 512',
 	      content: '<path fill="currentColor" d="M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z" class=""></path>',
 	    },
-	    'home': {
-	      viewbox: '0 0 576 512',
-	      content: '<path fill="currentColor" d="M488 312.7V456c0 13.3-10.7 24-24 24H348c-6.6 0-12-5.4-12-12V356c0-6.6-5.4-12-12-12h-72c-6.6 0-12 5.4-12 12v112c0 6.6-5.4 12-12 12H112c-13.3 0-24-10.7-24-24V312.7c0-3.6 1.6-7 4.4-9.3l188-154.8c4.4-3.6 10.8-3.6 15.3 0l188 154.8c2.7 2.3 4.3 5.7 4.3 9.3zm83.6-60.9L488 182.9V44.4c0-6.6-5.4-12-12-12h-56c-6.6 0-12 5.4-12 12V117l-89.5-73.7c-17.7-14.6-43.3-14.6-61 0L4.4 251.8c-5.1 4.2-5.8 11.8-1.6 16.9l25.5 31c4.2 5.1 11.8 5.8 16.9 1.6l235.2-193.7c4.4-3.6 10.8-3.6 15.3 0l235.2 193.7c5.1 4.2 12.7 3.5 16.9-1.6l25.5-31c4.2-5.2 3.4-12.7-1.7-16.9z" class=""></path>',
+	    'back': {
+	      viewbox: '0 0 512 512',
+	      content: '<path transform="translate(512, 0) scale(-1,1)" fill="currentColor" d="M503.691 189.836L327.687 37.851C312.281 24.546 288 35.347 288 56.015v80.053C127.371 137.907 0 170.1 0 322.326c0 61.441 39.581 122.309 83.333 154.132 13.653 9.931 33.111-2.533 28.077-18.631C66.066 312.814 132.917 274.316 288 272.085V360c0 20.7 24.3 31.453 39.687 18.164l176.004-152c11.071-9.562 11.086-26.753 0-36.328z" class=""></path>',
 	    },
 	    'trophy': {
 	      viewbox: '0 0 576 512',
@@ -2907,6 +3011,14 @@
 
 	} );
 
+	const MENU = 0;
+	const PLAYING = 1;
+	const STATS = 2;
+	const PREFS = 3;
+
+	const SHOW = true;
+	const HIDE = false;
+
 	class Game {
 
 	  constructor() {
@@ -2915,14 +3027,16 @@
 	      game: document.querySelector( '.ui__game' ),
 	      texts: document.querySelector( '.ui__texts' ),
 	      prefs: document.querySelector( '.ui__prefs' ),
-
-	      title: document.querySelector( '.text--title' ),
-	      note: document.querySelector( '.text--note' ),
-	      timer: document.querySelector( '.text--timer' ),
-
+	      stats: document.querySelector( '.ui__stats' ),
+	      texts: {
+	        title: document.querySelector( '.text--title' ),
+	        note: document.querySelector( '.text--note' ),
+	        timer: document.querySelector( '.text--timer' ),
+	        stats: document.querySelector( '.text--timer' ),
+	      },
 	      buttons: {
-	        settings: document.querySelector( '.btn--settings' ),
-	        home: document.querySelector( '.btn--home' ),
+	        prefs: document.querySelector( '.btn--prefs' ),
+	        back: document.querySelector( '.btn--back' ),
 	        stats: document.querySelector( '.btn--stats' ),
 	      }
 	    };
@@ -2941,7 +3055,7 @@
 
 	    this.initTapEvents();
 
-	    this.playing = false;
+	    this.state = MENU;
 	    this.saved = false;
 
 	    this.storage.loadGame();
@@ -2951,20 +3065,24 @@
 	    // this.scrambler.scrambleLength = 1;
 
 	    this.preferences.init();
+	    this.world.enableShadows();
 
 	    this.transition.init();
 
 	    setTimeout( () => {
 
-	      this.transition.cube( true );
 	      this.transition.float();
+	      this.transition.cube( SHOW );
+
+	      setTimeout( () => this.transition.title( SHOW ), 700 );
+	      setTimeout( () => this.transition.buttons( [ 'prefs', 'stats' ], [] ), 1000 );
 
 	    }, 500 );
 
 	    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
 	    this.controls.onSolved = () => {
 
-	      // this.playing = false;
+	      this.state = STATS;
 	      this.saved = false;
 	      this.storage.clearGame();
 
@@ -2982,7 +3100,8 @@
 
 	    this.dom.game.onclick = event => {
 
-	      event.preventDefault();
+	      if ( this.transition.activeTransitions > 0 ) return;
+	      if ( this.state == PLAYING ) return;
 
 	      if ( ! tappedTwice ) {
 
@@ -2992,50 +3111,99 @@
 
 	      }
 
-	      if ( this.playing || this.transition.activeTransitions > 0 ) return;
-	      let duration = 0;
-
 	      if ( ! this.saved ) {
 
 	        this.scrambler.scramble();
 	        this.controls.scrambleCube();
 
-	        duration = this.scrambler.converted.length * this.controls.scrambleSpeed;
-
 	      }
 
-	      this.transition.zoom( true, duration );
+	      const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
+
+	      this.state = PLAYING;
+	      this.saved = true;
+
+	      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+
+	      this.transition.zoom( SHOW, duration );
+	      this.transition.title( HIDE );
+
+	      setTimeout( () => this.transition.timer( SHOW ), this.transition.durations.zoom - 1000 );
+	      setTimeout( () => this.controls.enable(), this.transition.durations.zoom );
 
 	    };
 
-	    // this.dom.buttons.home.onclick = event => {
-
-	    //   if ( !this.playing || this.transition.activeTransitions > 0 ) return;
-
-	    //   this.transition.zoom( false, 0 );
-
-	    //   this.playing = false;
-	    //   this.controls.disable();
-
-	    // };
-
-	    this.dom.buttons.settings.onclick = event => {
+	    this.dom.buttons.back.onclick = event => {
 
 	      if ( this.transition.activeTransitions > 0 ) return;
 
-	      event.target.classList.toggle( 'active' );
+	      if ( this.state === PLAYING ) {
 
-	      if ( event.target.classList.contains( 'active' ) ) {
+	        this.state = MENU;
 
-	        this.transition.cube( false );
-	        setTimeout( () => this.transition.preferences( true ), 1000 );
+	        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
 
-	      } else {
+	        this.transition.zoom( HIDE, 0 );
 
-	        this.transition.preferences( false );
-	        setTimeout( () => this.transition.cube( true ), 500 );
+	        this.transition.timer( HIDE );
+	        setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
+
+	        this.playing = false;
+	        this.controls.disable();
+
+	      } else if ( this.state === PREFS ) {
+
+	        this.state = MENU;
+
+	        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+
+	        this.transition.preferences( HIDE );
+
+	        setTimeout( () => this.transition.cube( SHOW ), 500 );
+	        setTimeout( () => this.transition.title( SHOW ), 1200 );
+
+	      } else if ( this.state === STATS ) {
+
+	        this.state = MENU;
+
+	        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+
+	        this.transition.stats( HIDE );
+
+	        setTimeout( () => this.transition.cube( SHOW ), 500 );
+	        setTimeout( () => this.transition.title( SHOW ), 1200 );
 
 	      }
+
+	    };
+
+	    this.dom.buttons.prefs.onclick = event => {
+
+	      if ( this.transition.activeTransitions > 0 ) return;
+
+	      this.state = PREFS;
+
+	      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+
+	      this.transition.title( HIDE );
+	      this.transition.cube( HIDE );
+
+	      setTimeout( () => this.transition.preferences( SHOW ), 1000 );
+
+	    };
+
+	    this.dom.buttons.stats.onclick = event => {
+
+	      if ( this.transition.activeTransitions > 0 ) return;
+
+	      this.state = STATS;
+
+	      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+
+	      this.transition.title( HIDE );
+	      this.transition.cube( HIDE );
+
+	      setTimeout( () => this.transition.stats( SHOW ), 1000 );
 
 	    };
 

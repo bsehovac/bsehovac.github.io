@@ -73,14 +73,61 @@ class World extends Animation {
 			back:    new THREE.DirectionalLight( 0xffffff, 0.19 ),
 		};
 
-		this.lights.front.position.set( 0.3, 1,  0.6 );
-		this.lights.back.position.set( -0.3, -1,  -0.6 );
+		this.lights.front.position.set( 1.5, 5, 3 );
+		this.lights.back.position.set( -1.5, -5, -3 );
 
 		this.lights.holder.add( this.lights.ambient );
 		this.lights.holder.add( this.lights.front );
 		this.lights.holder.add( this.lights.back );
 
 		this.scene.add( this.lights.holder );
+
+	}
+
+	enableShadows() {
+
+		this.renderer.shadowMap.enabled = true;
+		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+		this.lights.front.castShadow = true;
+
+    this.lights.front.shadow.mapSize.width = 512;
+    this.lights.front.shadow.mapSize.height = 512;
+
+    var d = 1.5;
+
+    this.lights.front.shadow.camera.left = -d;
+    this.lights.front.shadow.camera.right = d;
+    this.lights.front.shadow.camera.top = d;
+    this.lights.front.shadow.camera.bottom = -d;
+
+    this.lights.front.shadow.camera.near = 1;
+    this.lights.front.shadow.camera.far = 9;
+
+		// const helper = new THREE.CameraHelper( this.lights.front.shadow.camera );
+		// this.scene.add( helper );
+
+		this.game.cube.holder.traverse( node => {
+
+			if ( node instanceof THREE.Mesh ) {
+
+				node.castShadow = true;
+				node.receiveShadow = true;
+
+			}
+
+		} );
+
+		// this.ground = new THREE.Mesh(
+		// 	new THREE.PlaneBufferGeometry( 20, 20 ),
+		// 	new THREE.MeshStandardMaterial( { color: 0x00aaff } )
+		// );
+
+		// this.ground.receiveShadow = true;
+		// this.ground.rotation.x = - Math.PI / 2;
+		// this.ground.position.y = - 1.5;
+
+		// this.scene.add( this.ground );
 
 	}
 

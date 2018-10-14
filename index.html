@@ -38,14 +38,14 @@
       <div class="text text--timer">
         0:00
       </div>
-      <div class="text text--record">
-        <i><icon trophy></icon></i> <span>0:00</span>
-      </div>
+      <!-- <div class="text text--stats">
+        <span>0:00</span>
+        <span>Best Time!</span>
+      </div> -->
     </div>
 
     <div class="ui__prefs">
       <range name="speed" title="Flip Speed" list="Slow,Fast"></range>
-      <!-- <range name="bounce" title="Flip Bounce" list="None,Large"></range> -->
       <range name="scramble" title="Scramble Length" list="20,25,30"></range>
       <range name="fov" title="Camera Angle" list="Ortographic,Perspective"></range>
       <range name="theme" title="Theme" list="Light,Dark"></range>
@@ -54,19 +54,37 @@
       <!-- <range name="graphics" title="Graphics Quality" list="Low,High"></range> -->
     </div>
 
+    <div class="ui__stats">
+      <div class="stats" name="total-solves">
+        <i>Total solves:</i><b>0</b>
+      </div>
+      <div class="stats" name="best-time">
+        <i>Best time:</i><b>0:00</b>
+      </div>
+      <div class="stats" name="worst-time">
+        <i>Worst time:</i><b>0:00</b>
+      </div>
+      <div class="stats" name="best-of-5">
+        <i>Best of 5:</i><b>0:00</b>
+      </div>
+      <div class="stats" name="best-of-10">
+        <i>Best of 10:</i><b>0:00</b>
+      </div>
+      <div class="stats" name="best-of-15">
+        <i>Best of 15:</i><b>0:00</b>
+      </div>
+    </div>
+
     <div class="ui__buttons">
-      <!-- <button class="btn btn--tr">Stats</button> -->
-      <!-- <button class="btn btn--tl">About</button> -->
-      <!-- <button class="btn btn--bl">Share</button> -->
       <button class="btn btn--bl btn--stats">
         <icon trophy></icon>
       </button>
-      <button class="btn btn--br btn--settings">
+      <button class="btn btn--br btn--prefs">
         <icon settings></icon>
       </button>
-      <!-- <button class="btn btn--bl btn--home">
+      <button class="btn btn--bl btn--back">
         <icon back></icon>
-      </button> -->
+      </button>
     </div>
 
   </div>

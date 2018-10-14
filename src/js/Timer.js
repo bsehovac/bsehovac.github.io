@@ -70,7 +70,7 @@ class Timer extends Animation {
 
 	setText() {
 
-		this.game.dom.timer.innerHTML = this.converted;
+		this.game.dom.texts.timer.innerHTML = this.converted;
 
 	}
 

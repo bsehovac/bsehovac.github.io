@@ -12,6 +12,14 @@ import { Storage } from './Storage.js';
 
 import { Icons } from './Icons.js';
 
+const MENU = 0;
+const PLAYING = 1;
+const STATS = 2;
+const PREFS = 3;
+
+const SHOW = true;
+const HIDE = false;
+
 class Game {
 
   constructor() {
@@ -20,14 +28,16 @@ class Game {
       game: document.querySelector( '.ui__game' ),
       texts: document.querySelector( '.ui__texts' ),
       prefs: document.querySelector( '.ui__prefs' ),
-
-      title: document.querySelector( '.text--title' ),
-      note: document.querySelector( '.text--note' ),
-      timer: document.querySelector( '.text--timer' ),
-
+      stats: document.querySelector( '.ui__stats' ),
+      texts: {
+        title: document.querySelector( '.text--title' ),
+        note: document.querySelector( '.text--note' ),
+        timer: document.querySelector( '.text--timer' ),
+        stats: document.querySelector( '.text--timer' ),
+      },
       buttons: {
-        settings: document.querySelector( '.btn--settings' ),
-        home: document.querySelector( '.btn--home' ),
+        prefs: document.querySelector( '.btn--prefs' ),
+        back: document.querySelector( '.btn--back' ),
         stats: document.querySelector( '.btn--stats' ),
       }
     };
@@ -46,7 +56,7 @@ class Game {
 
     this.initTapEvents();
 
-    this.playing = false;
+    this.state = MENU;
     this.saved = false;
 
     this.storage.loadGame();
@@ -56,20 +66,24 @@ class Game {
     // this.scrambler.scrambleLength = 1;
 
     this.preferences.init();
+    this.world.enableShadows();
 
     this.transition.init();
 
     setTimeout( () => {
 
-      this.transition.cube( true );
       this.transition.float();
+      this.transition.cube( SHOW );
+
+      setTimeout( () => this.transition.title( SHOW ), 700 );
+      setTimeout( () => this.transition.buttons( [ 'prefs', 'stats' ], [] ), 1000 );
 
     }, 500 );
 
     // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
     this.controls.onSolved = () => {
 
-      // this.playing = false;
+      this.state = STATS;
       this.saved = false;
       this.storage.clearGame();
 
@@ -87,7 +101,8 @@ class Game {
 
     this.dom.game.onclick = event => {
 
-      event.preventDefault();
+      if ( this.transition.activeTransitions > 0 ) return;
+      if ( this.state == PLAYING ) return;
 
       if ( ! tappedTwice ) {
 
@@ -97,54 +112,101 @@ class Game {
 
       }
 
-      if ( this.playing || this.transition.activeTransitions > 0 ) return;
-
-      const start = Date.now();
-      let duration = 0;
-
       if ( ! this.saved ) {
 
         this.scrambler.scramble();
         this.controls.scrambleCube();
 
-        duration = this.scrambler.converted.length * this.controls.scrambleSpeed;
-
       }
 
-      this.transition.zoom( true, duration );
+      const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
+
+      this.state = PLAYING;
+      this.saved = true;
+
+      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+
+      this.transition.zoom( SHOW, duration );
+      this.transition.title( HIDE );
+
+      setTimeout( () => this.transition.timer( SHOW ), this.transition.durations.zoom - 1000 );
+      setTimeout( () => this.controls.enable(), this.transition.durations.zoom );
 
     };
 
-    // this.dom.buttons.home.onclick = event => {
-
-    //   if ( !this.playing || this.transition.activeTransitions > 0 ) return;
-
-    //   this.transition.zoom( false, 0 );
-
-    //   this.playing = false;
-    //   this.controls.disable();
-
-    // };
-
-    this.dom.buttons.settings.onclick = event => {
+    this.dom.buttons.back.onclick = event => {
 
       if ( this.transition.activeTransitions > 0 ) return;
 
-      event.target.classList.toggle( 'active' );
+      if ( this.state === PLAYING ) {
 
-      if ( event.target.classList.contains( 'active' ) ) {
+        this.state = MENU;
 
-        this.transition.cube( false );
-        setTimeout( () => this.transition.preferences( true ), 1000 );
+        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
 
-      } else {
+        this.transition.zoom( HIDE, 0 );
 
-        this.transition.preferences( false )
-        setTimeout( () => this.transition.cube( true ), 500 );
+        this.transition.timer( HIDE );
+        setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
+
+        this.playing = false;
+        this.controls.disable();
+
+      } else if ( this.state === PREFS ) {
+
+        this.state = MENU;
+
+        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+
+        this.transition.preferences( HIDE );
+
+        setTimeout( () => this.transition.cube( SHOW ), 500 );
+        setTimeout( () => this.transition.title( SHOW ), 1200 );
+
+      } else if ( this.state === STATS ) {
+
+        this.state = MENU;
+
+        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+
+        this.transition.stats( HIDE );
+
+        setTimeout( () => this.transition.cube( SHOW ), 500 );
+        setTimeout( () => this.transition.title( SHOW ), 1200 );
 
       }
 
     };
+
+    this.dom.buttons.prefs.onclick = event => {
+
+      if ( this.transition.activeTransitions > 0 ) return;
+
+      this.state = PREFS;
+
+      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+
+      this.transition.title( HIDE );
+      this.transition.cube( HIDE );
+
+      setTimeout( () => this.transition.preferences( SHOW ), 1000 );
+
+    };
+
+    this.dom.buttons.stats.onclick = event => {
+
+      if ( this.transition.activeTransitions > 0 ) return;
+
+      this.state = STATS;
+
+      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+
+      this.transition.title( HIDE );
+      this.transition.cube( HIDE );
+
+      setTimeout( () => this.transition.stats( SHOW ), 1000 );
+
+    }
 
   }
 
