@@ -6,25 +6,25 @@ class Confetti extends Animation {
 
     super( false );
 
-    this._game = game;
+    this.game = game;
 
-    this._count = 100;
-    this._particles = [];
+    this.count = 100;
+    this.particles = [];
 
-    this._object = new THREE.Object3D();
-    this._game.world.scene.add( this._object );
+    this.object = new THREE.Object3D();
+    this.game.world.scene.add( this.object );
 
-    this._geometry = new THREE.PlaneGeometry( 1, 1 );
-    this._material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
-    this._opacity = 0;
+    this.geometry = new THREE.PlaneGeometry( 1, 1 );
+    this.material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
+    this.opacity = 0;
 
-    this._particleOptions = {
-      geometry: this._geometry,
-      material: this._material,
-      holder: this._object,
-      velocity: { min: 5, max: 15 },
+    this.particleOptions = {
+      geometry: this.geometry,
+      material: this.material,
+      holder: this.object,
+      velocity: { min: 5, max: 20 },
       revolution: { min: 0, max: 0.05 },
-      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 45 },
+      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 30 },
       radius: { min: 10, max: 15 },
       mass: { min: 0.05, max: 0.1 },
       gravity: -9.81,
@@ -33,16 +33,17 @@ class Confetti extends Animation {
       colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
     };
 
-    let i = this._count;
-    while ( i-- )  this._particles.push( new Particle( this._particleOptions ) );
+    let i = this.count;
+    while ( i-- )  this.particles.push( new Particle( this.particleOptions ) );
 
   }
 
   start() {
 
-    this._opacity = 0;
-    this._done = 0;
-    this._time = performance.now();
+    this.opacity = 0;
+    this.done = 0;
+    this.time = performance.now();
+    
     super.start();
 
   }
@@ -51,27 +52,27 @@ class Confetti extends Animation {
 
     super.stop();
 
-    let i = this._count;
-    while ( i-- ) this._particles[ i ].reset();
+    let i = this.count;
+    while ( i-- ) this.particles[ i ].reset();
 
   }
 
   update() {
 
     const now = performance.now();
-    const delta = now - this._time;
-    this._time = now;
+    const delta = now - this.time;
+    this.time = now;
 
-    this._opacity += ( 1 - this._opacity ) * 0.1;
+    this.opacity += ( 1 - this.opacity ) * 0.1;
 
-    let i = this._count;
+    let i = this.count;
     while ( i-- ) {
 
-      if ( this._particles[ i ].update( delta, this._opacity ) ) this._done++;
+      if ( this.particles[ i ].update( delta, this.opacity ) ) this.done++;
 
     }
 
-    if ( this._done == this._count) this.stop();
+    if ( this.done == this.count) this.stop();
 
   }
   
@@ -83,18 +84,18 @@ class Particle {
 
   constructor( options ) {
 
-    this._options = options;
+    this.options = options;
 
-    this._velocity = new THREE.Vector3();
-    this._force = new THREE.Vector3();
+    this.velocity = new THREE.Vector3();
+    this.force = new THREE.Vector3();
 
-    this._mesh = new THREE.Mesh( options.geometry, options.material.clone() );
+    this.mesh = new THREE.Mesh( options.geometry, options.material.clone() );
 
-    options.holder.add( this._mesh );
+    options.holder.add( this.mesh );
 
     this.reset();
 
-    this._ag = options.gravity; // -9.81
+    this.ag = options.gravity; // -9.81
 
     return this;
 
@@ -102,59 +103,59 @@ class Particle {
 
   reset() {
 
-    const axis = this._velocity.clone();
+    const axis = this.velocity.clone();
 
-    this._velocity.copy( this._options.angle.direction ).multiplyScalar( rnd( this._options.velocity.min, this._options.velocity.max ) );
-    this._velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
-    this._velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this._options.angle.spread / 2, this._options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+    this.velocity.copy( this.options.angle.direction ).multiplyScalar( rnd( this.options.velocity.min, this.options.velocity.max ) );
+    this.velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this.options.angle.spread / 2, this.options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+    this.velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this.options.angle.spread / 2, this.options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
 
-    this._color = new THREE.Color( this._options.colors[ Math.floor( Math.random() * this._options.colors.length ) ] );
+    this.color = new THREE.Color( this.options.colors[ Math.floor( Math.random() * this.options.colors.length ) ] );
 
-    this._revolution = new THREE.Vector3(
-      rnd( this._options.revolution.min, this._options.revolution.max ),
-      rnd( this._options.revolution.min, this._options.revolution.max ),
-      rnd( this._options.revolution.min, this._options.revolution.max )
+    this.revolution = new THREE.Vector3(
+      rnd( this.options.revolution.min, this.options.revolution.max ),
+      rnd( this.options.revolution.min, this.options.revolution.max ),
+      rnd( this.options.revolution.min, this.options.revolution.max )
     );
 
-    this._mesh.position.set( 0, 0, 0 );
+    this.mesh.position.set( 0, 0, 0 );
 
-    this._positionScale = this._options.positionScale;
-    this._mass = rnd( this._options.mass.min, this._options.mass.max );
-    this._radius = rnd( this._options.radius.min, this._options.radius.max );
-    this._scale = this._radius * this._options.geometryScale;
+    this.positionScale = this.options.positionScale;
+    this.mass = rnd( this.options.mass.min, this.options.mass.max );
+    this.radius = rnd( this.options.radius.min, this.options.radius.max );
+    this.scale = this.radius * this.options.geometryScale;
 
-    this._mesh.scale.set( this._scale, this._scale, this._scale );
-    this._mesh.material.color.set( this._color );
-    this._mesh.material.opacity = 0;
-    this._mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 )
+    this.mesh.scale.set( this.scale, this.scale, this.scale );
+    this.mesh.material.color.set( this.color );
+    this.mesh.material.opacity = 0;
+    this.mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 )
 
-    this._physics = this.getPhysics( this._radius );
+    this.physics = this.getPhysics( this.radius );
 
-    this._done = false;
+    this.done = false;
 
   }
 
   update( delta, opacity, complete ) {
 
-    if ( this._done ) return false;
+    if ( this.done ) return false;
 
     delta = 16 / 1000;
 
-    this._force.set(
-      this.getForce( this._velocity.x ),
-      this.getForce( this._velocity.y ) + this._ag,
-      this.getForce( this._velocity.z )
+    this.force.set(
+      this.getForce( this.velocity.x ),
+      this.getForce( this.velocity.y ) + this.ag,
+      this.getForce( this.velocity.z )
     );
 
-    this._velocity.add( this._force.multiplyScalar( delta ) );
+    this.velocity.add( this.force.multiplyScalar( delta ) );
 
-    this._mesh.position.add( this._velocity.clone().multiplyScalar( delta * this._positionScale ) );
-    this._mesh.rotateX( this._revolution.x ).rotateY( this._revolution.y ).rotateZ( this._revolution.y );
-    this._mesh.material.opacity = opacity * this.getProgressInRange( this._mesh.position.y, -4, -2 );
+    this.mesh.position.add( this.velocity.clone().multiplyScalar( delta * this.positionScale ) );
+    this.mesh.rotateX( this.revolution.x ).rotateY( this.revolution.y ).rotateZ( this.revolution.y );
+    this.mesh.material.opacity = opacity * this.getProgressInRange( this.mesh.position.y, -4, -2 );
 
-    if ( this._mesh.position.y < -4 ) { 
+    if ( this.mesh.position.y < -4 ) { 
       
-      this._done = true;
+      this.done = true;
       return true;
 
     }
@@ -175,7 +176,7 @@ class Particle {
 
   getForce( velocity ) {
 
-    return this._physics * velocity * velocity * Math.sign( velocity ) / this._mass;
+    return this.physics * velocity * velocity * Math.sign( velocity ) / this.mass;
 
   }
 

@@ -6,48 +6,53 @@ class Timer extends Animation {
 
 		super( false );
 
-		this._game = game;
-
-		this._startTime = 0;
-		this._currentTime = 0;
-		this._deltaTime = 0;
-		this._converted = '0:00';
-
+		this.game = game;
+		this.reset();
+		
 	}
 
 	start( continueGame ) {
 
-		this._startTime = continueGame ? ( Date.now() - this._deltaTime ) : Date.now();
-		this._deltaTime = 0;
-		this._converted = this.convert();
+		this.startTime = continueGame ? ( Date.now() - this.deltaTime ) : Date.now();
+		this.deltaTime = 0;
+		this.converted = this.convert();
 
 		super.start();
 
 	}
 
+	reset() {
+
+		this.startTime = 0;
+		this.currentTime = 0;
+		this.deltaTime = 0;
+		this.converted = '0:00';
+
+	}
+
 	stop() {
 
-		this._currentTime = Date.now();
-		this._deltaTime = this._currentTime - this._startTime;
+		this.currentTime = Date.now();
+		this.deltaTime = this.currentTime - this.startTime;
 		this.convert();
 
 		super.stop();
 
-		return { time: this._converted, millis: this._deltaTime };
+		return { time: this.converted, millis: this.deltaTime };
 
 	}
 
 	update() {
 
-		const old = this._converted;
+		const old = this.converted;
 
-		this._currentTime = Date.now();
-		this._deltaTime = this._currentTime - this._startTime;
+		this.currentTime = Date.now();
+		this.deltaTime = this.currentTime - this.startTime;
 		this.convert();
 
-		if ( this._converted != old ) {
+		if ( this.converted != old ) {
 
-			localStorage.setItem( 'gameTime', this._deltaTime );
+			localStorage.setItem( 'gameTime', this.deltaTime );
 			this.setText();
 
 		}
@@ -56,28 +61,16 @@ class Timer extends Animation {
 
 	convert() {
 
-		const seconds = parseInt( ( this._deltaTime / 1000 ) % 60 );
-		const minutes = parseInt( ( this._deltaTime / ( 1000 * 60 ) ) );
+		const seconds = parseInt( ( this.deltaTime / 1000 ) % 60 );
+		const minutes = parseInt( ( this.deltaTime / ( 1000 * 60 ) ) );
 
-		this._converted = minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds;
+		this.converted = minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds;
 
 	}
 
 	setText() {
 
-		this._game.dom.timer.innerHTML = this._converted;
-
-	}
-
-	getDeltaTime() {
-
-		return this._deltaTime;
-
-	}
-
-	setDeltaTime( time ) {
-
-		this._deltaTime = time;
+		this.game.dom.texts.timer.innerHTML = this.converted;
 
 	}
 

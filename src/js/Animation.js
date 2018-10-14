@@ -1,77 +1,69 @@
-class AnimationEngine {
+const animationEngine = ( () => {
 
-  constructor() {
+  let uniqueID = 0;
 
-    this.ids = [];
-    this.animations = {};
-    this.update = this.update.bind( this );
-    this.animating = false;
-    this.animation = null;
-    this.time = 0;
+  class AnimationEngine {
 
-    return this;
+    constructor() {
 
-  }
+      this.ids = [];
+      this.animations = {};
+      this.update = this.update.bind( this );
+      this.raf = 0;
+      this.time = 0;
 
-  update() {
+    }
 
-    let i = this.ids.length;
+    update() {
 
-    if ( i > 0 ) requestAnimationFrame( this.update );
-    else this.animating = false;
+      const now = performance.now();
+      const delta = now - this.time
+      this.time = now;
 
-    const now = performance.now();
-    const delta = now - this.time
-    this.time = now;
+      let i = this.ids.length;
 
-    while ( i-- ) this.animations[ this.ids[ i ] ].update( delta );
+      this.raf = i ? requestAnimationFrame( this.update ) : 0;
 
-  }
+      while ( i-- )
+        this.animations[ this.ids[ i ] ] && this.animations[ this.ids[ i ] ].update( delta );
 
-  add( animation ) {
+    }
 
-    Object.assign( this.animations, {
+    add( animation ) {
 
-      [ animation.id ]: animation
+      animation.id = uniqueID ++;
 
-    } );
+      this.ids.push( animation.id );
+      this.animations[ animation.id ] = animation;
 
-    this.ids.push( animation.id );
+      if ( this.raf !== 0 ) return;
 
-    if ( ! this.animating ) {
-
-      requestAnimationFrame( this.update );
       this.time = performance.now();
-      this.animating = true;
+      this.raf = requestAnimationFrame( this.update );
+
+    }
+
+    remove( animation ) {
+
+      const index = this.ids.indexOf( animation.id );
+
+      if ( index < 0 ) return;
+
+      this.ids.splice( index, 1 );
+      delete this.animations[ animation.id ];
+      animation = null;
 
     }
 
   }
 
-  remove( animation ) {
+  return new AnimationEngine();
 
-    const index = this.ids.indexOf( animation.id );
-
-    if ( index < 0 ) return;
-
-    this.ids.splice( index, 1 );
-
-    delete this.animations[ animation.id ];
-
-  }
-
-}
-
-const animationEngine = new AnimationEngine();
-
-let uniqueID = 0;
+} )();
 
 class Animation {
 
   constructor( start ) {
-
-    this.id = uniqueID ++;
-    this.update = this.update.bind( this );
 
     if ( start === true ) this.start();
 

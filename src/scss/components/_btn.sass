@@ -6,8 +6,10 @@
   border-radius: 0
   border-width: 0
   position: absolute
-  pointer-events: all
-  opacity: 0.5
+  pointer-events: none
+  font-size: 1.2em
+  color: rgba(#000, 0.25)
+  opacity: 0
 
   &:after
     position: absolute
@@ -20,18 +22,25 @@
     margin-top: -1.5em
     border-radius: 100%
 
-  &--tr
-    top: 1em
-    right: 1em
+  // &--tr
+  //   top: 0.8em
+  //   right: 0.8em
 
-  &--br
-    bottom: 1em
-    right: 1em
-
-  &--tl
-    top: 1em
-    left: 1em
+  // &--tl
+  //   top: 0.8em
+  //   left: 0.8em
 
   &--bl
-    bottom: 1em
-    left: 1em
+    bottom: 0.8em
+    left: 0.8em
+
+  &--br
+    bottom: 0.8em
+    right: 0.8em
+
+  &--bc
+    bottom: 0.8em
+    left: calc(50% - 0.5em)
+
+  svg 
+    display: block

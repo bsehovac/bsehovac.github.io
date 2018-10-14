@@ -6,34 +6,34 @@ class Preferences {
 
     this.game = game;
 
-    this.load();
+  }
 
-    this.elements = {
+  init() {
+
+    this.ranges = {
 
       speed: new Range( 'speed', {
-        value: this.game.controls._flipSpeed,
+        value: this.game.controls.flipSpeed,
         range: [ 300, 100 ],
-        onComplete: value => {
+        onUpdate: value => {
 
-          this.game.controls._flipSpeed = value;
-          localStorage.setItem( 'flipSpeed', value );
+          this.game.controls.flipSpeed = value;
+          this.game.controls.flipBounce = ( ( value - 100 ) / 200 ) * 2;
 
-          this.game.controls._flipBounce = ( ( value - 100 ) / 200 ) * 2;
-          localStorage.setItem( 'flipBounce', this.game.controls._flipBounce );
-          
         },
+        onComplete: () => this.game.storage.savePreferences(),
       } ),
 
       scramble: new Range( 'scramble', {
         value: this.game.scrambler.scrambleLength,
         range: [ 20, 30 ],
         step: 5,
-        onComplete: value => {
+        onUpdate: value => {
 
           this.game.scrambler.scrambleLength = value;
-          localStorage.setItem( 'scrambleLength', value );
 
         },
+        onComplete: () => this.game.storage.savePreferences()
       } ),
 
       fov: new Range( 'fov', {
@@ -45,11 +45,7 @@ class Preferences {
           this.game.world.resize();
 
         },
-        onComplete: value => {
-
-          localStorage.setItem( 'fov', value );
-
-        },
+        onComplete: () => this.game.storage.savePreferences()
       } ),
 
       theme: new Range( 'theme', {
@@ -57,31 +53,11 @@ class Preferences {
         range: [ 0, 1 ],
         step: 1,
         onUpdate: value => {},
+        // onComplete: () => this.game.storage.savePreferences()
       } ),
 
     };
-
-  }
-
-  load() {
-
-    const flipSpeed = localStorage.getItem( 'flipSpeed' );
-    const flipBounce = localStorage.getItem( 'flipBounce' );
-    const scrambleLength = localStorage.getItem( 'scrambleLength' );
-    const fov = localStorage.getItem( 'fov' );
-    // const theme = localStorage.getItem( 'theme' );
-
-    if ( flipSpeed != null ) this.game.controls._flipSpeed = parseFloat( flipSpeed );
-    if ( flipBounce != null ) this.game.controls._flipBounce = parseFloat( flipBounce );
-    if ( scrambleLength != null ) this.game.scrambler.scrambleLength = parseInt( scrambleLength );
-
-    if ( fov != null ) {
-
-      this.game.world.fov = parseFloat( fov );
-      this.game.world.resize();
-
-    }
-
+    
   }
 
 }

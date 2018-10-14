@@ -2,12 +2,12 @@
   pointer-events: none
   background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%)
   color: #070d15
-  // opacity: 0.02 !important
 
   &,
   &__game,
   &__texts,
   &__prefs,
+  &__stats,
   &__buttons
     @include fullscreen
     overflow: hidden
@@ -29,29 +29,14 @@
   &__texts
     z-index: 2
 
-  &__prefs
+  &__prefs,
+  &__stats
     display: flex
     flex-flow: column nowrap
     justify-content: center
     align-items: center
     overflow: hidden
     z-index: 3
-
-    // &:before
-    //   @include fullscreen
-    //   content: ''
-    //   background: #fff
-    //   opacity: 0
-    //   will-change: opacity
-    //   z-index: -1
-
-    // &.show:before
-    //   transition: opacity 400ms $easeOutQuad
-    //   opacity: 0.95
-
-    // &.hide:before
-    //   transition: opacity 400ms $easeInQuad
-    //   opacity: 0
 
   &__buttons
     z-index: 4

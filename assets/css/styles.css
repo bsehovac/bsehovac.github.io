@@ -46,7 +46,6 @@ body {
 
 .range {
   position: relative;
-  width: 100%;
   width: 14em;
   z-index: 1;
   opacity: 0; }
@@ -115,6 +114,23 @@ body {
     color: rgba(0, 0, 0, 0.5);
     z-index: 1; }
 
+.stats {
+  position: relative;
+  width: 14em;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  opacity: 0; }
+  .stats:not(:last-child) {
+    margin-bottom: 1.5em; }
+  .stats i {
+    display: inline-block;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 0.9em; }
+  .stats b {
+    display: inline-block;
+    font-size: 0.9em; }
+
 .text {
   position: absolute;
   left: 0;
@@ -129,8 +145,7 @@ body {
   .text--title {
     bottom: 75%;
     font-size: 4.4em;
-    height: 1.2em;
-    z-index: 1; }
+    height: 1.2em; }
     .text--title span {
       display: block; }
       .text--title span:first-child {
@@ -138,22 +153,11 @@ body {
         margin-bottom: 0.2em; }
   .text--note {
     top: 87%;
-    font-size: 1em;
-    z-index: 2; }
+    font-size: 1em; }
   .text--timer {
     bottom: 75%;
     font-size: 3.5em;
-    height: 1.25em;
-    z-index: 3; }
-  .text--record {
-    bottom: 72%;
-    font-size: 1.5em;
-    z-index: 4; }
-    .text--record i {
-      position: relative;
-      display: inline-block;
-      font-size: 0.9em;
-      top: -0.05em; }
+    height: 1.25em; }
 
 .btn {
   -webkit-appearance: none;
@@ -163,8 +167,10 @@ body {
   border-radius: 0;
   border-width: 0;
   position: absolute;
-  pointer-events: all;
-  opacity: 0.5; }
+  pointer-events: none;
+  font-size: 1.2em;
+  color: rgba(0, 0, 0, 0.25);
+  opacity: 0; }
   .btn:after {
     position: absolute;
     content: '';
@@ -175,24 +181,23 @@ body {
     margin-left: -1.5em;
     margin-top: -1.5em;
     border-radius: 100%; }
-  .btn--tr {
-    top: 1em;
-    right: 1em; }
-  .btn--br {
-    bottom: 1em;
-    right: 1em; }
-  .btn--tl {
-    top: 1em;
-    left: 1em; }
   .btn--bl {
-    bottom: 1em;
-    left: 1em; }
+    bottom: 0.8em;
+    left: 0.8em; }
+  .btn--br {
+    bottom: 0.8em;
+    right: 0.8em; }
+  .btn--bc {
+    bottom: 0.8em;
+    left: calc(50% - 0.5em); }
+  .btn svg {
+    display: block; }
 
 .ui {
   pointer-events: none;
   background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%);
   color: #070d15; }
-  .ui, .ui__game, .ui__texts, .ui__prefs, .ui__buttons {
+  .ui, .ui__game, .ui__texts, .ui__prefs, .ui__stats, .ui__buttons {
     position: absolute;
     top: 0;
     left: 0;
@@ -208,7 +213,7 @@ body {
       height: 100%; }
   .ui__texts {
     z-index: 2; }
-  .ui__prefs {
+  .ui__prefs, .ui__stats {
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
