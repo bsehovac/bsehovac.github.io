@@ -141,7 +141,8 @@ body {
   opacity: 0; }
   .text i {
     display: inline-block;
-    opacity: 0; }
+    opacity: 0;
+    white-space: pre-wrap; }
   .text--title {
     bottom: 75%;
     font-size: 4.4em;
@@ -155,9 +156,12 @@ body {
     top: 87%;
     font-size: 1em; }
   .text--timer {
-    bottom: 75%;
-    font-size: 3.5em;
-    height: 1.25em; }
+    bottom: 79%;
+    font-size: 3.5em; }
+  .text--complete, .text--best-time {
+    font-size: 1.5em;
+    top: 83%;
+    line-height: 1em; }
 
 .btn {
   -webkit-appearance: none;

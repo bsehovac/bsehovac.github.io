@@ -12,11 +12,13 @@ class Confetti extends Animation {
     this.particles = [];
 
     this.object = new THREE.Object3D();
+    this.object.position.y = 0.25;
     this.game.world.scene.add( this.object );
 
     this.geometry = new THREE.PlaneGeometry( 1, 1 );
     this.material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
     this.opacity = 0;
+    this.callback = ( () => {} );
 
     this.particleOptions = {
       geometry: this.geometry,
@@ -38,11 +40,12 @@ class Confetti extends Animation {
 
   }
 
-  start() {
+  start( callback ) {
 
     this.opacity = 0;
     this.done = 0;
     this.time = performance.now();
+    this.callback = ( typeof callback === 'function') ? callback : () => {};
     
     super.start();
 
@@ -72,7 +75,14 @@ class Confetti extends Animation {
 
     }
 
-    if ( this.done == this.count) this.stop();
+    if ( this.done == this.count) {
+
+      this.stop();
+
+      this.callback();
+      this.callback = ( () => {} );
+
+    }
 
   }
   

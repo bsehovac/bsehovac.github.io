@@ -1864,6 +1864,8 @@
 	    this.tweens.buttons = {};
 	    this.tweens.timer = [];
 	    this.tweens.title = [];
+	    this.tweens.best = [];
+	    this.tweens.complete = [];
 	    this.tweens.range = [];
 	    this.tweens.stats = [];
 
@@ -1881,18 +1883,11 @@
 	        to: { opacity: show ? 1 : 0 },
 	        onUpdate: tween => {
 
-	          // const scale = show ? tween.value : 1 - tween.value;
 	          const translate = show ? 1 - tween.value : tween.value;
-
-	          // button.style.transform = `scale3d(${scale}, ${scale}, 1)`;
 	          button.style.transform = `translate3d(0, ${translate * 1.5}em, 0)`;
 
 	        },
-	        onComplete: () => {
-
-	          button.style.pointerEvents = show ? 'all' : 'none';
-
-	        }
+	        onComplete: () => button.style.pointerEvents = show ? 'all' : 'none'
 	      } );
 
 	    };
@@ -1901,9 +1896,11 @@
 	      this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], false )
 	    );
 
-	    setTimeout( () => show.forEach( button =>
-	      this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], true )
-	    ), hide ? 500 : 0 );
+	    setTimeout( () => show.forEach( button => {
+
+	      this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], true );
+
+	    } ), hide ? 500 : 0 );
 
 	  }
 
@@ -1956,12 +1953,11 @@
 
 	  }
 
-	  zoom( game, time ) {
+	  zoom( play, time ) {
 
 	    this.activeTransitions++;
 
-	    const zoom = ( game ) ? 1 : this.data.cameraZoom;
-	    const cubeY = ( game ) ? -0.3 : this.data.cubeY;
+	    const zoom = ( play ) ? 1 : this.data.cameraZoom;
 	    const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
 	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
 	    const easing = Easing.Power.InOut( ( time > 0 ) ? 2 : 3 );
@@ -1987,6 +1983,48 @@
 	    setTimeout( () => this.activeTransitions--, this.durations.zoom );
 
 	  }
+
+	  elevate( complete ) {
+
+	    this.activeTransitions++;
+
+	    const cubeY = 
+
+	    this.tweens.elevate = new Tween( {
+	      target: this.game.cube.object.position,
+	      duration: complete ? 1500 : 0,
+	      easing: Easing.Power.InOut( 3 ),
+	      to: { y: complete ? -0.05 : this.data.cubeY }
+	    } );
+
+	    this.durations.elevate = 1500;
+
+	    setTimeout( () => this.activeTransitions--, this.durations.elevate );
+
+	  }
+
+	  complete( show, best ) {
+
+	    this.activeTransitions++;
+
+	    const text = best ? this.game.dom.texts.best : this.game.dom.texts.complete;
+
+	    if ( text.querySelector( 'span i' ) === null )
+	      text.querySelectorAll( 'span' ).forEach( span => this.splitLetters( span ) );
+
+	    const letters = text.querySelectorAll( '.icon, i' );
+
+	    this.flipLetters( best ? 'best' : 'complete', letters, show );
+
+	    text.style.opacity = 1;
+
+	    const duration = this.durations[ best ? 'best' : 'complete' ];
+
+	    if ( ! show ) setTimeout( () => this.game.dom.texts.timer.style.transform = '', duration );
+
+	    setTimeout( () => this.activeTransitions--, duration );
+
+	  } 
 
 	  stats( show ) {
 
@@ -2170,7 +2208,7 @@
 
 	    if ( ! show ) {
 
-	      this.game.controls.disable();
+	      this.game.controls.disabled = true;
 	      this.game.timer.stop();
 
 	    }
@@ -2220,9 +2258,7 @@
 
 	  flipLetters( type, letters, show ) {
 
-	    if ( typeof this.tweens[ type ] === 'undefined' ) this.tweens[ type ] = [];  
-	    else this.tweens[ type ].forEach( tween => { tween.stop(); tween = null; } );
-
+	    try { this.tweens[ type ].forEach( tween => tween.stop() ); } catch(e) {}
 	    letters.forEach( ( letter, index ) => {
 
 	      letter.style.opacity = show ? 0 : 1;
@@ -2547,11 +2583,13 @@
 	    this.particles = [];
 
 	    this.object = new THREE.Object3D();
+	    this.object.position.y = 0.25;
 	    this.game.world.scene.add( this.object );
 
 	    this.geometry = new THREE.PlaneGeometry( 1, 1 );
 	    this.material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
 	    this.opacity = 0;
+	    this.callback = ( () => {} );
 
 	    this.particleOptions = {
 	      geometry: this.geometry,
@@ -2573,11 +2611,12 @@
 
 	  }
 
-	  start() {
+	  start( callback ) {
 
 	    this.opacity = 0;
 	    this.done = 0;
 	    this.time = performance.now();
+	    this.callback = ( typeof callback === 'function') ? callback : () => {};
 	    
 	    super.start();
 
@@ -2607,7 +2646,14 @@
 
 	    }
 
-	    if ( this.done == this.count) this.stop();
+	    if ( this.done == this.count) {
+
+	      this.stop();
+
+	      this.callback();
+	      this.callback = ( () => {} );
+
+	    }
 
 	  }
 	  
@@ -3033,6 +3079,8 @@
 	        note: document.querySelector( '.text--note' ),
 	        timer: document.querySelector( '.text--timer' ),
 	        stats: document.querySelector( '.text--timer' ),
+	        complete: document.querySelector( '.text--complete' ),
+	        best: document.querySelector( '.text--best-time' ),
 	      },
 	      buttons: {
 	        prefs: document.querySelector( '.btn--prefs' ),
@@ -3053,7 +3101,7 @@
 	    this.confetti = new Confetti( this );
 	    this.scores = new Scores( this );
 
-	    this.initTapEvents();
+	    this.initActions();
 
 	    this.state = MENU;
 	    this.saved = false;
@@ -3062,10 +3110,10 @@
 	    this.storage.loadPreferences();
 	    this.storage.loadScores();
 
-	    // this.scrambler.scrambleLength = 1;
+	    this.scrambler.scrambleLength = 1;
 
 	    this.preferences.init();
-	    this.world.enableShadows();
+	    // this.world.enableShadows();
 
 	    this.transition.init();
 
@@ -3079,22 +3127,9 @@
 
 	    }, 500 );
 
-	    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
-	    this.controls.onSolved = () => {
-
-	      this.state = STATS;
-	      this.saved = false;
-	      this.storage.clearGame();
-
-	      this.timer.stop();
-	      this.scores.addScore( this.timer.deltaTime );
-	      this.timer.reset();
-
-	    };
-
 	  }
 
-	  initTapEvents() {
+	  initActions() {
 
 	    let tappedTwice = false;
 
@@ -3125,7 +3160,7 @@
 
 	      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
 
-	      this.transition.zoom( SHOW, duration );
+	      this.transition.zoom( PLAYING, duration );
 	      this.transition.title( HIDE );
 
 	      setTimeout( () => this.transition.timer( SHOW ), this.transition.durations.zoom - 1000 );
@@ -3143,7 +3178,7 @@
 
 	        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
 
-	        this.transition.zoom( HIDE, 0 );
+	        this.transition.zoom( MENU, 0 );
 
 	        this.transition.timer( HIDE );
 	        setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
@@ -3204,6 +3239,74 @@
 	      this.transition.cube( HIDE );
 
 	      setTimeout( () => this.transition.stats( SHOW ), 1000 );
+
+	    };
+
+	    this.controls.onMove = data => {
+
+	      if ( this.audio.musicOn ) this.audio.click.play();
+
+	    };
+
+	    this.controls.onSolved = () => {
+
+	      this.transition.buttons( [], [ 'back' ] );
+
+	      this.state = STATS;
+	      this.saved = false;
+	      this.storage.clearGame();
+
+	      this.controls.disable = true;
+
+	      this.timer.stop();
+	      this.scores.addScore( this.timer.deltaTime );
+
+	      const bestTime = false;
+
+	      this.transition.zoom( MENU, 0 );
+	      this.transition.elevate( SHOW );
+
+	      setTimeout( () => this.transition.complete( SHOW, bestTime ), 500 );
+	      setTimeout( () => this.confetti.start( () => {
+
+	        /*
+	        ████████ ██ ███    ███ ███████ ██████  
+	           ██    ██ ████  ████ ██      ██   ██ 
+	           ██    ██ ██ ████ ██ █████   ██████  
+	           ██    ██ ██  ██  ██ ██      ██   ██ 
+	           ██    ██ ██      ██ ███████ ██   ██         
+	        */
+
+	        /*
+	        ███    ██  ██████  ████████ 
+	        ████   ██ ██    ██    ██    
+	        ██ ██  ██ ██    ██    ██    
+	        ██  ██ ██ ██    ██    ██    
+	        ██   ████  ██████     ██            
+	        */
+
+	        /*
+	        ███████ ████████  ██████  ██████  ██████  ██ ███    ██  ██████  
+	        ██         ██    ██    ██ ██   ██ ██   ██ ██ ████   ██ ██       
+	        ███████    ██    ██    ██ ██████  ██████  ██ ██ ██  ██ ██   ███ 
+	             ██    ██    ██    ██ ██      ██      ██ ██  ██ ██ ██    ██ 
+	        ███████    ██     ██████  ██      ██      ██ ██   ████  ██████          
+	        */
+
+	        this.transition.timer( HIDE );
+	        this.transition.complete( HIDE, bestTime );
+	        this.transition.cube( HIDE );
+	        this.timer.reset();
+
+	        setTimeout( () => {
+
+	          this.transition.stats( SHOW );
+	          this.transition.buttons( [ 'back' ], [] );
+	          this.transition.elevate( 0 );
+
+	        }, 1000 );
+
+	      } ), 1500 );
 
 	    };
 

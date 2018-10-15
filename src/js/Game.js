@@ -34,6 +34,8 @@ class Game {
         note: document.querySelector( '.text--note' ),
         timer: document.querySelector( '.text--timer' ),
         stats: document.querySelector( '.text--timer' ),
+        complete: document.querySelector( '.text--complete' ),
+        best: document.querySelector( '.text--best-time' ),
       },
       buttons: {
         prefs: document.querySelector( '.btn--prefs' ),
@@ -54,7 +56,7 @@ class Game {
     this.confetti = new Confetti( this );
     this.scores = new Scores( this );
 
-    this.initTapEvents();
+    this.initActions();
 
     this.state = MENU;
     this.saved = false;
@@ -63,10 +65,10 @@ class Game {
     this.storage.loadPreferences();
     this.storage.loadScores();
 
-    // this.scrambler.scrambleLength = 1;
+    this.scrambler.scrambleLength = 1;
 
     this.preferences.init();
-    this.world.enableShadows();
+    // this.world.enableShadows();
 
     this.transition.init();
 
@@ -80,22 +82,9 @@ class Game {
 
     }, 500 );
 
-    // this.controls.onMove = data => { if ( this.audio.musicOn ) this.audio.click.play(); }
-    this.controls.onSolved = () => {
-
-      this.state = STATS;
-      this.saved = false;
-      this.storage.clearGame();
-
-      this.timer.stop();
-      this.scores.addScore( this.timer.deltaTime );
-      this.timer.reset();
-
-    }
-
   }
 
-  initTapEvents() {
+  initActions() {
 
     let tappedTwice = false;
 
@@ -126,7 +115,7 @@ class Game {
 
       this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
 
-      this.transition.zoom( SHOW, duration );
+      this.transition.zoom( PLAYING, duration );
       this.transition.title( HIDE );
 
       setTimeout( () => this.transition.timer( SHOW ), this.transition.durations.zoom - 1000 );
@@ -144,7 +133,7 @@ class Game {
 
         this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
 
-        this.transition.zoom( HIDE, 0 );
+        this.transition.zoom( MENU, 0 );
 
         this.transition.timer( HIDE );
         setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
@@ -207,6 +196,74 @@ class Game {
       setTimeout( () => this.transition.stats( SHOW ), 1000 );
 
     }
+
+    this.controls.onMove = data => {
+
+      if ( this.audio.musicOn ) this.audio.click.play();
+
+    }
+
+    this.controls.onSolved = () => {
+
+      this.transition.buttons( [], [ 'back' ] );
+
+      this.state = STATS;
+      this.saved = false;
+      this.storage.clearGame();
+
+      this.controls.disable = true;
+
+      this.timer.stop();
+      this.scores.addScore( this.timer.deltaTime );
+
+      const bestTime = false;
+
+      this.transition.zoom( MENU, 0 );
+      this.transition.elevate( SHOW );
+
+      setTimeout( () => this.transition.complete( SHOW, bestTime ), 500 );
+      setTimeout( () => this.confetti.start( () => {
+
+        /*
+        ████████ ██ ███    ███ ███████ ██████  
+           ██    ██ ████  ████ ██      ██   ██ 
+           ██    ██ ██ ████ ██ █████   ██████  
+           ██    ██ ██  ██  ██ ██      ██   ██ 
+           ██    ██ ██      ██ ███████ ██   ██         
+        */
+
+        /*
+        ███    ██  ██████  ████████ 
+        ████   ██ ██    ██    ██    
+        ██ ██  ██ ██    ██    ██    
+        ██  ██ ██ ██    ██    ██    
+        ██   ████  ██████     ██            
+        */
+
+        /*
+        ███████ ████████  ██████  ██████  ██████  ██ ███    ██  ██████  
+        ██         ██    ██    ██ ██   ██ ██   ██ ██ ████   ██ ██       
+        ███████    ██    ██    ██ ██████  ██████  ██ ██ ██  ██ ██   ███ 
+             ██    ██    ██    ██ ██      ██      ██ ██  ██ ██ ██    ██ 
+        ███████    ██     ██████  ██      ██      ██ ██   ████  ██████          
+        */
+
+        this.transition.timer( HIDE );
+        this.transition.complete( HIDE, bestTime );
+        this.transition.cube( HIDE );
+        this.timer.reset();
+
+        setTimeout( () => {
+
+          this.transition.stats( SHOW )
+          this.transition.buttons( [ 'back' ], [] );
+          this.transition.elevate( 0 );
+
+        }, 1000 );
+
+      } ), 1500 );
+
+    };
 
   }
 

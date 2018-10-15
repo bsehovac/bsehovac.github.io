@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"dura",
+				"duration"
+			],
+			[
+				"compl",
+				"completeSpans"
+			],
+			[
 				"play",
 				"playing"
 			],
@@ -54,10 +62,6 @@
 			[
 				"ac",
 				"activeTransitionsNames"
-			],
-			[
-				"dura",
-				"durations"
 			],
 			[
 				"scra",
@@ -510,10 +514,6 @@
 			[
 				"EDGE",
 				"EDGE_OFFSET"
-			],
-			[
-				"pieed",
-				"pieceEdgeGeometry"
 			]
 		]
 	},
@@ -523,7 +523,16 @@
 			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 3364,
+				"buffer_size": 3446,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/scss/components/_text.sass",
+			"settings":
+			{
+				"buffer_size": 548,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -532,34 +541,25 @@
 			"file": "src/js/Game.js",
 			"settings":
 			{
-				"buffer_size": 5482,
+				"buffer_size": 7159,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/js/World.js",
+			"file": "src/js/Confetti.js",
 			"settings":
 			{
-				"buffer_size": 3292,
+				"buffer_size": 4980,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/js/Cube.js",
+			"file": "src/js/Animation.js",
 			"settings":
 			{
-				"buffer_size": 1464,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/scss/components/_btn.sass",
-			"settings":
-			{
-				"buffer_size": 693,
+				"buffer_size": 1381,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -568,7 +568,7 @@
 			"file": "src/js/Transition.js",
 			"settings":
 			{
-				"buffer_size": 10918,
+				"buffer_size": 11766,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -706,16 +706,20 @@
 	[
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js"
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components"
 	],
 	"file_history":
 	[
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Confetti.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/World.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Cube.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_btn.sass",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Game.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_text.sass",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Transition.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Animation.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_btn.sass",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_stats.sass",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Timer.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Icons.js",
@@ -727,13 +731,11 @@
 		"/Users/bsehovac/Documents/Windows 7/Windows 7/___thecube/icons/back.svg",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Storage.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Tween.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/World.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Controls.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Preferences.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Scores.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Game.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Cube.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Audio.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Timer.js",
@@ -900,6 +902,12 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"onCompl",
+			"spread",
+			"complete",
+			"flipLe",
+			";",
+			"scramble",
 			"light.",
 			"confet",
 			".dom.timer",
@@ -1021,13 +1029,7 @@
 			"timer.",
 			"seconds",
 			"this.seconds",
-			"this.game",
-			"_animate",
-			"this.animate",
-			"this.converted",
-			"this.deltaTime",
-			"this.currentTime",
-			"this.startTime"
+			"this.game"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1173,7 +1175,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -1182,15 +1184,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3364,
+						"buffer_size": 3446,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2067,
-								2067
+								1545,
+								1545
 							]
 						],
 						"settings":
@@ -1200,115 +1202,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 668.0,
+						"translation.y": 570.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "src/js/Game.js",
+					"file": "src/scss/components/_text.sass",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5482,
+						"buffer_size": 548,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2023,
-								2023
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1184.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "src/js/World.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3292,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2127,
-								2140
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1761.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "src/js/Cube.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1464,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								781,
-								781
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 307.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "src/scss/components/_btn.sass",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 693,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								665,
-								665
+								517,
+								517
 							]
 						],
 						"settings":
@@ -1318,27 +1232,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 186.0,
+						"translation.y": 247.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "src/js/Transition.js",
+					"buffer": 2,
+					"file": "src/js/Game.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10918,
+						"buffer_size": 7159,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1405,
-								1405
+								6328,
+								6328
 							]
 						],
 						"settings":
@@ -1348,10 +1262,100 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 793.0,
+						"translation.y": 4509.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/js/Confetti.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4980,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1920,
+								1920
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1474.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/js/Animation.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1381,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1327,
+								1327
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1041.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/js/Transition.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11766,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10182,
+								10182
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 8153.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
@@ -1400,7 +1404,7 @@
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 88.0
+		"height": 56.0
 	},
 	"save_all_on_build": true,
 	"select_file":

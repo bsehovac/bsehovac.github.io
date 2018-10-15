@@ -31,6 +31,8 @@ class Transition {
     this.tweens.buttons = {};
     this.tweens.timer = [];
     this.tweens.title = [];
+    this.tweens.best = [];
+    this.tweens.complete = [];
     this.tweens.range = [];
     this.tweens.stats = [];
 
@@ -48,18 +50,11 @@ class Transition {
         to: { opacity: show ? 1 : 0 },
         onUpdate: tween => {
 
-          // const scale = show ? tween.value : 1 - tween.value;
           const translate = show ? 1 - tween.value : tween.value;
-
-          // button.style.transform = `scale3d(${scale}, ${scale}, 1)`;
           button.style.transform = `translate3d(0, ${translate * 1.5}em, 0)`;
 
         },
-        onComplete: () => {
-
-          button.style.pointerEvents = show ? 'all' : 'none';
-
-        }
+        onComplete: () => button.style.pointerEvents = show ? 'all' : 'none'
       } );
 
     }
@@ -68,9 +63,11 @@ class Transition {
       this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], false )
     );
 
-    setTimeout( () => show.forEach( button =>
+    setTimeout( () => show.forEach( button => {
+
       this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], true )
-    ), hide ? 500 : 0 );
+
+    } ), hide ? 500 : 0 );
 
   }
 
@@ -125,12 +122,11 @@ class Transition {
 
   }
 
-  zoom( game, time ) {
+  zoom( play, time ) {
 
     this.activeTransitions++;
 
-    const zoom = ( game ) ? 1 : this.data.cameraZoom;
-    const cubeY = ( game ) ? -0.3 : this.data.cubeY;
+    const zoom = ( play ) ? 1 : this.data.cameraZoom;
     const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
     const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
     const easing = Easing.Power.InOut( ( time > 0 ) ? 2 : 3 );
@@ -156,6 +152,48 @@ class Transition {
     setTimeout( () => this.activeTransitions--, this.durations.zoom );
 
   }
+
+  elevate( complete ) {
+
+    this.activeTransitions++;
+
+    const cubeY = 
+
+    this.tweens.elevate = new Tween( {
+      target: this.game.cube.object.position,
+      duration: complete ? 1500 : 0,
+      easing: Easing.Power.InOut( 3 ),
+      to: { y: complete ? -0.05 : this.data.cubeY }
+    } );
+
+    this.durations.elevate = 1500;
+
+    setTimeout( () => this.activeTransitions--, this.durations.elevate );
+
+  }
+
+  complete( show, best ) {
+
+    this.activeTransitions++;
+
+    const text = best ? this.game.dom.texts.best : this.game.dom.texts.complete;
+
+    if ( text.querySelector( 'span i' ) === null )
+      text.querySelectorAll( 'span' ).forEach( span => this.splitLetters( span ) );
+
+    const letters = text.querySelectorAll( '.icon, i' );
+
+    this.flipLetters( best ? 'best' : 'complete', letters, show );
+
+    text.style.opacity = 1;
+
+    const duration = this.durations[ best ? 'best' : 'complete' ];
+
+    if ( ! show ) setTimeout( () => this.game.dom.texts.timer.style.transform = '', duration );
+
+    setTimeout( () => this.activeTransitions--, duration );
+
+  } 
 
   stats( show ) {
 
@@ -339,7 +377,7 @@ class Transition {
 
     if ( ! show ) {
 
-      this.game.controls.disable();
+      this.game.controls.disabled = true;
       this.game.timer.stop();
 
     }
@@ -389,8 +427,7 @@ class Transition {
 
   flipLetters( type, letters, show ) {
 
-    if ( typeof this.tweens[ type ] === 'undefined' ) this.tweens[ type ] = [];  
-    else this.tweens[ type ].forEach( tween => { tween.stop(); tween = null; } )
+    try { this.tweens[ type ].forEach( tween => tween.stop() ) } catch(e) {};
 
     letters.forEach( ( letter, index ) => {
 
