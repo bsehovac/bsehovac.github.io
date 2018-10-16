@@ -80,10 +80,12 @@ class Storage {
     try {
 
       const scoresData = JSON.parse( localStorage.getItem( 'scoresData' ) );
+      const scoresBest = parseInt( localStorage.getItem( 'scoresBest' ) );
 
-      if ( ! scoresData ) throw new Error();
+      if ( ! scoresData || ! scoresBest ) throw new Error();
 
       this.game.scores.scores = scoresData;
+      this.game.scores.best = scoresBest;
 
       return true;
 
@@ -98,14 +100,17 @@ class Storage {
   saveScores() {
 
     const scoresData = this.game.scores.scores;
+    const scoresBest = this.game.scores.best;
 
     localStorage.setItem( 'scoresData', JSON.stringify( scoresData ) );
+    localStorage.setItem( 'scoresBest', JSON.stringify( scoresBest ) );
 
   }
 
   clearScores() {
 
     localStorage.removeItem( 'scoresData' );
+    localStorage.removeItem( 'scoresBest' );
 
   }
 

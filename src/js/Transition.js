@@ -375,13 +375,6 @@ class Transition {
 
     this.activeTransitions++;
 
-    if ( ! show ) {
-
-      this.game.controls.disabled = true;
-      this.game.timer.stop();
-
-    }
-
     const timer = this.game.dom.texts.timer;
 
     timer.style.opacity = 0;
@@ -393,13 +386,6 @@ class Transition {
     this.flipLetters( 'timer', letters, show );
 
     timer.style.opacity = 1;
-
-    if ( show ) setTimeout( () => {
-
-      this.game.controls.enable();
-      this.game.timer.start( true );
-
-    }, 1000 );
 
     setTimeout( () => this.activeTransitions--, this.durations.timer );
 

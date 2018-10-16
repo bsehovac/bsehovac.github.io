@@ -529,19 +529,28 @@
 			}
 		},
 		{
-			"file": "src/scss/components/_text.sass",
+			"file": "src/js/Game.js",
 			"settings":
 			{
-				"buffer_size": 548,
+				"buffer_size": 6486,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/js/Game.js",
+			"file": "src/js/Scores.js",
 			"settings":
 			{
-				"buffer_size": 7159,
+				"buffer_size": 443,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/Storage.js",
+			"settings":
+			{
+				"buffer_size": 3485,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -568,7 +577,7 @@
 			"file": "src/js/Transition.js",
 			"settings":
 			{
-				"buffer_size": 11766,
+				"buffer_size": 11539,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -704,14 +713,15 @@
 	},
 	"expanded_folders":
 	[
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components"
+		"/Users/boris/Sites/bsehovac.github.io",
+		"/Users/boris/Sites/bsehovac.github.io/src",
+		"/Users/boris/Sites/bsehovac.github.io/src/js",
+		"/Users/boris/Sites/bsehovac.github.io/src/scss",
+		"/Users/boris/Sites/bsehovac.github.io/src/scss/components"
 	],
 	"file_history":
 	[
+		"/Users/boris/Sites/bsehovac.github.io/src/scss/components/_text.sass",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Confetti.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/World.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Cube.js",
@@ -838,8 +848,7 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/plugins/RoundedBoxGeometry.js",
 		"/Users/boris/Documents/bsehovac.github.io/rollup.config.rubik.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Draggable.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/Rubik.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Animations.js"
+		"/Users/boris/Documents/bsehovac.github.io/src/js/Rubik.js"
 	],
 	"find":
 	{
@@ -902,6 +911,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"back",
+			"confetti",
 			"onCompl",
 			"spread",
 			"complete",
@@ -1027,9 +1038,7 @@
 			"this.className",
 			"this.tagName",
 			"timer.",
-			"seconds",
-			"this.seconds",
-			"this.game"
+			"seconds"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1191,8 +1200,8 @@
 						"selection":
 						[
 							[
-								1545,
-								1545
+								3015,
+								3015
 							]
 						],
 						"settings":
@@ -1202,57 +1211,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 570.0,
+						"translation.y": 1229.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "src/scss/components/_text.sass",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 548,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								517,
-								517
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Sass/Syntaxes/Sass.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 247.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
 					"file": "src/js/Game.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7159,
+						"buffer_size": 6486,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6328,
-								6328
+								2900,
+								2900
 							]
 						],
 						"settings":
@@ -1262,7 +1241,35 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4509.0,
+						"translation.y": 1833.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/js/Scores.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 443,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								294,
+								294
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -1270,6 +1277,36 @@
 				},
 				{
 					"buffer": 3,
+					"file": "src/js/Storage.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3485,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2500,
+								2500
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1417.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
 					"file": "src/js/Confetti.js",
 					"semi_transient": false,
 					"settings":
@@ -1295,11 +1332,11 @@
 						"translation.y": 1474.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "src/js/Animation.js",
 					"semi_transient": false,
 					"settings":
@@ -1325,24 +1362,24 @@
 						"translation.y": 1041.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 6,
 					"file": "src/js/Transition.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 11766,
+						"buffer_size": 11539,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10182,
-								10182
+								2099,
+								2103
 							]
 						],
 						"settings":
@@ -1352,10 +1389,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 8153.0,
+						"translation.y": 1206.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
