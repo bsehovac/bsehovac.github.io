@@ -4,6 +4,26 @@
 		"selected_items":
 		[
 			[
+				"scra",
+				"scrambleLength"
+			],
+			[
+				"con",
+				"controls"
+			],
+			[
+				"load",
+				"loadPreferences"
+			],
+			[
+				"pos",
+				"position"
+			],
+			[
+				"posi",
+				"position"
+			],
+			[
 				"dura",
 				"duration"
 			],
@@ -64,10 +84,6 @@
 				"activeTransitionsNames"
 			],
 			[
-				"scra",
-				"scrambleLength"
-			],
-			[
 				"trans",
 				"transition"
 			],
@@ -116,20 +132,8 @@
 				"startTime"
 			],
 			[
-				"con",
-				"container"
-			],
-			[
 				"curre",
 				"currentState"
-			],
-			[
-				"posi",
-				"positions"
-			],
-			[
-				"pos",
-				"positions"
 			],
 			[
 				"ve",
@@ -510,38 +514,16 @@
 			[
 				"CUBE",
 				"CUBE_LAYERS"
-			],
-			[
-				"EDGE",
-				"EDGE_OFFSET"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "index.html",
-			"settings":
-			{
-				"buffer_size": 3446,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "src/js/Game.js",
 			"settings":
 			{
-				"buffer_size": 6486,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/js/Scores.js",
-			"settings":
-			{
-				"buffer_size": 443,
+				"buffer_size": 6425,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -550,25 +532,7 @@
 			"file": "src/js/Storage.js",
 			"settings":
 			{
-				"buffer_size": 3485,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/js/Confetti.js",
-			"settings":
-			{
-				"buffer_size": 4980,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/js/Animation.js",
-			"settings":
-			{
-				"buffer_size": 1381,
+				"buffer_size": 4754,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -577,8 +541,7 @@
 			"file": "src/js/Transition.js",
 			"settings":
 			{
-				"buffer_size": 11539,
-				"encoding": "UTF-8",
+				"buffer_size": 11590,
 				"line_ending": "Unix"
 			}
 		}
@@ -713,25 +676,30 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/boris/Sites/bsehovac.github.io",
-		"/Users/boris/Sites/bsehovac.github.io/src",
-		"/Users/boris/Sites/bsehovac.github.io/src/js",
-		"/Users/boris/Sites/bsehovac.github.io/src/scss",
-		"/Users/boris/Sites/bsehovac.github.io/src/scss/components"
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js"
 	],
 	"file_history":
 	[
-		"/Users/boris/Sites/bsehovac.github.io/src/scss/components/_text.sass",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Confetti.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/World.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Cube.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_btn.sass",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Scores.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Game.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_text.sass",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Transition.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Animation.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_stats.sass",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Timer.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Storage.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Preferences.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Range.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Confetti.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Controls.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Animation.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Cube.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/CubePieces.js",
+		"/Users/boris/Sites/bsehovac.github.io/src/scss/components/_text.sass",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/World.js",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_btn.sass",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_text.sass",
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_stats.sass",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Icons.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/styles.sass",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/scss/components/_range.sass",
@@ -739,14 +707,9 @@
 		"/Users/bsehovac/Documents/Windows 7/Windows 7/___thecube/icons/badge.svg",
 		"/Users/bsehovac/Documents/Windows 7/Windows 7/___thecube/icons/settings.svg",
 		"/Users/bsehovac/Documents/Windows 7/Windows 7/___thecube/icons/back.svg",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Storage.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Tween.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Controls.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Preferences.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Scores.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Controls.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/components/Game.js",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/index.html",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Audio.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Timer.js",
 		"/Users/boris/Sites/bsehovac.github.io/assets/js/solver/solver.js",
@@ -846,13 +809,11 @@
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/plugins/ObjectForEach.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Icons.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/plugins/RoundedBoxGeometry.js",
-		"/Users/boris/Documents/bsehovac.github.io/rollup.config.rubik.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Draggable.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/Rubik.js"
+		"/Users/boris/Documents/bsehovac.github.io/rollup.config.rubik.js"
 	],
 	"find":
 	{
-		"height": 54.0
+		"height": 30.0
 	},
 	"find_in_files":
 	{
@@ -911,6 +872,15 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"inrange",
+			"checkIsSolved",
+			"saveGame",
+			"this.game.storage.saveGame();",
+			"scramble",
+			"checkIsSolved",
+			"onSolved",
+			"clearGame",
+			"float(",
 			"back",
 			"confetti",
 			"onCompl",
@@ -1029,16 +999,7 @@
 			"transition.",
 			"this.active",
 			"this.data",
-			"this.durations",
-			"this.tweens",
-			"this.game",
-			"this.observer",
-			"this.svgTag",
-			"this.icons",
-			"this.className",
-			"this.tagName",
-			"timer.",
-			"seconds"
+			"this.durations"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1184,54 +1145,24 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3446,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3015,
-								3015
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1229.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "src/js/Game.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6486,
+						"buffer_size": 6425,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2900,
-								2900
+								3280,
+								3280
 							]
 						],
 						"settings":
@@ -1241,7 +1172,37 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1833.0,
+						"translation.y": 1856.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/js/Storage.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4754,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								90,
+								90
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
@@ -1249,137 +1210,19 @@
 				},
 				{
 					"buffer": 2,
-					"file": "src/js/Scores.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 443,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								294,
-								294
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "src/js/Storage.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3485,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2500,
-								2500
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1417.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "src/js/Confetti.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4980,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1920,
-								1920
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1474.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "src/js/Animation.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1381,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1327,
-								1327
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1041.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
 					"file": "src/js/Transition.js",
-					"semi_transient": false,
+					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 11539,
+						"buffer_size": 11590,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2099,
-								2103
+								1721,
+								1725
 							]
 						],
 						"settings":
@@ -1389,10 +1232,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1206.0,
+						"translation.y": 693.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 2,
 					"type": "text"
 				}
 			]

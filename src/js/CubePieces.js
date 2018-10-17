@@ -44,6 +44,10 @@ function CubePieces( size, positions, colors ) {
 
 		piece.userData.edges = edges;
 		piece.userData.cube = pieceCube;
+		piece.userData.start = {
+			position: piece.position.clone(),
+			rotation: piece.rotation.clone(),
+		};
 
 		pieces.push( piece );
 

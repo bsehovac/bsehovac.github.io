@@ -729,6 +729,10 @@
 
 			piece.userData.edges = edges;
 			piece.userData.cube = pieceCube;
+			piece.userData.start = {
+				position: piece.position.clone(),
+				rotation: piece.rotation.clone(),
+			};
 
 			pieces.push( piece );
 
@@ -823,6 +827,23 @@
 			} );
 
 			this.game.world.scene.add( this.holder );
+
+		}
+
+		reset() {
+
+			this.game.controls.edges.rotation.set( 0, 0, 0 );
+
+			this.holder.rotation.set( 0, 0, 0 );
+			this.object.rotation.set( 0, 0, 0 );
+			this.animator.rotation.set( 0, 0, 0 );
+
+			this.pieces.forEach( piece => {
+
+				piece.position.copy( piece.userData.start.position );
+				piece.rotation.copy( piece.userData.start.rotation );
+
+			} );
 
 		}
 
@@ -1432,12 +1453,12 @@
 
 	        this.rotateLayer( delta, false, layer => {
 
-	          this.checkIsSolved();
-
 	          this.game.storage.saveGame();
 	          
 	          this.state = this.gettingDrag ? PREPARING : STILL;
 	          this.gettingDrag = false;
+
+	          this.checkIsSolved();
 
 	        } );
 
@@ -1666,6 +1687,7 @@
 	      } else {
 
 	        this.scramble = null;
+	        this.game.storage.saveGame();
 
 	      }
 
@@ -2028,6 +2050,8 @@
 
 	  stats( show ) {
 
+	    if ( show ) this.game.scores.calcStats();
+
 	    this.activeTransitions++;
 
 	    this.tweens.stats.forEach( tween => { tween.stop(); tween = null; } );
@@ -2047,7 +2071,7 @@
 	        easing: easing,
 	        onUpdate: tween => {
 
-	          const translate = show ? ( 1 - tween.value ) : tween.value;
+	          const translate = show ? ( 1 - tween.value ) * 2 : tween.value;
 	          const opacity = show ? tween.value : ( 1 - tween.value );
 
 	          stat.style.transform = `translate3d(0, ${translate}em, 0)`;
@@ -2505,15 +2529,23 @@
 
 	  init() {
 
+	    const getProgressInRange = ( value, start, end ) => {
+
+	      return Math.min( Math.max( (value - start) / (end - start), 0 ), 1 );
+	      
+	    };
+
 	    this.ranges = {
 
 	      speed: new Range( 'speed', {
 	        value: this.game.controls.flipSpeed,
-	        range: [ 300, 100 ],
+	        range: [ 350, 100 ],
 	        onUpdate: value => {
 
 	          this.game.controls.flipSpeed = value;
-	          this.game.controls.flipBounce = ( ( value - 100 ) / 200 ) * 2;
+	          this.game.controls.flipBounce = getProgressInRange( value, 100, 350 ) * 2.5;
+
+	          console.log( this.game.controls.flipSpeed, this.game.controls.flipBounce );
 
 	        },
 	        onComplete: () => this.game.storage.savePreferences(),
@@ -2557,6 +2589,204 @@
 
 	}
 
+	class Confetti extends Animation {
+
+	  constructor( game ) {
+
+	    super( false );
+
+	    this.game = game;
+
+	    this.count = 100;
+	    this.particles = [];
+
+	    this.object = new THREE.Object3D();
+	    this.object.position.y = 0.25;
+	    this.game.world.scene.add( this.object );
+
+	    this.geometry = new THREE.PlaneGeometry( 1, 1 );
+	    this.material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
+	    this.opacity = 0;
+	    this.callback = ( () => {} );
+
+	    this.particleOptions = {
+	      geometry: this.geometry,
+	      material: this.material,
+	      holder: this.object,
+	      velocity: { min: 5, max: 20 },
+	      revolution: { min: 0, max: 0.05 },
+	      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 30 },
+	      radius: { min: 10, max: 15 },
+	      mass: { min: 0.05, max: 0.1 },
+	      gravity: -9.81,
+	      geometryScale: 0.01, // used to scale in threejs world
+	      positionScale: 0.3333, // used to scale in threejs world
+	      colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
+	    };
+
+	    let i = this.count;
+	    while ( i-- )  this.particles.push( new Particle( this.particleOptions ) );
+
+	  }
+
+	  start( callback ) {
+
+	    this.opacity = 0;
+	    this.done = 0;
+	    this.time = performance.now();
+	    this.callback = ( typeof callback === 'function') ? callback : () => {};
+	    
+	    super.start();
+
+	  }
+
+	  stop() {
+
+	    super.stop();
+
+	    let i = this.count;
+	    while ( i-- ) this.particles[ i ].reset();
+
+	  }
+
+	  update() {
+
+	    const now = performance.now();
+	    const delta = now - this.time;
+	    this.time = now;
+
+	    this.opacity += ( 1 - this.opacity ) * 0.1;
+
+	    let i = this.count;
+	    while ( i-- ) {
+
+	      if ( this.particles[ i ].update( delta, this.opacity ) ) this.done++;
+
+	    }
+
+	    if ( this.done == this.count) {
+
+	      this.stop();
+
+	      this.callback();
+	      this.callback = ( () => {} );
+
+	    }
+
+	  }
+	  
+	}
+
+	const rnd = THREE.Math.randFloat;
+
+	class Particle {
+
+	  constructor( options ) {
+
+	    this.options = options;
+
+	    this.velocity = new THREE.Vector3();
+	    this.force = new THREE.Vector3();
+
+	    this.mesh = new THREE.Mesh( options.geometry, options.material.clone() );
+
+	    options.holder.add( this.mesh );
+
+	    this.reset();
+
+	    this.ag = options.gravity; // -9.81
+
+	    return this;
+
+	  }
+
+	  reset() {
+
+	    const axis = this.velocity.clone();
+
+	    this.velocity.copy( this.options.angle.direction ).multiplyScalar( rnd( this.options.velocity.min, this.options.velocity.max ) );
+	    this.velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this.options.angle.spread / 2, this.options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+	    this.velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this.options.angle.spread / 2, this.options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+
+	    this.color = new THREE.Color( this.options.colors[ Math.floor( Math.random() * this.options.colors.length ) ] );
+
+	    this.revolution = new THREE.Vector3(
+	      rnd( this.options.revolution.min, this.options.revolution.max ),
+	      rnd( this.options.revolution.min, this.options.revolution.max ),
+	      rnd( this.options.revolution.min, this.options.revolution.max )
+	    );
+
+	    this.mesh.position.set( 0, 0, 0 );
+
+	    this.positionScale = this.options.positionScale;
+	    this.mass = rnd( this.options.mass.min, this.options.mass.max );
+	    this.radius = rnd( this.options.radius.min, this.options.radius.max );
+	    this.scale = this.radius * this.options.geometryScale;
+
+	    this.mesh.scale.set( this.scale, this.scale, this.scale );
+	    this.mesh.material.color.set( this.color );
+	    this.mesh.material.opacity = 0;
+	    this.mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 );
+
+	    this.physics = this.getPhysics( this.radius );
+
+	    this.done = false;
+
+	  }
+
+	  update( delta, opacity, complete ) {
+
+	    if ( this.done ) return false;
+
+	    delta = 16 / 1000;
+
+	    this.force.set(
+	      this.getForce( this.velocity.x ),
+	      this.getForce( this.velocity.y ) + this.ag,
+	      this.getForce( this.velocity.z )
+	    );
+
+	    this.velocity.add( this.force.multiplyScalar( delta ) );
+
+	    this.mesh.position.add( this.velocity.clone().multiplyScalar( delta * this.positionScale ) );
+	    this.mesh.rotateX( this.revolution.x ).rotateY( this.revolution.y ).rotateZ( this.revolution.y );
+	    this.mesh.material.opacity = opacity * this.getProgressInRange( this.mesh.position.y, -4, -2 );
+
+	    if ( this.mesh.position.y < -4 ) { 
+	      
+	      this.done = true;
+	      return true;
+
+	    }
+
+	    return false;
+
+	  }
+
+	  getPhysics( r ) {
+
+	    const Cd = 0.47;
+	    const rho = 1.22;
+	    const A = Math.PI * r * r / 10000;
+
+	    return -0.5 * Cd * rho * A;
+
+	  }
+
+	  getForce( velocity ) {
+
+	    return this.physics * velocity * velocity * Math.sign( velocity ) / this.mass;
+
+	  }
+
+	  getProgressInRange( value, start, end ) {
+
+	    return Math.min( Math.max( (value - start) / (end - start), 0 ), 1 );
+	    
+	  }
+
+	}
+
 	class Scores {
 
 	  constructor( game ) {
@@ -2564,13 +2794,16 @@
 	    this.game = game;
 
 	    this.scores = [];
+	    this.solves = 0;
 	    this.best = 0;
+	    this.worst = 0;
 
 	  }
 
 	  addScore( time ) {
 
 	    this.scores.push( time );
+	    this.solves++;
 
 	    if ( this.scores.lenght > 100 ) this.scores.shift();
 
@@ -2583,9 +2816,49 @@
 
 	    }
 
+	    if ( time > this.worst ) this.worst = time;
+
 	    this.game.storage.saveScores();
 
 	    return bestTime;
+
+	  }
+
+	  calcStats() {
+
+	    this.setStat( 'total-solves', this.solves );
+	    this.setStat( 'best-time', this.convertTime( this.best ) );
+	    this.setStat( 'worst-time', this.convertTime( this.worst ) );
+	    this.setStat( 'average-5', this.getAverage( 5 ) );
+	    this.setStat( 'average-10', this.getAverage( 10 ) );
+	    this.setStat( 'average-15', this.getAverage( 15 ) );
+
+	  }
+
+	  setStat( name, value ) {
+
+	    if ( value === 0 ) return;
+
+	    this.game.dom.stats.querySelector( `.stats[name="${name}"] b` ).innerHTML = value;
+
+	  }
+
+	  getAverage( count ) {
+
+	    if ( this.scores.length < count ) return 0;
+
+	    return this.convertTime( this.scores.slice(-count).reduce( ( a, b ) => a + b, 0 ) / count );
+
+	  }
+
+	  convertTime( time ) {
+
+	    if ( time <= 0 ) return 0;
+
+	    const seconds = parseInt( ( time / 1000 ) % 60 );
+	    const minutes = parseInt( ( time / ( 1000 * 60 ) ) );
+
+	    return minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds;
 
 	  }
 
@@ -2596,6 +2869,26 @@
 	  constructor( game ) {
 
 	    this.game = game;
+
+	    const gameVersion = 2;
+	    const userVersion = parseInt( localStorage.getItem( 'version' ) );
+
+	    if ( ! userVersion || userVersion !== gameVersion ) {
+
+	      this.clearGame();
+	      this.clearScores();
+	      this.clearPreferences();
+	      localStorage.setItem( 'version', gameVersion );
+
+	    }
+
+	  }
+
+	  init() {
+
+	    this.loadGame();
+	    this.loadScores();
+	    this.loadPreferences();
 
 	  }
 
@@ -2674,15 +2967,21 @@
 
 	      const scoresData = JSON.parse( localStorage.getItem( 'scoresData' ) );
 	      const scoresBest = parseInt( localStorage.getItem( 'scoresBest' ) );
+	      const scoresWorst = parseInt( localStorage.getItem( 'scoresWorst' ) );
+	      const scoresSolves = parseInt( localStorage.getItem( 'scoresSolves' ) );
 
-	      if ( ! scoresData || ! scoresBest ) throw new Error();
+	      if ( ! scoresData || ! scoresBest || ! scoresSolves || ! scoresWorst ) throw new Error();
 
 	      this.game.scores.scores = scoresData;
 	      this.game.scores.best = scoresBest;
+	      this.game.scores.solves = scoresSolves;
+	      this.game.scores.worst = scoresWorst;
 
 	      return true;
 
 	    } catch( e ) {
+
+	      this.clearScores();
 
 	      return false;
 
@@ -2694,9 +2993,13 @@
 
 	    const scoresData = this.game.scores.scores;
 	    const scoresBest = this.game.scores.best;
+	    const scoresWorst = this.game.scores.worst;
+	    const scoresSolves = this.game.scores.solves;
 
 	    localStorage.setItem( 'scoresData', JSON.stringify( scoresData ) );
 	    localStorage.setItem( 'scoresBest', JSON.stringify( scoresBest ) );
+	    localStorage.setItem( 'scoresWorst', JSON.stringify( scoresWorst ) );
+	    localStorage.setItem( 'scoresSolves', JSON.stringify( scoresSolves ) );
 
 	  }
 
@@ -2704,6 +3007,8 @@
 
 	    localStorage.removeItem( 'scoresData' );
 	    localStorage.removeItem( 'scoresBest' );
+	    localStorage.removeItem( 'scoresWorst' );
+	    localStorage.removeItem( 'scoresSolves' );
 
 	  }
 
@@ -2727,6 +3032,15 @@
 	      return true;
 
 	    } catch (e) {
+
+	      this.game.controls.flipSpeed = 350;
+	      this.game.controls.flipBounce = 2.5;
+	      this.game.scrambler.scrambleLength = 20;
+
+	      this.game.world.fov = 10;
+	      this.game.world.resize();
+
+	      this.savePreferences();
 
 	      return false;
 
@@ -2895,7 +3209,6 @@
 	      }
 	    };
 
-	    this.storage = new Storage( this );
 	    this.world = new World( this );
 	    this.cube = new Cube( this );
 	    this.controls = new Controls( this );
@@ -2904,24 +3217,20 @@
 	    // this.audio = new Audio( this );
 	    this.timer = new Timer( this );
 	    this.preferences = new Preferences( this );
-	    // this.confetti = new Confetti( this );
+	    this.confetti = new Confetti( this );
 	    this.scores = new Scores( this );
+	    this.storage = new Storage( this );
 
 	    this.initActions();
 
 	    this.state = MENU;
 	    this.saved = false;
 
-	    this.storage.loadGame();
-	    this.storage.loadPreferences();
-	    this.storage.loadScores();
-
-	    this.scrambler.scrambleLength = 1;
-
+	    this.storage.init();
 	    this.preferences.init();
-	    // this.world.enableShadows();
-
 	    this.transition.init();
+
+	    this.scores.calcStats();
 
 	    setTimeout( () => {
 
@@ -2942,88 +3251,115 @@
 	    this.dom.game.onclick = event => {
 
 	      if ( this.transition.activeTransitions > 0 ) return;
+	      if ( this.state === PLAYING ) return;
 
-	      if ( this.state == PLAYING ) return;
+	      if ( this.state === MENU ) {
 
-	      if ( ! tappedTwice ) {
+	        if ( ! tappedTwice ) {
 
-	        tappedTwice = true;
-	        setTimeout( () => tappedTwice = false, 300 );
-	        return false;
+	          tappedTwice = true;
+	          setTimeout( () => tappedTwice = false, 300 );
+	          return false;
 
-	      }
+	        }
 
-	      if ( ! this.saved ) {
+	        if ( ! this.saved ) {
 
-	        this.scrambler.scramble();
-	        this.controls.scrambleCube();
+	          this.scrambler.scramble();
+	          this.controls.scrambleCube();
 
-	      }
+	        }
 
-	      const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
+	        const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
 
-	      this.state = PLAYING;
-	      this.saved = true;
+	        this.state = PLAYING;
+	        this.saved = true;
 
-	      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+	        this.transition.buttons( [], [ 'stats', 'prefs' ] );
 
-	      this.transition.zoom( PLAYING, duration );
-	      this.transition.title( HIDE );
+	        this.transition.zoom( PLAYING, duration );
+	        this.transition.title( HIDE );
 
-	      setTimeout( () => this.transition.timer( SHOW ), this.transition.durations.zoom - 1000 );
-	      setTimeout( () => {
+	        setTimeout( () => {
 
-	        this.controls.enable();
-	        this.timer.start( true );
+	          this.transition.timer( SHOW );
+	          this.transition.buttons( [ 'back' ], [] );
 
-	      }, this.transition.durations.zoom );
+	        }, this.transition.durations.zoom - 1000 );
 
-	    };
+	        setTimeout( () => {
 
-	    this.dom.buttons.back.onclick = event => {
+	          this.controls.enable();
+	          this.timer.start( true );
 
-	      if ( this.transition.activeTransitions > 0 ) return;
+	        }, this.transition.durations.zoom );
 
-	      if ( this.state === PLAYING ) {
+	      } else if ( this.state === COMPLETE ) {
 
-	        this.state = MENU;
+	        this.state = STATS;
+	        this.saved = false;
 
-	        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
-
-	        this.transition.zoom( MENU, 0 );
-
-	        this.controls.disable();
-	        this.timer.stop();
 	        this.transition.timer( HIDE );
+	        this.transition.complete( HIDE, this.bestTime );
+	        this.transition.cube( HIDE );
+	        this.timer.reset();
 
-	        setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
+	        setTimeout( () => {
 
-	        this.playing = false;
-	        this.controls.disable();
+	          this.cube.reset();
 
-	      } else if ( this.state === PREFS ) {
+	          this.transition.stats( SHOW );
+	          this.transition.elevate( 0 );
 
-	        this.state = MENU;
+	        }, 1000 );
 
-	        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
-
-	        this.transition.preferences( HIDE );
-
-	        setTimeout( () => this.transition.cube( SHOW ), 500 );
-	        setTimeout( () => this.transition.title( SHOW ), 1200 );
+	        return false;
 
 	      } else if ( this.state === STATS ) {
 
 	        this.state = MENU;
 
-	        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+	        this.transition.buttons( [ 'stats', 'prefs' ], [] );
 
 	        this.transition.stats( HIDE );
 
 	        setTimeout( () => this.transition.cube( SHOW ), 500 );
 	        setTimeout( () => this.transition.title( SHOW ), 1200 );
 
+	      } else if ( this.state === PREFS ) {
+
+	        this.state = MENU;
+
+	        this.transition.buttons( [ 'stats', 'prefs' ], [] );
+
+	        this.transition.preferences( HIDE );
+
+	        setTimeout( () => this.transition.cube( SHOW ), 500 );
+	        setTimeout( () => this.transition.title( SHOW ), 1200 );
+
 	      }
+
+	    };
+
+	    this.dom.buttons.back.onclick = event => {
+
+	      if ( this.transition.activeTransitions > 0 ) return;
+	      if ( this.state !== PLAYING ) return;
+
+	      this.state = MENU;
+
+	      this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+
+	      this.transition.zoom( MENU, 0 );
+
+	      this.controls.disable();
+	      this.timer.stop();
+	      this.transition.timer( HIDE );
+
+	      setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
+
+	      this.playing = false;
+	      this.controls.disable();
 
 	    };
 
@@ -3033,7 +3369,7 @@
 
 	      this.state = PREFS;
 
-	      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+	      this.transition.buttons( [], [ 'stats', 'prefs' ] );
 
 	      this.transition.title( HIDE );
 	      this.transition.cube( HIDE );
@@ -3048,7 +3384,7 @@
 
 	      this.state = STATS;
 
-	      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+	      this.transition.buttons( [], [ 'stats', 'prefs' ] );
 
 	      this.transition.title( HIDE );
 	      this.transition.cube( HIDE );
@@ -3059,27 +3395,27 @@
 
 	    this.controls.onMove = data => {
 
-	      if ( this.audio.musicOn ) this.audio.click.play();
+	      // if ( this.audio.musicOn ) this.audio.click.play();
 
 	    };
 
 	    this.controls.onSolved = () => {
 
-	      this.transition.buttons( [ 'back', 'stats' ], [ 'back' ] );
+	      this.transition.buttons( [], [ 'back' ] );
 
 	      this.state = COMPLETE;
 	      this.saved = false;
 
-	      this.storage.clearGame();
 	      this.controls.disable();
 	      this.timer.stop();
+	      this.storage.clearGame();
 
-	      const bestTime = this.scores.addScore( this.timer.deltaTime );
+	      this.bestTime = this.scores.addScore( this.timer.deltaTime );
 
 	      this.transition.zoom( MENU, 0 );
 	      this.transition.elevate( SHOW );
 
-	      setTimeout( () => this.transition.complete( SHOW, bestTime ), 500 );
+	      setTimeout( () => this.transition.complete( SHOW, this.bestTime ), 1000 );
 
 	    };
 
@@ -3090,28 +3426,5 @@
 	const game = new Game();
 
 	window.game = game;
-
-
-
-	      // if ( this.state == COMPLETE ) {
-
-	      //   this.state = STATS;
-
-	      //   this.transition.timer( HIDE );
-	      //   this.transition.complete( HIDE, bestTime );
-	      //   this.transition.cube( HIDE );
-	      //   this.timer.reset();
-
-	      //   setTimeout( () => {
-
-	      //     this.transition.stats( SHOW )
-	      //     this.transition.buttons( [ 'back' ], [] );
-	      //     this.transition.elevate( 0 );
-
-	      //   }, 1000 );
-
-	      //   return false;
-
-	      // }
 
 }());

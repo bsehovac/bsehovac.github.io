@@ -203,12 +203,12 @@ class Controls {
 
         this.rotateLayer( delta, false, layer => {
 
-          this.checkIsSolved();
-
           this.game.storage.saveGame();
           
           this.state = this.gettingDrag ? PREPARING : STILL;
           this.gettingDrag = false;
+
+          this.checkIsSolved();
 
         } );
 
@@ -437,6 +437,7 @@ class Controls {
       } else {
 
         this.scramble = null;
+        this.game.storage.saveGame();
 
       }
 

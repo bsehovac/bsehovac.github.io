@@ -197,6 +197,8 @@ class Transition {
 
   stats( show ) {
 
+    if ( show ) this.game.scores.calcStats();
+
     this.activeTransitions++;
 
     this.tweens.stats.forEach( tween => { tween.stop(); tween = null; } );
@@ -216,7 +218,7 @@ class Transition {
         easing: easing,
         onUpdate: tween => {
 
-          const translate = show ? ( 1 - tween.value ) : tween.value;
+          const translate = show ? ( 1 - tween.value ) * 2 : tween.value;
           const opacity = show ? tween.value : ( 1 - tween.value );
 
           stat.style.transform = `translate3d(0, ${translate}em, 0)`;
