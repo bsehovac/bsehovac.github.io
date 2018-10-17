@@ -10,15 +10,23 @@ class Preferences {
 
   init() {
 
+    const getProgressInRange = ( value, start, end ) => {
+
+      return Math.min( Math.max( (value - start) / (end - start), 0 ), 1 );
+      
+    }
+
     this.ranges = {
 
       speed: new Range( 'speed', {
         value: this.game.controls.flipSpeed,
-        range: [ 300, 100 ],
+        range: [ 350, 100 ],
         onUpdate: value => {
 
           this.game.controls.flipSpeed = value;
-          this.game.controls.flipBounce = ( ( value - 100 ) / 200 ) * 2;
+          this.game.controls.flipBounce = getProgressInRange( value, 100, 350 ) * 2.5;
+
+          console.log( this.game.controls.flipSpeed, this.game.controls.flipBounce )
 
         },
         onComplete: () => this.game.storage.savePreferences(),

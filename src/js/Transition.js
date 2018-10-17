@@ -197,6 +197,8 @@ class Transition {
 
   stats( show ) {
 
+    if ( show ) this.game.scores.calcStats();
+
     this.activeTransitions++;
 
     this.tweens.stats.forEach( tween => { tween.stop(); tween = null; } );
@@ -216,7 +218,7 @@ class Transition {
         easing: easing,
         onUpdate: tween => {
 
-          const translate = show ? ( 1 - tween.value ) : tween.value;
+          const translate = show ? ( 1 - tween.value ) * 2 : tween.value;
           const opacity = show ? tween.value : ( 1 - tween.value );
 
           stat.style.transform = `translate3d(0, ${translate}em, 0)`;
@@ -375,13 +377,6 @@ class Transition {
 
     this.activeTransitions++;
 
-    if ( ! show ) {
-
-      this.game.controls.disabled = true;
-      this.game.timer.stop();
-
-    }
-
     const timer = this.game.dom.texts.timer;
 
     timer.style.opacity = 0;
@@ -393,13 +388,6 @@ class Transition {
     this.flipLetters( 'timer', letters, show );
 
     timer.style.opacity = 1;
-
-    if ( show ) setTimeout( () => {
-
-      this.game.controls.enable();
-      this.game.timer.start( true );
-
-    }, 1000 );
 
     setTimeout( () => this.activeTransitions--, this.durations.timer );
 

@@ -4,6 +4,26 @@ class Storage {
 
     this.game = game;
 
+    const gameVersion = 2;
+    const userVersion = parseInt( localStorage.getItem( 'version' ) );
+
+    if ( ! userVersion || userVersion !== gameVersion ) {
+
+      this.clearGame();
+      this.clearScores();
+      this.clearPreferences();
+      localStorage.setItem( 'version', gameVersion );
+
+    }
+
+  }
+
+  init() {
+
+    this.loadGame();
+    this.loadScores();
+    this.loadPreferences();
+
   }
 
   // GAME
@@ -80,14 +100,22 @@ class Storage {
     try {
 
       const scoresData = JSON.parse( localStorage.getItem( 'scoresData' ) );
+      const scoresBest = parseInt( localStorage.getItem( 'scoresBest' ) );
+      const scoresWorst = parseInt( localStorage.getItem( 'scoresWorst' ) );
+      const scoresSolves = parseInt( localStorage.getItem( 'scoresSolves' ) );
 
-      if ( ! scoresData ) throw new Error();
+      if ( ! scoresData || ! scoresBest || ! scoresSolves || ! scoresWorst ) throw new Error();
 
       this.game.scores.scores = scoresData;
+      this.game.scores.best = scoresBest;
+      this.game.scores.solves = scoresSolves;
+      this.game.scores.worst = scoresWorst;
 
       return true;
 
     } catch( e ) {
+
+      this.clearScores();
 
       return false;
 
@@ -98,14 +126,23 @@ class Storage {
   saveScores() {
 
     const scoresData = this.game.scores.scores;
+    const scoresBest = this.game.scores.best;
+    const scoresWorst = this.game.scores.worst;
+    const scoresSolves = this.game.scores.solves;
 
     localStorage.setItem( 'scoresData', JSON.stringify( scoresData ) );
+    localStorage.setItem( 'scoresBest', JSON.stringify( scoresBest ) );
+    localStorage.setItem( 'scoresWorst', JSON.stringify( scoresWorst ) );
+    localStorage.setItem( 'scoresSolves', JSON.stringify( scoresSolves ) );
 
   }
 
   clearScores() {
 
     localStorage.removeItem( 'scoresData' );
+    localStorage.removeItem( 'scoresBest' );
+    localStorage.removeItem( 'scoresWorst' );
+    localStorage.removeItem( 'scoresSolves' );
 
   }
 
@@ -129,6 +166,15 @@ class Storage {
       return true;
 
     } catch (e) {
+
+      this.game.controls.flipSpeed = 350;
+      this.game.controls.flipBounce = 2.5;
+      this.game.scrambler.scrambleLength = 20;
+
+      this.game.world.fov = 10;
+      this.game.world.resize();
+
+      this.savePreferences();
 
       return false;
 

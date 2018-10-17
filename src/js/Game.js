@@ -14,8 +14,9 @@ import { Icons } from './Icons.js';
 
 const MENU = 0;
 const PLAYING = 1;
-const STATS = 2;
-const PREFS = 3;
+const COMPLETE = 2;
+const STATS = 3;
+const PREFS = 4;
 
 const SHOW = true;
 const HIDE = false;
@@ -44,7 +45,6 @@ class Game {
       }
     };
 
-    this.storage = new Storage( this );
     this.world = new World( this );
     this.cube = new Cube( this );
     this.controls = new Controls( this );
@@ -55,22 +55,18 @@ class Game {
     this.preferences = new Preferences( this );
     this.confetti = new Confetti( this );
     this.scores = new Scores( this );
+    this.storage = new Storage( this );
 
     this.initActions();
 
     this.state = MENU;
     this.saved = false;
 
-    this.storage.loadGame();
-    this.storage.loadPreferences();
-    this.storage.loadScores();
-
-    this.scrambler.scrambleLength = 1;
-
+    this.storage.init();
     this.preferences.init();
-    // this.world.enableShadows();
-
     this.transition.init();
+
+    this.scores.calcStats();
 
     setTimeout( () => {
 
@@ -91,79 +87,115 @@ class Game {
     this.dom.game.onclick = event => {
 
       if ( this.transition.activeTransitions > 0 ) return;
-      if ( this.state == PLAYING ) return;
+      if ( this.state === PLAYING ) return;
 
-      if ( ! tappedTwice ) {
+      if ( this.state === MENU ) {
 
-        tappedTwice = true;
-        setTimeout( () => tappedTwice = false, 300 );
-        return false;
+        if ( ! tappedTwice ) {
 
-      }
+          tappedTwice = true;
+          setTimeout( () => tappedTwice = false, 300 );
+          return false;
 
-      if ( ! this.saved ) {
+        }
 
-        this.scrambler.scramble();
-        this.controls.scrambleCube();
+        if ( ! this.saved ) {
 
-      }
+          this.scrambler.scramble();
+          this.controls.scrambleCube();
 
-      const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
+        }
 
-      this.state = PLAYING;
-      this.saved = true;
+        const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
 
-      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+        this.state = PLAYING;
+        this.saved = true;
 
-      this.transition.zoom( PLAYING, duration );
-      this.transition.title( HIDE );
+        this.transition.buttons( [], [ 'stats', 'prefs' ] );
 
-      setTimeout( () => this.transition.timer( SHOW ), this.transition.durations.zoom - 1000 );
-      setTimeout( () => this.controls.enable(), this.transition.durations.zoom );
+        this.transition.zoom( PLAYING, duration );
+        this.transition.title( HIDE );
 
-    };
+        setTimeout( () => {
 
-    this.dom.buttons.back.onclick = event => {
+          this.transition.timer( SHOW );
+          this.transition.buttons( [ 'back' ], [] );
 
-      if ( this.transition.activeTransitions > 0 ) return;
+        }, this.transition.durations.zoom - 1000 );
 
-      if ( this.state === PLAYING ) {
+        setTimeout( () => {
 
-        this.state = MENU;
+          this.controls.enable();
+          this.timer.start( true )
 
-        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+        }, this.transition.durations.zoom );
 
-        this.transition.zoom( MENU, 0 );
+      } else if ( this.state === COMPLETE ) {
+
+        this.state = STATS;
+        this.saved = false;
 
         this.transition.timer( HIDE );
-        setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
+        this.transition.complete( HIDE, this.bestTime );
+        this.transition.cube( HIDE );
+        this.timer.reset();
 
-        this.playing = false;
-        this.controls.disable();
+        setTimeout( () => {
 
-      } else if ( this.state === PREFS ) {
+          this.cube.reset()
 
-        this.state = MENU;
+          this.transition.stats( SHOW )
+          this.transition.elevate( 0 );
 
-        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+        }, 1000 );
 
-        this.transition.preferences( HIDE );
-
-        setTimeout( () => this.transition.cube( SHOW ), 500 );
-        setTimeout( () => this.transition.title( SHOW ), 1200 );
+        return false;
 
       } else if ( this.state === STATS ) {
 
         this.state = MENU;
 
-        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+        this.transition.buttons( [ 'stats', 'prefs' ], [] );
 
         this.transition.stats( HIDE );
 
         setTimeout( () => this.transition.cube( SHOW ), 500 );
         setTimeout( () => this.transition.title( SHOW ), 1200 );
 
+      } else if ( this.state === PREFS ) {
+
+        this.state = MENU;
+
+        this.transition.buttons( [ 'stats', 'prefs' ], [] );
+
+        this.transition.preferences( HIDE );
+
+        setTimeout( () => this.transition.cube( SHOW ), 500 );
+        setTimeout( () => this.transition.title( SHOW ), 1200 );
+
       }
+
+    };
+
+    this.dom.buttons.back.onclick = event => {
+
+      if ( this.transition.activeTransitions > 0 ) return;
+      if ( this.state !== PLAYING ) return;
+
+      this.state = MENU;
+
+      this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+
+      this.transition.zoom( MENU, 0 );
+
+      this.controls.disable();
+      this.timer.stop();
+      this.transition.timer( HIDE );
+
+      setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
+
+      this.playing = false;
+      this.controls.disable();
 
     };
 
@@ -173,7 +205,7 @@ class Game {
 
       this.state = PREFS;
 
-      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+      this.transition.buttons( [], [ 'stats', 'prefs' ] );
 
       this.transition.title( HIDE );
       this.transition.cube( HIDE );
@@ -188,7 +220,7 @@ class Game {
 
       this.state = STATS;
 
-      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+      this.transition.buttons( [], [ 'stats', 'prefs' ] );
 
       this.transition.title( HIDE );
       this.transition.cube( HIDE );
@@ -199,7 +231,7 @@ class Game {
 
     this.controls.onMove = data => {
 
-      if ( this.audio.musicOn ) this.audio.click.play();
+      // if ( this.audio.musicOn ) this.audio.click.play();
 
     }
 
@@ -207,61 +239,19 @@ class Game {
 
       this.transition.buttons( [], [ 'back' ] );
 
-      this.state = STATS;
+      this.state = COMPLETE;
       this.saved = false;
+
+      this.controls.disable();
+      this.timer.stop();
       this.storage.clearGame();
 
-      this.controls.disable = true;
-
-      this.timer.stop();
-      this.scores.addScore( this.timer.deltaTime );
-
-      const bestTime = false;
+      this.bestTime = this.scores.addScore( this.timer.deltaTime );
 
       this.transition.zoom( MENU, 0 );
       this.transition.elevate( SHOW );
 
-      setTimeout( () => this.transition.complete( SHOW, bestTime ), 500 );
-      setTimeout( () => this.confetti.start( () => {
-
-        /*
-        ████████ ██ ███    ███ ███████ ██████  
-           ██    ██ ████  ████ ██      ██   ██ 
-           ██    ██ ██ ████ ██ █████   ██████  
-           ██    ██ ██  ██  ██ ██      ██   ██ 
-           ██    ██ ██      ██ ███████ ██   ██         
-        */
-
-        /*
-        ███    ██  ██████  ████████ 
-        ████   ██ ██    ██    ██    
-        ██ ██  ██ ██    ██    ██    
-        ██  ██ ██ ██    ██    ██    
-        ██   ████  ██████     ██            
-        */
-
-        /*
-        ███████ ████████  ██████  ██████  ██████  ██ ███    ██  ██████  
-        ██         ██    ██    ██ ██   ██ ██   ██ ██ ████   ██ ██       
-        ███████    ██    ██    ██ ██████  ██████  ██ ██ ██  ██ ██   ███ 
-             ██    ██    ██    ██ ██      ██      ██ ██  ██ ██ ██    ██ 
-        ███████    ██     ██████  ██      ██      ██ ██   ████  ██████          
-        */
-
-        this.transition.timer( HIDE );
-        this.transition.complete( HIDE, bestTime );
-        this.transition.cube( HIDE );
-        this.timer.reset();
-
-        setTimeout( () => {
-
-          this.transition.stats( SHOW )
-          this.transition.buttons( [ 'back' ], [] );
-          this.transition.elevate( 0 );
-
-        }, 1000 );
-
-      } ), 1500 );
+      setTimeout( () => this.transition.complete( SHOW, this.bestTime ), 1000 );
 
     };
 
@@ -272,3 +262,5 @@ class Game {
 const game = new Game();
 
 window.game = game;
+
+

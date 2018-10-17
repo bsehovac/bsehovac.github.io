@@ -41,6 +41,23 @@ class Cube {
 
 	}
 
+	reset() {
+
+		this.game.controls.edges.rotation.set( 0, 0, 0 );
+
+		this.holder.rotation.set( 0, 0, 0 );
+		this.object.rotation.set( 0, 0, 0 );
+		this.animator.rotation.set( 0, 0, 0 );
+
+		this.pieces.forEach( piece => {
+
+			piece.position.copy( piece.userData.start.position );
+			piece.rotation.copy( piece.userData.start.rotation );
+
+		} );
+
+	}
+
 	generatePositions( size ) {
 
 		let x, y, z;

@@ -729,6 +729,10 @@
 
 			piece.userData.edges = edges;
 			piece.userData.cube = pieceCube;
+			piece.userData.start = {
+				position: piece.position.clone(),
+				rotation: piece.rotation.clone(),
+			};
 
 			pieces.push( piece );
 
@@ -823,6 +827,23 @@
 			} );
 
 			this.game.world.scene.add( this.holder );
+
+		}
+
+		reset() {
+
+			this.game.controls.edges.rotation.set( 0, 0, 0 );
+
+			this.holder.rotation.set( 0, 0, 0 );
+			this.object.rotation.set( 0, 0, 0 );
+			this.animator.rotation.set( 0, 0, 0 );
+
+			this.pieces.forEach( piece => {
+
+				piece.position.copy( piece.userData.start.position );
+				piece.rotation.copy( piece.userData.start.rotation );
+
+			} );
 
 		}
 
@@ -1432,12 +1453,12 @@
 
 	        this.rotateLayer( delta, false, layer => {
 
-	          this.checkIsSolved();
-
 	          this.game.storage.saveGame();
 	          
 	          this.state = this.gettingDrag ? PREPARING : STILL;
 	          this.gettingDrag = false;
+
+	          this.checkIsSolved();
 
 	        } );
 
@@ -1666,6 +1687,7 @@
 	      } else {
 
 	        this.scramble = null;
+	        this.game.storage.saveGame();
 
 	      }
 
@@ -2028,6 +2050,8 @@
 
 	  stats( show ) {
 
+	    if ( show ) this.game.scores.calcStats();
+
 	    this.activeTransitions++;
 
 	    this.tweens.stats.forEach( tween => { tween.stop(); tween = null; } );
@@ -2047,7 +2071,7 @@
 	        easing: easing,
 	        onUpdate: tween => {
 
-	          const translate = show ? ( 1 - tween.value ) : tween.value;
+	          const translate = show ? ( 1 - tween.value ) * 2 : tween.value;
 	          const opacity = show ? tween.value : ( 1 - tween.value );
 
 	          stat.style.transform = `translate3d(0, ${translate}em, 0)`;
@@ -2206,13 +2230,6 @@
 
 	    this.activeTransitions++;
 
-	    if ( ! show ) {
-
-	      this.game.controls.disabled = true;
-	      this.game.timer.stop();
-
-	    }
-
 	    const timer = this.game.dom.texts.timer;
 
 	    timer.style.opacity = 0;
@@ -2224,13 +2241,6 @@
 	    this.flipLetters( 'timer', letters, show );
 
 	    timer.style.opacity = 1;
-
-	    if ( show ) setTimeout( () => {
-
-	      this.game.controls.enable();
-	      this.game.timer.start( true );
-
-	    }, 1000 );
 
 	    setTimeout( () => this.activeTransitions--, this.durations.timer );
 
@@ -2519,15 +2529,23 @@
 
 	  init() {
 
+	    const getProgressInRange = ( value, start, end ) => {
+
+	      return Math.min( Math.max( (value - start) / (end - start), 0 ), 1 );
+	      
+	    };
+
 	    this.ranges = {
 
 	      speed: new Range( 'speed', {
 	        value: this.game.controls.flipSpeed,
-	        range: [ 300, 100 ],
+	        range: [ 350, 100 ],
 	        onUpdate: value => {
 
 	          this.game.controls.flipSpeed = value;
-	          this.game.controls.flipBounce = ( ( value - 100 ) / 200 ) * 2;
+	          this.game.controls.flipBounce = getProgressInRange( value, 100, 350 ) * 2.5;
+
+	          console.log( this.game.controls.flipSpeed, this.game.controls.flipBounce );
 
 	        },
 	        onComplete: () => this.game.storage.savePreferences(),
@@ -2776,16 +2794,71 @@
 	    this.game = game;
 
 	    this.scores = [];
+	    this.solves = 0;
+	    this.best = 0;
+	    this.worst = 0;
 
 	  }
 
 	  addScore( time ) {
 
 	    this.scores.push( time );
+	    this.solves++;
 
 	    if ( this.scores.lenght > 100 ) this.scores.shift();
 
+	    let bestTime = false;    
+
+	    if ( time < this.best || this.best === 0 ) {
+
+	      this.best = time;
+	      bestTime = true;
+
+	    }
+
+	    if ( time > this.worst ) this.worst = time;
+
 	    this.game.storage.saveScores();
+
+	    return bestTime;
+
+	  }
+
+	  calcStats() {
+
+	    this.setStat( 'total-solves', this.solves );
+	    this.setStat( 'best-time', this.convertTime( this.best ) );
+	    this.setStat( 'worst-time', this.convertTime( this.worst ) );
+	    this.setStat( 'average-5', this.getAverage( 5 ) );
+	    this.setStat( 'average-10', this.getAverage( 10 ) );
+	    this.setStat( 'average-15', this.getAverage( 15 ) );
+
+	  }
+
+	  setStat( name, value ) {
+
+	    if ( value === 0 ) return;
+
+	    this.game.dom.stats.querySelector( `.stats[name="${name}"] b` ).innerHTML = value;
+
+	  }
+
+	  getAverage( count ) {
+
+	    if ( this.scores.length < count ) return 0;
+
+	    return this.convertTime( this.scores.slice(-count).reduce( ( a, b ) => a + b, 0 ) / count );
+
+	  }
+
+	  convertTime( time ) {
+
+	    if ( time <= 0 ) return 0;
+
+	    const seconds = parseInt( ( time / 1000 ) % 60 );
+	    const minutes = parseInt( ( time / ( 1000 * 60 ) ) );
+
+	    return minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds;
 
 	  }
 
@@ -2796,6 +2869,26 @@
 	  constructor( game ) {
 
 	    this.game = game;
+
+	    const gameVersion = 2;
+	    const userVersion = parseInt( localStorage.getItem( 'version' ) );
+
+	    if ( ! userVersion || userVersion !== gameVersion ) {
+
+	      this.clearGame();
+	      this.clearScores();
+	      this.clearPreferences();
+	      localStorage.setItem( 'version', gameVersion );
+
+	    }
+
+	  }
+
+	  init() {
+
+	    this.loadGame();
+	    this.loadScores();
+	    this.loadPreferences();
 
 	  }
 
@@ -2873,14 +2966,22 @@
 	    try {
 
 	      const scoresData = JSON.parse( localStorage.getItem( 'scoresData' ) );
+	      const scoresBest = parseInt( localStorage.getItem( 'scoresBest' ) );
+	      const scoresWorst = parseInt( localStorage.getItem( 'scoresWorst' ) );
+	      const scoresSolves = parseInt( localStorage.getItem( 'scoresSolves' ) );
 
-	      if ( ! scoresData ) throw new Error();
+	      if ( ! scoresData || ! scoresBest || ! scoresSolves || ! scoresWorst ) throw new Error();
 
 	      this.game.scores.scores = scoresData;
+	      this.game.scores.best = scoresBest;
+	      this.game.scores.solves = scoresSolves;
+	      this.game.scores.worst = scoresWorst;
 
 	      return true;
 
 	    } catch( e ) {
+
+	      this.clearScores();
 
 	      return false;
 
@@ -2891,14 +2992,23 @@
 	  saveScores() {
 
 	    const scoresData = this.game.scores.scores;
+	    const scoresBest = this.game.scores.best;
+	    const scoresWorst = this.game.scores.worst;
+	    const scoresSolves = this.game.scores.solves;
 
 	    localStorage.setItem( 'scoresData', JSON.stringify( scoresData ) );
+	    localStorage.setItem( 'scoresBest', JSON.stringify( scoresBest ) );
+	    localStorage.setItem( 'scoresWorst', JSON.stringify( scoresWorst ) );
+	    localStorage.setItem( 'scoresSolves', JSON.stringify( scoresSolves ) );
 
 	  }
 
 	  clearScores() {
 
 	    localStorage.removeItem( 'scoresData' );
+	    localStorage.removeItem( 'scoresBest' );
+	    localStorage.removeItem( 'scoresWorst' );
+	    localStorage.removeItem( 'scoresSolves' );
 
 	  }
 
@@ -2922,6 +3032,15 @@
 	      return true;
 
 	    } catch (e) {
+
+	      this.game.controls.flipSpeed = 350;
+	      this.game.controls.flipBounce = 2.5;
+	      this.game.scrambler.scrambleLength = 20;
+
+	      this.game.world.fov = 10;
+	      this.game.world.resize();
+
+	      this.savePreferences();
 
 	      return false;
 
@@ -3059,8 +3178,9 @@
 
 	const MENU = 0;
 	const PLAYING = 1;
-	const STATS = 2;
-	const PREFS = 3;
+	const COMPLETE = 2;
+	const STATS = 3;
+	const PREFS = 4;
 
 	const SHOW = true;
 	const HIDE = false;
@@ -3089,7 +3209,6 @@
 	      }
 	    };
 
-	    this.storage = new Storage( this );
 	    this.world = new World( this );
 	    this.cube = new Cube( this );
 	    this.controls = new Controls( this );
@@ -3100,22 +3219,18 @@
 	    this.preferences = new Preferences( this );
 	    this.confetti = new Confetti( this );
 	    this.scores = new Scores( this );
+	    this.storage = new Storage( this );
 
 	    this.initActions();
 
 	    this.state = MENU;
 	    this.saved = false;
 
-	    this.storage.loadGame();
-	    this.storage.loadPreferences();
-	    this.storage.loadScores();
-
-	    this.scrambler.scrambleLength = 1;
-
+	    this.storage.init();
 	    this.preferences.init();
-	    // this.world.enableShadows();
-
 	    this.transition.init();
+
+	    this.scores.calcStats();
 
 	    setTimeout( () => {
 
@@ -3136,79 +3251,115 @@
 	    this.dom.game.onclick = event => {
 
 	      if ( this.transition.activeTransitions > 0 ) return;
-	      if ( this.state == PLAYING ) return;
+	      if ( this.state === PLAYING ) return;
 
-	      if ( ! tappedTwice ) {
+	      if ( this.state === MENU ) {
 
-	        tappedTwice = true;
-	        setTimeout( () => tappedTwice = false, 300 );
-	        return false;
+	        if ( ! tappedTwice ) {
 
-	      }
+	          tappedTwice = true;
+	          setTimeout( () => tappedTwice = false, 300 );
+	          return false;
 
-	      if ( ! this.saved ) {
+	        }
 
-	        this.scrambler.scramble();
-	        this.controls.scrambleCube();
+	        if ( ! this.saved ) {
 
-	      }
+	          this.scrambler.scramble();
+	          this.controls.scrambleCube();
 
-	      const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
+	        }
 
-	      this.state = PLAYING;
-	      this.saved = true;
+	        const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
 
-	      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+	        this.state = PLAYING;
+	        this.saved = true;
 
-	      this.transition.zoom( PLAYING, duration );
-	      this.transition.title( HIDE );
+	        this.transition.buttons( [], [ 'stats', 'prefs' ] );
 
-	      setTimeout( () => this.transition.timer( SHOW ), this.transition.durations.zoom - 1000 );
-	      setTimeout( () => this.controls.enable(), this.transition.durations.zoom );
+	        this.transition.zoom( PLAYING, duration );
+	        this.transition.title( HIDE );
 
-	    };
+	        setTimeout( () => {
 
-	    this.dom.buttons.back.onclick = event => {
+	          this.transition.timer( SHOW );
+	          this.transition.buttons( [ 'back' ], [] );
 
-	      if ( this.transition.activeTransitions > 0 ) return;
+	        }, this.transition.durations.zoom - 1000 );
 
-	      if ( this.state === PLAYING ) {
+	        setTimeout( () => {
 
-	        this.state = MENU;
+	          this.controls.enable();
+	          this.timer.start( true );
 
-	        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+	        }, this.transition.durations.zoom );
 
-	        this.transition.zoom( MENU, 0 );
+	      } else if ( this.state === COMPLETE ) {
+
+	        this.state = STATS;
+	        this.saved = false;
 
 	        this.transition.timer( HIDE );
-	        setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
+	        this.transition.complete( HIDE, this.bestTime );
+	        this.transition.cube( HIDE );
+	        this.timer.reset();
 
-	        this.playing = false;
-	        this.controls.disable();
+	        setTimeout( () => {
 
-	      } else if ( this.state === PREFS ) {
+	          this.cube.reset();
 
-	        this.state = MENU;
+	          this.transition.stats( SHOW );
+	          this.transition.elevate( 0 );
 
-	        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+	        }, 1000 );
 
-	        this.transition.preferences( HIDE );
-
-	        setTimeout( () => this.transition.cube( SHOW ), 500 );
-	        setTimeout( () => this.transition.title( SHOW ), 1200 );
+	        return false;
 
 	      } else if ( this.state === STATS ) {
 
 	        this.state = MENU;
 
-	        this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+	        this.transition.buttons( [ 'stats', 'prefs' ], [] );
 
 	        this.transition.stats( HIDE );
 
 	        setTimeout( () => this.transition.cube( SHOW ), 500 );
 	        setTimeout( () => this.transition.title( SHOW ), 1200 );
 
+	      } else if ( this.state === PREFS ) {
+
+	        this.state = MENU;
+
+	        this.transition.buttons( [ 'stats', 'prefs' ], [] );
+
+	        this.transition.preferences( HIDE );
+
+	        setTimeout( () => this.transition.cube( SHOW ), 500 );
+	        setTimeout( () => this.transition.title( SHOW ), 1200 );
+
 	      }
+
+	    };
+
+	    this.dom.buttons.back.onclick = event => {
+
+	      if ( this.transition.activeTransitions > 0 ) return;
+	      if ( this.state !== PLAYING ) return;
+
+	      this.state = MENU;
+
+	      this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+
+	      this.transition.zoom( MENU, 0 );
+
+	      this.controls.disable();
+	      this.timer.stop();
+	      this.transition.timer( HIDE );
+
+	      setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
+
+	      this.playing = false;
+	      this.controls.disable();
 
 	    };
 
@@ -3218,7 +3369,7 @@
 
 	      this.state = PREFS;
 
-	      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+	      this.transition.buttons( [], [ 'stats', 'prefs' ] );
 
 	      this.transition.title( HIDE );
 	      this.transition.cube( HIDE );
@@ -3233,7 +3384,7 @@
 
 	      this.state = STATS;
 
-	      this.transition.buttons( [ 'back' ], [ 'stats', 'prefs' ] );
+	      this.transition.buttons( [], [ 'stats', 'prefs' ] );
 
 	      this.transition.title( HIDE );
 	      this.transition.cube( HIDE );
@@ -3244,7 +3395,7 @@
 
 	    this.controls.onMove = data => {
 
-	      if ( this.audio.musicOn ) this.audio.click.play();
+	      // if ( this.audio.musicOn ) this.audio.click.play();
 
 	    };
 
@@ -3252,61 +3403,19 @@
 
 	      this.transition.buttons( [], [ 'back' ] );
 
-	      this.state = STATS;
+	      this.state = COMPLETE;
 	      this.saved = false;
+
+	      this.controls.disable();
+	      this.timer.stop();
 	      this.storage.clearGame();
 
-	      this.controls.disable = true;
-
-	      this.timer.stop();
-	      this.scores.addScore( this.timer.deltaTime );
-
-	      const bestTime = false;
+	      this.bestTime = this.scores.addScore( this.timer.deltaTime );
 
 	      this.transition.zoom( MENU, 0 );
 	      this.transition.elevate( SHOW );
 
-	      setTimeout( () => this.transition.complete( SHOW, bestTime ), 500 );
-	      setTimeout( () => this.confetti.start( () => {
-
-	        /*
-	        ████████ ██ ███    ███ ███████ ██████  
-	           ██    ██ ████  ████ ██      ██   ██ 
-	           ██    ██ ██ ████ ██ █████   ██████  
-	           ██    ██ ██  ██  ██ ██      ██   ██ 
-	           ██    ██ ██      ██ ███████ ██   ██         
-	        */
-
-	        /*
-	        ███    ██  ██████  ████████ 
-	        ████   ██ ██    ██    ██    
-	        ██ ██  ██ ██    ██    ██    
-	        ██  ██ ██ ██    ██    ██    
-	        ██   ████  ██████     ██            
-	        */
-
-	        /*
-	        ███████ ████████  ██████  ██████  ██████  ██ ███    ██  ██████  
-	        ██         ██    ██    ██ ██   ██ ██   ██ ██ ████   ██ ██       
-	        ███████    ██    ██    ██ ██████  ██████  ██ ██ ██  ██ ██   ███ 
-	             ██    ██    ██    ██ ██      ██      ██ ██  ██ ██ ██    ██ 
-	        ███████    ██     ██████  ██      ██      ██ ██   ████  ██████          
-	        */
-
-	        this.transition.timer( HIDE );
-	        this.transition.complete( HIDE, bestTime );
-	        this.transition.cube( HIDE );
-	        this.timer.reset();
-
-	        setTimeout( () => {
-
-	          this.transition.stats( SHOW );
-	          this.transition.buttons( [ 'back' ], [] );
-	          this.transition.elevate( 0 );
-
-	        }, 1000 );
-
-	      } ), 1500 );
+	      setTimeout( () => this.transition.complete( SHOW, this.bestTime ), 1000 );
 
 	    };
 
