@@ -4,6 +4,18 @@ class Storage {
 
     this.game = game;
 
+    const gameVersion = 1;
+    const userVersion = parseInt( localStorage.getItem( 'version' ) );
+
+    if ( ! userVersion || userVersion !== gameVersion ) {
+
+      this.clearGame();
+      this.clearScores();
+      this.clearPreferences();
+      localStorage.setItem( 'version', gameVersion );
+
+    }
+
   }
 
   // GAME
