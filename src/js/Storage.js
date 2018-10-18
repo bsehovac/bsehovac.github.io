@@ -4,13 +4,13 @@ class Storage {
 
     this.game = game;
 
-    const gameVersion = 2;
+    const gameVersion = 3;
     const userVersion = parseInt( localStorage.getItem( 'version' ) );
 
     if ( ! userVersion || userVersion !== gameVersion ) {
 
       this.clearGame();
-      this.clearScores();
+      // this.clearScores();
       this.clearPreferences();
       localStorage.setItem( 'version', gameVersion );
 
@@ -163,6 +163,10 @@ class Storage {
       this.game.world.fov = parseFloat( preferences.fov );
       this.game.world.resize();
 
+      this.game.preferences.theme = preferences.theme;
+      this.game.dom.ui.classList.remove( 'ui--light', 'ui--dark' );
+      this.game.dom.ui.classList.add( 'ui--' + preferences.theme );
+
       return true;
 
     } catch (e) {
@@ -171,8 +175,12 @@ class Storage {
       this.game.controls.flipBounce = 1.70158;
       this.game.scrambler.scrambleLength = 20;
 
-      this.game.world.fov = 10;
+      this.game.world.fov = 15;
       this.game.world.resize();
+
+      this.game.preferences.theme = 'light';
+      this.game.dom.ui.classList.remove( 'ui--light', 'ui--dark' );
+      this.game.dom.ui.classList.add( 'ui--light' );
 
       this.savePreferences();
 
@@ -189,7 +197,7 @@ class Storage {
       flipBounce: this.game.controls.flipBounce,
       scrambleLength: this.game.scrambler.scrambleLength,
       fov: this.game.world.fov,
-      theme: null,
+      theme: this.game.preferences.theme,
     };
 
     localStorage.setItem( 'preferences', JSON.stringify( preferences ) );

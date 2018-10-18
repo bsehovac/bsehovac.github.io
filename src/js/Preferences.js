@@ -5,6 +5,7 @@ class Preferences {
   constructor( game ) {
 
     this.game = game;
+    this.theme = 'light';
 
   }
 
@@ -55,11 +56,18 @@ class Preferences {
       } ),
 
       theme: new Range( 'theme', {
-        value: 0,
+        value: this.theme === 'light' ? 0 : 1,
         range: [ 0, 1 ],
         step: 1,
-        onUpdate: value => {},
-        // onComplete: () => this.game.storage.savePreferences()
+        onUpdate: value => {
+
+          this.theme = value === 1 ? 'dark' : 'light';
+
+          this.game.dom.ui.classList.remove( 'ui--light', 'ui--dark' );
+          this.game.dom.ui.classList.add( 'ui--' + this.theme );
+
+        },
+        onComplete: () => this.game.storage.savePreferences()
       } ),
 
     };

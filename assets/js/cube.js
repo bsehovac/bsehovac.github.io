@@ -692,10 +692,10 @@
 
 		const pieces = [];
 
-		const edgeScale = 0.84;
+		const edgeScale = 0.82;
 		const edgeRoundness = 0.15;
-		const pieceRoundness = 0.105;
-		const edgeDepth = 0.014;
+		const pieceRoundness = 0.12;
+		const edgeDepth = 0.01;
 		const pieceSize = 1 / size;
 
 		const pieceMesh = new THREE.Mesh(
@@ -2524,6 +2524,7 @@
 	  constructor( game ) {
 
 	    this.game = game;
+	    this.theme = 'light';
 
 	  }
 
@@ -2574,11 +2575,18 @@
 	      } ),
 
 	      theme: new Range( 'theme', {
-	        value: 0,
+	        value: this.theme === 'light' ? 0 : 1,
 	        range: [ 0, 1 ],
 	        step: 1,
-	        onUpdate: value => {},
-	        // onComplete: () => this.game.storage.savePreferences()
+	        onUpdate: value => {
+
+	          this.theme = value === 1 ? 'dark' : 'light';
+
+	          this.game.dom.ui.classList.remove( 'ui--light', 'ui--dark' );
+	          this.game.dom.ui.classList.add( 'ui--' + this.theme );
+
+	        },
+	        onComplete: () => this.game.storage.savePreferences()
 	      } ),
 
 	    };
@@ -2868,13 +2876,13 @@
 
 	    this.game = game;
 
-	    const gameVersion = 2;
+	    const gameVersion = 3;
 	    const userVersion = parseInt( localStorage.getItem( 'version' ) );
 
 	    if ( ! userVersion || userVersion !== gameVersion ) {
 
 	      this.clearGame();
-	      this.clearScores();
+	      // this.clearScores();
 	      this.clearPreferences();
 	      localStorage.setItem( 'version', gameVersion );
 
@@ -3027,6 +3035,10 @@
 	      this.game.world.fov = parseFloat( preferences.fov );
 	      this.game.world.resize();
 
+	      this.game.preferences.theme = preferences.theme;
+	      this.game.dom.ui.classList.remove( 'ui--light', 'ui--dark' );
+	      this.game.dom.ui.classList.add( 'ui--' + preferences.theme );
+
 	      return true;
 
 	    } catch (e) {
@@ -3035,8 +3047,12 @@
 	      this.game.controls.flipBounce = 1.70158;
 	      this.game.scrambler.scrambleLength = 20;
 
-	      this.game.world.fov = 10;
+	      this.game.world.fov = 15;
 	      this.game.world.resize();
+
+	      this.game.preferences.theme = 'light';
+	      this.game.dom.ui.classList.remove( 'ui--light', 'ui--dark' );
+	      this.game.dom.ui.classList.add( 'ui--light' );
 
 	      this.savePreferences();
 
@@ -3053,7 +3069,7 @@
 	      flipBounce: this.game.controls.flipBounce,
 	      scrambleLength: this.game.scrambler.scrambleLength,
 	      fov: this.game.world.fov,
-	      theme: null,
+	      theme: this.game.preferences.theme,
 	    };
 
 	    localStorage.setItem( 'preferences', JSON.stringify( preferences ) );
@@ -3188,6 +3204,7 @@
 	  constructor() {
 
 	    this.dom = {
+	      ui: document.querySelector( '.ui' ),
 	      game: document.querySelector( '.ui__game' ),
 	      texts: document.querySelector( '.ui__texts' ),
 	      prefs: document.querySelector( '.ui__prefs' ),

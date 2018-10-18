@@ -26,6 +26,7 @@ class Game {
   constructor() {
 
     this.dom = {
+      ui: document.querySelector( '.ui' ),
       game: document.querySelector( '.ui__game' ),
       texts: document.querySelector( '.ui__texts' ),
       prefs: document.querySelector( '.ui__prefs' ),
