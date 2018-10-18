@@ -529,19 +529,19 @@
 			}
 		},
 		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 3965,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "src/js/Storage.js",
 			"settings":
 			{
 				"buffer_size": 4754,
 				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/js/Transition.js",
-			"settings":
-			{
-				"buffer_size": 11590,
 				"line_ending": "Unix"
 			}
 		}
@@ -676,9 +676,7 @@
 	},
 	"expanded_folders":
 	[
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js"
+		"/Library/WebServer/Documents/Localhost/bsehovac.github.io"
 	],
 	"file_history":
 	[
@@ -1145,7 +1143,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -1175,11 +1173,41 @@
 						"translation.y": 1856.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
+					"file": "index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3965,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								985,
+								985
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
 					"file": "src/js/Storage.js",
 					"semi_transient": false,
 					"settings":
@@ -1203,36 +1231,6 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "src/js/Transition.js",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 11590,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1721,
-								1725
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 693.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,

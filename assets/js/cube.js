@@ -2539,13 +2539,11 @@
 
 	      speed: new Range( 'speed', {
 	        value: this.game.controls.flipSpeed,
-	        range: [ 350, 100 ],
+	        range: [ 350, 100 ], 
 	        onUpdate: value => {
 
 	          this.game.controls.flipSpeed = value;
-	          this.game.controls.flipBounce = getProgressInRange( value, 100, 350 ) * 2.5;
-
-	          console.log( this.game.controls.flipSpeed, this.game.controls.flipBounce );
+	          this.game.controls.flipBounce = getProgressInRange( value, 100, 350 ) * 2.125;
 
 	        },
 	        onComplete: () => this.game.storage.savePreferences(),
@@ -3033,8 +3031,8 @@
 
 	    } catch (e) {
 
-	      this.game.controls.flipSpeed = 350;
-	      this.game.controls.flipBounce = 2.5;
+	      this.game.controls.flipSpeed = 300;
+	      this.game.controls.flipBounce = 1.70158;
 	      this.game.scrambler.scrambleLength = 20;
 
 	      this.game.world.fov = 10;
