@@ -6,7 +6,7 @@ import { Transition } from './Transition.js';
 import { Timer } from './Timer.js';
 // import { Audio } from './Audio.js';
 import { Preferences } from './Preferences.js';
-import { Confetti } from './Confetti.js';
+// import { Confetti } from './Confetti.js';
 import { Scores } from './Scores.js';
 import { Storage } from './Storage.js';
 
@@ -54,7 +54,7 @@ class Game {
     // this.audio = new Audio( this );
     this.timer = new Timer( this );
     this.preferences = new Preferences( this );
-    this.confetti = new Confetti( this );
+    // this.confetti = new Confetti( this );
     this.scores = new Scores( this );
     this.storage = new Storage( this );
 
