@@ -37,6 +37,12 @@ class Cube {
 
 		} );
 
+		this.holder.traverse( node => {
+
+			if ( node.frustumCulled ) node.frustumCulled = false;
+
+		} );
+
 		this.game.world.scene.add( this.holder );
 
 	}
