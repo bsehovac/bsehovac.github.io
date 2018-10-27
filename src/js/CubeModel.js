@@ -1,6 +1,6 @@
 import { RoundedBoxGeometry } from './RoundedBox.js';
 
-function CubePieces( size, positions, colors ) {
+function CubeModel( size, positions, colors ) {
 
 	const pieces = [];
 	const edges = [];
@@ -11,13 +11,14 @@ function CubePieces( size, positions, colors ) {
 	const edgeDepth = 0.01;
 	const pieceSize = 1 / size;
 
+	const mainMaterial = new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } );
+
 	const pieceMesh = new THREE.Mesh(
 		new RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
-		new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } )
+		mainMaterial.clone()
 	);
 
 	const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
-	const edgeMaterial = new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } );
 
 	const namesTest = [];
 
@@ -25,7 +26,7 @@ function CubePieces( size, positions, colors ) {
 
 		const piece = new THREE.Object3D();
 		const pieceCube = pieceMesh.clone();
-		const edges = [];
+		const pieceEdges = [];
 		// let edgesNames = '';
 
 		piece.position.copy( position.clone().divideScalar( size ) );
@@ -38,11 +39,12 @@ function CubePieces( size, positions, colors ) {
 			const edge = createEdge( position );
 			edge.userData.name = [ 'L', 'R', 'D', 'U', 'B', 'F' ][ position ];
 			piece.add( edge );
-			edges.push( edge.userData.name );
+			pieceEdges.push( edge.userData.name );
+			edges.push( edge );
 
 		} );
 
-		piece.userData.edges = edges;
+		piece.userData.edges = pieceEdges;
 		piece.userData.cube = pieceCube;
 		piece.userData.start = {
 			position: piece.position.clone(),
@@ -53,14 +55,14 @@ function CubePieces( size, positions, colors ) {
 
 	} );
 
-	return pieces;
+	return { pieces, edges };
 
 	function createEdge( position ) {
 
 		const distance = pieceSize / 2;
 		const edge = new THREE.Mesh(
 		  edgeGeometry,
-		  edgeMaterial.clone()
+		  mainMaterial.clone()
 		);
 
 		edge.position.set(
@@ -104,4 +106,4 @@ function CubePieces( size, positions, colors ) {
 
 }
 
-export { CubePieces };
+export { CubeModel };

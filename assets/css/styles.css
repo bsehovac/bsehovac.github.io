@@ -226,33 +226,3 @@ body {
     z-index: 3; }
   .ui__buttons {
     z-index: 4; }
-
-.ui--dark {
-  background-image: linear-gradient(to bottom, #3b9bf5 0%, #81c4f7 100%);
-  color: #fff; }
-  .ui--dark .btn {
-    color: rgba(255, 247, 255, 0.35); }
-  .ui--dark .stats i {
-    color: rgba(255, 247, 255, 0.6); }
-  .ui--dark .range__track-line {
-    background: rgba(255, 247, 255, 0.3); }
-  .ui--dark .range__handle:before {
-    background: #ffffff;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.3); }
-  .ui--dark .range__list {
-    color: rgba(255, 247, 255, 0.6); }
-
-.ui--light {
-  background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%);
-  color: #070d15; }
-  .ui--light .btn {
-    color: rgba(7, 13, 21, 0.25); }
-  .ui--light .stats i {
-    color: rgba(7, 13, 21, 0.5); }
-  .ui--light .range__track-line {
-    background: rgba(7, 13, 21, 0.2); }
-  .ui--light .range__handle:before {
-    background: #41aac8;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.2); }
-  .ui--light .range__list {
-    color: rgba(7, 13, 21, 0.5); }

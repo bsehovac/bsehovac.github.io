@@ -56,15 +56,12 @@ class Preferences {
       } ),
 
       theme: new Range( 'theme', {
-        value: this.theme === 'light' ? 0 : 1,
+        value: this.theme === 'default' ? 0 : 1,
         range: [ 0, 1 ],
         step: 1,
         onUpdate: value => {
 
-          this.theme = value === 1 ? 'dark' : 'light';
-
-          this.game.dom.ui.classList.remove( 'ui--light', 'ui--dark' );
-          this.game.dom.ui.classList.add( 'ui--' + this.theme );
+          this.theme = value === 0 ? 'default' : 'original';
 
         },
         onComplete: () => this.game.storage.savePreferences()

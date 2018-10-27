@@ -688,9 +688,10 @@
 	RoundedBoxGeometry.prototype = Object.create( THREE.BufferGeometry.prototype );
 	RoundedBoxGeometry.constructor = RoundedBoxGeometry;
 
-	function CubePieces( size, positions, colors ) {
+	function CubeModel( size, positions, colors ) {
 
 		const pieces = [];
+		const edges = [];
 
 		const edgeScale = 0.82;
 		const edgeRoundness = 0.15;
@@ -698,19 +699,20 @@
 		const edgeDepth = 0.01;
 		const pieceSize = 1 / size;
 
+		const mainMaterial = new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } );
+
 		const pieceMesh = new THREE.Mesh(
 			new RoundedBoxGeometry( pieceSize, pieceSize, pieceSize, pieceSize * pieceRoundness, 3 ),
-			new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } )
+			mainMaterial.clone()
 		);
 
 		const edgeGeometry = RoundedPlaneGeometry( - pieceSize / 2, - pieceSize / 2, pieceSize, pieceSize, pieceSize * edgeRoundness, edgeDepth );
-		const edgeMaterial = new THREE.MeshLambertMaterial( { color: colors.piece, side: THREE.FrontSide } );
 
 		positions.forEach( ( position, index ) => {
 
 			const piece = new THREE.Object3D();
 			const pieceCube = pieceMesh.clone();
-			const edges = [];
+			const pieceEdges = [];
 			// let edgesNames = '';
 
 			piece.position.copy( position.clone().divideScalar( size ) );
@@ -723,11 +725,12 @@
 				const edge = createEdge( position );
 				edge.userData.name = [ 'L', 'R', 'D', 'U', 'B', 'F' ][ position ];
 				piece.add( edge );
-				edges.push( edge.userData.name );
+				pieceEdges.push( edge.userData.name );
+				edges.push( edge );
 
 			} );
 
-			piece.userData.edges = edges;
+			piece.userData.edges = pieceEdges;
 			piece.userData.cube = pieceCube;
 			piece.userData.start = {
 				position: piece.position.clone(),
@@ -738,14 +741,14 @@
 
 		} );
 
-		return pieces;
+		return { pieces, edges };
 
 		function createEdge( position ) {
 
 			const distance = pieceSize / 2;
 			const edge = new THREE.Mesh(
 			  edgeGeometry,
-			  edgeMaterial.clone()
+			  mainMaterial.clone()
 			);
 
 			edge.position.set(
@@ -810,19 +813,27 @@
 			this.holder = new THREE.Object3D();
 			this.object = new THREE.Object3D();
 			this.animator = new THREE.Object3D();
-
 			this.holder.add( this.animator );
 			this.animator.add( this.object );
 
 			this.cubes = [];
-
 			this.positions = this.generatePositions( this.size );
-			this.pieces = CubePieces( this.size, this.positions, this.colors );
+
+			const cubeModel = CubeModel( this.size, this.positions, this.colors );
+
+			this.pieces = cubeModel.pieces;
+			this.edges = cubeModel.edges;
 
 			this.pieces.forEach( piece => {
 
 				this.cubes.push( piece.userData.cube );
 				this.object.add( piece );
+
+			} );
+
+			this.holder.traverse( node => {
+
+				if ( node.frustumCulled ) node.frustumCulled = false;
 
 			} );
 
@@ -1269,12 +1280,14 @@
 
 	    this.raycaster = new THREE.Raycaster();
 
+	    const helperMaterial = new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } );
+
 	    this.group = new THREE.Object3D();
 	    this.game.cube.object.add( this.group );
 
 	    this.helper = new THREE.Mesh(
 	      new THREE.PlaneBufferGeometry( 20, 20 ),
-	      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } )
+	      helperMaterial.clone(),
 	    );
 
 	    this.helper.rotation.set( 0, Math.PI / 4, 0 );
@@ -1282,7 +1295,7 @@
 
 	    this.edges = new THREE.Mesh(
 	      new THREE.BoxBufferGeometry( 0.95, 0.95, 0.95 ),
-	      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0xff0033 } )
+	      helperMaterial.clone(),
 	    );
 
 	    this.game.world.scene.add( this.edges );
@@ -2575,219 +2588,18 @@
 	      } ),
 
 	      theme: new Range( 'theme', {
-	        value: this.theme === 'light' ? 0 : 1,
+	        value: this.theme === 'default' ? 0 : 1,
 	        range: [ 0, 1 ],
 	        step: 1,
 	        onUpdate: value => {
 
-	          this.theme = value === 1 ? 'dark' : 'light';
-
-	          this.game.dom.ui.classList.remove( 'ui--light', 'ui--dark' );
-	          this.game.dom.ui.classList.add( 'ui--' + this.theme );
+	          this.theme = value === 0 ? 'default' : 'original';
 
 	        },
 	        onComplete: () => this.game.storage.savePreferences()
 	      } ),
 
 	    };
-	    
-	  }
-
-	}
-
-	class Confetti extends Animation {
-
-	  constructor( game ) {
-
-	    super( false );
-
-	    this.game = game;
-
-	    this.count = 100;
-	    this.particles = [];
-
-	    this.object = new THREE.Object3D();
-	    this.object.position.y = 0.25;
-	    this.game.world.scene.add( this.object );
-
-	    this.geometry = new THREE.PlaneGeometry( 1, 1 );
-	    this.material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
-	    this.opacity = 0;
-	    this.callback = ( () => {} );
-
-	    this.particleOptions = {
-	      geometry: this.geometry,
-	      material: this.material,
-	      holder: this.object,
-	      velocity: { min: 5, max: 20 },
-	      revolution: { min: 0, max: 0.05 },
-	      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 30 },
-	      radius: { min: 10, max: 15 },
-	      mass: { min: 0.05, max: 0.1 },
-	      gravity: -9.81,
-	      geometryScale: 0.01, // used to scale in threejs world
-	      positionScale: 0.3333, // used to scale in threejs world
-	      colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
-	    };
-
-	    let i = this.count;
-	    while ( i-- )  this.particles.push( new Particle( this.particleOptions ) );
-
-	  }
-
-	  start( callback ) {
-
-	    this.opacity = 0;
-	    this.done = 0;
-	    this.time = performance.now();
-	    this.callback = ( typeof callback === 'function') ? callback : () => {};
-	    
-	    super.start();
-
-	  }
-
-	  stop() {
-
-	    super.stop();
-
-	    let i = this.count;
-	    while ( i-- ) this.particles[ i ].reset();
-
-	  }
-
-	  update() {
-
-	    const now = performance.now();
-	    const delta = now - this.time;
-	    this.time = now;
-
-	    this.opacity += ( 1 - this.opacity ) * 0.1;
-
-	    let i = this.count;
-	    while ( i-- ) {
-
-	      if ( this.particles[ i ].update( delta, this.opacity ) ) this.done++;
-
-	    }
-
-	    if ( this.done == this.count) {
-
-	      this.stop();
-
-	      this.callback();
-	      this.callback = ( () => {} );
-
-	    }
-
-	  }
-	  
-	}
-
-	const rnd = THREE.Math.randFloat;
-
-	class Particle {
-
-	  constructor( options ) {
-
-	    this.options = options;
-
-	    this.velocity = new THREE.Vector3();
-	    this.force = new THREE.Vector3();
-
-	    this.mesh = new THREE.Mesh( options.geometry, options.material.clone() );
-
-	    options.holder.add( this.mesh );
-
-	    this.reset();
-
-	    this.ag = options.gravity; // -9.81
-
-	    return this;
-
-	  }
-
-	  reset() {
-
-	    const axis = this.velocity.clone();
-
-	    this.velocity.copy( this.options.angle.direction ).multiplyScalar( rnd( this.options.velocity.min, this.options.velocity.max ) );
-	    this.velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this.options.angle.spread / 2, this.options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
-	    this.velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this.options.angle.spread / 2, this.options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
-
-	    this.color = new THREE.Color( this.options.colors[ Math.floor( Math.random() * this.options.colors.length ) ] );
-
-	    this.revolution = new THREE.Vector3(
-	      rnd( this.options.revolution.min, this.options.revolution.max ),
-	      rnd( this.options.revolution.min, this.options.revolution.max ),
-	      rnd( this.options.revolution.min, this.options.revolution.max )
-	    );
-
-	    this.mesh.position.set( 0, 0, 0 );
-
-	    this.positionScale = this.options.positionScale;
-	    this.mass = rnd( this.options.mass.min, this.options.mass.max );
-	    this.radius = rnd( this.options.radius.min, this.options.radius.max );
-	    this.scale = this.radius * this.options.geometryScale;
-
-	    this.mesh.scale.set( this.scale, this.scale, this.scale );
-	    this.mesh.material.color.set( this.color );
-	    this.mesh.material.opacity = 0;
-	    this.mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 );
-
-	    this.physics = this.getPhysics( this.radius );
-
-	    this.done = false;
-
-	  }
-
-	  update( delta, opacity, complete ) {
-
-	    if ( this.done ) return false;
-
-	    delta = 16 / 1000;
-
-	    this.force.set(
-	      this.getForce( this.velocity.x ),
-	      this.getForce( this.velocity.y ) + this.ag,
-	      this.getForce( this.velocity.z )
-	    );
-
-	    this.velocity.add( this.force.multiplyScalar( delta ) );
-
-	    this.mesh.position.add( this.velocity.clone().multiplyScalar( delta * this.positionScale ) );
-	    this.mesh.rotateX( this.revolution.x ).rotateY( this.revolution.y ).rotateZ( this.revolution.y );
-	    this.mesh.material.opacity = opacity * this.getProgressInRange( this.mesh.position.y, -4, -2 );
-
-	    if ( this.mesh.position.y < -4 ) { 
-	      
-	      this.done = true;
-	      return true;
-
-	    }
-
-	    return false;
-
-	  }
-
-	  getPhysics( r ) {
-
-	    const Cd = 0.47;
-	    const rho = 1.22;
-	    const A = Math.PI * r * r / 10000;
-
-	    return -0.5 * Cd * rho * A;
-
-	  }
-
-	  getForce( velocity ) {
-
-	    return this.physics * velocity * velocity * Math.sign( velocity ) / this.mass;
-
-	  }
-
-	  getProgressInRange( value, start, end ) {
-
-	    return Math.min( Math.max( (value - start) / (end - start), 0 ), 1 );
 	    
 	  }
 
@@ -3036,8 +2848,7 @@
 	      this.game.world.resize();
 
 	      this.game.preferences.theme = preferences.theme;
-	      this.game.dom.ui.classList.remove( 'ui--light', 'ui--dark' );
-	      this.game.dom.ui.classList.add( 'ui--' + preferences.theme );
+	      this.updateTheme();
 
 	      return true;
 
@@ -3050,9 +2861,8 @@
 	      this.game.world.fov = 15;
 	      this.game.world.resize();
 
-	      this.game.preferences.theme = 'light';
-	      this.game.dom.ui.classList.remove( 'ui--light', 'ui--dark' );
-	      this.game.dom.ui.classList.add( 'ui--light' );
+	      this.game.preferences.theme = 'default';
+	      this.updateTheme();
 
 	      this.savePreferences();
 
@@ -3072,6 +2882,8 @@
 	      theme: this.game.preferences.theme,
 	    };
 
+	    this.updateTheme();
+
 	    localStorage.setItem( 'preferences', JSON.stringify( preferences ) );
 
 	  }
@@ -3079,6 +2891,49 @@
 	  clearPreferences() {
 
 	    localStorage.removeItem( 'preferences' );
+
+	  }
+
+	  updateTheme() {
+
+	    const colorSchemes = {
+	      default: {
+	        U: 0xfff7ff, // white
+	        D: 0xffef48, // yellow
+	        F: 0xef3923, // red
+	        R: 0x41aac8, // blue
+	        B: 0xff8c0a, // orange
+	        L: 0x82ca38, // green
+	        P: 0x08101a, // piece - black
+	      },
+	      original: {
+	        U: 0xffffff, // white
+	        D: 0xffd500, // yellow
+	        F: 0xc41e3a, // red
+	        R: 0x0051ba, // blue
+	        B: 0xff5800, // orange
+	        L: 0x009e60, // green
+	        P: 0x111111, // piece - black
+	      },
+	    };
+
+	    const theme = colorSchemes[ this.game.preferences.theme ];
+
+	    console.log( theme );
+
+	    this.game.cube.pieces.forEach( piece => {
+
+	      piece.userData.cube.material.color.setHex( theme.P );
+
+	    } );
+
+	    this.game.cube.edges.forEach( edge => {
+
+	      edge.material.color.setHex( theme[ edge.userData.name ] );
+
+	      //0x125896 );
+
+	    } );
 
 	  }
 
@@ -3232,7 +3087,7 @@
 	    // this.audio = new Audio( this );
 	    this.timer = new Timer( this );
 	    this.preferences = new Preferences( this );
-	    this.confetti = new Confetti( this );
+	    // this.confetti = new Confetti( this );
 	    this.scores = new Scores( this );
 	    this.storage = new Storage( this );
 

@@ -1,4 +1,4 @@
-import { CubePieces } from './CubePieces.js';
+import { CubeModel } from './CubeModel.js';
 
 class Cube {
 
@@ -21,14 +21,16 @@ class Cube {
 		this.holder = new THREE.Object3D();
 		this.object = new THREE.Object3D();
 		this.animator = new THREE.Object3D();
-
 		this.holder.add( this.animator );
 		this.animator.add( this.object );
 
 		this.cubes = [];
-
 		this.positions = this.generatePositions( this.size );
-		this.pieces = CubePieces( this.size, this.positions, this.colors );
+
+		const cubeModel = CubeModel( this.size, this.positions, this.colors );
+
+		this.pieces = cubeModel.pieces;
+		this.edges = cubeModel.edges;
 
 		this.pieces.forEach( piece => {
 

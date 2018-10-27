@@ -19,12 +19,14 @@ class Controls {
 
     this.raycaster = new THREE.Raycaster();
 
+    const helperMaterial = new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } );
+
     this.group = new THREE.Object3D();
     this.game.cube.object.add( this.group );
 
     this.helper = new THREE.Mesh(
       new THREE.PlaneBufferGeometry( 20, 20 ),
-      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } )
+      helperMaterial.clone(),
     );
 
     this.helper.rotation.set( 0, Math.PI / 4, 0 );
@@ -32,7 +34,7 @@ class Controls {
 
     this.edges = new THREE.Mesh(
       new THREE.BoxBufferGeometry( 0.95, 0.95, 0.95 ),
-      new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0xff0033 } )
+      helperMaterial.clone(),
     );
 
     this.game.world.scene.add( this.edges );
