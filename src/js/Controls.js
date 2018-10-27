@@ -48,6 +48,7 @@ class Controls {
     this.state = STILL;
 
     this.initDraggable();
+    this.generateSolvedStates();
 
   }
 
@@ -304,42 +305,6 @@ class Controls {
 
   }
 
-  checkIsSolved() {
-
-    let solved = true;
-    const layers = { R: [], L: [], U: [], D: [], F: [], B: [] };
-
-    this.game.cube.pieces.forEach( ( piece, index ) => {
-
-      const position = this.getPiecePosition( piece );
-
-      if ( position.x == -1 ) layers.L.push( piece );
-      else if ( position.x == 1 ) layers.R.push( piece );
-
-      if ( position.y == -1 ) layers.D.push( piece );
-      else if ( position.y == 1 ) layers.U.push( piece );
-
-      if ( position.z == -1 ) layers.B.push( piece );
-      else if ( position.z == 1 ) layers.F.push( piece );
-
-    } );
-
-    Object.keys( layers ).forEach( key => {
-
-      const edges = layers[ key ].map( piece => piece.userData.edges );
-
-      if ( edges.shift().filter( v => {
-
-        return edges.every( a => { return a.indexOf( v ) !== -1 } )
-
-      } ).length < 1 ) solved = false;
-
-    } );
-
-    if ( solved ) this.onSolved();
-
-  }
-
   selectLayer( layer ) {
 
     this.group.rotation.set( 0, 0, 0 );
@@ -405,7 +370,7 @@ class Controls {
 
     let position = new THREE.Vector3()
       .setFromMatrixPosition( piece.matrixWorld )
-      .multiplyScalar( this.game.cube.size );
+      .multiplyScalar( 3 );
 
     return this.game.cube.object.worldToLocal( position.sub( this.game.cube.animator.position ) ).round();
 
@@ -527,6 +492,58 @@ class Controls {
       this.roundAngle( angle.y ),
       this.roundAngle( angle.z )
     );
+
+  }
+
+  checkIsSolved() {
+
+    return this.solvedStates.indexOf( this.getPiecesPositions() ) > -1;
+
+  }
+
+  generateSolvedStates() {
+
+    const solvedStates = [];
+    const rotations = [];
+
+    for ( let x = 0; x < 4; x++ )
+      for ( let y = 0; y < 4; y++ )
+        for ( let z = 0; z < 4; z++ )
+          rotations.push( [ x, y, z ] );
+
+    rotations.forEach( rotation => {
+
+      this.game.cube.object.rotation.set(
+        rotation[0] * Math.PI / 2,
+        rotation[1] * Math.PI / 2,
+        rotation[2] * Math.PI / 2
+      );
+
+      this.game.cube.object.updateMatrixWorld();
+
+      solvedStates.push( this.getPiecesPositions() );
+
+    } );
+
+    this.solvedStates = Array.from( new Set( solvedStates ) );
+
+    this.game.cube.object.rotation.set( 0, 0, 0 );
+    this.game.cube.object.updateMatrixWorld();
+
+  }
+
+  getPiecesPositions() {
+
+    const positions = [];
+
+    this.game.cube.pieces.forEach( piece => positions.push(
+      this.game.cube.object
+        .localToWorld( piece.position.clone() )
+        .multiplyScalar( 3 ).round()
+        .toArray().toString()
+    ) );
+
+    return positions.toString();
 
   }
 
