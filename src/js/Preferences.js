@@ -61,7 +61,8 @@ class Preferences {
         step: 1,
         onUpdate: value => {
 
-          this.theme = value === 0 ? 'default' : 'original';
+          const theme = value === 0 ? 'default' : 'original';
+          this.game.cube.setTheme( theme );
 
         },
         onComplete: () => this.game.storage.savePreferences()

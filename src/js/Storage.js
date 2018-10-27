@@ -163,8 +163,7 @@ class Storage {
       this.game.world.fov = parseFloat( preferences.fov );
       this.game.world.resize();
 
-      this.game.preferences.theme = preferences.theme;
-      this.updateTheme();
+      this.game.cube.setTheme( preferences.theme );
 
       return true;
 
@@ -177,8 +176,7 @@ class Storage {
       this.game.world.fov = 15;
       this.game.world.resize();
 
-      this.game.preferences.theme = 'default';
-      this.updateTheme();
+      this.game.cube.setTheme( 'default' );
 
       this.savePreferences();
 
@@ -195,10 +193,8 @@ class Storage {
       flipBounce: this.game.controls.flipBounce,
       scrambleLength: this.game.scrambler.scrambleLength,
       fov: this.game.world.fov,
-      theme: this.game.preferences.theme,
+      theme: this.game.cube.theme,
     };
-
-    this.updateTheme();
 
     localStorage.setItem( 'preferences', JSON.stringify( preferences ) );
 
@@ -207,47 +203,6 @@ class Storage {
   clearPreferences() {
 
     localStorage.removeItem( 'preferences' );
-
-  }
-
-  updateTheme() {
-
-    const colorSchemes = {
-      default: {
-        U: 0xfff7ff, // white
-        D: 0xffef48, // yellow
-        F: 0xef3923, // red
-        R: 0x41aac8, // blue
-        B: 0xff8c0a, // orange
-        L: 0x82ca38, // green
-        P: 0x08101a, // piece - black
-      },
-      original: {
-        U: 0xffffff, // white
-        D: 0xffd500, // yellow
-        F: 0xc41e3a, // red
-        R: 0x0051ba, // blue
-        B: 0xff5800, // orange
-        L: 0x009e60, // green
-        P: 0x111111, // piece - black
-      },
-    };
-
-    const theme = colorSchemes[ this.game.preferences.theme ];
-
-    this.game.cube.pieces.forEach( piece => {
-
-      piece.userData.cube.material.color.setHex( theme.P );
-
-    } );
-
-    this.game.cube.edges.forEach( edge => {
-
-      edge.material.color.setHex( theme[ edge.userData.name ] );
-
-      //0x125896 );
-
-    } );
 
   }
 

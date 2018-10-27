@@ -1,4 +1,4 @@
-function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
+function RoundedBoxGeometry( size, radius, radiusSegments ) {
 
   THREE.BufferGeometry.call( this );
 
@@ -6,11 +6,11 @@ function RoundedBoxGeometry( width, height, depth, radius, radiusSegments ) {
 
   radiusSegments = ! isNaN( radiusSegments ) ? Math.max( 1, Math.floor( radiusSegments ) ) : 1;
 
-  width = ! isNaN( width ) ? width : 1;
-  height = ! isNaN( height ) ? height : 1;
-  depth = ! isNaN( depth ) ? depth : 1;
+  var width, height, depth;
 
-  radius = ! isNaN( radius ) ? radius : .15;
+  width = height = depth = size;
+  radius = size * radius;
+
   radius = Math.min( radius, Math.min( width, Math.min( height, Math.min( depth ) ) ) / 2 );
 
   var edgeHalfWidth = width / 2 - radius;

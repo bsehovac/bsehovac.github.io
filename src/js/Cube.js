@@ -1,4 +1,5 @@
-import { CubeModel } from './CubeModel.js';
+import { RoundedBoxGeometry } from './plugins/RoundedBoxGeometry.js';
+import { RoundedPlaneGeometry } from './plugins/RoundedPlaneGeometry.js';
 
 class Cube {
 
@@ -6,16 +7,35 @@ class Cube {
 
 		this.game = game;
 
-		this.size = 3;
+		this.theme = 'default';
 
 		this.colors = {
-			right: 0x41aac8,
-			left: 0x82ca38,
-			top: 0xfff7ff,
-			bottom: 0xffef48,
-			front: 0xef3923,
-			back: 0xff8c0a,
-			piece: 0x08101a,
+			default: {
+        U: 0xfff7ff, // white
+        D: 0xffef48, // yellow
+        F: 0xef3923, // red
+        R: 0x41aac8, // blue
+        B: 0xff8c0a, // orange
+        L: 0x82ca38, // green
+        P: 0x08101a, // piece - black
+      },
+      original: {
+        U: 0xffffff, // white
+        D: 0xffd500, // yellow
+        F: 0xc41e3a, // red
+        R: 0x0051ba, // blue
+        B: 0xff5800, // orange
+        L: 0x009e60, // green
+        P: 0x111111, // piece - black
+      },
+		};
+
+		this.geometry = {
+			pieceSize: 1 / 3,
+			pieceCornerRadius: 0.12,
+			edgeCornerRoundness: 0.15,
+			edgeScale: 0.82,
+			edgeDepth: 0.01,
 		};
 
 		this.holder = new THREE.Object3D();
@@ -25,12 +45,9 @@ class Cube {
 		this.animator.add( this.object );
 
 		this.cubes = [];
-		this.positions = this.generatePositions( this.size );
-
-		const cubeModel = CubeModel( this.size, this.positions, this.colors );
-
-		this.pieces = cubeModel.pieces;
-		this.edges = cubeModel.edges;
+		
+		this.generatePositions();
+		this.generateModel();
 
 		this.pieces.forEach( piece => {
 
@@ -66,33 +83,31 @@ class Cube {
 
 	}
 
-	generatePositions( size ) {
+	generatePositions() {
 
 		let x, y, z;
-		const start = -( size - 1 ) / 2;
-		const positions = [];
 
-		for ( x = 0; x < size; x ++ ) {
+		this.positions = [];
 
-			for ( y = 0; y < size; y ++ ) {
+		for ( x = 0; x < 3; x ++ ) {
 
-		  	for ( z = 0; z < size; z ++ ) {
+			for ( y = 0; y < 3; y ++ ) {
 
-		  		let position = new THREE.Vector3( start + x, start + y, start + z );
+		  	for ( z = 0; z < 3; z ++ ) {
+
+		  		let position = new THREE.Vector3( x - 1, y - 1, z - 1 );
 		  		let edges = [];
 
 		  		if ( x == 0 ) edges.push(0);
-		  		if ( x == size - 1 ) edges.push(1);
-
+		  		if ( x == 2 ) edges.push(1);
 		  		if ( y == 0 ) edges.push(2);
-		  		if ( y == size - 1 ) edges.push(3);
-
+		  		if ( y == 2 ) edges.push(3);
 		  		if ( z == 0 ) edges.push(4);
-		  		if ( z == size - 1 ) edges.push(5);
+		  		if ( z == 2 ) edges.push(5);
 
 		  		position.edges = edges;
 
-		  		positions.push( position );
+		  		this.positions.push( position );
 
 		  	}
 
@@ -100,7 +115,103 @@ class Cube {
 
 		}
 
-		return positions;
+	}
+
+	generateModel() {
+
+		this.pieces = [];
+		this.edges = [];
+
+		const pieceSize = 1 / 3;
+
+		const mainMaterial = new THREE.MeshLambertMaterial( {
+			color: this.colors.default.P
+		} );
+
+		const pieceMesh = new THREE.Mesh(
+			new RoundedBoxGeometry( pieceSize, this.geometry.pieceCornerRadius, 3 ),
+			mainMaterial.clone()
+		);
+
+		const edgeGeometry = RoundedPlaneGeometry(
+			pieceSize,
+			this.geometry.edgeCornerRoundness,
+			this.geometry.edgeDepth );
+
+		this.positions.forEach( ( position, index ) => {
+
+			const piece = new THREE.Object3D();
+			const pieceCube = pieceMesh.clone();
+			const pieceEdges = [];
+
+			piece.position.copy( position.clone().divideScalar( 3 ) );
+			piece.add( pieceCube );
+			piece.name = index;
+			piece.edgesName = '';
+
+			position.edges.forEach( position => {
+
+				const edge = new THREE.Mesh( edgeGeometry, mainMaterial.clone() );
+				const name = [ 'L', 'R', 'D', 'U', 'B', 'F' ][ position ];
+				const distance = pieceSize / 2;
+
+				edge.position.set(
+				  distance * [ - 1, 1, 0, 0, 0, 0 ][ position ],
+				  distance * [ 0, 0, - 1, 1, 0, 0 ][ position ],
+				  distance * [ 0, 0, 0, 0, - 1, 1 ][ position ]
+				);
+
+				edge.rotation.set(
+				  Math.PI / 2 * [ 0, 0, 1, - 1, 0, 0 ][ position ],
+				  Math.PI / 2 * [ - 1, 1, 0, 0, 2, 0 ][ position ],
+			  	0
+				);
+
+				edge.scale.set(
+					this.geometry.edgeScale,
+					this.geometry.edgeScale,
+					this.geometry.edgeScale
+				);
+
+				edge.userData.name = name;
+
+				piece.add( edge );
+				pieceEdges.push( name );
+				this.edges.push( edge );
+
+			} );
+
+			piece.userData.edges = pieceEdges;
+			piece.userData.cube = pieceCube;
+
+			piece.userData.start = {
+				position: piece.position.clone(),
+				rotation: piece.rotation.clone(),
+			};
+
+			this.pieces.push( piece );
+
+		} );
+
+	}
+
+	setTheme( theme ) {
+
+		this.theme = theme;
+
+		const colors = this.colors[ this.theme ];
+
+    this.pieces.forEach( piece => {
+
+      piece.userData.cube.material.color.setHex( colors.P );
+
+    } );
+
+    this.edges.forEach( edge => {
+
+      edge.material.color.setHex( colors[ edge.userData.name ] );
+
+    } );
 
 	}
 
