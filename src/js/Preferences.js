@@ -5,7 +5,7 @@ class Preferences {
   constructor( game ) {
 
     this.game = game;
-    this.theme = 'light';
+    this.theme = 'modern';
 
   }
 
