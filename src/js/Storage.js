@@ -235,8 +235,6 @@ class Storage {
 
     const theme = colorSchemes[ this.game.preferences.theme ];
 
-    console.log( theme )
-
     this.game.cube.pieces.forEach( piece => {
 
       piece.userData.cube.material.color.setHex( theme.P );

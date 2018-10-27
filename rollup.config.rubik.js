@@ -1,12 +1,12 @@
-//import minify from 'rollup-plugin-babel-minify';
+import minify from 'rollup-plugin-babel-minify';
 
 export default {
   input: './src/js/Game.js',
   plugins: [
-    // minify({
-    //   comments: false,
-    //   sourceMap: false,
-    // }),
+    minify({
+      comments: false,
+      sourceMap: false,
+    }),
   ],
   output: {
       format: 'iife',
