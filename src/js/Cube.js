@@ -28,6 +28,15 @@ class Cube {
         L: 0x009e60, // green
         P: 0x111111, // piece - black
       },
+      apple: {
+      	U: 0xffffff, // white
+        D: 0xffe900, // yellow
+        F: 0xe23838, // red
+        R: 0x009cdf, // blue
+        B: 0xf78200, // orange
+        L: 0x5ebd3e, // green
+        P: 0x111111, // piece - black
+      },
 		};
 
 		this.geometry = {

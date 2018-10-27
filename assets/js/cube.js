@@ -1,1 +1,3404 @@
-(function(){'use strict';function e(e,t,a,o,s){function r(){for(var e=Math.cos,t=[new THREE.Vector3(1,1,1),new THREE.Vector3(1,1,-1),new THREE.Vector3(-1,1,-1),new THREE.Vector3(-1,1,1),new THREE.Vector3(1,-1,1),new THREE.Vector3(1,-1,-1),new THREE.Vector3(-1,-1,-1),new THREE.Vector3(-1,-1,1)],a=0;8>a;a++)S.push([]),D.push([]);for(var r=i/2,l=new THREE.Vector3(f,b,w),c=0;c<=s;c++){var d=c/s,m=d*r,p=e(m),g=n(m);if(c==s){A.set(0,1,0);var h=A.clone().multiplyScalar(o).add(l);S[0].push(h),E.push(h);var v=A.clone();D[0].push(v),M.push(v);continue}for(var T=0;T<=s;T++){var L=T/s,u=L*r;A.x=p*e(u),A.y=g,A.z=p*n(u);var h=A.clone().multiplyScalar(o).add(l);S[0].push(h),E.push(h);var v=A.clone().normalize();D[0].push(v),M.push(v)}}for(var I=1;8>I;I++)for(var h,a=0;a<S[0].length;a++){h=S[0][a].clone().multiply(t[I]),S[I].push(h),E.push(h);var v=D[0][a].clone().multiply(t[I]);D[I].push(v),M.push(v)}}function u(){for(var e,t=[!0,!1,!0,!1,!1,!0,!1,!0],o=y*(s-1),r=0;8>r;r++){e=P*r;for(var n=0;n<s-1;n++)for(var l=n*y,m=(n+1)*y,p=0;p<s;p++){var g=p+1,h=e+l+p,f=e+l+g,w=e+m+p,x=e+m+g;t[r]?(I.push(h),I.push(w),I.push(f),I.push(f),I.push(w),I.push(x)):(I.push(h),I.push(f),I.push(w),I.push(f),I.push(x),I.push(w))}for(var p=0;p<s;p++){var h=e+o+p,f=e+o+p+1,w=e+C;t[r]?(I.push(h),I.push(w),I.push(f)):(I.push(h),I.push(f),I.push(w))}}}function m(){var e=C,t=C+P,o=C+2*P,r=C+3*P;I.push(e),I.push(t),I.push(o),I.push(e),I.push(o),I.push(r),e=C+4*P,t=C+5*P,o=C+6*P,r=C+7*P,I.push(e),I.push(o),I.push(t),I.push(e),I.push(r),I.push(o),e=0,t=P,o=4*P,r=5*P,I.push(e),I.push(o),I.push(t),I.push(t),I.push(o),I.push(r),e=2*P,t=3*P,o=6*P,r=7*P,I.push(e),I.push(o),I.push(t),I.push(t),I.push(o),I.push(r),e=s,t=s+3*P,o=s+4*P,r=s+7*P,I.push(e),I.push(t),I.push(o),I.push(t),I.push(r),I.push(o),e=s+P,t=s+2*P,o=s+5*P,r=s+6*P,I.push(e),I.push(o),I.push(t),I.push(t),I.push(o),I.push(r)}function p(){for(var e=0;4>e;e++)for(var t=e*P,o=4*P+t,r=!0&e,n=0;n<s;n++){var l=n+1,m=t+n,a=t+l,p=o+n,c=o+l;r?(I.push(m),I.push(p),I.push(a),I.push(a),I.push(p),I.push(c)):(I.push(m),I.push(a),I.push(p),I.push(a),I.push(c),I.push(p))}}function g(){for(var e=[0,2,4,6],t=[1,3,5,7],o=0;4>o;o++)for(var r=P*e[o],n=P*t[o],l=1>=o,m=0;m<s;m++){var p=m*y,g=(m+1)*y,h=r+p,a=r+g,v=n+p,c=n+g;l?(I.push(h),I.push(v),I.push(a),I.push(a),I.push(v),I.push(c)):(I.push(h),I.push(a),I.push(v),I.push(a),I.push(c),I.push(v))}}function h(){for(var e=s-1,t=[0,1,4,5],o=[3,2,7,6],r=[0,1,1,0],n=0;4>n;n++)for(var l=t[n]*P,m=o[n]*P,p=0;p<=e;p++){var g=l+s+p*y,a=l+(p==e?P-1:s+(p+1)*y),h=m+s+p*y,c=m+(p==e?P-1:s+(p+1)*y);r[n]?(I.push(g),I.push(h),I.push(a),I.push(a),I.push(h),I.push(c)):(I.push(g),I.push(a),I.push(h),I.push(a),I.push(c),I.push(h))}}THREE.BufferGeometry.call(this),this.type='RoundedBoxGeometry',s=isNaN(s)?1:c(1,d(s)),e=isNaN(e)?1:e,t=isNaN(t)?1:t,a=isNaN(a)?1:a,o=isNaN(o)?.15:o,o=l(o,l(e,l(t,l(a)))/2);var f=e/2-o,b=t/2-o,w=a/2-o;this.parameters={width:e,height:t,depth:a,radius:o,radiusSegments:s};var y=s+1,v=y*s+1<<3,x=new THREE.BufferAttribute(new Float32Array(3*v),3),T=new THREE.BufferAttribute(new Float32Array(3*v),3),S=[],D=[],L=new THREE.Vector3,A=new THREE.Vector3,E=[],M=[],I=[],C=y*s,P=y*s+1;r(),m(),u(),p(),h(),g();for(var z=0,k=0;k<E.length;k++)x.setXYZ(z,E[k].x,E[k].y,E[k].z),T.setXYZ(z,M[k].x,M[k].y,M[k].z),z++;this.setIndex(new THREE.BufferAttribute(new Uint16Array(I),1)),this.addAttribute('position',x),this.addAttribute('normal',T)}function t(t,a,o){function s(e){const t=c/2,a=new THREE.Mesh(m,d.clone());return a.position.set(t*[-1,1,0,0,0,0][e],t*[0,0,-1,1,0,0][e],t*[0,0,0,0,-1,1][e]),a.rotation.set(i/2*[0,0,1,-1,0,0][e],i/2*[-1,1,0,0,2,0][e],0),a.material.color.setHex(o[['left','right','bottom','top','back','front'][e]]),a.scale.set(l,l,l),a}const r=[],n=[],l=.82,c=1/t,d=new THREE.MeshLambertMaterial({color:o.piece,side:THREE.FrontSide}),u=new THREE.Mesh(new e(c,c,c,c*.12,3),d.clone()),m=function(e,t,a,o,s,r){const n=new THREE.Shape;n.moveTo(e,t+s),n.lineTo(e,t+o-s),n.quadraticCurveTo(e,t+o,e+s,t+o),n.lineTo(e+a-s,t+o),n.quadraticCurveTo(e+a,t+o,e+a,t+o-s),n.lineTo(e+a,t+s),n.quadraticCurveTo(e+a,t,e+a-s,t),n.lineTo(e+s,t),n.quadraticCurveTo(e,t,e,t+s);const i=new THREE.ExtrudeBufferGeometry(n,{depth:r,bevelEnabled:!1,curveSegments:3});return i}(-c/2,-c/2,c,c,c*.15,.01);return a.forEach((e,a)=>{const o=new THREE.Object3D,i=u.clone(),l=[];o.position.copy(e.clone().divideScalar(t)),o.add(i),o.name=a,o.edgesName='',e.edges.forEach(e=>{const t=s(e);t.userData.name=['L','R','D','U','B','F'][e],o.add(t),l.push(t.userData.name),n.push(t)}),o.userData.edges=l,o.userData.cube=i,o.userData.start={position:o.position.clone(),rotation:o.rotation.clone()},r.push(o)}),{pieces:r,edges:n}}var a=Math.sign,o=Math.abs,s=Math.pow,r=Math.round,n=Math.sin,i=Math.PI,l=Math.min,c=Math.max,d=Math.floor;const u=(()=>{let e=0;return new class{constructor(){this.ids=[],this.animations={},this.update=this.update.bind(this),this.raf=0,this.time=0}update(){const e=performance.now(),t=e-this.time;this.time=e;let a=this.ids.length;for(this.raf=a?requestAnimationFrame(this.update):0;a--;)this.animations[this.ids[a]]&&this.animations[this.ids[a]].update(t)}add(t){t.id=e++,this.ids.push(t.id),this.animations[t.id]=t;0!==this.raf||(this.time=performance.now(),this.raf=requestAnimationFrame(this.update))}remove(e){const t=this.ids.indexOf(e.id);0>t||(this.ids.splice(t,1),delete this.animations[e.id],e=null)}}})();class m{constructor(e){!0===e&&this.start()}start(){u.add(this)}stop(){u.remove(this)}update(){}}class p extends m{constructor(e){super(!0),this.game=e,this.container=this.game.dom.game,this.scene=new THREE.Scene,this.renderer=new THREE.WebGLRenderer({antialias:!0,alpha:!0}),this.renderer.setPixelRatio(window.devicePixelRatio),this.container.appendChild(this.renderer.domElement),this.camera=new THREE.PerspectiveCamera(2,1,.1,1e4),this.stage={width:2,height:3},this.fov=10,this.createLights(),this.resize(),window.addEventListener('resize',()=>this.resize(),!1)}update(){this.renderer.render(this.scene,this.camera)}resize(){var e=Math.tan;this.width=this.container.offsetWidth,this.height=this.container.offsetHeight,this.renderer.setSize(this.width,this.height),this.camera.fov=this.fov,this.camera.aspect=this.width/this.height;const t=this.stage.width/this.stage.height,a=this.fov*THREE.Math.DEG2RAD;let o=t<this.camera.aspect?this.stage.height/2/e(a/2):this.stage.width/this.camera.aspect/(2*e(a/2));o*=.5,this.camera.position.set(o,o,o),this.camera.lookAt(this.scene.position),this.camera.updateProjectionMatrix();const s=t<this.camera.aspect?this.height/100*t:this.width/100;document.documentElement.style.fontSize=s+'px'}createLights(){this.lights={holder:new THREE.Object3D,ambient:new THREE.AmbientLight(16777215,.69),front:new THREE.DirectionalLight(16777215,.36),back:new THREE.DirectionalLight(16777215,.19)},this.lights.front.position.set(1.5,5,3),this.lights.back.position.set(-1.5,-5,-3),this.lights.holder.add(this.lights.ambient),this.lights.holder.add(this.lights.front),this.lights.holder.add(this.lights.back),this.scene.add(this.lights.holder)}enableShadows(){this.renderer.shadowMap.enabled=!0,this.renderer.shadowMap.type=THREE.PCFSoftShadowMap,this.lights.front.castShadow=!0,this.lights.front.shadow.mapSize.width=512,this.lights.front.shadow.mapSize.height=512;var e=1.5;this.lights.front.shadow.camera.left=-e,this.lights.front.shadow.camera.right=e,this.lights.front.shadow.camera.top=e,this.lights.front.shadow.camera.bottom=-e,this.lights.front.shadow.camera.near=1,this.lights.front.shadow.camera.far=9,this.game.cube.holder.traverse(e=>{e instanceof THREE.Mesh&&(e.castShadow=!0,e.receiveShadow=!0)})}}e.prototype=Object.create(THREE.BufferGeometry.prototype),e.constructor=e;class g{constructor(e){this.game=e,this.size=3,this.colors={right:4303560,left:8571448,top:16775167,bottom:16772936,front:15677731,back:16747530,piece:528410},this.holder=new THREE.Object3D,this.object=new THREE.Object3D,this.animator=new THREE.Object3D,this.holder.add(this.animator),this.animator.add(this.object),this.cubes=[],this.positions=this.generatePositions(this.size);const a=t(this.size,this.positions,this.colors);this.pieces=a.pieces,this.edges=a.edges,this.pieces.forEach(e=>{this.cubes.push(e.userData.cube),this.object.add(e)}),this.holder.traverse(e=>{e.frustumCulled&&(e.frustumCulled=!1)}),this.game.world.scene.add(this.holder)}reset(){this.game.controls.edges.rotation.set(0,0,0),this.holder.rotation.set(0,0,0),this.object.rotation.set(0,0,0),this.animator.rotation.set(0,0,0),this.pieces.forEach(e=>{e.position.copy(e.userData.start.position),e.rotation.copy(e.userData.start.rotation)})}generatePositions(e){let t,a,o;const s=-(e-1)/2,r=[];for(t=0;t<e;t++)for(a=0;a<e;a++)for(o=0;o<e;o++){let n=new THREE.Vector3(s+t,s+a,s+o),i=[];0==t&&i.push(0),t==e-1&&i.push(1),0==a&&i.push(2),a==e-1&&i.push(3),0==o&&i.push(4),o==e-1&&i.push(5),n.edges=i,r.push(n)}return r}}const h={Power:{In:e=>(e=r(e||1),a=>s(a,e)),Out:e=>(e=r(e||1),a=>1-o(s(a-1,e))),InOut:e=>(e=r(e||1),a=>.5>a?s(2*a,e)/2:(1-o(s(2*a-1-1,e)))/2+.5)},Sine:{In:()=>e=>1+n(i/2*e-i/2),Out:()=>e=>n(i/2*e),InOut:()=>e=>(1+n(i*e-i/2))/2},Back:{Out:e=>(e=e||1.70158,a=>(a-=1)*a*((e+1)*a+e)+1),In:e=>(e=e||1.70158,a=>a*a*((e+1)*a-e))},Elastic:{Out:(e,t)=>{let a=2*i,o=1<=e?e:1,r=(t||.3)/(1>e?e:1),l=r/a*(Math.asin(1/o)||0);return r=a/r,e=>o*s(2,-10*e)*n((e-l)*r)+1}}};class v extends m{constructor(e){super(!1),this.duration=e.duration||500,this.easing=e.easing||(e=>e),this.onUpdate=e.onUpdate||(()=>{}),this.onComplete=e.onComplete||(()=>{}),this.delay=e.delay||!1,this.yoyo=!e.yoyo&&null,this.progress=0,this.value=0,this.delta=0,this.getFromTo(e),this.delay?setTimeout(()=>super.start(),this.delay):super.start(),this.onUpdate(this)}update(e){const t=1*this.value,a=!0===this.yoyo?-1:1;this.progress+=e/this.duration*a,this.value=this.easing(this.progress),this.delta=this.value-t,null!==this.values&&this.updateFromTo(),null===this.yoyo?1>=this.progress?this.onUpdate(this):(this.progress=1,this.value=1,this.onUpdate(this),this.onComplete(this),super.stop()):this.updateYoyo()}updateYoyo(){(1<this.progress||0>this.progress)&&(this.value=this.progress=1<this.progress?1:0,this.yoyo=!this.yoyo),this.onUpdate(this)}updateFromTo(){this.values.forEach(e=>{this.target[e]=this.from[e]+(this.to[e]-this.from[e])*this.value})}getFromTo(e){return e.target&&e.to?void(this.target=e.target||null,this.from=e.from||{},this.to=e.to||null,this.values=[],1>Object.keys(this.from).length&&Object.keys(this.to).forEach(e=>{this.from[e]=this.target[e]}),Object.keys(this.to).forEach(e=>{this.values.push(e)})):void(this.values=null)}}window.addEventListener('touchmove',()=>{}),document.addEventListener('touchmove',e=>{e.preventDefault()},{passive:!1});class f{constructor(e,t){return this.position={current:new THREE.Vector2,start:new THREE.Vector2,delta:new THREE.Vector2,old:new THREE.Vector2,drag:new THREE.Vector2},this.options=Object.assign({calcDelta:!1},t||{}),this.element=e,this.touch=null,this.drag={start:e=>{'mousedown'==e.type&&1!=e.which||'touchstart'==e.type&&1<e.touches.length||(this.getPositionCurrent(e),this.options.calcDelta&&(this.position.start=this.position.current.clone(),this.position.delta.set(0,0),this.position.drag.set(0,0)),this.touch='touchstart'==e.type,this.onDragStart(this.position),window.addEventListener(this.touch?'touchmove':'mousemove',this.drag.move,!1),window.addEventListener(this.touch?'touchend':'mouseup',this.drag.end,!1))},move:e=>{this.options.calcDelta&&(this.position.old=this.position.current.clone()),this.getPositionCurrent(e),this.options.calcDelta&&(this.position.delta=this.position.current.clone().sub(this.position.old),this.position.drag=this.position.current.clone().sub(this.position.start)),this.onDragMove(this.position)},end:e=>{this.getPositionCurrent(e),this.onDragEnd(this.position),window.removeEventListener(this.touch?'touchmove':'mousemove',this.drag.move,!1),window.removeEventListener(this.touch?'touchend':'mouseup',this.drag.end,!1)}},this.onDragStart=()=>{},this.onDragMove=()=>{},this.onDragEnd=()=>{},this.enable(),this}enable(){return this.element.addEventListener('touchstart',this.drag.start,!1),this.element.addEventListener('mousedown',this.drag.start,!1),this}disable(){return this.element.removeEventListener('touchstart',this.drag.start,!1),this.element.removeEventListener('mousedown',this.drag.start,!1),this}getPositionCurrent(e){const t=e.touches?e.touches[0]||e.changedTouches[0]:e;this.position.current.set(t.pageX,t.pageY)}convertPosition(e){return e.x=2*(e.x/this.element.offsetWidth)-1,e.y=-(2*(e.y/this.element.offsetHeight)-1),e}}const b=0;class y{constructor(e){this.game=e,this.flipSpeed=300,this.flipBounce=1.70158,this.scrambleSpeed=150,this.scrambleBounce=0,this.raycaster=new THREE.Raycaster;const t=new THREE.MeshBasicMaterial({depthWrite:!1,transparent:!0,opacity:0,color:13311});this.group=new THREE.Object3D,this.game.cube.object.add(this.group),this.helper=new THREE.Mesh(new THREE.PlaneBufferGeometry(20,20),t.clone()),this.helper.rotation.set(0,i/4,0),this.game.world.scene.add(this.helper),this.edges=new THREE.Mesh(new THREE.BoxBufferGeometry(.95,.95,.95),t.clone()),this.game.world.scene.add(this.edges),this.onSolved=()=>{},this.onMove=()=>{},this.momentum=[],this.scramble=null,this.state=b,this.initDraggable()}enable(){this.draggable.enable()}disable(){this.draggable.disable()}initDraggable(){this.draggable=new f(this.game.dom.game),this.draggable.onDragStart=e=>{if(null===this.scramble&&1!==this.state&&2!==this.state){this.gettingDrag=3===this.state;const t=this.getIntersect(e.current,this.edges,!1);!1===t?(this.dragNormal=new THREE.Vector3(0,0,1),this.flipType='cube',this.helper.position.set(0,0,0),this.helper.rotation.set(0,i/4,0),this.helper.updateMatrixWorld()):(this.dragNormal=t.face.normal.round(),this.flipType='layer',this.attach(this.helper,this.edges),this.helper.rotation.set(0,0,0),this.helper.position.set(0,0,0),this.helper.lookAt(this.dragNormal),this.helper.translateZ(.5),this.helper.updateMatrixWorld(),this.detach(this.helper,this.edges));const a=this.getIntersect(e.current,this.helper,!1).point;!1===a||(this.dragCurrent=this.helper.worldToLocal(a),this.dragTotal=new THREE.Vector3,this.state=this.state===b?1:this.state)}},this.draggable.onDragMove=e=>{if(null===this.scramble&&this.state!==b&&(3!==this.state||!1!==this.gettingDrag)){const t=this.getIntersect(e.current,this.helper,!1);if(!1!==t){const a=this.helper.worldToLocal(t.point.clone());if(this.dragDelta=a.clone().sub(this.dragCurrent).setZ(0),this.dragTotal.add(this.dragDelta),this.dragCurrent=a,this.addMomentumPoint(this.dragDelta),1===this.state&&.05<this.dragTotal.length()){if(this.dragDirection=this.getMainAxis(this.dragTotal),'layer'===this.flipType){const t=new THREE.Vector3;t[this.dragDirection]=1;const a=this.helper.localToWorld(t).sub(this.helper.position),o=this.edges.worldToLocal(a).round();this.flipAxis=o.cross(this.dragNormal).negate(),this.dragIntersect=this.getIntersect(e.current,this.game.cube.cubes,!0),this.selectLayer(this.getLayer(!1))}else{const t='x'==this.dragDirection?'y':'y'==this.dragDirection&&e.current.x>this.game.world.width/2?'z':'x';this.flipAxis=new THREE.Vector3,this.flipAxis[t]=1*('x'==t?-1:1)}this.flipAngle=0,this.state=2}else if(2===this.state){const e=this.dragDelta[this.dragDirection];'layer'===this.flipType?(this.group.rotateOnAxis(this.flipAxis,e),this.flipAngle+=e):(this.edges.rotateOnWorldAxis(this.flipAxis,e),this.game.cube.object.rotation.copy(this.edges.rotation),this.flipAngle+=e)}}}},this.draggable.onDragEnd=()=>{if(null===this.scramble){if(2!==this.state)return this.gettingDrag=!1,void(this.state=b);this.state=3;const e=this.getMomentum()[this.dragDirection],t=.05<o(e)&&o(this.flipAngle)<i/2,s=t?this.roundAngle(this.flipAngle+a(this.flipAngle)*(i/4)):this.roundAngle(this.flipAngle),r=s-this.flipAngle;'layer'===this.flipType?this.rotateLayer(r,!1,()=>{this.game.storage.saveGame(),this.state=this.gettingDrag?1:b,this.gettingDrag=!1,this.checkIsSolved()}):this.rotateCube(r,()=>{this.state=this.gettingDrag?1:b,this.gettingDrag=!1})}}}rotateLayer(e,t,a){const o=t?this.scrambleBounce:this.flipBounce,s=0<o?this.bounceCube():()=>{};this.rotationTween=new v({duration:t?this.scrambleSpeed:this.flipSpeed,easing:h.Back.Out(o),onUpdate:t=>{let a=t.delta*e;this.group.rotateOnAxis(this.flipAxis,a),s(t.value,a,e)},onComplete:()=>{const e=this.flipLayer.slice(0);this.game.cube.object.rotation.setFromVector3(this.snapRotation(this.game.cube.object.rotation.toVector3())),this.group.rotation.setFromVector3(this.snapRotation(this.group.rotation.toVector3())),this.deselectLayer(this.flipLayer),a(e)}})}bounceCube(){let e=!0;return(t,a,o)=>{1<=t&&(e&&(a=(t-1)*o,e=!1),this.game.cube.object.rotateOnAxis(this.flipAxis,a))}}rotateCube(e,t){this.rotationTween=new v({duration:this.flipSpeed,easing:h.Back.Out(this.flipBounce),onUpdate:t=>{this.edges.rotateOnWorldAxis(this.flipAxis,t.delta*e),this.game.cube.object.rotation.copy(this.edges.rotation)},onComplete:()=>{this.edges.rotation.setFromVector3(this.snapRotation(this.edges.rotation.toVector3())),this.game.cube.object.rotation.copy(this.edges.rotation),t()}})}checkIsSolved(){let e=!0;const t={R:[],L:[],U:[],D:[],F:[],B:[]};this.game.cube.pieces.forEach(e=>{const a=this.getPiecePosition(e);-1==a.x?t.L.push(e):1==a.x&&t.R.push(e),-1==a.y?t.D.push(e):1==a.y&&t.U.push(e),-1==a.z?t.B.push(e):1==a.z&&t.F.push(e)}),Object.keys(t).forEach(a=>{const o=t[a].map(e=>e.userData.edges);1>o.shift().filter(e=>o.every(t=>-1!==t.indexOf(e))).length&&(e=!1)}),e&&this.onSolved()}selectLayer(e){this.group.rotation.set(0,0,0),this.movePieces(e,this.game.cube.object,this.group),this.flipLayer=e}deselectLayer(e){this.movePieces(e,this.group,this.game.cube.object),this.flipLayer=null}movePieces(e,t,a){t.updateMatrixWorld(),a.updateMatrixWorld(),e.forEach(e=>{const o=this.game.cube.pieces[e];o.applyMatrix(t.matrixWorld),t.remove(o),o.applyMatrix(new THREE.Matrix4().getInverse(a.matrixWorld)),a.add(o)})}getLayer(e){const t=[];let a;return!1===e?(a=this.getMainAxis(this.flipAxis),e=this.getPiecePosition(this.dragIntersect.object)):a=this.getMainAxis(e),this.game.cube.pieces.forEach(o=>{const s=this.getPiecePosition(o);s[a]==e[a]&&t.push(o.name)}),t}getPiecePosition(e){let t=new THREE.Vector3().setFromMatrixPosition(e.matrixWorld).multiplyScalar(this.game.cube.size);return this.game.cube.object.worldToLocal(t.sub(this.game.cube.animator.position)).round()}scrambleCube(){null==this.scramble&&(this.scramble=this.game.scrambler,this.scramble.callback='function'==typeof callback?callback:()=>{});const e=this.scramble.converted,t=e[0],a=this.getLayer(t.position);this.flipAxis=new THREE.Vector3,this.flipAxis[t.axis]=1,this.selectLayer(a),this.rotateLayer(t.angle,!0,()=>{e.shift(),0<e.length?this.scrambleCube():(this.scramble=null,this.game.storage.saveGame())})}getIntersect(e,t,a){this.raycaster.setFromCamera(this.draggable.convertPosition(e.clone()),this.game.world.camera);const o=a?this.raycaster.intersectObjects(t):this.raycaster.intersectObject(t);return!!(0<o.length)&&o[0]}getMainAxis(e){return Object.keys(e).reduce((t,a)=>o(e[t])>o(e[a])?t:a)}detach(e,t){e.applyMatrix(t.matrixWorld),t.remove(e),this.game.world.scene.add(e)}attach(e,t){e.applyMatrix(new THREE.Matrix4().getInverse(t.matrixWorld)),this.game.world.scene.remove(e),t.add(e)}addMomentumPoint(e){const t=Date.now();this.momentum=this.momentum.filter(e=>500>t-e.time),!1!==e&&this.momentum.push({delta:e,time:t})}getMomentum(){const e=this.momentum.length,t=new THREE.Vector2;return this.addMomentumPoint(!1),this.momentum.forEach((a,o)=>{t.add(a.delta.multiplyScalar(o/e))}),t}roundAngle(e){const t=i/2;return a(e)*r(o(e)/t)*t}snapRotation(e){return e.set(this.roundAngle(e.x),this.roundAngle(e.y),this.roundAngle(e.z))}}class w{constructor(e){this.game=e,this.scrambleLength=20,this.moves=[],this.conveted=[],this.pring=''}scramble(e){let t=0;if(this.moves='undefined'==typeof e?[]:e.split(' '),1>this.moves.length)for(const a=['','\'','2'],o='undefined'==typeof e?this.scrambleLength:e;t<o;){const e='UDLRFB'[d(6*Math.random())]+a[d(3*Math.random())];0<t&&e.charAt(0)==this.moves[t-1].charAt(0)||1<t&&e.charAt(0)==this.moves[t-2].charAt(0)||(this.moves.push(e),t++)}return this.callback=()=>{},this.convert(),this.print=this.moves.join(' '),this}convert(){this.converted=[],this.moves.forEach(e=>{const t=e.charAt(0),a=e.charAt(1),o={D:'y',U:'y',L:'x',R:'x',F:'z',B:'z'}[t],s={D:-1,U:1,L:-1,R:1,F:1,B:-1}[t],r=new THREE.Vector3;r[{D:'y',U:'y',L:'x',R:'x',F:'z',B:'z'}[t]]=s;const n=i/2*-s*('\''==a?-1:1),l={position:r,axis:o,angle:n,name:e};this.converted.push(l),'2'==a&&this.converted.push(l)})}}class x{constructor(e){this.game=e,this.tweens={},this.durations={},this.data={},this.activeTransitions=0}init(){this.data.cubeY=-.2,this.data.cameraZoom=.85,this.game.controls.disable(),this.game.cube.object.position.y=this.data.cubeY,this.game.controls.edges.position.y=this.data.cubeY,this.game.cube.animator.position.y=4,this.game.cube.animator.rotation.x=-i/3,this.game.world.camera.zoom=this.data.cameraZoom,this.game.world.camera.updateProjectionMatrix(),this.tweens.buttons={},this.tweens.timer=[],this.tweens.title=[],this.tweens.best=[],this.tweens.complete=[],this.tweens.range=[],this.tweens.stats=[]}buttons(e,t){const a=(e,t)=>new v({target:e.style,duration:300,easing:t?h.Power.Out(2):h.Power.In(3),from:{opacity:t?0:1},to:{opacity:t?1:0},onUpdate:a=>{const o=t?1-a.value:a.value;e.style.transform=`translate3d(0, ${1.5*o}em, 0)`},onComplete:()=>e.style.pointerEvents=t?'all':'none'});t.forEach(e=>this.tweens.buttons[e]=a(this.game.dom.buttons[e],!1)),setTimeout(()=>e.forEach(e=>{this.tweens.buttons[e]=a(this.game.dom.buttons[e],!0)}),t?500:0)}cube(e){this.activeTransitions++;try{this.tweens.cube.stop()}catch(t){}const t=this.game.cube.animator.position.y,a=this.game.cube.animator.rotation.x;this.tweens.cube=new v({duration:e?3e3:1250,easing:e?h.Elastic.Out(.8,.6):h.Back.In(1),onUpdate:o=>{this.game.cube.animator.position.y=e?4*(1-o.value):t+4*o.value,this.game.cube.animator.rotation.x=e?(1-o.value)*i/3:a+o.value*-i/3}}),this.durations.cube=e?1500:1500,setTimeout(()=>this.activeTransitions--,this.durations.cube)}float(){try{this.tweens.float.stop()}catch(t){}this.tweens.float=new v({duration:1500,easing:h.Sine.InOut(),yoyo:!0,onUpdate:e=>{this.game.cube.holder.position.y=-.02+.04*e.value,this.game.cube.holder.rotation.x=.005-.01*e.value,this.game.cube.holder.rotation.z=-this.game.cube.holder.rotation.x,this.game.cube.holder.rotation.y=this.game.cube.holder.rotation.x}})}zoom(e,t){this.activeTransitions++;const a=e?1:this.data.cameraZoom,o=0<t?c(t,1500):1500,s=0<t?r(o/1500):1,n=h.Power.InOut(0<t?2:3);this.tweens.zoom=new v({target:this.game.world.camera,duration:o,easing:n,to:{zoom:a},onUpdate:()=>{this.game.world.camera.updateProjectionMatrix()}}),this.tweens.rotate=new v({target:this.game.cube.animator.rotation,duration:o,easing:n,to:{y:2*-i*s},onComplete:()=>{this.game.cube.animator.rotation.y=0}}),this.durations.zoom=o,setTimeout(()=>this.activeTransitions--,this.durations.zoom)}elevate(e){this.activeTransitions++;this.tweens.elevate=new v({target:this.game.cube.object.position,duration:e?1500:0,easing:h.Power.InOut(3),to:{y:e?-.05:this.data.cubeY}});this.durations.elevate=1500,setTimeout(()=>this.activeTransitions--,this.durations.elevate)}complete(e,t){this.activeTransitions++;const a=t?this.game.dom.texts.best:this.game.dom.texts.complete;null===a.querySelector('span i')&&a.querySelectorAll('span').forEach(e=>this.splitLetters(e));const o=a.querySelectorAll('.icon, i');this.flipLetters(t?'best':'complete',o,e),a.style.opacity=1;const s=this.durations[t?'best':'complete'];e||setTimeout(()=>this.game.dom.texts.timer.style.transform='',s),setTimeout(()=>this.activeTransitions--,s)}stats(e){e&&this.game.scores.calcStats(),this.activeTransitions++,this.tweens.stats.forEach(e=>{e.stop(),e=null});let t=-1;const a=this.game.dom.stats.querySelectorAll('.stats'),o=e?h.Power.Out(2):h.Power.In(3);a.forEach((a,s)=>{const r=s*(e?80:60);this.tweens.stats[t++]=new v({delay:r,duration:400,easing:o,onUpdate:t=>{const o=e?2*(1-t.value):t.value,s=e?t.value:1-t.value;a.style.transform=`translate3d(0, ${o}em, 0)`,a.style.opacity=s}})}),this.durations.stats=0,setTimeout(()=>this.activeTransitions--,this.durations.stats)}preferences(e){this.activeTransitions++,this.tweens.range.forEach(e=>{e.stop(),e=null});let t=-1,a=0;const o=this.game.dom.prefs.querySelectorAll('.range'),s=e?h.Power.Out(2):h.Power.In(3);o.forEach((o,r)=>{const n=o.querySelector('.range__label'),i=o.querySelector('.range__track-line'),l=o.querySelector('.range__handle'),c=o.querySelectorAll('.range__list div'),d=r*(e?120:100);n.style.opacity=e?0:1,i.style.opacity=e?0:1,l.style.opacity=e?0:1,l.style.pointerEvents=e?'all':'none',this.tweens.range[t++]=new v({delay:e?d:d,duration:400,easing:s,onUpdate:t=>{const a=e?1-t.value:t.value,o=e?t.value:1-t.value;n.style.transform=`translate3d(0, ${a}em, 0)`,n.style.opacity=o}}),this.tweens.range[t++]=new v({delay:e?d+100:d,duration:400,easing:s,onUpdate:t=>{const a=e?1-t.value:t.value,o=e?t.value:1-t.value;i.style.transform=`translate3d(0, ${a}em, 0) scale3d(${o}, 1, 1)`,i.style.opacity=o}}),this.tweens.range[t++]=new v({delay:e?d+100:d,duration:400,easing:s,onUpdate:t=>{const a=e?1-t.value:t.value,o=1-a,s=.5+.5*o;l.style.transform=`translate3d(0, ${a}em, 0) scale3d(${s}, ${s}, ${s})`,l.style.opacity=o}}),c.forEach((a,o)=>{a.style.opacity=e?0:1,this.tweens.range[t++]=new v({delay:e?d+200+50*o:d,duration:400,easing:s,onUpdate:t=>{const o=e?1-t.value:t.value,s=e?t.value:1-t.value;a.style.transform=`translate3d(0, ${o}em, 0)`,a.style.opacity=s}})}),a=c.length>a?c.length-1:a,o.style.opacity=1}),this.durations.preferences=e?100*(o.length-1)+200+50*a+400:100*(o.length-1)+400,setTimeout(()=>this.activeTransitions--,this.durations.preferences)}title(e){this.activeTransitions++;const t=this.game.dom.texts.title;null===t.querySelector('span i')&&t.querySelectorAll('span').forEach(e=>this.splitLetters(e));const a=t.querySelectorAll('i');this.flipLetters('title',a,e),t.style.opacity=1;const o=this.game.dom.texts.note;this.tweens.title[a.length]=new v({target:o.style,easing:h.Sine.InOut(),duration:e?800:400,yoyo:!!e||null,from:{opacity:e?0:parseFloat(getComputedStyle(o).opacity)},to:{opacity:e?1:0}}),setTimeout(()=>this.activeTransitions--,this.durations.title)}timer(e){this.activeTransitions++;const t=this.game.dom.texts.timer;t.style.opacity=0,this.game.timer.convert(),this.game.timer.setText(),this.splitLetters(t);const a=t.querySelectorAll('i');this.flipLetters('timer',a,e),t.style.opacity=1,setTimeout(()=>this.activeTransitions--,this.durations.timer)}splitLetters(e){const t=e.innerHTML;e.innerHTML='',t.split('').forEach(t=>{const a=document.createElement('i');a.innerHTML=t,e.appendChild(a)})}flipLetters(e,t,a){try{this.tweens[e].forEach(e=>e.stop())}catch(t){}t.forEach((t,o)=>{t.style.opacity=a?0:1,this.tweens[e][o]=new v({easing:h.Sine.Out(),duration:a?800:400,delay:50*o,onUpdate:e=>{const o=a?-80*(1-e.value):80*e.value;t.style.transform=`rotate3d(0, 1, 0, ${o}deg)`,t.style.opacity=a?e.value:1-e.value}})}),this.durations[e]=50*(t.length-1)+(a?800:400)}}class T extends m{constructor(e){super(!1),this.game=e,this.reset()}start(e){this.startTime=e?Date.now()-this.deltaTime:Date.now(),this.deltaTime=0,this.converted=this.convert(),super.start()}reset(){this.startTime=0,this.currentTime=0,this.deltaTime=0,this.converted='0:00'}stop(){return this.currentTime=Date.now(),this.deltaTime=this.currentTime-this.startTime,this.convert(),super.stop(),{time:this.converted,millis:this.deltaTime}}update(){const e=this.converted;this.currentTime=Date.now(),this.deltaTime=this.currentTime-this.startTime,this.convert(),this.converted!=e&&(localStorage.setItem('gameTime',this.deltaTime),this.setText())}convert(){const e=parseInt(this.deltaTime/1e3%60),t=parseInt(this.deltaTime/60000);this.converted=t+':'+(10>e?'0':'')+e}setText(){this.game.dom.texts.timer.innerHTML=this.converted}}document.querySelectorAll('range').forEach(e=>{const t=document.createElement('div');t.innerHTML='<div class="range">\n<div class="range__label"></div>\n<div class="range__track">\n<div class="range__track-line"></div>\n<div class="range__handle"></div>\n</div>\n<div class="range__list"></div>\n</div>';const a=t.querySelector('.range'),o=a.querySelector('.range__label'),s=a.querySelector('.range__list');a.setAttribute('name',e.getAttribute('name')),o.innerHTML=e.getAttribute('title'),e.getAttribute('list').split(',').forEach(e=>{const t=document.createElement('div');t.innerHTML=e,s.appendChild(t)}),e.parentNode.replaceChild(a,e)});class S{constructor(e,t){t=Object.assign({range:[0,1],value:0,step:0,onUpdate:()=>{},onComplete:()=>{}},t||{}),this.element=document.querySelector('.range[name="'+e+'"]'),this.track=this.element.querySelector('.range__track'),this.handle=this.element.querySelector('.range__handle'),this.value=t.value,this.min=t.range[0],this.max=t.range[1],this.step=t.step,this.onUpdate=t.onUpdate,this.onComplete=t.onComplete,this.value=this.round(this.limitValue(this.value)),this.setHandlePosition(),this.initDraggable()}initDraggable(){let e;this.draggable=new f(this.handle,{calcDelta:!0}),this.draggable.onDragStart=()=>{e=this.positionFromValue(this.value),this.handle.style.left=e+'px'},this.draggable.onDragMove=t=>{e=this.limitPosition(e+t.delta.x),this.value=this.round(this.valueFromPosition(e)),this.setHandlePosition(),this.onUpdate(this.value)},this.draggable.onDragEnd=()=>{this.onComplete(this.value)}}round(e){return 1>this.step?e:r((e-this.min)/this.step)*this.step+this.min}limitValue(e){const t=c(this.max,this.min),a=l(this.max,this.min);return l(c(e,a),t)}limitPosition(e){return l(c(e,0),this.track.offsetWidth)}percentsFromValue(e){return(e-this.min)/(this.max-this.min)}valueFromPosition(e){return this.min+(this.max-this.min)*(e/this.track.offsetWidth)}positionFromValue(e){return this.percentsFromValue(e)*this.track.offsetWidth}setHandlePosition(){this.handle.style.left=100*this.percentsFromValue(this.value)+'%'}}class D{constructor(e){this.game=e,this.theme='modern'}init(){const e=(e,t,a)=>l(c((e-t)/(a-t),0),1);this.ranges={speed:new S('speed',{value:this.game.controls.flipSpeed,range:[350,100],onUpdate:t=>{this.game.controls.flipSpeed=t,this.game.controls.flipBounce=2.125*e(t,100,350)},onComplete:()=>this.game.storage.savePreferences()}),scramble:new S('scramble',{value:this.game.scrambler.scrambleLength,range:[20,30],step:5,onUpdate:e=>{this.game.scrambler.scrambleLength=e},onComplete:()=>this.game.storage.savePreferences()}),fov:new S('fov',{value:this.game.world.fov,range:[2,45],onUpdate:e=>{this.game.world.fov=e,this.game.world.resize()},onComplete:()=>this.game.storage.savePreferences()}),theme:new S('theme',{value:'default'===this.theme?0:1,range:[0,1],step:1,onUpdate:e=>{this.theme=0===e?'default':'original'},onComplete:()=>this.game.storage.savePreferences()})}}}class L{constructor(e){this.game=e,this.scores=[],this.solves=0,this.best=0,this.worst=0}addScore(e){this.scores.push(e),this.solves++,100<this.scores.lenght&&this.scores.shift();let t=!1;return(e<this.best||0===this.best)&&(this.best=e,t=!0),e>this.worst&&(this.worst=e),this.game.storage.saveScores(),t}calcStats(){this.setStat('total-solves',this.solves),this.setStat('best-time',this.convertTime(this.best)),this.setStat('worst-time',this.convertTime(this.worst)),this.setStat('average-5',this.getAverage(5)),this.setStat('average-10',this.getAverage(10)),this.setStat('average-15',this.getAverage(15))}setStat(e,t){0===t||(this.game.dom.stats.querySelector(`.stats[name="${e}"] b`).innerHTML=t)}getAverage(e){return this.scores.length<e?0:this.convertTime(this.scores.slice(-e).reduce((e,t)=>e+t,0)/e)}convertTime(e){if(0>=e)return 0;const t=parseInt(e/1e3%60),a=parseInt(e/60000);return a+':'+(10>t?'0':'')+t}}class A{constructor(e){this.game=e;const t=parseInt(localStorage.getItem('version'));t&&t===3||(this.clearGame(),this.clearPreferences(),localStorage.setItem('version',3))}init(){this.loadGame(),this.loadScores(),this.loadPreferences()}loadGame(){try{const e='true'===localStorage.getItem('gameInProgress');if(!e)throw new Error;const t=JSON.parse(localStorage.getItem('gameCubeData')),a=parseInt(localStorage.getItem('gameTime'));if(!t||!a)throw new Error;this.game.cube.pieces.forEach(e=>{const a=t.names.indexOf(e.name),o=t.positions[a],s=t.rotations[a];e.position.set(o.x,o.y,o.z),e.rotation.set(s.x,s.y,s.z)}),this.game.timer.deltaTime=a,this.game.saved=!0}catch(t){this.game.saved=!1}}saveGame(){const e={names:[],positions:[],rotations:[]},t=this.game.timer.deltaTime;this.game.cube.pieces.forEach(t=>{e.names.push(t.name),e.positions.push(t.position),e.rotations.push(t.rotation.toVector3())}),localStorage.setItem('gameInProgress',!0),localStorage.setItem('gameCubeData',JSON.stringify(e)),localStorage.setItem('gameTime',t)}clearGame(){localStorage.removeItem('gameInProgress'),localStorage.removeItem('gameCubeData'),localStorage.removeItem('gameTime')}loadScores(){try{const e=JSON.parse(localStorage.getItem('scoresData')),t=parseInt(localStorage.getItem('scoresBest')),a=parseInt(localStorage.getItem('scoresWorst')),o=parseInt(localStorage.getItem('scoresSolves'));if(!e||!t||!o||!a)throw new Error;return this.game.scores.scores=e,this.game.scores.best=t,this.game.scores.solves=o,this.game.scores.worst=a,!0}catch(t){return this.clearScores(),!1}}saveScores(){const e=this.game.scores.scores,t=this.game.scores.best,a=this.game.scores.worst,o=this.game.scores.solves;localStorage.setItem('scoresData',JSON.stringify(e)),localStorage.setItem('scoresBest',JSON.stringify(t)),localStorage.setItem('scoresWorst',JSON.stringify(a)),localStorage.setItem('scoresSolves',JSON.stringify(o))}clearScores(){localStorage.removeItem('scoresData'),localStorage.removeItem('scoresBest'),localStorage.removeItem('scoresWorst'),localStorage.removeItem('scoresSolves')}loadPreferences(){try{const e=JSON.parse(localStorage.getItem('preferences'));if(!e)throw new Error;return this.game.controls.flipSpeed=e.flipSpeed,this.game.controls.flipBounce=e.flipBounce,this.game.scrambler.scrambleLength=e.scrambleLength,this.game.world.fov=parseFloat(e.fov),this.game.world.resize(),this.game.preferences.theme=e.theme,this.updateTheme(),!0}catch(t){return this.game.controls.flipSpeed=300,this.game.controls.flipBounce=1.70158,this.game.scrambler.scrambleLength=20,this.game.world.fov=15,this.game.world.resize(),this.game.preferences.theme='default',this.updateTheme(),this.savePreferences(),!1}}savePreferences(){const e={flipSpeed:this.game.controls.flipSpeed,flipBounce:this.game.controls.flipBounce,scrambleLength:this.game.scrambler.scrambleLength,fov:this.game.world.fov,theme:this.game.preferences.theme};this.updateTheme(),localStorage.setItem('preferences',JSON.stringify(e))}clearPreferences(){localStorage.removeItem('preferences')}updateTheme(){const e={default:{U:16775167,D:16772936,F:15677731,R:4303560,B:16747530,L:8571448,P:528410},original:{U:16777215,D:16766208,F:12852794,R:20922,B:16734208,L:40544,P:1118481}}[this.game.preferences.theme];this.game.cube.pieces.forEach(t=>{t.userData.cube.material.color.setHex(e.P)}),this.game.cube.edges.forEach(t=>{t.material.color.setHex(e[t.userData.name])})}}const E=new class{constructor(e){if(e=Object.assign({tagName:'icon',className:'icon',styles:!1,icons:{},observe:!1,convert:!1},e||{}),this.tagName=e.tagName,this.className=e.className,this.icons=e.icons,this.svgTag=document.createElementNS('http://www.w3.org/2000/svg','svg'),this.svgTag.setAttribute('class',this.className),e.styles&&this.addStyles(),e.convert&&this.convertAllIcons(),e.observe){const e=window.MutationObserver||window.WebKitMutationObserver;this.observer=new e(()=>{this.convertAllIcons()}),this.observer.observe(document.documentElement,{childList:!0,subtree:!0})}return this}convertAllIcons(){document.querySelectorAll(this.tagName).forEach(e=>{this.convertIcon(e)})}convertIcon(e){const t=this.icons[e.attributes[0].localName];if('undefined'!=typeof t){const a=this.svgTag.cloneNode(!0),o=t.viewbox.split(' ');a.setAttributeNS(null,'viewBox',t.viewbox),a.style.width=o[2]/o[3]+'em',a.style.height='1em',a.innerHTML=t.content,e.parentNode.replaceChild(a,e)}}addStyles(){const e=document.createElement('style');e.innerHTML=`.${this.className} { display: inline-block; font-size: inherit; overflow: visible; vertical-align: -0.125em; preserveAspectRatio: none; }`,document.head.appendChild(e)}}({icons:{audio:{viewbox:'0 0 26712 21370',content:'<g fill="currentColor"><path d="M11966 392l-4951 4950 -5680 0c-738,0 -1336,598 -1336,1336l0 8014c0,737 598,1336 1336,1336l5680 0 4951 4950c836,836 2280,249 2280,-944l0 -18696c0,-1194 -1445,-1780 -2280,-944z"/><path d="M18823 6407c-644,-352 -1457,-120 -1815,526 -356,646 -120,1458 526,1815 718,394 1165,1137 1165,1937 0,800 -446,1543 -1164,1937 -646,357 -882,1169 -526,1815 358,649 1171,879 1815,526 1571,-865 2547,-2504 2547,-4278 0,-1774 -976,-3413 -2548,-4277l0 0z"/><path d="M26712 10685c0,-3535 -1784,-6786 -4773,-8695 -623,-397 -1449,-213 -1843,415 -395,628 -210,1459 412,1857 2212,1413 3533,3814 3533,6423 0,2609 -1321,5010 -3533,6423 -623,397 -807,1228 -412,1856 362,577 1175,843 1843,415 2989,-1909 4773,-5159 4773,-8695z"/></g>'},settings:{viewbox:'0 0 512 512',content:'<path fill="currentColor" d="M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z" class=""></path>'},back:{viewbox:'0 0 512 512',content:'<path transform="translate(512, 0) scale(-1,1)" fill="currentColor" d="M503.691 189.836L327.687 37.851C312.281 24.546 288 35.347 288 56.015v80.053C127.371 137.907 0 170.1 0 322.326c0 61.441 39.581 122.309 83.333 154.132 13.653 9.931 33.111-2.533 28.077-18.631C66.066 312.814 132.917 274.316 288 272.085V360c0 20.7 24.3 31.453 39.687 18.164l176.004-152c11.071-9.562 11.086-26.753 0-36.328z" class=""></path>'},trophy:{viewbox:'0 0 576 512',content:'<path fill="currentColor" d="M552 64H448V24c0-13.3-10.7-24-24-24H152c-13.3 0-24 10.7-24 24v40H24C10.7 64 0 74.7 0 88v56c0 66.5 77.9 131.7 171.9 142.4C203.3 338.5 240 360 240 360v72h-48c-35.3 0-64 20.7-64 56v12c0 6.6 5.4 12 12 12h296c6.6 0 12-5.4 12-12v-12c0-35.3-28.7-56-64-56h-48v-72s36.7-21.5 68.1-73.6C498.4 275.6 576 210.3 576 144V88c0-13.3-10.7-24-24-24zM64 144v-16h64.2c1 32.6 5.8 61.2 12.8 86.2-47.5-16.4-77-49.9-77-70.2zm448 0c0 20.2-29.4 53.8-77 70.2 7-25 11.8-53.6 12.8-86.2H512v16zm-127.3 4.7l-39.6 38.6 9.4 54.6c1.7 9.8-8.7 17.2-17.4 12.6l-49-25.8-49 25.8c-8.8 4.6-19.1-2.9-17.4-12.6l9.4-54.6-39.6-38.6c-7.1-6.9-3.2-19 6.7-20.5l54.8-8 24.5-49.6c4.4-8.9 17.1-8.9 21.5 0l24.5 49.6 54.8 8c9.6 1.5 13.5 13.6 6.4 20.5z" class=""></path>'}},convert:!0});const M=new class{constructor(){this.dom={ui:document.querySelector('.ui'),game:document.querySelector('.ui__game'),texts:document.querySelector('.ui__texts'),prefs:document.querySelector('.ui__prefs'),stats:document.querySelector('.ui__stats'),texts:{title:document.querySelector('.text--title'),note:document.querySelector('.text--note'),timer:document.querySelector('.text--timer'),stats:document.querySelector('.text--timer'),complete:document.querySelector('.text--complete'),best:document.querySelector('.text--best-time')},buttons:{prefs:document.querySelector('.btn--prefs'),back:document.querySelector('.btn--back'),stats:document.querySelector('.btn--stats')}},this.world=new p(this),this.cube=new g(this),this.controls=new y(this),this.scrambler=new w(this),this.transition=new x(this),this.timer=new T(this),this.preferences=new D(this),this.scores=new L(this),this.storage=new A(this),this.initActions(),this.state=0,this.saved=!1,this.storage.init(),this.preferences.init(),this.transition.init(),this.scores.calcStats(),setTimeout(()=>{this.transition.float(),this.transition.cube(!0),setTimeout(()=>this.transition.title(!0),700),setTimeout(()=>this.transition.buttons(['prefs','stats'],[]),1e3)},500)}initActions(){let e=!1;this.dom.game.onclick=()=>{if(!(0<this.transition.activeTransitions)&&1!==this.state)if(0===this.state){if(!e)return e=!0,setTimeout(()=>e=!1,300),!1;this.saved||(this.scrambler.scramble(),this.controls.scrambleCube());const t=this.saved?0:this.scrambler.converted.length*this.controls.scrambleSpeed;this.state=1,this.saved=!0,this.transition.buttons([],['stats','prefs']),this.transition.zoom(1,t),this.transition.title(!1),setTimeout(()=>{this.transition.timer(!0),this.transition.buttons(['back'],[])},this.transition.durations.zoom-1e3),setTimeout(()=>{this.controls.enable(),this.timer.start(!0)},this.transition.durations.zoom)}else{if(2===this.state)return this.state=3,this.saved=!1,this.transition.timer(!1),this.transition.complete(!1,this.bestTime),this.transition.cube(!1),this.timer.reset(),setTimeout(()=>{this.cube.reset(),this.transition.stats(!0),this.transition.elevate(0)},1e3),!1;3===this.state?(this.state=0,this.transition.buttons(['stats','prefs'],[]),this.transition.stats(!1),setTimeout(()=>this.transition.cube(!0),500),setTimeout(()=>this.transition.title(!0),1200)):4===this.state&&(this.state=0,this.transition.buttons(['stats','prefs'],[]),this.transition.preferences(!1),setTimeout(()=>this.transition.cube(!0),500),setTimeout(()=>this.transition.title(!0),1200))}},this.dom.buttons.back.onclick=()=>{0<this.transition.activeTransitions||1!==this.state||(this.state=0,this.transition.buttons(['stats','prefs'],['back']),this.transition.zoom(0,0),this.controls.disable(),this.timer.stop(),this.transition.timer(!1),setTimeout(()=>this.transition.title(!0),this.transition.durations.zoom-1e3),this.playing=!1,this.controls.disable())},this.dom.buttons.prefs.onclick=()=>{0<this.transition.activeTransitions||(this.state=4,this.transition.buttons([],['stats','prefs']),this.transition.title(!1),this.transition.cube(!1),setTimeout(()=>this.transition.preferences(!0),1e3))},this.dom.buttons.stats.onclick=()=>{0<this.transition.activeTransitions||(this.state=3,this.transition.buttons([],['stats','prefs']),this.transition.title(!1),this.transition.cube(!1),setTimeout(()=>this.transition.stats(!0),1e3))},this.controls.onMove=()=>{},this.controls.onSolved=()=>{this.transition.buttons([],['back']),this.state=2,this.saved=!1,this.controls.disable(),this.timer.stop(),this.storage.clearGame(),this.bestTime=this.scores.addScore(this.timer.deltaTime),this.transition.zoom(0,0),this.transition.elevate(!0),setTimeout(()=>this.transition.complete(!0,this.bestTime),1e3)}}};window.game=M})();
+(function () {
+	'use strict';
+
+	const animationEngine = ( () => {
+
+	  let uniqueID = 0;
+
+	  class AnimationEngine {
+
+	    constructor() {
+
+	      this.ids = [];
+	      this.animations = {};
+	      this.update = this.update.bind( this );
+	      this.raf = 0;
+	      this.time = 0;
+
+	    }
+
+	    update() {
+
+	      const now = performance.now();
+	      const delta = now - this.time;
+	      this.time = now;
+
+	      let i = this.ids.length;
+
+	      this.raf = i ? requestAnimationFrame( this.update ) : 0;
+
+	      while ( i-- )
+	        this.animations[ this.ids[ i ] ] && this.animations[ this.ids[ i ] ].update( delta );
+
+	    }
+
+	    add( animation ) {
+
+	      animation.id = uniqueID ++;
+
+	      this.ids.push( animation.id );
+	      this.animations[ animation.id ] = animation;
+
+	      if ( this.raf !== 0 ) return;
+
+	      this.time = performance.now();
+	      this.raf = requestAnimationFrame( this.update );
+
+	    }
+
+	    remove( animation ) {
+
+	      const index = this.ids.indexOf( animation.id );
+
+	      if ( index < 0 ) return;
+
+	      this.ids.splice( index, 1 );
+	      delete this.animations[ animation.id ];
+	      animation = null;
+
+	    }
+
+	  }
+
+	  return new AnimationEngine();
+
+	} )();
+
+	class Animation {
+
+	  constructor( start ) {
+
+	    if ( start === true ) this.start();
+
+	  }
+
+	  start() {
+
+	    animationEngine.add( this );
+
+	  }
+
+	  stop() {
+
+	    animationEngine.remove( this );
+
+	  }
+
+	  update( delta ) {}
+
+	}
+
+	class World extends Animation {
+
+		constructor( game ) {
+
+			super( true );
+
+			this.game = game;
+
+			this.container = this.game.dom.game;
+			this.scene = new THREE.Scene();
+
+			this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+			this.renderer.setPixelRatio( window.devicePixelRatio );
+			this.container.appendChild( this.renderer.domElement );
+
+			this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
+
+			this.stage = { width: 2, height: 3 };
+			this.fov = 10;
+
+			this.createLights();
+
+			this.resize();
+			window.addEventListener( 'resize', () => this.resize(), false );
+
+		}
+
+		update() {
+
+			this.renderer.render( this.scene, this.camera );
+
+		}
+
+		resize() {
+
+			this.width = this.container.offsetWidth;
+			this.height = this.container.offsetHeight;
+
+			this.renderer.setSize( this.width, this.height );
+
+		  this.camera.fov = this.fov;
+		  this.camera.aspect = this.width / this.height;
+
+			const aspect = this.stage.width / this.stage.height;
+		  const fovRad = this.fov * THREE.Math.DEG2RAD;
+
+		  let distance = ( aspect < this.camera.aspect )
+				? ( this.stage.height / 2 ) / Math.tan( fovRad / 2 )
+				: ( this.stage.width / this.camera.aspect ) / ( 2 * Math.tan( fovRad / 2 ) );
+
+		  distance *= 0.5;
+
+			this.camera.position.set( distance, distance, distance);
+			this.camera.lookAt( this.scene.position );
+			this.camera.updateProjectionMatrix();
+
+			const docFontSize = ( aspect < this.camera.aspect )
+				? ( this.height / 100 ) * aspect
+				: this.width / 100;
+
+			document.documentElement.style.fontSize = docFontSize + 'px';
+
+		}
+
+		createLights() {
+
+			this.lights = {
+				holder:  new THREE.Object3D,
+				ambient: new THREE.AmbientLight( 0xffffff, 0.69 ),
+				front:   new THREE.DirectionalLight( 0xffffff, 0.36 ),
+				back:    new THREE.DirectionalLight( 0xffffff, 0.19 ),
+			};
+
+			this.lights.front.position.set( 1.5, 5, 3 );
+			this.lights.back.position.set( -1.5, -5, -3 );
+
+			this.lights.holder.add( this.lights.ambient );
+			this.lights.holder.add( this.lights.front );
+			this.lights.holder.add( this.lights.back );
+
+			this.scene.add( this.lights.holder );
+
+		}
+
+		enableShadows() {
+
+			this.renderer.shadowMap.enabled = true;
+			this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+			this.lights.front.castShadow = true;
+
+	    this.lights.front.shadow.mapSize.width = 512;
+	    this.lights.front.shadow.mapSize.height = 512;
+
+	    var d = 1.5;
+
+	    this.lights.front.shadow.camera.left = -d;
+	    this.lights.front.shadow.camera.right = d;
+	    this.lights.front.shadow.camera.top = d;
+	    this.lights.front.shadow.camera.bottom = -d;
+
+	    this.lights.front.shadow.camera.near = 1;
+	    this.lights.front.shadow.camera.far = 9;
+
+			// const helper = new THREE.CameraHelper( this.lights.front.shadow.camera );
+			// this.scene.add( helper );
+
+			this.game.cube.holder.traverse( node => {
+
+				if ( node instanceof THREE.Mesh ) {
+
+					node.castShadow = true;
+					node.receiveShadow = true;
+
+				}
+
+			} );
+
+			// this.ground = new THREE.Mesh(
+			// 	new THREE.PlaneBufferGeometry( 20, 20 ),
+			// 	new THREE.MeshStandardMaterial( { color: 0x00aaff } )
+			// );
+
+			// this.ground.receiveShadow = true;
+			// this.ground.rotation.x = - Math.PI / 2;
+			// this.ground.position.y = - 1.5;
+
+			// this.scene.add( this.ground );
+
+		}
+
+	}
+
+	function RoundedBoxGeometry( size, radius, radiusSegments ) {
+
+	  THREE.BufferGeometry.call( this );
+
+	  this.type = 'RoundedBoxGeometry';
+
+	  radiusSegments = ! isNaN( radiusSegments ) ? Math.max( 1, Math.floor( radiusSegments ) ) : 1;
+
+	  var width, height, depth;
+
+	  width = height = depth = size;
+	  radius = size * radius;
+
+	  radius = Math.min( radius, Math.min( width, Math.min( height, Math.min( depth ) ) ) / 2 );
+
+	  var edgeHalfWidth = width / 2 - radius;
+	  var edgeHalfHeight = height / 2 - radius;
+	  var edgeHalfDepth = depth / 2 - radius;
+
+	  this.parameters = {
+	    width: width,
+	    height: height,
+	    depth: depth,
+	    radius: radius,
+	    radiusSegments: radiusSegments
+	  };
+
+	  var rs1 = radiusSegments + 1; //radius segments + 1
+	  var totalVertexCount = ( rs1 * radiusSegments + 1 ) << 3;
+
+	  var positions = new THREE.BufferAttribute( new Float32Array( totalVertexCount * 3 ), 3 );
+	  var normals = new THREE.BufferAttribute( new Float32Array( totalVertexCount * 3 ), 3 );
+
+	  var
+	    cornerVerts = [],
+	    cornerNormals = [],
+	    normal = new THREE.Vector3(),
+	    vertex = new THREE.Vector3(),
+	    vertexPool = [],
+	    normalPool = [],
+	    indices = []
+	  ;
+
+	  var
+	    lastVertex = rs1 * radiusSegments,
+	    cornerVertNumber = rs1 * radiusSegments + 1
+	  ;
+
+	  doVertices();
+	  doFaces();
+	  doCorners();
+	  doHeightEdges();
+	  doWidthEdges();
+	  doDepthEdges();
+
+	  function doVertices() {
+
+	    var cornerLayout = [
+	      new THREE.Vector3( 1, 1, 1 ),
+	      new THREE.Vector3( 1, 1, - 1 ),
+	      new THREE.Vector3( - 1, 1, - 1 ),
+	      new THREE.Vector3( - 1, 1, 1 ),
+	      new THREE.Vector3( 1, - 1, 1 ),
+	      new THREE.Vector3( 1, - 1, - 1 ),
+	      new THREE.Vector3( - 1, - 1, - 1 ),
+	      new THREE.Vector3( - 1, - 1, 1 )
+	    ];
+
+	    for ( var j = 0; j < 8; j ++ ) {
+
+	      cornerVerts.push( [] );
+	      cornerNormals.push( [] );
+
+	    }
+
+	    var PIhalf = Math.PI / 2;
+	    var cornerOffset = new THREE.Vector3( edgeHalfWidth, edgeHalfHeight, edgeHalfDepth );
+
+	    for ( var y = 0; y <= radiusSegments; y ++ ) {
+
+	      var v = y / radiusSegments;
+	      var va = v * PIhalf; //arrange in 90 deg
+	      var cosVa = Math.cos( va ); //scale of vertical angle
+	      var sinVa = Math.sin( va );
+
+	      if ( y == radiusSegments ) {
+
+	        vertex.set( 0, 1, 0 );
+	        var vert = vertex.clone().multiplyScalar( radius ).add( cornerOffset );
+	        cornerVerts[ 0 ].push( vert );
+	        vertexPool.push( vert );
+	        var norm = vertex.clone();
+	        cornerNormals[ 0 ].push( norm );
+	        normalPool.push( norm );
+	        continue; //skip row loop
+
+	      }
+
+	      for ( var x = 0; x <= radiusSegments; x ++ ) {
+
+	        var u = x / radiusSegments;
+	        var ha = u * PIhalf;
+	        vertex.x = cosVa * Math.cos( ha );
+	        vertex.y = sinVa;
+	        vertex.z = cosVa * Math.sin( ha );
+
+	        var vert = vertex.clone().multiplyScalar( radius ).add( cornerOffset );
+	        cornerVerts[ 0 ].push( vert );
+	        vertexPool.push( vert );
+
+	        var norm = vertex.clone().normalize();
+	        cornerNormals[ 0 ].push( norm );
+	        normalPool.push( norm );
+
+	      }
+
+	    }
+
+	    for ( var i = 1; i < 8; i ++ ) {
+
+	      for ( var j = 0; j < cornerVerts[ 0 ].length; j ++ ) {
+
+	        var vert = cornerVerts[ 0 ][ j ].clone().multiply( cornerLayout[ i ] );
+	        cornerVerts[ i ].push( vert );
+	        vertexPool.push( vert );
+
+	        var norm = cornerNormals[ 0 ][ j ].clone().multiply( cornerLayout[ i ] );
+	        cornerNormals[ i ].push( norm );
+	        normalPool.push( norm );
+
+	      }
+
+	    }
+
+	  }
+
+
+	  // weave corners ====================================
+
+	  function doCorners() {
+
+	    var flips = [
+	      true,
+	      false,
+	      true,
+	      false,
+	      false,
+	      true,
+	      false,
+	      true
+	    ];
+
+	    var lastRowOffset = rs1 * ( radiusSegments - 1 );
+
+	    for ( var i = 0; i < 8; i ++ ) {
+
+	      var cornerOffset = cornerVertNumber * i;
+
+	      for ( var v = 0; v < radiusSegments - 1; v ++ ) {
+
+	        var r1 = v * rs1; //row offset
+	        var r2 = ( v + 1 ) * rs1; //next row
+
+	        for ( var u = 0; u < radiusSegments; u ++ ) {
+
+	          var u1 = u + 1;
+	          var a = cornerOffset + r1 + u;
+	          var b = cornerOffset + r1 + u1;
+	          var c = cornerOffset + r2 + u;
+	          var d = cornerOffset + r2 + u1;
+
+	          if ( ! flips[ i ] ) {
+
+	            indices.push( a );
+	            indices.push( b );
+	            indices.push( c );
+
+	            indices.push( b );
+	            indices.push( d );
+	            indices.push( c );
+
+	          } else {
+
+	            indices.push( a );
+	            indices.push( c );
+	            indices.push( b );
+
+	            indices.push( b );
+	            indices.push( c );
+	            indices.push( d );
+
+	          }
+
+	        }
+
+	      }
+
+	      for ( var u = 0; u < radiusSegments; u ++ ) {
+
+	        var a = cornerOffset + lastRowOffset + u;
+	        var b = cornerOffset + lastRowOffset + u + 1;
+	        var c = cornerOffset + lastVertex;
+
+	        if ( ! flips[ i ] ) {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+
+	        }
+
+	      }
+
+	    }
+
+	  }
+
+	  function doFaces() {
+
+	    var a = lastVertex;// + cornerVertNumber * 0;
+	    var b = lastVertex + cornerVertNumber;// * 1;
+	    var c = lastVertex + cornerVertNumber * 2;
+	    var d = lastVertex + cornerVertNumber * 3;
+
+	    indices.push( a );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( d );
+
+	    a = lastVertex + cornerVertNumber * 4;// + cornerVertNumber * 0;
+	    b = lastVertex + cornerVertNumber * 5;// * 1;
+	    c = lastVertex + cornerVertNumber * 6;
+	    d = lastVertex + cornerVertNumber * 7;
+
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( a );
+	    indices.push( d );
+	    indices.push( c );
+
+	    a = 0;
+	    b = cornerVertNumber;
+	    c = cornerVertNumber * 4;
+	    d = cornerVertNumber * 5;
+
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( d );
+
+	    a = cornerVertNumber * 2;
+	    b = cornerVertNumber * 3;
+	    c = cornerVertNumber * 6;
+	    d = cornerVertNumber * 7;
+
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( d );
+
+	    a = radiusSegments;
+	    b = radiusSegments + cornerVertNumber * 3;
+	    c = radiusSegments + cornerVertNumber * 4;
+	    d = radiusSegments + cornerVertNumber * 7;
+
+	    indices.push( a );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( d );
+	    indices.push( c );
+
+	    a = radiusSegments + cornerVertNumber;
+	    b = radiusSegments + cornerVertNumber * 2;
+	    c = radiusSegments + cornerVertNumber * 5;
+	    d = radiusSegments + cornerVertNumber * 6;
+
+	    indices.push( a );
+	    indices.push( c );
+	    indices.push( b );
+	    indices.push( b );
+	    indices.push( c );
+	    indices.push( d );
+
+	  }
+
+	  function doHeightEdges() {
+
+	    for ( var i = 0; i < 4; i ++ ) {
+
+	      var cOffset = i * cornerVertNumber;
+	      var cRowOffset = 4 * cornerVertNumber + cOffset;
+	      var needsFlip = i & 1 === 1;
+
+	      for ( var u = 0; u < radiusSegments; u ++ ) {
+
+	        var u1 = u + 1;
+	        var a = cOffset + u;
+	        var b = cOffset + u1;
+	        var c = cRowOffset + u;
+	        var d = cRowOffset + u1;
+
+	        if ( ! needsFlip ) {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( d );
+	          indices.push( c );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( d );
+
+	        }
+
+	      }
+
+	    }
+
+	  }
+
+	  function doDepthEdges() {
+
+	    var cStarts = [ 0, 2, 4, 6 ];
+	    var cEnds = [ 1, 3, 5, 7 ];
+
+	    for ( var i = 0; i < 4; i ++ ) {
+
+	      var cStart = cornerVertNumber * cStarts[ i ];
+	      var cEnd = cornerVertNumber * cEnds[ i ];
+
+	      var needsFlip = 1 >= i;
+
+	      for ( var u = 0; u < radiusSegments; u ++ ) {
+
+	        var urs1 = u * rs1;
+	        var u1rs1 = ( u + 1 ) * rs1;
+
+	        var a = cStart + urs1;
+	        var b = cStart + u1rs1;
+	        var c = cEnd + urs1;
+	        var d = cEnd + u1rs1;
+
+	        if ( needsFlip ) {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( d );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( d );
+	          indices.push( c );
+
+	        }
+
+	      }
+
+	    }
+
+	  }
+
+	  function doWidthEdges() {
+
+	    var end = radiusSegments - 1;
+
+	    var cStarts = [ 0, 1, 4, 5 ];
+	    var cEnds = [ 3, 2, 7, 6 ];
+	    var needsFlip = [ 0, 1, 1, 0 ];
+
+	    for ( var i = 0; i < 4; i ++ ) {
+
+	      var cStart = cStarts[ i ] * cornerVertNumber;
+	      var cEnd = cEnds[ i ] * cornerVertNumber;
+
+	      for ( var u = 0; u <= end; u ++ ) {
+
+	        var a = cStart + radiusSegments + u * rs1;
+	        var b = cStart + ( u != end ? radiusSegments + ( u + 1 ) * rs1 : cornerVertNumber - 1 );
+
+	        var c = cEnd + radiusSegments + u * rs1;
+	        var d = cEnd + ( u != end ? radiusSegments + ( u + 1 ) * rs1 : cornerVertNumber - 1 );
+
+	        if ( ! needsFlip[ i ] ) {
+
+	          indices.push( a );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( d );
+	          indices.push( c );
+
+	        } else {
+
+	          indices.push( a );
+	          indices.push( c );
+	          indices.push( b );
+	          indices.push( b );
+	          indices.push( c );
+	          indices.push( d );
+
+	        }
+
+	      }
+
+	    }
+
+	  }
+
+	  var index = 0;
+
+	  for ( var i = 0; i < vertexPool.length; i ++ ) {
+
+	    positions.setXYZ(
+	      index,
+	      vertexPool[ i ].x,
+	      vertexPool[ i ].y,
+	      vertexPool[ i ].z
+	    );
+
+	    normals.setXYZ(
+	      index,
+	      normalPool[ i ].x,
+	      normalPool[ i ].y,
+	      normalPool[ i ].z
+	    );
+
+	    index ++;
+
+	  }
+
+	  this.setIndex( new THREE.BufferAttribute( new Uint16Array( indices ), 1 ) );
+	  this.addAttribute( 'position', positions );
+	  this.addAttribute( 'normal', normals );
+
+	}
+
+	RoundedBoxGeometry.prototype = Object.create( THREE.BufferGeometry.prototype );
+	RoundedBoxGeometry.constructor = RoundedBoxGeometry;
+
+	function RoundedPlaneGeometry( size, radius, depth ) {
+
+	  var x, y, width, height;
+
+	  x = y = - size / 2;
+	  width = height = size;
+	  radius = size * radius;
+
+	  const shape = new THREE.Shape();
+
+	  shape.moveTo( x, y + radius );
+	  shape.lineTo( x, y + height - radius );
+	  shape.quadraticCurveTo( x, y + height, x + radius, y + height );
+	  shape.lineTo( x + width - radius, y + height );
+	  shape.quadraticCurveTo( x + width, y + height, x + width, y + height - radius );
+	  shape.lineTo( x + width, y + radius );
+	  shape.quadraticCurveTo( x + width, y, x + width - radius, y );
+	  shape.lineTo( x + radius, y );
+	  shape.quadraticCurveTo( x, y, x, y + radius );
+
+	  const geometry = new THREE.ExtrudeBufferGeometry(
+	    shape,
+	    { depth: depth, bevelEnabled: false, curveSegments: 3 }
+	  );
+
+	  return geometry;
+
+	}
+
+	class Cube {
+
+		constructor( game ) {
+
+			this.game = game;
+
+			this.theme = 'default';
+
+			this.colors = {
+				default: {
+	        U: 0xfff7ff, // white
+	        D: 0xffef48, // yellow
+	        F: 0xef3923, // red
+	        R: 0x41aac8, // blue
+	        B: 0xff8c0a, // orange
+	        L: 0x82ca38, // green
+	        P: 0x08101a, // piece - black
+	      },
+	      original: {
+	        U: 0xffffff, // white
+	        D: 0xffd500, // yellow
+	        F: 0xc41e3a, // red
+	        R: 0x0051ba, // blue
+	        B: 0xff5800, // orange
+	        L: 0x009e60, // green
+	        P: 0x111111, // piece - black
+	      },
+	      apple: {
+	      	U: 0xffffff, // white
+	        D: 0xffe900, // yellow
+	        F: 0xe23838, // red
+	        R: 0x009cdf, // blue
+	        B: 0xf78200, // orange
+	        L: 0x5ebd3e, // green
+	        P: 0x111111, // piece - black
+	      },
+			};
+
+			this.geometry = {
+				pieceSize: 1 / 3,
+				pieceCornerRadius: 0.12,
+				edgeCornerRoundness: 0.15,
+				edgeScale: 0.82,
+				edgeDepth: 0.01,
+			};
+
+			this.holder = new THREE.Object3D();
+			this.object = new THREE.Object3D();
+			this.animator = new THREE.Object3D();
+			this.holder.add( this.animator );
+			this.animator.add( this.object );
+
+			this.cubes = [];
+			
+			this.generatePositions();
+			this.generateModel();
+
+			this.pieces.forEach( piece => {
+
+				this.cubes.push( piece.userData.cube );
+				this.object.add( piece );
+
+			} );
+
+			this.holder.traverse( node => {
+
+				if ( node.frustumCulled ) node.frustumCulled = false;
+
+			} );
+
+			this.game.world.scene.add( this.holder );
+
+		}
+
+		reset() {
+
+			this.game.controls.edges.rotation.set( 0, 0, 0 );
+
+			this.holder.rotation.set( 0, 0, 0 );
+			this.object.rotation.set( 0, 0, 0 );
+			this.animator.rotation.set( 0, 0, 0 );
+
+			this.pieces.forEach( piece => {
+
+				piece.position.copy( piece.userData.start.position );
+				piece.rotation.copy( piece.userData.start.rotation );
+
+			} );
+
+		}
+
+		generatePositions() {
+
+			let x, y, z;
+
+			this.positions = [];
+
+			for ( x = 0; x < 3; x ++ ) {
+
+				for ( y = 0; y < 3; y ++ ) {
+
+			  	for ( z = 0; z < 3; z ++ ) {
+
+			  		let position = new THREE.Vector3( x - 1, y - 1, z - 1 );
+			  		let edges = [];
+
+			  		if ( x == 0 ) edges.push(0);
+			  		if ( x == 2 ) edges.push(1);
+			  		if ( y == 0 ) edges.push(2);
+			  		if ( y == 2 ) edges.push(3);
+			  		if ( z == 0 ) edges.push(4);
+			  		if ( z == 2 ) edges.push(5);
+
+			  		position.edges = edges;
+
+			  		this.positions.push( position );
+
+			  	}
+
+			  }
+
+			}
+
+		}
+
+		generateModel() {
+
+			this.pieces = [];
+			this.edges = [];
+
+			const pieceSize = 1 / 3;
+
+			const mainMaterial = new THREE.MeshLambertMaterial( {
+				color: this.colors.default.P
+			} );
+
+			const pieceMesh = new THREE.Mesh(
+				new RoundedBoxGeometry( pieceSize, this.geometry.pieceCornerRadius, 3 ),
+				mainMaterial.clone()
+			);
+
+			const edgeGeometry = RoundedPlaneGeometry(
+				pieceSize,
+				this.geometry.edgeCornerRoundness,
+				this.geometry.edgeDepth );
+
+			this.positions.forEach( ( position, index ) => {
+
+				const piece = new THREE.Object3D();
+				const pieceCube = pieceMesh.clone();
+				const pieceEdges = [];
+
+				piece.position.copy( position.clone().divideScalar( 3 ) );
+				piece.add( pieceCube );
+				piece.name = index;
+				piece.edgesName = '';
+
+				position.edges.forEach( position => {
+
+					const edge = new THREE.Mesh( edgeGeometry, mainMaterial.clone() );
+					const name = [ 'L', 'R', 'D', 'U', 'B', 'F' ][ position ];
+					const distance = pieceSize / 2;
+
+					edge.position.set(
+					  distance * [ - 1, 1, 0, 0, 0, 0 ][ position ],
+					  distance * [ 0, 0, - 1, 1, 0, 0 ][ position ],
+					  distance * [ 0, 0, 0, 0, - 1, 1 ][ position ]
+					);
+
+					edge.rotation.set(
+					  Math.PI / 2 * [ 0, 0, 1, - 1, 0, 0 ][ position ],
+					  Math.PI / 2 * [ - 1, 1, 0, 0, 2, 0 ][ position ],
+				  	0
+					);
+
+					edge.scale.set(
+						this.geometry.edgeScale,
+						this.geometry.edgeScale,
+						this.geometry.edgeScale
+					);
+
+					edge.userData.name = name;
+
+					piece.add( edge );
+					pieceEdges.push( name );
+					this.edges.push( edge );
+
+				} );
+
+				piece.userData.edges = pieceEdges;
+				piece.userData.cube = pieceCube;
+
+				piece.userData.start = {
+					position: piece.position.clone(),
+					rotation: piece.rotation.clone(),
+				};
+
+				this.pieces.push( piece );
+
+			} );
+
+		}
+
+		setTheme( theme ) {
+
+			this.theme = theme;
+
+			const colors = this.colors[ this.theme ];
+
+	    this.pieces.forEach( piece => {
+
+	      piece.userData.cube.material.color.setHex( colors.P );
+
+	    } );
+
+	    this.edges.forEach( edge => {
+
+	      edge.material.color.setHex( colors[ edge.userData.name ] );
+
+	    } );
+
+		}
+
+	}
+
+	const Easing = {
+
+	  // Linear 1, Quad 2, Cubic 3, Quart 4, Quint 5
+
+	  Power: {
+
+	    In: power => {
+
+	      power = Math.round( power || 1 );
+
+	      return t => Math.pow( t, power );
+
+	    },
+
+	    Out: power => {
+
+	      power = Math.round( power || 1 );
+
+	      return t => 1 - Math.abs( Math.pow( t - 1, power ) );
+
+	    },
+
+	    InOut: power => {
+
+	      power = Math.round( power || 1 );
+
+	      return t => ( t < 0.5 )
+	        ? Math.pow( t * 2, power ) / 2
+	        : ( 1 - Math.abs( Math.pow( ( t * 2 - 1 ) - 1, power ) ) ) / 2 + 0.5;
+
+	    },
+
+	  },
+
+	  Sine: {
+
+	    In: () => t => 1 + Math.sin( Math.PI / 2 * t - Math.PI / 2 ),
+
+	    Out: () => t => Math.sin( Math.PI / 2 * t ),
+
+	    InOut: () => t => ( 1 + Math.sin( Math.PI * t - Math.PI / 2 ) ) / 2,
+
+	  },
+
+	  Back: {
+
+	    Out: s => {
+
+	      s = s || 1.70158;
+
+	      return t => { return ( t -= 1 ) * t * ( ( s + 1 ) * t + s ) + 1; };
+
+	    },
+
+	    In: s => {
+
+	      s = s || 1.70158;
+
+	      return t => { return t * t * ( ( s + 1 ) * t - s ); };
+
+	    }
+
+	  },
+
+	  Elastic: {
+
+	    Out: ( amplitude, period ) => {
+
+	      let PI2 = Math.PI * 2;
+
+	      let p1 = ( amplitude >= 1 ) ? amplitude : 1;
+	      let p2 = ( period || 0.3 ) / ( amplitude < 1 ? amplitude : 1 );
+	      let p3 = p2 / PI2 * ( Math.asin( 1 / p1 ) || 0 );
+
+	      p2 = PI2 / p2;
+
+	      return t => { return p1 * Math.pow( 2, -10 * t ) * Math.sin( ( t - p3 ) * p2 ) + 1 }
+
+	    },
+
+	  },
+
+	};
+
+	class Tween extends Animation {
+
+	  constructor( options ) {
+
+	    super( false );
+
+	    this.duration = options.duration || 500;
+	    this.easing = options.easing || ( t => t );
+	    this.onUpdate = options.onUpdate || ( () => {} );
+	    this.onComplete = options.onComplete || ( () => {} );
+
+	    this.delay = options.delay || false;
+	    this.yoyo = options.yoyo ? false : null;
+
+	    this.progress = 0;
+	    this.value = 0;
+	    this.delta = 0;
+
+	    this.getFromTo( options );
+
+	    if ( this.delay ) setTimeout( () => super.start(), this.delay );
+	    else super.start();
+
+	    this.onUpdate( this );
+
+	  }
+
+	  update( delta ) {
+
+	    const old = this.value * 1;
+	    const direction = ( this.yoyo === true ) ? - 1 : 1;
+
+	    this.progress += ( delta / this.duration ) * direction;
+
+	    this.value = this.easing( this.progress );
+	    this.delta = this.value - old;
+
+	    if ( this.values !== null ) this.updateFromTo();
+
+	    if ( this.yoyo !== null ) this.updateYoyo();
+	    else if ( this.progress <= 1 ) this.onUpdate( this );
+	    else {
+
+	      this.progress = 1;
+	      this.value = 1;
+	      this.onUpdate( this );
+	      this.onComplete( this );
+	      super.stop();      
+
+	    }
+
+	  }
+
+	  updateYoyo() {
+
+	    if ( this.progress > 1 || this.progress < 0 ) {
+
+	      this.value = this.progress = ( this.progress > 1 ) ? 1 : 0;
+	      this.yoyo = ! this.yoyo;
+
+	    }
+
+	    this.onUpdate( this );
+
+	  }
+
+	  updateFromTo() {
+
+	    this.values.forEach( key => {
+
+	      this.target[ key ] = this.from[ key ] + ( this.to[ key ] - this.from[ key ] ) * this.value;
+
+	    } );
+
+	  }
+
+	  getFromTo( options ) {
+
+	    if ( ! options.target || ! options.to ) {
+
+	      this.values = null;
+	      return;
+
+	    }
+
+	    this.target = options.target || null;
+	    this.from = options.from || {};
+	    this.to = options.to || null;
+	    this.values = [];
+
+	    if ( Object.keys( this.from ).length < 1 )
+	      Object.keys( this.to ).forEach( key => { this.from[ key ] = this.target[ key ]; } );
+
+	    Object.keys( this.to ).forEach( key => { this.values.push( key ); } );
+
+	  }
+
+	}
+
+	window.addEventListener( 'touchmove', () => {} );
+	document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
+
+	class Draggable {
+
+	  constructor( element, options ) {
+
+	    this.position = {
+	      current: new THREE.Vector2(),
+	      start: new THREE.Vector2(),
+	      delta: new THREE.Vector2(),
+	      old: new THREE.Vector2(),
+	      drag: new THREE.Vector2(),
+	      // momentum: new THREE.Vector2(),
+	    };
+
+	    this.options = Object.assign( {
+	      calcDelta: false,
+	      // calcMomentum: false,
+	    }, options || {} );
+
+	    // if ( this.options.calcMomentum ) this.options.calcDelta = true;
+
+	    this.element = element;
+	    this.touch = null;
+
+	    this.drag = {
+
+	      start: ( event ) => {
+
+	        if ( event.type == 'mousedown' && event.which != 1 ) return;
+	        if ( event.type == 'touchstart' && event.touches.length > 1 ) return;
+
+	        this.getPositionCurrent( event );
+
+	        if ( this.options.calcDelta ) {
+
+	          this.position.start = this.position.current.clone();
+	          this.position.delta.set( 0, 0 );
+	          this.position.drag.set( 0, 0 );
+
+	        }
+
+	        // if ( this.options.calcMomentum ) {
+
+	        //     this.position.momentum.set( 0, 0 );
+
+	        // }
+
+	        this.touch = ( event.type == 'touchstart' );
+
+	        this.onDragStart( this.position );
+
+	        window.addEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.drag.move, false );
+	        window.addEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.drag.end, false );
+
+	      },
+
+	      move: ( event ) => {
+
+	        if ( this.options.calcDelta ) {
+
+	          this.position.old = this.position.current.clone();
+
+	        }
+
+	        this.getPositionCurrent( event );
+
+	        if ( this.options.calcDelta ) {
+
+	          this.position.delta = this.position.current.clone().sub( this.position.old );
+	          this.position.drag = this.position.current.clone().sub( this.position.start );
+
+	        }
+
+	        // if ( this.options.calcMomentum ) {
+
+	        //   this.addMomentumPoint( this.position.delta );
+
+	        // }
+
+	        this.onDragMove( this.position );
+
+	      },
+
+	      end: ( event ) => {
+
+	        this.getPositionCurrent( event );
+
+	        // if ( this.options.calcMomentum ) this.getMomentum();
+
+	        this.onDragEnd( this.position );
+
+	        window.removeEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.drag.move, false );
+	        window.removeEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.drag.end, false );
+
+	      },
+
+	    };
+
+	    this.onDragStart = () => {};
+	    this.onDragMove = () => {};
+	    this.onDragEnd = () => {};
+
+	    this.enable();
+
+	    return this;
+
+	  }
+
+	  enable() {
+
+	    this.element.addEventListener( 'touchstart', this.drag.start, false );
+	    this.element.addEventListener( 'mousedown', this.drag.start, false );
+
+	    return this;
+
+	  }
+
+	  disable() {
+
+	    this.element.removeEventListener( 'touchstart', this.drag.start, false );
+	    this.element.removeEventListener( 'mousedown', this.drag.start, false );
+
+	    return this;
+
+	  }
+
+	  getPositionCurrent( event ) {
+
+	    const dragEvent = event.touches
+	      ? ( event.touches[ 0 ] || event.changedTouches[ 0 ] )
+	      : event;
+
+	    this.position.current.set( dragEvent.pageX, dragEvent.pageY );
+
+	  }
+
+	  convertPosition( position ) {
+
+	    position.x = ( position.x / this.element.offsetWidth ) * 2 - 1;
+	    position.y = - ( ( position.y / this.element.offsetHeight ) * 2 - 1 );
+
+	    return position;
+
+	  }
+
+	  // addMomentumPoint( delta ) {
+
+	  //   const time = Date.now();
+
+	  //   while ( this.momentum.length > 0 ) {
+
+	  //     if ( time - this.momentum[0].time <= 200 ) break;
+	  //     this.momentum.shift();
+
+	  //   }
+
+	  //   if ( delta !== false ) this.momentum.push( { delta, time } );
+
+	  // }
+
+	  // getMomentum() {
+
+	  //   const points = this.momentum.length;
+	  //   const momentum = new THREE.Vector2();
+
+	  //   this.addMomentumPoint( false );
+
+	  //   this.momentum.forEach( ( point, index ) => {
+
+	  //     momentum.add( point.delta.multiplyScalar( index / points ) )
+
+	  //   } );
+
+	  //   return momentum;
+
+	  // }
+
+	}
+
+	const STILL = 0;
+	const PREPARING = 1;
+	const ROTATING = 2;
+	const ANIMATING = 3;
+
+	class Controls {
+
+	  constructor( game ) {
+
+	    this.game = game;
+
+	    this.flipSpeed = 300;
+	    this.flipBounce = 1.70158;
+	    this.scrambleSpeed = 150;
+	    this.scrambleBounce = 0;
+
+	    this.raycaster = new THREE.Raycaster();
+
+	    const helperMaterial = new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } );
+
+	    this.group = new THREE.Object3D();
+	    this.game.cube.object.add( this.group );
+
+	    this.helper = new THREE.Mesh(
+	      new THREE.PlaneBufferGeometry( 20, 20 ),
+	      helperMaterial.clone(),
+	    );
+
+	    this.helper.rotation.set( 0, Math.PI / 4, 0 );
+	    this.game.world.scene.add( this.helper );
+
+	    this.edges = new THREE.Mesh(
+	      new THREE.BoxBufferGeometry( 0.95, 0.95, 0.95 ),
+	      helperMaterial.clone(),
+	    );
+
+	    this.game.world.scene.add( this.edges );
+
+	    this.onSolved = () => {};
+	    this.onMove = () => {};
+
+	    this.momentum = [];
+
+	    this.scramble = null;
+	    this.state = STILL;
+
+	    this.initDraggable();
+	    this.generateSolvedStates();
+
+	  }
+
+	  enable() {
+
+	    this.draggable.enable();
+
+	  }
+
+	  disable() {
+
+	    this.draggable.disable();
+
+	  }
+
+	  initDraggable() {
+
+	    this.draggable = new Draggable( this.game.dom.game );
+
+	    this.draggable.onDragStart = position => {
+
+	      if ( this.scramble !== null ) return;
+	      if ( this.state === PREPARING || this.state === ROTATING ) return;
+
+	      this.gettingDrag = this.state === ANIMATING;
+
+	      const edgeIntersect = this.getIntersect( position.current, this.edges, false );
+
+	      if ( edgeIntersect !== false ) {
+
+	        this.dragNormal = edgeIntersect.face.normal.round();
+	        this.flipType = 'layer';
+
+	        this.attach( this.helper, this.edges );
+
+	        this.helper.rotation.set( 0, 0, 0 );
+	        this.helper.position.set( 0, 0, 0 );
+	        this.helper.lookAt( this.dragNormal );
+	        this.helper.translateZ( 0.5 );
+	        this.helper.updateMatrixWorld();
+
+	        this.detach( this.helper, this.edges );
+
+	      } else {
+
+	        this.dragNormal = new THREE.Vector3( 0, 0, 1 );
+	        this.flipType = 'cube';
+
+	        this.helper.position.set( 0, 0, 0 );
+	        this.helper.rotation.set( 0, Math.PI / 4, 0 );
+	        this.helper.updateMatrixWorld();
+
+	      }
+
+	      const planeIntersect = this.getIntersect( position.current, this.helper, false ).point;
+	      if ( planeIntersect === false ) return;
+
+	      this.dragCurrent = this.helper.worldToLocal( planeIntersect );
+	      this.dragTotal = new THREE.Vector3();
+	      this.state = ( this.state === STILL ) ? PREPARING : this.state;
+
+	    };
+
+	    this.draggable.onDragMove = position => {
+
+	      if ( this.scramble !== null ) return;
+	      if ( this.state === STILL || ( this.state === ANIMATING && this.gettingDrag === false ) ) return;
+
+	      const planeIntersect = this.getIntersect( position.current, this.helper, false );
+	      if ( planeIntersect === false ) return;
+
+	      const point = this.helper.worldToLocal( planeIntersect.point.clone() );
+
+	      this.dragDelta = point.clone().sub( this.dragCurrent ).setZ( 0 );
+	      this.dragTotal.add( this.dragDelta );
+	      this.dragCurrent = point;
+	      this.addMomentumPoint( this.dragDelta );
+
+	      if ( this.state === PREPARING && this.dragTotal.length() > 0.05 ) {
+
+	        this.dragDirection = this.getMainAxis( this.dragTotal );
+
+	        if ( this.flipType === 'layer' ) {
+
+	          const direction = new THREE.Vector3();
+	          direction[ this.dragDirection ] = 1;
+
+	          const worldDirection = this.helper.localToWorld( direction ).sub( this.helper.position );
+	          const objectDirection = this.edges.worldToLocal( worldDirection ).round();
+
+	          this.flipAxis = objectDirection.cross( this.dragNormal ).negate();
+
+	          this.dragIntersect = this.getIntersect( position.current, this.game.cube.cubes, true );
+
+	          this.selectLayer( this.getLayer( false ) );
+
+	        } else {
+
+	          const axis = ( this.dragDirection != 'x' )
+	            ? ( ( this.dragDirection == 'y' && position.current.x > this.game.world.width / 2 ) ? 'z' : 'x' )
+	            : 'y';
+
+	          this.flipAxis = new THREE.Vector3();
+	          this.flipAxis[ axis ] = 1 * ( ( axis == 'x' ) ? - 1 : 1 );
+
+	        }
+
+	        this.flipAngle = 0;
+	        this.state = ROTATING;
+
+	      } else if ( this.state === ROTATING ) {
+
+	        const rotation = this.dragDelta[ this.dragDirection ];// * 2.25;
+
+	        if ( this.flipType === 'layer' ) { 
+
+	          this.group.rotateOnAxis( this.flipAxis, rotation );
+	          this.flipAngle += rotation;
+
+	        } else {
+
+	          this.edges.rotateOnWorldAxis( this.flipAxis, rotation );
+	          this.game.cube.object.rotation.copy( this.edges.rotation );
+	          this.flipAngle += rotation;
+
+	        }
+
+	      }
+
+	    };
+
+	    this.draggable.onDragEnd = position => {
+
+	      if ( this.scramble !== null ) return;
+	      if ( this.state !== ROTATING ) {
+
+	        this.gettingDrag = false;
+	        this.state = STILL;
+	        return;
+
+	      }
+
+	      this.state = ANIMATING;
+
+	      const momentum = this.getMomentum()[ this.dragDirection ];
+	      const flip = ( Math.abs( momentum ) > 0.05 && Math.abs( this.flipAngle ) < Math.PI / 2 );
+
+	      const angle = flip
+	        ? this.roundAngle( this.flipAngle + Math.sign( this.flipAngle ) * ( Math.PI / 4 ) )
+	        : this.roundAngle( this.flipAngle );
+
+	      const delta = angle - this.flipAngle;
+
+	      if ( this.flipType === 'layer' ) {
+
+	        this.rotateLayer( delta, false, layer => {
+
+	          this.game.storage.saveGame();
+	          
+	          this.state = this.gettingDrag ? PREPARING : STILL;
+	          this.gettingDrag = false;
+
+	          this.checkIsSolved();
+
+	        } );
+
+	      } else {
+
+	        this.rotateCube( delta, () => {
+
+	          this.state = this.gettingDrag ? PREPARING : STILL;
+	          this.gettingDrag = false;
+
+	        } );
+
+	      }
+
+	    };
+
+	  }
+
+	  rotateLayer( rotation, scramble, callback ) {
+
+	    const bounce = scramble ? this.scrambleBounce : this.flipBounce;
+	    const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
+
+	    this.rotationTween = new Tween( {
+	      duration:scramble ? this.scrambleSpeed : this.flipSpeed,
+	      easing: Easing.Back.Out( bounce ),
+	      onUpdate: tween => {
+
+	        let deltaAngle = tween.delta * rotation;
+	        this.group.rotateOnAxis( this.flipAxis, deltaAngle );
+	        bounceCube( tween.value, deltaAngle, rotation );
+
+	      },
+	      onComplete: () => {
+
+	        this.onMove();
+
+	        const layer = this.flipLayer.slice( 0 );
+
+	        this.game.cube.object.rotation.setFromVector3( this.snapRotation( this.game.cube.object.rotation.toVector3() ) );
+	        this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
+	        this.deselectLayer( this.flipLayer );
+
+	        callback( layer );
+
+	      },
+	    } );
+
+	  }
+
+	  bounceCube() {
+
+	    let fixDelta = true;
+
+	    return ( progress, delta, rotation ) => {
+
+	        if ( progress >= 1 ) {
+
+	          if ( fixDelta ) {
+
+	            delta = ( progress - 1 ) * rotation;
+	            fixDelta = false;
+
+	          }
+
+	          this.game.cube.object.rotateOnAxis( this.flipAxis, delta );
+
+	        }
+
+	    }
+
+	  }
+
+	  rotateCube( rotation, callback ) {
+
+	    this.rotationTween = new Tween( {
+	      duration: this.flipSpeed,
+	      easing: Easing.Back.Out( this.flipBounce ),
+	      onUpdate: tween => {
+
+	        this.edges.rotateOnWorldAxis( this.flipAxis, tween.delta * rotation );
+	        this.game.cube.object.rotation.copy( this.edges.rotation );
+
+	      },
+	      onComplete: () => {
+
+	        this.edges.rotation.setFromVector3( this.snapRotation( this.edges.rotation.toVector3() ) );
+	        this.game.cube.object.rotation.copy( this.edges.rotation );
+	        callback();
+
+	      },
+	    } );
+
+	  }
+
+	  selectLayer( layer ) {
+
+	    this.group.rotation.set( 0, 0, 0 );
+	    this.movePieces( layer, this.game.cube.object, this.group );
+	    this.flipLayer = layer;
+
+	  }
+
+	  deselectLayer( layer ) {
+
+	    this.movePieces( layer, this.group, this.game.cube.object );
+	    this.flipLayer = null;
+
+	  }
+
+	  movePieces( layer, from, to ) {
+
+	    from.updateMatrixWorld();
+	    to.updateMatrixWorld();
+
+	    layer.forEach( index => {
+
+	      const piece = this.game.cube.pieces[ index ];
+
+	      piece.applyMatrix( from.matrixWorld );
+	      from.remove( piece );
+	      piece.applyMatrix( new THREE.Matrix4().getInverse( to.matrixWorld ) );
+	      to.add( piece );
+
+	    } );
+
+	  }
+
+	  getLayer( position ) {
+
+	    const layer = [];
+	    let axis;
+
+	    if ( position === false ) {
+
+	      axis = this.getMainAxis( this.flipAxis );
+	      position = this.getPiecePosition( this.dragIntersect.object );
+
+	    } else {
+
+	      axis = this.getMainAxis( position );
+
+	    }
+
+	    this.game.cube.pieces.forEach( piece => {
+
+	      const piecePosition = this.getPiecePosition( piece );
+
+	      if ( piecePosition[ axis ] == position[ axis ] ) layer.push( piece.name );
+
+	    } );
+
+	    return layer;
+
+	  }
+
+	  getPiecePosition( piece ) {
+
+	    let position = new THREE.Vector3()
+	      .setFromMatrixPosition( piece.matrixWorld )
+	      .multiplyScalar( 3 );
+
+	    return this.game.cube.object.worldToLocal( position.sub( this.game.cube.animator.position ) ).round();
+
+	  }
+
+	  scrambleCube() {
+
+	    if ( this.scramble == null ) {
+
+	      this.scramble = this.game.scrambler;
+	      this.scramble.callback = ( typeof callback !== 'function' ) ? () => {} : callback;
+
+	    }
+
+	    const converted = this.scramble.converted;
+	    const move = converted[ 0 ];
+	    const layer = this.getLayer( move.position );
+
+	    this.flipAxis = new THREE.Vector3();
+	    this.flipAxis[ move.axis ] = 1;
+
+	    this.selectLayer( layer );
+	    this.rotateLayer( move.angle, true, () => {
+
+	      converted.shift();
+
+	      if ( converted.length > 0 ) {
+
+	        this.scrambleCube();
+
+	      } else {
+
+	        this.scramble = null;
+	        this.game.storage.saveGame();
+
+	      }
+
+	    } );
+
+	  }
+
+	  getIntersect( position, object, multiple ) {
+
+	    this.raycaster.setFromCamera(
+	      this.draggable.convertPosition( position.clone() ),
+	      this.game.world.camera
+	    );
+
+	    const intersect = ( multiple )
+	      ? this.raycaster.intersectObjects( object )
+	      : this.raycaster.intersectObject( object );
+
+	    return ( intersect.length > 0 ) ? intersect[ 0 ] : false;
+
+	  }
+
+	  getMainAxis( vector ) {
+
+	    return Object.keys( vector ).reduce(
+	      ( a, b ) => Math.abs( vector[ a ] ) > Math.abs( vector[ b ] ) ? a : b
+	    );
+
+	  }
+
+	  detach( child, parent ) {
+
+	    child.applyMatrix( parent.matrixWorld );
+	    parent.remove( child );
+	    this.game.world.scene.add( child );
+
+	  }
+
+	  attach( child, parent ) {
+
+	    child.applyMatrix( new THREE.Matrix4().getInverse( parent.matrixWorld ) );
+	    this.game.world.scene.remove( child );
+	    parent.add( child );
+
+	  }
+
+	  addMomentumPoint( delta ) {
+
+	    const time = Date.now();
+
+	    this.momentum = this.momentum.filter( moment => time - moment.time < 500 );
+
+	    if ( delta !== false ) this.momentum.push( { delta, time } );
+
+	  }
+
+	  getMomentum() {
+
+	    const points = this.momentum.length;
+	    const momentum = new THREE.Vector2();
+
+	    this.addMomentumPoint( false );
+
+	    this.momentum.forEach( ( point, index ) => {
+
+	      momentum.add( point.delta.multiplyScalar( index / points ) );
+
+	    } );
+
+	    return momentum;
+
+	  }
+
+	  roundAngle( angle ) {
+
+	    const round = Math.PI / 2;
+	    return Math.sign( angle ) * Math.round( Math.abs( angle) / round ) * round;
+
+	  }
+
+	  snapRotation( angle ) {
+
+	    return angle.set(
+	      this.roundAngle( angle.x ),
+	      this.roundAngle( angle.y ),
+	      this.roundAngle( angle.z )
+	    );
+
+	  }
+
+	  checkIsSolved() {
+
+	    return this.solvedStates.indexOf( this.getPiecesPositions() ) > -1;
+
+	  }
+
+	  generateSolvedStates() {
+
+	    const solvedStates = [];
+	    const rotations = [];
+
+	    for ( let x = 0; x < 4; x++ )
+	      for ( let y = 0; y < 4; y++ )
+	        for ( let z = 0; z < 4; z++ )
+	          rotations.push( [ x, y, z ] );
+
+	    rotations.forEach( rotation => {
+
+	      this.game.cube.object.rotation.set(
+	        rotation[0] * Math.PI / 2,
+	        rotation[1] * Math.PI / 2,
+	        rotation[2] * Math.PI / 2
+	      );
+
+	      this.game.cube.object.updateMatrixWorld();
+
+	      solvedStates.push( this.getPiecesPositions() );
+
+	    } );
+
+	    this.solvedStates = Array.from( new Set( solvedStates ) );
+
+	    this.game.cube.object.rotation.set( 0, 0, 0 );
+	    this.game.cube.object.updateMatrixWorld();
+
+	  }
+
+	  getPiecesPositions() {
+
+	    const positions = [];
+
+	    this.game.cube.pieces.forEach( piece => positions.push(
+	      this.game.cube.object
+	        .localToWorld( piece.position.clone() )
+	        .multiplyScalar( 3 ).round()
+	        .toArray().toString()
+	    ) );
+
+	    return positions.toString();
+
+	  }
+
+	}
+
+	class Scrambler {
+
+		constructor( game ) {
+
+			this.game = game;
+
+			this.scrambleLength = 20;
+
+			this.moves = [];
+			this.conveted = [];
+			this.pring = '';
+
+		}
+
+		scramble( scramble ) {
+
+			let count = 0;
+			this.moves = ( typeof scramble !== 'undefined' ) ? scramble.split( ' ' ) : [];
+
+			if ( this.moves.length < 1 ) {
+
+				const faces = 'UDLRFB';
+				const modifiers = [ "", "'", "2" ];
+				const total = ( typeof scramble === 'undefined' ) ? this.scrambleLength : scramble;
+
+				// TODO: Other Cube Sizes Scramble
+
+				while ( count < total ) {
+
+					const move = faces[ Math.floor( Math.random() * 6 ) ] + modifiers[ Math.floor( Math.random() * 3 ) ];
+					if ( count > 0 && move.charAt( 0 ) == this.moves[ count - 1 ].charAt( 0 ) ) continue;
+					if ( count > 1 && move.charAt( 0 ) == this.moves[ count - 2 ].charAt( 0 ) ) continue;
+					this.moves.push( move );
+					count ++;
+
+				}
+
+			}
+
+			this.callback = () => {};
+			this.convert();
+			this.print = this.moves.join( ' ' );
+
+			return this;
+
+		}
+
+		convert( moves ) {
+
+			this.converted = [];
+
+			this.moves.forEach( move => {
+
+				const face = move.charAt( 0 );
+				const modifier = move.charAt( 1 );
+
+				const axis = { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face ];
+				const row = { D: -1, U: 1, L: -1, R: 1, F: 1, B: -1 }[ face ];
+
+				const position = new THREE.Vector3();
+				position[ { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face ] ] = row;
+
+				const angle = ( Math.PI / 2 ) * - row * ( ( modifier == "'" ) ? - 1 : 1 );
+
+				const convertedMove = { position, axis, angle, name: move };
+
+				this.converted.push( convertedMove );
+				if ( modifier == "2" ) this.converted.push( convertedMove );
+
+			} );
+
+		}
+
+	}
+
+	class Transition {
+
+	  constructor( game ) {
+
+	    this.game = game;
+
+	    this.tweens = {};
+	    this.durations = {};
+	    this.data = {};
+
+	    this.activeTransitions = 0;
+
+	  }
+
+	  init() {
+
+	    this.data.cubeY = -0.2;
+	    this.data.cameraZoom = 0.85;
+
+	    this.game.controls.disable();
+
+	    this.game.cube.object.position.y = this.data.cubeY;
+	    this.game.controls.edges.position.y = this.data.cubeY;
+	    this.game.cube.animator.position.y = 4;
+	    this.game.cube.animator.rotation.x = - Math.PI / 3;
+	    this.game.world.camera.zoom = this.data.cameraZoom;
+	    this.game.world.camera.updateProjectionMatrix();
+
+	    this.tweens.buttons = {};
+	    this.tweens.timer = [];
+	    this.tweens.title = [];
+	    this.tweens.best = [];
+	    this.tweens.complete = [];
+	    this.tweens.range = [];
+	    this.tweens.stats = [];
+
+	  }
+
+	  buttons( show, hide ) {
+
+	    const buttonTween = ( button, show ) => {
+
+	      return new Tween( {
+	        target: button.style,
+	        duration: 300,
+	        easing: show ? Easing.Power.Out( 2 ) : Easing.Power.In( 3 ),
+	        from: { opacity: show ? 0 : 1 },
+	        to: { opacity: show ? 1 : 0 },
+	        onUpdate: tween => {
+
+	          const translate = show ? 1 - tween.value : tween.value;
+	          button.style.transform = `translate3d(0, ${translate * 1.5}em, 0)`;
+
+	        },
+	        onComplete: () => button.style.pointerEvents = show ? 'all' : 'none'
+	      } );
+
+	    };
+
+	    hide.forEach( button =>
+	      this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], false )
+	    );
+
+	    setTimeout( () => show.forEach( button => {
+
+	      this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], true );
+
+	    } ), hide ? 500 : 0 );
+
+	  }
+
+	  cube( show ) {
+
+	    this.activeTransitions++;
+
+	    try { this.tweens.cube.stop(); } catch(e) {}
+	    const currentY = this.game.cube.animator.position.y;
+	    const currentRotation = this.game.cube.animator.rotation.x;
+
+	    this.tweens.cube = new Tween( {
+	      duration: show ? 3000 : 1250,
+	      easing: show ? Easing.Elastic.Out( 0.8, 0.6 ) : Easing.Back.In( 1 ),
+	      onUpdate: tween => {
+
+	        this.game.cube.animator.position.y = show
+	          ? ( 1 - tween.value ) * 4
+	          : currentY + tween.value * 4;
+
+	        this.game.cube.animator.rotation.x = show
+	          ? ( 1 - tween.value ) * Math.PI / 3
+	          : currentRotation + tween.value * - Math.PI / 3;
+
+	      }
+	    } );
+
+	    this.durations.cube = show ? 1500 : 1500;
+
+	    setTimeout( () => this.activeTransitions--, this.durations.cube );
+
+	  }
+
+	  float() {
+
+	    try { this.tweens.float.stop(); } catch(e) {}
+	    this.tweens.float = new Tween( {
+	      duration: 1500,
+	      easing: Easing.Sine.InOut(),
+	      yoyo: true,
+	      onUpdate: tween => {
+
+	        this.game.cube.holder.position.y = (- 0.02 + tween.value * 0.04); 
+	        this.game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
+	        this.game.cube.holder.rotation.z = - this.game.cube.holder.rotation.x;
+	        this.game.cube.holder.rotation.y = this.game.cube.holder.rotation.x;
+
+	      },
+	    } );
+
+	  }
+
+	  zoom( play, time ) {
+
+	    this.activeTransitions++;
+
+	    const zoom = ( play ) ? 1 : this.data.cameraZoom;
+	    const duration = ( time > 0 ) ? Math.max( time, 1500 ) : 1500;
+	    const rotations = ( time > 0 ) ? Math.round( duration / 1500 ) : 1;
+	    const easing = Easing.Power.InOut( ( time > 0 ) ? 2 : 3 );
+
+	    this.tweens.zoom = new Tween( {
+	      target: this.game.world.camera,
+	      duration: duration,
+	      easing: easing,
+	      to: { zoom: zoom },
+	      onUpdate: () => { this.game.world.camera.updateProjectionMatrix(); },
+	    } );
+
+	    this.tweens.rotate = new Tween( {
+	      target: this.game.cube.animator.rotation,
+	      duration: duration,
+	      easing: easing,
+	      to: { y: - Math.PI * 2 * rotations },
+	      onComplete: () => { this.game.cube.animator.rotation.y = 0; },
+	    } );
+
+	    this.durations.zoom = duration;
+
+	    setTimeout( () => this.activeTransitions--, this.durations.zoom );
+
+	  }
+
+	  elevate( complete ) {
+
+	    this.activeTransitions++;
+
+	    const cubeY = 
+
+	    this.tweens.elevate = new Tween( {
+	      target: this.game.cube.object.position,
+	      duration: complete ? 1500 : 0,
+	      easing: Easing.Power.InOut( 3 ),
+	      to: { y: complete ? -0.05 : this.data.cubeY }
+	    } );
+
+	    this.durations.elevate = 1500;
+
+	    setTimeout( () => this.activeTransitions--, this.durations.elevate );
+
+	  }
+
+	  complete( show, best ) {
+
+	    this.activeTransitions++;
+
+	    const text = best ? this.game.dom.texts.best : this.game.dom.texts.complete;
+
+	    if ( text.querySelector( 'span i' ) === null )
+	      text.querySelectorAll( 'span' ).forEach( span => this.splitLetters( span ) );
+
+	    const letters = text.querySelectorAll( '.icon, i' );
+
+	    this.flipLetters( best ? 'best' : 'complete', letters, show );
+
+	    text.style.opacity = 1;
+
+	    const duration = this.durations[ best ? 'best' : 'complete' ];
+
+	    if ( ! show ) setTimeout( () => this.game.dom.texts.timer.style.transform = '', duration );
+
+	    setTimeout( () => this.activeTransitions--, duration );
+
+	  } 
+
+	  stats( show ) {
+
+	    if ( show ) this.game.scores.calcStats();
+
+	    this.activeTransitions++;
+
+	    this.tweens.stats.forEach( tween => { tween.stop(); tween = null; } );
+
+	    let tweenId = -1;
+
+	    const stats = this.game.dom.stats.querySelectorAll( '.stats' );
+	    const easing = show ? Easing.Power.Out( 2 ) : Easing.Power.In( 3 );
+
+	    stats.forEach( ( stat, index ) => {
+
+	      const delay = index * ( show ? 80 : 60 );
+
+	      this.tweens.stats[ tweenId++ ] = new Tween( {
+	        delay: delay,
+	        duration: 400,
+	        easing: easing,
+	        onUpdate: tween => {
+
+	          const translate = show ? ( 1 - tween.value ) * 2 : tween.value;
+	          const opacity = show ? tween.value : ( 1 - tween.value );
+
+	          stat.style.transform = `translate3d(0, ${translate}em, 0)`;
+	          stat.style.opacity = opacity;
+
+	        }
+	      } );
+
+	    } );
+
+	    this.durations.stats = 0;
+
+	    setTimeout( () => this.activeTransitions--, this.durations.stats );
+
+	  }
+
+	  preferences( show ) {
+
+	    this.activeTransitions++;
+
+	    this.tweens.range.forEach( tween => { tween.stop(); tween = null; } );
+
+	    let tweenId = -1;
+	    let listMax = 0;
+
+	    const ranges = this.game.dom.prefs.querySelectorAll( '.range' );
+	    const easing = show ? Easing.Power.Out(2) : Easing.Power.In(3);
+
+	    ranges.forEach( ( range, rangeIndex ) => {
+
+	      const label = range.querySelector( '.range__label' );
+	      const track = range.querySelector( '.range__track-line' );
+	      const handle = range.querySelector( '.range__handle' );
+	      const list = range.querySelectorAll( '.range__list div' );
+
+	      const delay = rangeIndex * ( show ? 120 : 100 );
+
+	      label.style.opacity = show ? 0 : 1;
+	      track.style.opacity = show ? 0 : 1;
+	      handle.style.opacity = show ? 0 : 1;
+	      handle.style.pointerEvents = show ? 'all' : 'none';
+
+	      this.tweens.range[ tweenId++ ] = new Tween( {
+	        delay: show ? delay : delay,
+	        duration: 400,
+	        easing: easing,
+	        onUpdate: tween => {
+
+	          const translate = show ? ( 1 - tween.value ) : tween.value;
+	          const opacity = show ? tween.value : ( 1 - tween.value );
+
+	          label.style.transform = `translate3d(0, ${translate}em, 0)`;
+	          label.style.opacity = opacity;
+
+	        }
+	      } );
+
+	      this.tweens.range[ tweenId++ ] = new Tween( {
+	        delay: show ? delay + 100 : delay,
+	        duration: 400,
+	        easing: easing,
+	        onUpdate: tween => {
+
+	          const translate = show ? ( 1 - tween.value ) : tween.value;
+	          const scale = show ? tween.value : ( 1 - tween.value );
+	          const opacity = scale;
+
+	          track.style.transform = `translate3d(0, ${translate}em, 0) scale3d(${scale}, 1, 1)`;
+	          track.style.opacity = opacity;
+
+	        }
+	      } );
+
+	      this.tweens.range[ tweenId++ ] = new Tween( {
+	        delay: show ? delay + 100 : delay,
+	        duration: 400,
+	        easing: easing,
+	        onUpdate: tween => {
+
+	          const translate = show ? ( 1 - tween.value ) : tween.value;
+	          const opacity = 1 - translate;
+	          const scale = 0.5 + opacity * 0.5;
+
+	          handle.style.transform = `translate3d(0, ${translate}em, 0) scale3d(${scale}, ${scale}, ${scale})`;
+	          handle.style.opacity = opacity;
+
+	        }
+	      } );
+
+	      list.forEach( ( listItem, labelIndex ) => {
+
+	        listItem.style.opacity = show ? 0 : 1;
+
+	        this.tweens.range[ tweenId++ ] = new Tween( {
+	          delay: show ? delay + 200 + labelIndex * 50 : delay,
+	          duration: 400,
+	          easing: easing,
+	          onUpdate: tween => {
+
+	            const translate = show ? ( 1 - tween.value ) : tween.value;
+	            const opacity = show ? tween.value : ( 1 - tween.value );
+
+	            listItem.style.transform = `translate3d(0, ${translate}em, 0)`;
+	            listItem.style.opacity = opacity;
+
+	          }
+	        } );
+
+	      } );
+
+	      listMax = list.length > listMax ? list.length - 1 : listMax;
+
+	      range.style.opacity = 1;
+
+	    } );
+
+	    this.durations.preferences = show
+	      ? ( ( ranges.length - 1 ) * 100 ) + 200 + listMax * 50 + 400
+	      : ( ( ranges.length - 1 ) * 100 ) + 400;
+
+	    setTimeout( () => this.activeTransitions--, this.durations.preferences );
+
+	  }
+
+	  title( show ) {
+
+	    this.activeTransitions++;
+
+	    const title = this.game.dom.texts.title;
+
+	    if ( title.querySelector( 'span i' ) === null )
+	      title.querySelectorAll( 'span' ).forEach( span => this.splitLetters( span ) );
+
+	    const letters = title.querySelectorAll( 'i' );
+
+	    this.flipLetters( 'title', letters, show );
+
+	    title.style.opacity = 1;
+
+	    const note = this.game.dom.texts.note;
+
+	    this.tweens.title[ letters.length ] = new Tween( {
+	      target: note.style,
+	      easing: Easing.Sine.InOut(),
+	      duration: show ? 800 : 400,
+	      yoyo: show ? true : null,
+	      from: { opacity: show ? 0 : ( parseFloat( getComputedStyle( note ).opacity ) ) },
+	      to: { opacity: show ? 1 : 0 },
+	    } );
+
+	    setTimeout( () => this.activeTransitions--, this.durations.title );
+
+	  }
+
+	  timer( show ) {
+
+	    this.activeTransitions++;
+
+	    const timer = this.game.dom.texts.timer;
+
+	    timer.style.opacity = 0;
+	    this.game.timer.convert();
+	    this.game.timer.setText();
+
+	    this.splitLetters( timer );
+	    const letters = timer.querySelectorAll( 'i' );
+	    this.flipLetters( 'timer', letters, show );
+
+	    timer.style.opacity = 1;
+
+	    setTimeout( () => this.activeTransitions--, this.durations.timer );
+
+	  }
+
+	  // Utilities
+
+	  splitLetters( element ) {
+
+	    const text = element.innerHTML;
+
+	    element.innerHTML = '';
+
+	    text.split( '' ).forEach( letter => {
+
+	      const i = document.createElement( 'i' );
+
+	      i.innerHTML = letter;
+
+	      element.appendChild( i );
+
+	    } );
+
+	  }
+
+	  flipLetters( type, letters, show ) {
+
+	    try { this.tweens[ type ].forEach( tween => tween.stop() ); } catch(e) {}
+	    letters.forEach( ( letter, index ) => {
+
+	      letter.style.opacity = show ? 0 : 1;
+
+	      this.tweens[ type ][ index ] = new Tween( {
+	        easing: Easing.Sine.Out(),
+	        duration: show ? 800 : 400,
+	        delay: index * 50,
+	        onUpdate: tween => {
+
+	          const rotation = show ? ( 1 - tween.value ) * -80 : tween.value * 80;
+
+	          letter.style.transform = `rotate3d(0, 1, 0, ${rotation}deg)`;
+	          letter.style.opacity = show ? tween.value : ( 1 - tween.value );
+
+	        },
+	      } );
+
+	    } );
+
+	    this.durations[ type ] = ( letters.length - 1 ) * 50 + ( show ? 800 : 400 );
+
+	  }
+
+	}
+
+	class Timer extends Animation {
+
+		constructor( game ) {
+
+			super( false );
+
+			this.game = game;
+			this.reset();
+			
+		}
+
+		start( continueGame ) {
+
+			this.startTime = continueGame ? ( Date.now() - this.deltaTime ) : Date.now();
+			this.deltaTime = 0;
+			this.converted = this.convert();
+
+			super.start();
+
+		}
+
+		reset() {
+
+			this.startTime = 0;
+			this.currentTime = 0;
+			this.deltaTime = 0;
+			this.converted = '0:00';
+
+		}
+
+		stop() {
+
+			this.currentTime = Date.now();
+			this.deltaTime = this.currentTime - this.startTime;
+			this.convert();
+
+			super.stop();
+
+			return { time: this.converted, millis: this.deltaTime };
+
+		}
+
+		update() {
+
+			const old = this.converted;
+
+			this.currentTime = Date.now();
+			this.deltaTime = this.currentTime - this.startTime;
+			this.convert();
+
+			if ( this.converted != old ) {
+
+				localStorage.setItem( 'gameTime', this.deltaTime );
+				this.setText();
+
+			}
+
+		}
+
+		convert() {
+
+			const seconds = parseInt( ( this.deltaTime / 1000 ) % 60 );
+			const minutes = parseInt( ( this.deltaTime / ( 1000 * 60 ) ) );
+
+			this.converted = minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds;
+
+		}
+
+		setText() {
+
+			this.game.dom.texts.timer.innerHTML = this.converted;
+
+		}
+
+	}
+
+	class Audio {
+
+	  constructor( game ) {
+
+	    this.game = game;
+	    this.volume = 0.2;
+	    this.volumeTween = null;
+
+	    const listener = new THREE.AudioListener();
+	    const audioLoader = new THREE.AudioLoader();
+
+	    this.music = new THREE.Audio( listener );
+
+	    audioLoader.load( 'assets/sounds/music.mp3', buffer => {
+
+	      this.music.setBuffer( buffer );
+	      this.music.setLoop( true );
+	      this.music.setVolume( 0 );
+
+	    });
+
+	    this.flip = new THREE.Audio( listener );
+
+	    audioLoader.load( 'assets/sounds/flip.mp3', buffer => {
+
+	      this.flip.setBuffer( buffer );
+	      this.flip.setLoop( false );
+	      this.flip.setVolume( this.volume );
+
+	    });
+
+	  }
+
+	  fadeMusic( play ) {
+
+	    if ( play ) this.music.play();
+
+	    if ( this.volumeTween != null ) this.volumeTween.stop();
+
+	    const from = this.music.getVolume();
+	    const to = play ? this.volume : 0;
+
+	    this.volumeTween = new Tween({
+	      duration: 500,
+	      onUpdate: tween => {
+
+	        const volume = from + ( to - from ) * tween.value;
+
+	        this.music.setVolume( volume );
+
+	      },
+	      onComplete: () => {
+
+	        if ( ! play ) this.music.pause();
+
+	      }
+	    });
+
+	  }
+
+	  setVolume( volume ) {
+
+	    this.flip.setVolume( this.volume );
+
+	  }
+
+	}
+
+	const RangeHTML = [
+
+	  '<div class="range">',
+	    '<div class="range__label"></div>',
+	    '<div class="range__track">',
+	      '<div class="range__track-line"></div>',
+	      '<div class="range__handle"></div>',
+	    '</div>',
+	    '<div class="range__list"></div>',
+	  '</div>',
+
+	].join( '\n' );
+
+	document.querySelectorAll( 'range' ).forEach( el => {
+
+	  const temp = document.createElement( 'div' );
+	  temp.innerHTML = RangeHTML;
+
+	  const range = temp.querySelector( '.range' );
+	  const rangeLabel = range.querySelector( '.range__label' );
+	  const rangeList = range.querySelector( '.range__list' );
+
+	  range.setAttribute( 'name', el.getAttribute( 'name' ) );
+	  rangeLabel.innerHTML = el.getAttribute( 'title' );
+
+	  el.getAttribute( 'list' ).split( ',' ).forEach( listItemText => {
+
+	    const listItem = document.createElement( 'div' );
+	    listItem.innerHTML = listItemText;
+	    rangeList.appendChild( listItem );
+
+	  } );
+
+	  el.parentNode.replaceChild( range, el );
+
+	} );
+
+	class Range {
+
+	  constructor( name, options ) {
+
+	    options = Object.assign( {
+	      range: [ 0, 1 ],
+	      value: 0,
+	      step: 0,
+	      onUpdate: () => {},
+	      onComplete: () => {},
+	    }, options || {} );
+
+	    this.element = document.querySelector( '.range[name="' + name + '"]' );
+	    this.track = this.element.querySelector( '.range__track' );
+	    this.handle = this.element.querySelector( '.range__handle' );
+
+	    this.value = options.value;
+	    this.min = options.range[0];
+	    this.max = options.range[1];
+	    this.step = options.step;
+
+	    this.onUpdate = options.onUpdate;
+	    this.onComplete = options.onComplete;
+
+	    this.value = this.round( this.limitValue( this.value ) );
+	    this.setHandlePosition();
+
+	    this.initDraggable();
+
+	  }
+
+	  initDraggable() {
+
+	    let current;
+
+	    this.draggable = new Draggable( this.handle, { calcDelta: true } );
+
+	    this.draggable.onDragStart = position => {
+
+	      current = this.positionFromValue( this.value );
+	      this.handle.style.left = current + 'px';
+
+	    };
+
+	    this.draggable.onDragMove = position => {
+
+	      current = this.limitPosition( current + position.delta.x );
+	      this.value = this.round( this.valueFromPosition( current ) );
+	      this.setHandlePosition();
+	      
+	      this.onUpdate( this.value );
+
+	    };
+
+	    this.draggable.onDragEnd = position => {
+
+	      this.onComplete( this.value );
+
+	    };
+
+	  }
+
+	  round( value ) {
+
+	    if ( this.step < 1 ) return value;
+
+	    return Math.round( ( value - this.min ) / this.step ) * this.step + this.min;
+
+	  }
+
+	  limitValue( value ) {
+
+	    const max = Math.max( this.max, this.min );
+	    const min = Math.min( this.max, this.min );
+
+	    return Math.min( Math.max( value, min ), max );
+
+	  }
+
+	  limitPosition( position ) {
+
+	    return Math.min( Math.max( position, 0 ), this.track.offsetWidth );
+
+	  }
+
+	  percentsFromValue( value ) {
+
+	    return ( value - this.min ) / ( this.max - this.min );
+
+	  }
+
+	  valueFromPosition( position ) {
+
+	    return this.min + ( this.max - this.min ) * ( position / this.track.offsetWidth );
+
+	  }
+
+	  positionFromValue( value ) {
+
+	    return this.percentsFromValue( value ) * this.track.offsetWidth;
+
+	  }
+
+	  setHandlePosition() {
+
+	    this.handle.style.left = this.percentsFromValue( this.value ) * 100 + '%';
+
+	  }
+
+	}
+
+	class Preferences {
+
+	  constructor( game ) {
+
+	    this.game = game;
+
+	  }
+
+	  init() {
+
+	    const getProgressInRange = ( value, start, end ) => {
+
+	      return Math.min( Math.max( (value - start) / (end - start), 0 ), 1 );
+	      
+	    };
+
+	    this.ranges = {
+
+	      speed: new Range( 'speed', {
+	        value: this.game.controls.flipSpeed,
+	        range: [ 350, 100 ], 
+	        onUpdate: value => {
+
+	          this.game.controls.flipSpeed = value;
+	          this.game.controls.flipBounce = getProgressInRange( value, 100, 350 ) * 2.125;
+
+	        },
+	        onComplete: () => this.game.storage.savePreferences(),
+	      } ),
+
+	      scramble: new Range( 'scramble', {
+	        value: this.game.scrambler.scrambleLength,
+	        range: [ 20, 30 ],
+	        step: 5,
+	        onUpdate: value => {
+
+	          this.game.scrambler.scrambleLength = value;
+
+	        },
+	        onComplete: () => this.game.storage.savePreferences()
+	      } ),
+
+	      fov: new Range( 'fov', {
+	        value: this.game.world.fov,
+	        range: [ 2, 45 ],
+	        onUpdate: value => {
+
+	          this.game.world.fov = value;
+	          this.game.world.resize();
+
+	        },
+	        onComplete: () => this.game.storage.savePreferences()
+	      } ),
+
+	      theme: new Range( 'theme', {
+	        value: this.game.cube.theme === 'default' ? 0 : 1,
+	        range: [ 0, 1 ],
+	        step: 1,
+	        onUpdate: value => {
+
+	          const theme = value === 0 ? 'default' : 'original';
+	          this.game.cube.setTheme( theme );
+
+	        },
+	        onComplete: () => this.game.storage.savePreferences()
+	      } ),
+
+	      audio: new Range( 'audio', {
+	        value: this.game.audio.volume,
+	        range: [ 0, 1 ],
+	        onUpdate: value => {
+
+	          this.game.audio.setVolume( value );
+
+	        },
+	        onComplete: () => this.game.storage.savePreferences()
+	      } ),
+
+	    };
+	    
+	  }
+
+	}
+
+	class Scores {
+
+	  constructor( game ) {
+
+	    this.game = game;
+
+	    this.scores = [];
+	    this.solves = 0;
+	    this.best = 0;
+	    this.worst = 0;
+
+	  }
+
+	  addScore( time ) {
+
+	    this.scores.push( time );
+	    this.solves++;
+
+	    if ( this.scores.lenght > 100 ) this.scores.shift();
+
+	    let bestTime = false;    
+
+	    if ( time < this.best || this.best === 0 ) {
+
+	      this.best = time;
+	      bestTime = true;
+
+	    }
+
+	    if ( time > this.worst ) this.worst = time;
+
+	    this.game.storage.saveScores();
+
+	    return bestTime;
+
+	  }
+
+	  calcStats() {
+
+	    this.setStat( 'total-solves', this.solves );
+	    this.setStat( 'best-time', this.convertTime( this.best ) );
+	    this.setStat( 'worst-time', this.convertTime( this.worst ) );
+	    this.setStat( 'average-5', this.getAverage( 5 ) );
+	    this.setStat( 'average-10', this.getAverage( 10 ) );
+	    this.setStat( 'average-15', this.getAverage( 15 ) );
+
+	  }
+
+	  setStat( name, value ) {
+
+	    if ( value === 0 ) return;
+
+	    this.game.dom.stats.querySelector( `.stats[name="${name}"] b` ).innerHTML = value;
+
+	  }
+
+	  getAverage( count ) {
+
+	    if ( this.scores.length < count ) return 0;
+
+	    return this.convertTime( this.scores.slice(-count).reduce( ( a, b ) => a + b, 0 ) / count );
+
+	  }
+
+	  convertTime( time ) {
+
+	    if ( time <= 0 ) return 0;
+
+	    const seconds = parseInt( ( time / 1000 ) % 60 );
+	    const minutes = parseInt( ( time / ( 1000 * 60 ) ) );
+
+	    return minutes + ':' + ( seconds < 10 ? '0' : '' ) + seconds;
+
+	  }
+
+	}
+
+	class Storage {
+
+	  constructor( game ) {
+
+	    this.game = game;
+
+	    const gameVersion = 3;
+	    const userVersion = parseInt( localStorage.getItem( 'version' ) );
+
+	    if ( ! userVersion || userVersion !== gameVersion ) {
+
+	      this.clearGame();
+	      // this.clearScores();
+	      this.clearPreferences();
+	      localStorage.setItem( 'version', gameVersion );
+
+	    }
+
+	  }
+
+	  init() {
+
+	    this.loadGame();
+	    this.loadScores();
+	    this.loadPreferences();
+
+	  }
+
+	  // GAME
+
+	  loadGame() {
+
+	    try {
+
+	      const gameInProgress = localStorage.getItem( 'gameInProgress' ) === 'true';
+
+	      if ( ! gameInProgress ) throw new Error();
+
+	      const gameCubeData = JSON.parse( localStorage.getItem( 'gameCubeData' ) );
+	      const gameTime = parseInt( localStorage.getItem( 'gameTime' ) );
+
+	      if ( ! gameCubeData || ! gameTime ) throw new Error();
+
+	      this.game.cube.pieces.forEach( piece => {
+
+	        const index = gameCubeData.names.indexOf( piece.name );
+
+	        const position = gameCubeData.positions[index];
+	        const rotation = gameCubeData.rotations[index];
+
+	        piece.position.set( position.x, position.y, position.z );
+	        piece.rotation.set( rotation.x, rotation.y, rotation.z );
+
+	      } );
+
+	      this.game.timer.deltaTime = gameTime;
+
+	      this.game.saved = true;
+
+	    } catch( e ) {
+
+	      this.game.saved = false;
+
+	    }
+
+	  }
+
+	  saveGame() {
+
+	    const gameInProgress = true;
+	    const gameCubeData = { names: [], positions: [], rotations: [] };
+	    const gameTime = this.game.timer.deltaTime;
+
+	    this.game.cube.pieces.forEach( piece => {
+
+	      gameCubeData.names.push( piece.name );
+	      gameCubeData.positions.push( piece.position );
+	      gameCubeData.rotations.push( piece.rotation.toVector3() );
+
+	    } );
+
+	    localStorage.setItem( 'gameInProgress', gameInProgress );
+	    localStorage.setItem( 'gameCubeData', JSON.stringify( gameCubeData ) );
+	    localStorage.setItem( 'gameTime', gameTime );
+
+	  }
+
+	  clearGame() {
+
+	    localStorage.removeItem( 'gameInProgress' );
+	    localStorage.removeItem( 'gameCubeData' );
+	    localStorage.removeItem( 'gameTime' );
+
+	  }
+
+	  // SCORE
+
+	  loadScores() {
+
+	    try {
+
+	      const scoresData = JSON.parse( localStorage.getItem( 'scoresData' ) );
+	      const scoresBest = parseInt( localStorage.getItem( 'scoresBest' ) );
+	      const scoresWorst = parseInt( localStorage.getItem( 'scoresWorst' ) );
+	      const scoresSolves = parseInt( localStorage.getItem( 'scoresSolves' ) );
+
+	      if ( ! scoresData || ! scoresBest || ! scoresSolves || ! scoresWorst ) throw new Error();
+
+	      this.game.scores.scores = scoresData;
+	      this.game.scores.best = scoresBest;
+	      this.game.scores.solves = scoresSolves;
+	      this.game.scores.worst = scoresWorst;
+
+	      return true;
+
+	    } catch( e ) {
+
+	      this.clearScores();
+
+	      return false;
+
+	    }
+
+	  }
+
+	  saveScores() {
+
+	    const scoresData = this.game.scores.scores;
+	    const scoresBest = this.game.scores.best;
+	    const scoresWorst = this.game.scores.worst;
+	    const scoresSolves = this.game.scores.solves;
+
+	    localStorage.setItem( 'scoresData', JSON.stringify( scoresData ) );
+	    localStorage.setItem( 'scoresBest', JSON.stringify( scoresBest ) );
+	    localStorage.setItem( 'scoresWorst', JSON.stringify( scoresWorst ) );
+	    localStorage.setItem( 'scoresSolves', JSON.stringify( scoresSolves ) );
+
+	  }
+
+	  clearScores() {
+
+	    localStorage.removeItem( 'scoresData' );
+	    localStorage.removeItem( 'scoresBest' );
+	    localStorage.removeItem( 'scoresWorst' );
+	    localStorage.removeItem( 'scoresSolves' );
+
+	  }
+
+	  // PREFERENCES
+
+	  loadPreferences() {
+
+	    try {
+
+	      const preferences = JSON.parse( localStorage.getItem( 'preferences' ) );
+
+	      if ( ! preferences ) throw new Error();
+
+	      this.game.controls.flipSpeed = preferences.flipSpeed;
+	      this.game.controls.flipBounce = preferences.flipBounce;
+	      this.game.scrambler.scrambleLength = preferences.scrambleLength;
+
+	      this.game.audio.setVolume( preferences.audioVolume );
+
+	      this.game.world.fov = parseFloat( preferences.fov );
+	      this.game.world.resize();
+
+	      this.game.cube.setTheme( preferences.theme );
+
+	      return true;
+
+	    } catch (e) {
+
+	      this.game.controls.flipSpeed = 300;
+	      this.game.controls.flipBounce = 1.70158;
+	      this.game.scrambler.scrambleLength = 20;
+
+	      this.game.audio.setVolume( 0.2 );
+
+	      this.game.world.fov = 15;
+	      this.game.world.resize();
+
+	      this.game.cube.setTheme( 'default' );
+
+	      this.savePreferences();
+
+	      return false;
+
+	    }
+
+	  }
+
+	  savePreferences() {
+
+	    const preferences = {
+	      flipSpeed: this.game.controls.flipSpeed,
+	      flipBounce: this.game.controls.flipBounce,
+	      scrambleLength: this.game.scrambler.scrambleLength,
+	      audioVolume: this.game.audio.volume,
+	      fov: this.game.world.fov,
+	      theme: this.game.cube.theme,
+	    };
+
+	    localStorage.setItem( 'preferences', JSON.stringify( preferences ) );
+
+	  }
+
+	  clearPreferences() {
+
+	    localStorage.removeItem( 'preferences' );
+
+	  }
+
+	}
+
+	class IconsConverter {
+
+		constructor( options ) {
+
+			options = Object.assign( {
+				tagName: 'icon',
+				className: 'icon',
+				styles: false,
+	      icons: {},
+				observe: false,
+				convert: false,
+			}, options || {} );
+
+			this.tagName = options.tagName;
+			this.className = options.className;
+			this.icons = options.icons;
+
+			this.svgTag = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
+			this.svgTag.setAttribute( 'class', this.className );
+
+			if ( options.styles ) this.addStyles();
+			if ( options.convert ) this.convertAllIcons();
+
+			if ( options.observe ) {
+
+				const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+				this.observer = new MutationObserver( mutations => { this.convertAllIcons(); } );
+				this.observer.observe( document.documentElement, { childList: true, subtree: true } );
+
+			}
+
+			return this;
+
+		}
+
+		convertAllIcons() {
+
+			document.querySelectorAll( this.tagName ).forEach( icon => { this.convertIcon( icon ); } );
+
+		}
+
+		convertIcon( icon ) {
+
+			const svgData = this.icons[ icon.attributes[0].localName ];
+
+			if ( typeof svgData === 'undefined' ) return;
+
+			const svg = this.svgTag.cloneNode( true );
+			const viewBox = svgData.viewbox.split( ' ' );
+
+			svg.setAttributeNS( null, 'viewBox', svgData.viewbox );
+			svg.style.width = viewBox[2] / viewBox[3] + 'em';
+			svg.style.height = '1em';
+			svg.innerHTML = svgData.content;
+
+			icon.parentNode.replaceChild( svg, icon );
+
+		}
+
+		addStyles() {
+
+			const style = document.createElement( 'style' );
+	    style.innerHTML = `.${this.className} { display: inline-block; font-size: inherit; overflow: visible; vertical-align: -0.125em; preserveAspectRatio: none; }`;
+			document.head.appendChild( style );
+
+		}
+
+	}
+
+	const Icons = new IconsConverter( {
+
+	  icons: {
+	    'audio': {
+	      viewbox: '0 0 26712 21370',
+	      content: '<g fill="currentColor"><path d="M11966 392l-4951 4950 -5680 0c-738,0 -1336,598 -1336,1336l0 8014c0,737 598,1336 1336,1336l5680 0 4951 4950c836,836 2280,249 2280,-944l0 -18696c0,-1194 -1445,-1780 -2280,-944z"/><path d="M18823 6407c-644,-352 -1457,-120 -1815,526 -356,646 -120,1458 526,1815 718,394 1165,1137 1165,1937 0,800 -446,1543 -1164,1937 -646,357 -882,1169 -526,1815 358,649 1171,879 1815,526 1571,-865 2547,-2504 2547,-4278 0,-1774 -976,-3413 -2548,-4277l0 0z"/><path d="M26712 10685c0,-3535 -1784,-6786 -4773,-8695 -623,-397 -1449,-213 -1843,415 -395,628 -210,1459 412,1857 2212,1413 3533,3814 3533,6423 0,2609 -1321,5010 -3533,6423 -623,397 -807,1228 -412,1856 362,577 1175,843 1843,415 2989,-1909 4773,-5159 4773,-8695z"/></g>',
+	    },
+	    'settings': {
+	      viewbox: '0 0 512 512',
+	      content: '<path fill="currentColor" d="M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z" class=""></path>',
+	    },
+	    'back': {
+	      viewbox: '0 0 512 512',
+	      content: '<path transform="translate(512, 0) scale(-1,1)" fill="currentColor" d="M503.691 189.836L327.687 37.851C312.281 24.546 288 35.347 288 56.015v80.053C127.371 137.907 0 170.1 0 322.326c0 61.441 39.581 122.309 83.333 154.132 13.653 9.931 33.111-2.533 28.077-18.631C66.066 312.814 132.917 274.316 288 272.085V360c0 20.7 24.3 31.453 39.687 18.164l176.004-152c11.071-9.562 11.086-26.753 0-36.328z" class=""></path>',
+	    },
+	    'trophy': {
+	      viewbox: '0 0 576 512',
+	      content: '<path fill="currentColor" d="M552 64H448V24c0-13.3-10.7-24-24-24H152c-13.3 0-24 10.7-24 24v40H24C10.7 64 0 74.7 0 88v56c0 66.5 77.9 131.7 171.9 142.4C203.3 338.5 240 360 240 360v72h-48c-35.3 0-64 20.7-64 56v12c0 6.6 5.4 12 12 12h296c6.6 0 12-5.4 12-12v-12c0-35.3-28.7-56-64-56h-48v-72s36.7-21.5 68.1-73.6C498.4 275.6 576 210.3 576 144V88c0-13.3-10.7-24-24-24zM64 144v-16h64.2c1 32.6 5.8 61.2 12.8 86.2-47.5-16.4-77-49.9-77-70.2zm448 0c0 20.2-29.4 53.8-77 70.2 7-25 11.8-53.6 12.8-86.2H512v16zm-127.3 4.7l-39.6 38.6 9.4 54.6c1.7 9.8-8.7 17.2-17.4 12.6l-49-25.8-49 25.8c-8.8 4.6-19.1-2.9-17.4-12.6l9.4-54.6-39.6-38.6c-7.1-6.9-3.2-19 6.7-20.5l54.8-8 24.5-49.6c4.4-8.9 17.1-8.9 21.5 0l24.5 49.6 54.8 8c9.6 1.5 13.5 13.6 6.4 20.5z" class=""></path>',
+	    },
+	    // 'settings': {
+	    //   viewbox: '0 0 627 627',
+	    //   content: '<g fill-rule="evenodd" clip-rule="evenodd"><path fill="darkgray" d="M386 114l64 37 103 -20 38 66 -69 79 0 74 69 80 -38 66 -103 -20 -64 37 -35 99c-25,0 -50,0 -76,0l-34 -99 -64 -37 -104 20 -38 -66 69 -80 0 -74 -69 -79 38 -66 104 20 64 -37 34 -100c26,0 51,0 76,0l35 100zm-73 94l91 53 0 105 -91 52 -91 -52 0 -105 91 -53z"/><path fill="#7C7C7D" d="M313 178l118 68 0 135 -118 68 -117 -68 0 -135 117 -68zm0 98l38 37 -38 38 -37 -38 37 -37z"/></g>',
+	    // },
+	    // 'back': {
+	    //   viewbox: '0 0 656 656',
+	    //   content: '<polygon fill="darkgray" points="254,547 15,328 254,110 254,228 511,228 641,563 425,428 254,428 "/>',
+	    // },
+	    // 'trophy': {
+	    //   viewbox: '0 0 599 599',
+	    //   content: '<polygon fill="#41AAC8" points="130,14 469,14 469,144 305,335 300,316 294,335 130,144 "/><rect fill="#368DA7" x="226" y="14" width="147" height="227"/><polygon fill="darkgray" points="300,135 494,248 494,473 300,585 105,473 105,248 "/><polygon fill="#7C7C7D" points="300,213 331,311 433,310 350,370 382,467 300,407 217,467 249,370 166,310 268,311 "/>',
+	    // }
+	  },
+
+	  convert: true,
+
+	} );
+
+	const MENU = 0;
+	const PLAYING = 1;
+	const COMPLETE = 2;
+	const STATS = 3;
+	const PREFS = 4;
+
+	const SHOW = true;
+	const HIDE = false;
+
+	class Game {
+
+	  constructor() {
+
+	    this.dom = {
+	      ui: document.querySelector( '.ui' ),
+	      game: document.querySelector( '.ui__game' ),
+	      texts: document.querySelector( '.ui__texts' ),
+	      prefs: document.querySelector( '.ui__prefs' ),
+	      stats: document.querySelector( '.ui__stats' ),
+	      texts: {
+	        title: document.querySelector( '.text--title' ),
+	        note: document.querySelector( '.text--note' ),
+	        timer: document.querySelector( '.text--timer' ),
+	        stats: document.querySelector( '.text--timer' ),
+	        complete: document.querySelector( '.text--complete' ),
+	        best: document.querySelector( '.text--best-time' ),
+	      },
+	      buttons: {
+	        prefs: document.querySelector( '.btn--prefs' ),
+	        back: document.querySelector( '.btn--back' ),
+	        stats: document.querySelector( '.btn--stats' ),
+	      }
+	    };
+
+	    this.world = new World( this );
+	    this.cube = new Cube( this );
+	    this.controls = new Controls( this );
+	    this.scrambler = new Scrambler( this );
+	    this.transition = new Transition( this );
+	    this.audio = new Audio( this );
+	    this.timer = new Timer( this );
+	    this.preferences = new Preferences( this );
+	    // this.confetti = new Confetti( this );
+	    this.scores = new Scores( this );
+	    this.storage = new Storage( this );
+
+	    this.initActions();
+
+	    this.state = MENU;
+	    this.saved = false;
+
+	    this.storage.init();
+	    this.preferences.init();
+	    this.transition.init();
+
+	    this.scores.calcStats();
+
+	    setTimeout( () => {
+
+	      this.transition.float();
+	      this.transition.cube( SHOW );
+
+	      setTimeout( () => this.transition.title( SHOW ), 700 );
+	      setTimeout( () => this.transition.buttons( [ 'prefs', 'stats' ], [] ), 1000 );
+
+	    }, 500 );
+
+	  }
+
+	  initActions() {
+
+	    let tappedTwice = false;
+
+	    this.dom.game.onclick = event => {
+
+	      if ( this.transition.activeTransitions > 0 ) return;
+	      if ( this.state === PLAYING ) return;
+
+	      if ( this.state === MENU ) {
+
+	        if ( ! tappedTwice ) {
+
+	          tappedTwice = true;
+	          setTimeout( () => tappedTwice = false, 300 );
+	          return false;
+
+	        }
+
+	        this.audio.fadeMusic( true );
+
+	        if ( ! this.saved ) {
+
+	          this.scrambler.scramble();
+	          this.controls.scrambleCube();
+
+	        }
+
+	        const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
+
+	        this.state = PLAYING;
+	        this.saved = true;
+
+	        this.transition.buttons( [], [ 'stats', 'prefs' ] );
+
+	        this.transition.zoom( PLAYING, duration );
+	        this.transition.title( HIDE );
+
+	        setTimeout( () => {
+
+	          this.transition.timer( SHOW );
+	          this.transition.buttons( [ 'back' ], [] );
+
+	        }, this.transition.durations.zoom - 1000 );
+
+	        setTimeout( () => {
+
+	          this.controls.enable();
+	          this.timer.start( true );
+
+	        }, this.transition.durations.zoom );
+
+	      } else if ( this.state === COMPLETE ) {
+
+	        this.state = STATS;
+	        this.saved = false;
+
+	        this.transition.timer( HIDE );
+	        this.transition.complete( HIDE, this.bestTime );
+	        this.transition.cube( HIDE );
+	        this.timer.reset();
+
+	        setTimeout( () => {
+
+	          this.cube.reset();
+
+	          this.transition.stats( SHOW );
+	          this.transition.elevate( 0 );
+
+	        }, 1000 );
+
+	        return false;
+
+	      } else if ( this.state === STATS ) {
+
+	        this.state = MENU;
+
+	        this.transition.buttons( [ 'stats', 'prefs' ], [] );
+
+	        this.transition.stats( HIDE );
+
+	        setTimeout( () => this.transition.cube( SHOW ), 500 );
+	        setTimeout( () => this.transition.title( SHOW ), 1200 );
+
+	      } else if ( this.state === PREFS ) {
+
+	        this.state = MENU;
+
+	        this.transition.buttons( [ 'stats', 'prefs' ], [] );
+
+	        this.transition.preferences( HIDE );
+
+	        setTimeout( () => this.transition.cube( SHOW ), 500 );
+	        setTimeout( () => this.transition.title( SHOW ), 1200 );
+
+	      }
+
+	    };
+
+	    this.dom.buttons.back.onclick = event => {
+
+	      if ( this.transition.activeTransitions > 0 ) return;
+	      if ( this.state !== PLAYING ) return;
+
+	      this.audio.fadeMusic( false );
+
+	      this.state = MENU;
+
+	      this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+
+	      this.transition.zoom( MENU, 0 );
+
+	      this.controls.disable();
+	      this.timer.stop();
+	      this.transition.timer( HIDE );
+
+	      setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
+
+	      this.playing = false;
+	      this.controls.disable();
+
+	    };
+
+	    this.dom.buttons.prefs.onclick = event => {
+
+	      if ( this.transition.activeTransitions > 0 ) return;
+
+	      this.state = PREFS;
+
+	      this.transition.buttons( [], [ 'stats', 'prefs' ] );
+
+	      this.transition.title( HIDE );
+	      this.transition.cube( HIDE );
+
+	      setTimeout( () => this.transition.preferences( SHOW ), 1000 );
+
+	    };
+
+	    this.dom.buttons.stats.onclick = event => {
+
+	      if ( this.transition.activeTransitions > 0 ) return;
+
+	      this.state = STATS;
+
+	      this.transition.buttons( [], [ 'stats', 'prefs' ] );
+
+	      this.transition.title( HIDE );
+	      this.transition.cube( HIDE );
+
+	      setTimeout( () => this.transition.stats( SHOW ), 1000 );
+
+	    };
+
+	    this.controls.onMove = () => {
+
+	      this.audio.flip.play();
+
+	    };
+
+	    this.controls.onSolved = () => {
+
+	      this.transition.buttons( [], [ 'back' ] );
+
+	      this.state = COMPLETE;
+	      this.saved = false;
+
+	      this.controls.disable();
+	      this.timer.stop();
+	      this.storage.clearGame();
+
+	      this.bestTime = this.scores.addScore( this.timer.deltaTime );
+
+	      this.transition.zoom( MENU, 0 );
+	      this.transition.elevate( SHOW );
+
+	      setTimeout( () => this.transition.complete( SHOW, this.bestTime ), 1000 );
+
+	    };
+
+	  }
+
+	}
+
+	const game = new Game();
+
+	window.game = game;
+
+}());

@@ -5,7 +5,6 @@ class Preferences {
   constructor( game ) {
 
     this.game = game;
-    this.theme = 'modern';
 
   }
 
@@ -56,13 +55,24 @@ class Preferences {
       } ),
 
       theme: new Range( 'theme', {
-        value: this.theme === 'default' ? 0 : 1,
+        value: this.game.cube.theme === 'default' ? 0 : 1,
         range: [ 0, 1 ],
         step: 1,
         onUpdate: value => {
 
           const theme = value === 0 ? 'default' : 'original';
           this.game.cube.setTheme( theme );
+
+        },
+        onComplete: () => this.game.storage.savePreferences()
+      } ),
+
+      audio: new Range( 'audio', {
+        value: this.game.audio.volume,
+        range: [ 0, 1 ],
+        onUpdate: value => {
+
+          this.game.audio.setVolume( value );
 
         },
         onComplete: () => this.game.storage.savePreferences()

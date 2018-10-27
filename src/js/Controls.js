@@ -247,6 +247,8 @@ class Controls {
       },
       onComplete: () => {
 
+        this.onMove();
+
         const layer = this.flipLayer.slice( 0 );
 
         this.game.cube.object.rotation.setFromVector3( this.snapRotation( this.game.cube.object.rotation.toVector3() ) );

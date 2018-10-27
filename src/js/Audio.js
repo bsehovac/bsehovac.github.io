@@ -1,62 +1,70 @@
+import { Tween, Easing } from './Tween.js';
+
 class Audio {
 
-  // constructor( game ) {
+  constructor( game ) {
 
-  //   this.game = game;
+    this.game = game;
+    this.volume = 0.2;
+    this.volumeTween = null;
 
-  //   const listener = new THREE.AudioListener();
-  //   const audioLoader = new THREE.AudioLoader();
+    const listener = new THREE.AudioListener();
+    const audioLoader = new THREE.AudioLoader();
 
-  //   this.musicOn = localStorage.getItem( 'music' );
-  //   this.musicOn = ( this.musicOn == null ) ? true : ( ( this.musicOn == 'true' ) ? true : false );
+    this.music = new THREE.Audio( listener );
 
-  //   // this.music = new THREE.Audio( listener );
+    audioLoader.load( 'assets/sounds/music.mp3', buffer => {
 
-  //   // audioLoader.load( 'assets/sounds/music.mp3', buffer => {
+      this.music.setBuffer( buffer );
+      this.music.setLoop( true );
+      this.music.setVolume( 0 );
 
-  //   //   this.music.setBuffer( buffer );
-  //   //   this.music.setLoop( true );
-  //   //   this.music.setVolume( 0.5 );
+    });
 
-  //   //   if ( this.musicOn ) {
+    this.flip = new THREE.Audio( listener );
 
-  //   //     this.animate.audioIn( this );
+    audioLoader.load( 'assets/sounds/flip.mp3', buffer => {
 
-  //   //   }
+      this.flip.setBuffer( buffer );
+      this.flip.setLoop( false );
+      this.flip.setVolume( this.volume );
 
-  //   // });
+    });
 
-  //   this.click = new THREE.Audio( listener );
+  }
 
-  //   audioLoader.load( 'assets/sounds/click.mp3', buffer => {
+  fadeMusic( play ) {
 
-  //     this.click.setBuffer( buffer );
-  //     this.click.setLoop( false );
-  //     this.click.setVolume( 0.1 );
+    if ( play ) this.music.play();
 
-  //   });
+    if ( this.volumeTween != null ) this.volumeTween.stop();
 
-  //   // this.button.addEventListener( 'click', () => {
+    const from = this.music.getVolume();
+    const to = play ? this.volume : 0;
 
-  //   //   this.musicOn = !this.musicOn;
+    this.volumeTween = new Tween({
+      duration: 500,
+      onUpdate: tween => {
 
-  //   //   if ( this.musicOn && !this.button.gameStarted ) {
+        const volume = from + ( to - from ) * tween.value;
 
-  //   //     this.animate.audioIn( this );
+        this.music.setVolume( volume );
 
-  //   //   } else {
+      },
+      onComplete: () => {
 
-  //   //     this.animate.audioOut( this );
+        if ( ! play ) this.music.pause();
 
-  //   //   }
+      }
+    });
 
-  //   //   this.button.classList[ this.musicOn ? 'add' : 'remove' ]('is-active');
+  }
 
-  //   //   localStorage.setItem( 'music', this.musicOn );
+  setVolume( volume ) {
 
-  //   // }, false );
+    this.flip.setVolume( this.volume );
 
-  // }
+  }
 
 }
 
