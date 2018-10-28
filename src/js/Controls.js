@@ -48,7 +48,7 @@ class Controls {
     this.state = STILL;
 
     this.initDraggable();
-    this.generateSolvedStates();
+    // this.generateSolvedStates();
 
   }
 
@@ -499,53 +499,33 @@ class Controls {
 
   checkIsSolved() {
 
-    return this.solvedStates.indexOf( this.getPiecesPositions() ) > -1;
+    const start = performance.now();
 
-  }
-
-  generateSolvedStates() {
-
-    const solvedStates = [];
-    const rotations = [];
-
-    for ( let x = 0; x < 4; x++ )
-      for ( let y = 0; y < 4; y++ )
-        for ( let z = 0; z < 4; z++ )
-          rotations.push( [ x, y, z ] );
-
-    rotations.forEach( rotation => {
-
-      this.game.cube.object.rotation.set(
-        rotation[0] * Math.PI / 2,
-        rotation[1] * Math.PI / 2,
-        rotation[2] * Math.PI / 2
-      );
-
-      this.game.cube.object.updateMatrixWorld();
-
-      solvedStates.push( this.getPiecesPositions() );
-
-    } );
-
-    this.solvedStates = Array.from( new Set( solvedStates ) );
-
-    this.game.cube.object.rotation.set( 0, 0, 0 );
-    this.game.cube.object.updateMatrixWorld();
-
-  }
-
-  getPiecesPositions() {
+    let solved = true;
+    const sides = { 'x-': [], 'x+': [], 'y-': [], 'y+': [], 'z-': [], 'z+': [] };
 
     const positions = [];
 
-    this.game.cube.pieces.forEach( piece => positions.push(
-      this.game.cube.object
-        .localToWorld( piece.position.clone() )
-        .multiplyScalar( 3 ).round()
-        .toArray().toString()
-    ) );
+    this.game.cube.edges.forEach( edge => {
 
-    return positions.toString();
+      const position = edge.parent
+        .localToWorld( edge.position.clone() )
+        .sub( this.game.cube.object.position );
+
+      const mainAxis = this.getMainAxis( position );
+      const mainSign = position.multiplyScalar( 2 ).round()[ mainAxis ] < 1 ? '-' : '+';
+
+      sides[ mainAxis + mainSign ].push( edge.name );
+
+    } );
+
+    Object.keys( sides ).forEach( side => {
+
+      if ( ! sides[ side ].every( value => value === sides[ side ][ 0 ] ) ) solved = false;
+
+    } );
+
+    if ( solved ) this.onSolved();
 
   }
 
