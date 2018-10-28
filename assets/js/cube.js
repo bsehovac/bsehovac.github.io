@@ -898,7 +898,7 @@
 						this.geometry.edgeScale
 					);
 
-					edge.userData.name = name;
+					edge.name = name;
 
 					piece.add( edge );
 					pieceEdges.push( name );
@@ -934,7 +934,7 @@
 
 	    this.edges.forEach( edge => {
 
-	      edge.material.color.setHex( colors[ edge.userData.name ] );
+	      edge.material.color.setHex( colors[ edge.name ] );
 
 	    } );
 
@@ -1353,7 +1353,7 @@
 	    this.state = STILL;
 
 	    this.initDraggable();
-	    this.generateSolvedStates();
+	    // this.generateSolvedStates();
 
 	  }
 
@@ -1804,53 +1804,31 @@
 
 	  checkIsSolved() {
 
-	    return this.solvedStates.indexOf( this.getPiecesPositions() ) > -1;
+	    const start = performance.now();
 
-	  }
+	    let solved = true;
+	    const sides = { 'x-': [], 'x+': [], 'y-': [], 'y+': [], 'z-': [], 'z+': [] };
 
-	  generateSolvedStates() {
+	    this.game.cube.edges.forEach( edge => {
 
-	    const solvedStates = [];
-	    const rotations = [];
+	      const position = edge.parent
+	        .localToWorld( edge.position.clone() )
+	        .sub( this.game.cube.object.position );
 
-	    for ( let x = 0; x < 4; x++ )
-	      for ( let y = 0; y < 4; y++ )
-	        for ( let z = 0; z < 4; z++ )
-	          rotations.push( [ x, y, z ] );
+	      const mainAxis = this.getMainAxis( position );
+	      const mainSign = position.multiplyScalar( 2 ).round()[ mainAxis ] < 1 ? '-' : '+';
 
-	    rotations.forEach( rotation => {
-
-	      this.game.cube.object.rotation.set(
-	        rotation[0] * Math.PI / 2,
-	        rotation[1] * Math.PI / 2,
-	        rotation[2] * Math.PI / 2
-	      );
-
-	      this.game.cube.object.updateMatrixWorld();
-
-	      solvedStates.push( this.getPiecesPositions() );
+	      sides[ mainAxis + mainSign ].push( edge.name );
 
 	    } );
 
-	    this.solvedStates = Array.from( new Set( solvedStates ) );
+	    Object.keys( sides ).forEach( side => {
 
-	    this.game.cube.object.rotation.set( 0, 0, 0 );
-	    this.game.cube.object.updateMatrixWorld();
+	      if ( ! sides[ side ].every( value => value === sides[ side ][ 0 ] ) ) solved = false;
 
-	  }
+	    } );
 
-	  getPiecesPositions() {
-
-	    const positions = [];
-
-	    this.game.cube.pieces.forEach( piece => positions.push(
-	      this.game.cube.object
-	        .localToWorld( piece.position.clone() )
-	        .multiplyScalar( 3 ).round()
-	        .toArray().toString()
-	    ) );
-
-	    return positions.toString();
+	    if ( solved ) this.onSolved();
 
 	  }
 
@@ -2447,74 +2425,6 @@
 
 	}
 
-	class Audio {
-
-	  constructor( game ) {
-
-	    this.game = game;
-	    this.volume = 0.2;
-	    this.volumeTween = null;
-
-	    const listener = new THREE.AudioListener();
-	    const audioLoader = new THREE.AudioLoader();
-
-	    this.music = new THREE.Audio( listener );
-
-	    audioLoader.load( 'assets/sounds/music.mp3', buffer => {
-
-	      this.music.setBuffer( buffer );
-	      this.music.setLoop( true );
-	      this.music.setVolume( 0 );
-
-	    });
-
-	    this.flip = new THREE.Audio( listener );
-
-	    audioLoader.load( 'assets/sounds/flip.mp3', buffer => {
-
-	      this.flip.setBuffer( buffer );
-	      this.flip.setLoop( false );
-	      this.flip.setVolume( this.volume );
-
-	    });
-
-	  }
-
-	  fadeMusic( play ) {
-
-	    if ( play ) this.music.play();
-
-	    if ( this.volumeTween != null ) this.volumeTween.stop();
-
-	    const from = this.music.getVolume();
-	    const to = play ? this.volume : 0;
-
-	    this.volumeTween = new Tween({
-	      duration: 500,
-	      onUpdate: tween => {
-
-	        const volume = from + ( to - from ) * tween.value;
-
-	        this.music.setVolume( volume );
-
-	      },
-	      onComplete: () => {
-
-	        if ( ! play ) this.music.pause();
-
-	      }
-	    });
-
-	  }
-
-	  setVolume( volume ) {
-
-	    this.flip.setVolume( this.volume );
-
-	  }
-
-	}
-
 	const RangeHTML = [
 
 	  '<div class="range">',
@@ -2725,17 +2635,6 @@
 
 	          const theme = value === 0 ? 'default' : 'original';
 	          this.game.cube.setTheme( theme );
-
-	        },
-	        onComplete: () => this.game.storage.savePreferences()
-	      } ),
-
-	      audio: new Range( 'audio', {
-	        value: this.game.audio.volume,
-	        range: [ 0, 1 ],
-	        onUpdate: value => {
-
-	          this.game.audio.setVolume( value );
 
 	        },
 	        onComplete: () => this.game.storage.savePreferences()
@@ -2986,8 +2885,6 @@
 	      this.game.controls.flipBounce = preferences.flipBounce;
 	      this.game.scrambler.scrambleLength = preferences.scrambleLength;
 
-	      this.game.audio.setVolume( preferences.audioVolume );
-
 	      this.game.world.fov = parseFloat( preferences.fov );
 	      this.game.world.resize();
 
@@ -2999,9 +2896,7 @@
 
 	      this.game.controls.flipSpeed = 300;
 	      this.game.controls.flipBounce = 1.70158;
-	      this.game.scrambler.scrambleLength = 20;
-
-	      this.game.audio.setVolume( 0.2 );
+	      this.game.scrambler.scrambleLength = 1;
 
 	      this.game.world.fov = 15;
 	      this.game.world.resize();
@@ -3022,7 +2917,6 @@
 	      flipSpeed: this.game.controls.flipSpeed,
 	      flipBounce: this.game.controls.flipBounce,
 	      scrambleLength: this.game.scrambler.scrambleLength,
-	      audioVolume: this.game.audio.volume,
 	      fov: this.game.world.fov,
 	      theme: this.game.cube.theme,
 	    };
@@ -3184,7 +3078,6 @@
 	    this.controls = new Controls( this );
 	    this.scrambler = new Scrambler( this );
 	    this.transition = new Transition( this );
-	    this.audio = new Audio( this );
 	    this.timer = new Timer( this );
 	    this.preferences = new Preferences( this );
 	    // this.confetti = new Confetti( this );
@@ -3232,8 +3125,6 @@
 	          return false;
 
 	        }
-
-	        this.audio.fadeMusic( true );
 
 	        if ( ! this.saved ) {
 
@@ -3318,8 +3209,6 @@
 	      if ( this.transition.activeTransitions > 0 ) return;
 	      if ( this.state !== PLAYING ) return;
 
-	      this.audio.fadeMusic( false );
-
 	      this.state = MENU;
 
 	      this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
@@ -3369,7 +3258,7 @@
 
 	    this.controls.onMove = () => {
 
-	      this.audio.flip.play();
+
 
 	    };
 

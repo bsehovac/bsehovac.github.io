@@ -4,7 +4,6 @@ import { Controls } from './Controls.js';
 import { Scrambler } from './Scrambler.js';
 import { Transition } from './Transition.js';
 import { Timer } from './Timer.js';
-import { Audio } from './Audio.js';
 import { Preferences } from './Preferences.js';
 // import { Confetti } from './Confetti.js';
 import { Scores } from './Scores.js';
@@ -51,7 +50,6 @@ class Game {
     this.controls = new Controls( this );
     this.scrambler = new Scrambler( this );
     this.transition = new Transition( this );
-    this.audio = new Audio( this );
     this.timer = new Timer( this );
     this.preferences = new Preferences( this );
     // this.confetti = new Confetti( this );
@@ -99,8 +97,6 @@ class Game {
           return false;
 
         }
-
-        this.audio.fadeMusic( true );
 
         if ( ! this.saved ) {
 
@@ -185,8 +181,6 @@ class Game {
       if ( this.transition.activeTransitions > 0 ) return;
       if ( this.state !== PLAYING ) return;
 
-      this.audio.fadeMusic( false );
-
       this.state = MENU;
 
       this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
@@ -236,7 +230,7 @@ class Game {
 
     this.controls.onMove = () => {
 
-      this.audio.flip.play();
+
 
     }
 

@@ -182,7 +182,7 @@ class Cube {
 					this.geometry.edgeScale
 				);
 
-				edge.userData.name = name;
+				edge.name = name;
 
 				piece.add( edge );
 				pieceEdges.push( name );
@@ -218,7 +218,7 @@ class Cube {
 
     this.edges.forEach( edge => {
 
-      edge.material.color.setHex( colors[ edge.userData.name ] );
+      edge.material.color.setHex( colors[ edge.name ] );
 
     } );
 

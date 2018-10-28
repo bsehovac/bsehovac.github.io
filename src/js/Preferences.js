@@ -67,17 +67,6 @@ class Preferences {
         onComplete: () => this.game.storage.savePreferences()
       } ),
 
-      audio: new Range( 'audio', {
-        value: this.game.audio.volume,
-        range: [ 0, 1 ],
-        onUpdate: value => {
-
-          this.game.audio.setVolume( value );
-
-        },
-        onComplete: () => this.game.storage.savePreferences()
-      } ),
-
     };
     
   }

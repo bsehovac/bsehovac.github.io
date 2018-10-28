@@ -160,8 +160,6 @@ class Storage {
       this.game.controls.flipBounce = preferences.flipBounce;
       this.game.scrambler.scrambleLength = preferences.scrambleLength;
 
-      this.game.audio.setVolume( preferences.audioVolume );
-
       this.game.world.fov = parseFloat( preferences.fov );
       this.game.world.resize();
 
@@ -173,9 +171,7 @@ class Storage {
 
       this.game.controls.flipSpeed = 300;
       this.game.controls.flipBounce = 1.70158;
-      this.game.scrambler.scrambleLength = 20;
-
-      this.game.audio.setVolume( 0.2 );
+      this.game.scrambler.scrambleLength = 1;
 
       this.game.world.fov = 15;
       this.game.world.resize();
@@ -196,7 +192,6 @@ class Storage {
       flipSpeed: this.game.controls.flipSpeed,
       flipBounce: this.game.controls.flipBounce,
       scrambleLength: this.game.scrambler.scrambleLength,
-      audioVolume: this.game.audio.volume,
       fov: this.game.world.fov,
       theme: this.game.cube.theme,
     };
