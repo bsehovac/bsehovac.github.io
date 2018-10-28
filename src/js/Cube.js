@@ -28,14 +28,14 @@ class Cube {
         L: 0x009e60, // green
         P: 0x111111, // piece - black
       },
-      apple: {
-      	U: 0xffffff, // white
-        D: 0xffe900, // yellow
-        F: 0xe23838, // red
-        R: 0x009cdf, // blue
-        B: 0xf78200, // orange
-        L: 0x5ebd3e, // green
-        P: 0x111111, // piece - black
+      pastel: {
+        U: 0xffffff, // white
+        D: 0xffb366, // yellow
+        F: 0xff6698, // red
+        R: 0x6698ff, // blue
+        B: 0xffb366, // orange
+        L: 0x98ff66, // green
+        P: 0x1a1c1e, // piece - black
       },
 		};
 

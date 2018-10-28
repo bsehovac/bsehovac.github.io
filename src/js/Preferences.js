@@ -55,12 +55,14 @@ class Preferences {
       } ),
 
       theme: new Range( 'theme', {
-        value: this.game.cube.theme === 'default' ? 0 : 1,
-        range: [ 0, 1 ],
+        value: { 'default': 0, 'original': 1, 'pastel': 2 }[ this.game.cube.theme ],
+        range: [ 0, 2 ],
         step: 1,
         onUpdate: value => {
 
-          const theme = value === 0 ? 'default' : 'original';
+          console.log( value)
+
+          const theme = [ 'default', 'original', 'pastel' ][ value ]
           this.game.cube.setTheme( theme );
 
         },

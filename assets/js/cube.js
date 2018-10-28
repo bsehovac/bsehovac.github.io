@@ -744,14 +744,14 @@
 	        L: 0x009e60, // green
 	        P: 0x111111, // piece - black
 	      },
-	      apple: {
-	      	U: 0xffffff, // white
-	        D: 0xffe900, // yellow
-	        F: 0xe23838, // red
-	        R: 0x009cdf, // blue
-	        B: 0xf78200, // orange
-	        L: 0x5ebd3e, // green
-	        P: 0x111111, // piece - black
+	      pastel: {
+	        U: 0xffffff, // white
+	        D: 0xffb366, // yellow
+	        F: 0xff6698, // red
+	        R: 0x6698ff, // blue
+	        B: 0xffb366, // orange
+	        L: 0x98ff66, // green
+	        P: 0x1a1c1e, // piece - black
 	      },
 			};
 
@@ -2628,12 +2628,14 @@
 	      } ),
 
 	      theme: new Range( 'theme', {
-	        value: this.game.cube.theme === 'default' ? 0 : 1,
-	        range: [ 0, 1 ],
+	        value: { 'default': 0, 'original': 1, 'pastel': 2 }[ this.game.cube.theme ],
+	        range: [ 0, 2 ],
 	        step: 1,
 	        onUpdate: value => {
 
-	          const theme = value === 0 ? 'default' : 'original';
+	          console.log( value);
+
+	          const theme = [ 'default', 'original', 'pastel' ][ value ];
 	          this.game.cube.setTheme( theme );
 
 	        },
@@ -2896,7 +2898,7 @@
 
 	      this.game.controls.flipSpeed = 300;
 	      this.game.controls.flipBounce = 1.70158;
-	      this.game.scrambler.scrambleLength = 1;
+	      this.game.scrambler.scrambleLength = 20;
 
 	      this.game.world.fov = 15;
 	      this.game.world.resize();
