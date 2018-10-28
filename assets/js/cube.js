@@ -745,13 +745,13 @@
 	        P: 0x111111, // piece - black
 	      },
 	      pastel: {
-	        U: 0xffffff, // white
-	        D: 0xffb366, // yellow
-	        F: 0xff6698, // red
-	        R: 0x6698ff, // blue
-	        B: 0xffb366, // orange
-	        L: 0x98ff66, // green
-	        P: 0x1a1c1e, // piece - black
+	        U: 0xf7ffff, // white
+	        D: 0xf1ff4d, //++ yellow
+	        F: 0xff4d4d, //++ red
+	        R: 0x4dcbff, //++ blue
+	        B: 0xe8a746, //++ orange
+	        L: 0x4be846, //++ green
+	        P: 0x111111, // piece - black
 	      },
 			};
 
