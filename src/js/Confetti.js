@@ -11,12 +11,19 @@ class Confetti extends Animation {
     this.count = 100;
     this.particles = [];
 
+    this.holder = new THREE.Object3D();
+    this.holder.rotation.copy( this.game.world.camera.rotation );
+    this.game.world.scene.add( this.holder );
+
     this.object = new THREE.Object3D();
-    this.object.position.y = 0.25;
-    this.game.world.scene.add( this.object );
+    this.holder.add( this.object );
+
+    this.resizeViewport = this.resizeViewport.bind( this );
+    this.game.world.onResize.push( this.resizeViewport )
+    this.resizeViewport();    
 
     this.geometry = new THREE.PlaneGeometry( 1, 1 );
-    this.material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
+    this.material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide } );
     this.opacity = 0;
     this.callback = ( () => {} );
 
@@ -83,6 +90,19 @@ class Confetti extends Animation {
       this.callback = ( () => {} );
 
     }
+
+  }
+
+  resizeViewport() {
+
+    const distanceFromCube = 1;
+    const fovRad = this.game.world.camera.fov * THREE.Math.DEG2RAD;
+
+    this.height = 2 * Math.tan( fovRad / 2 ) * ( this.game.world.camera.position.length() - distanceFromCube );
+    this.width = this.height * this.game.world.camera.aspect;
+
+    this.object.position.z = distanceFromCube;
+    this.object.position.y = this.height / 2;
 
   }
   

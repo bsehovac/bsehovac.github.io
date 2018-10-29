@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"rez",
+				"resizeViewport"
+			],
+			[
+				"Mesh",
+				"MeshLambertMaterial"
+			],
+			[
 				"scra",
 				"scrambleLength"
 			],
@@ -506,33 +514,34 @@
 			[
 				"replace",
 				"str_replace"
-			],
-			[
-				"md",
-				"mdpath"
-			],
-			[
-				"CUBE",
-				"CUBE_LAYERS"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "rollup.config.rubik.js",
+			"file": "src/js/Cube.js",
 			"settings":
 			{
-				"buffer_size": 303,
+				"buffer_size": 4648,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "index.html",
+			"file": "src/js/Confetti.js",
 			"settings":
 			{
-				"buffer_size": 3483,
+				"buffer_size": 5635,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/Game.js",
+			"settings":
+			{
+				"buffer_size": 6392,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -668,12 +677,15 @@
 	},
 	"expanded_folders":
 	[
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js"
+		"/Users/boris/Sites/bsehovac.github.io",
+		"/Users/boris/Sites/bsehovac.github.io/src",
+		"/Users/boris/Sites/bsehovac.github.io/src/js"
 	],
 	"file_history":
 	[
+		"/Users/boris/Sites/bsehovac.github.io/src/js/World.js",
+		"/Users/boris/Sites/bsehovac.github.io/rollup.config.rubik.js",
+		"/Users/boris/Sites/bsehovac.github.io/index.html",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Preferences.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Controls.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Cube.js",
@@ -713,7 +725,6 @@
 		"/Users/boris/Sites/bsehovac.github.io/assets/js/solver/solve.js",
 		"/Users/boris/Sites/bsehovac.github.io/assets/js/solver/cube.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/scss/components/_ui.sass",
-		"/Users/boris/Sites/bsehovac.github.io/rollup.config.rubik.js",
 		"/Users/boris/Sites/test/lib/solve.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/solver/Main.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/solver/Bundle.js",
@@ -725,7 +736,6 @@
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Transition.js",
 		"/Users/boris/Sites/test/lib/async.js",
 		"/Users/boris/Sites/test/lib/cube.js",
-		"/Users/boris/Sites/bsehovac.github.io/index.html",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/CubePieces.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Icons.js",
 		"/Users/boris/Sites/bsehovac.github.io/assets/js/cube.js",
@@ -733,7 +743,6 @@
 		"/Users/boris/Sites/bsehovac.github.io/src/js/TapEvents.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/DoubleTap.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Cube.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/js/World.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Tween.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Confetti.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Animation.js",
@@ -805,7 +814,7 @@
 	],
 	"find":
 	{
-		"height": 30.0
+		"height": 54.0
 	},
 	"find_in_files":
 	{
@@ -1142,19 +1151,47 @@
 			[
 				{
 					"buffer": 0,
-					"file": "rollup.config.rubik.js",
+					"file": "src/js/Cube.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 303,
+						"buffer_size": 4648,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								8,
-								8
+								921,
+								921
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 130.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/js/Confetti.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5635,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2952,
+								2952
 							]
 						],
 						"settings":
@@ -1164,40 +1201,40 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 2261.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "index.html",
+					"buffer": 2,
+					"file": "src/js/Game.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3483,
+						"buffer_size": 6392,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1673,
-								1678
+								1933,
+								1933
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 781.0,
+						"translation.y": 614.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				}
 			]

@@ -5,7 +5,7 @@ import { Scrambler } from './Scrambler.js';
 import { Transition } from './Transition.js';
 import { Timer } from './Timer.js';
 import { Preferences } from './Preferences.js';
-// import { Confetti } from './Confetti.js';
+import { Confetti } from './Confetti.js';
 import { Scores } from './Scores.js';
 import { Storage } from './Storage.js';
 
@@ -46,36 +46,36 @@ class Game {
     };
 
     this.world = new World( this );
-    this.cube = new Cube( this );
-    this.controls = new Controls( this );
-    this.scrambler = new Scrambler( this );
-    this.transition = new Transition( this );
-    this.timer = new Timer( this );
-    this.preferences = new Preferences( this );
-    // this.confetti = new Confetti( this );
-    this.scores = new Scores( this );
-    this.storage = new Storage( this );
+    // this.cube = new Cube( this );
+    // this.controls = new Controls( this );
+    // this.scrambler = new Scrambler( this );
+    // this.transition = new Transition( this );
+    // this.timer = new Timer( this );
+    // this.preferences = new Preferences( this );
+    this.confetti = new Confetti( this );
+    // this.scores = new Scores( this );
+    // this.storage = new Storage( this );
 
-    this.initActions();
+    // this.initActions();
 
-    this.state = MENU;
-    this.saved = false;
+    // this.state = MENU;
+    // this.saved = false;
 
-    this.storage.init();
-    this.preferences.init();
-    this.transition.init();
+    // this.storage.init();
+    // this.preferences.init();
+    // this.transition.init();
 
-    this.scores.calcStats();
+    // this.scores.calcStats();
 
-    setTimeout( () => {
+    // setTimeout( () => {
 
-      this.transition.float();
-      this.transition.cube( SHOW );
+    //   this.transition.float();
+    //   this.transition.cube( SHOW );
 
-      setTimeout( () => this.transition.title( SHOW ), 700 );
-      setTimeout( () => this.transition.buttons( [ 'prefs', 'stats' ], [] ), 1000 );
+    //   setTimeout( () => this.transition.title( SHOW ), 700 );
+    //   setTimeout( () => this.transition.buttons( [ 'prefs', 'stats' ], [] ), 1000 );
 
-    }, 500 );
+    // }, 500 );
 
   }
 
