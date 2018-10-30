@@ -60,8 +60,6 @@ class Preferences {
         step: 1,
         onUpdate: value => {
 
-          console.log( value)
-
           const theme = [ 'default', 'original', 'pastel' ][ value ]
           this.game.cube.setTheme( theme );
 

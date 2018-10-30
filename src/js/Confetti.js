@@ -180,9 +180,6 @@ class Particle {
     this.mesh = new THREE.Mesh( this.confetti.geometry, this.confetti.material.clone() );
     this.confetti.object.add( this.mesh );
 
-    this.color = new THREE.Color( this.options.colors[ Math.floor( Math.random() * this.options.colors.length ) ] );
-    this.mesh.material.color.set( this.color );
-
     this.size = THREE.Math.randFloat( this.options.size.min, this.options.size.max );
     this.mesh.scale.set( this.size, this.size, this.size );
 
@@ -193,6 +190,9 @@ class Particle {
   reset( randomHeight = true ) {
 
     this.completed = false;
+
+    this.color = new THREE.Color( this.options.colors[ Math.floor( Math.random() * this.options.colors.length ) ] );
+    this.mesh.material.color.set( this.color );
 
     this.speed = THREE.Math.randFloat( this.options.speed.min, this.options.speed.max ) * - 1;
     this.mesh.position.x = THREE.Math.randFloat( - this.confetti.width / 2, this.confetti.width / 2 );
