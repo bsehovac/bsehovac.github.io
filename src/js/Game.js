@@ -52,9 +52,9 @@ class Game {
     this.transition = new Transition( this );
     this.timer = new Timer( this );
     this.preferences = new Preferences( this );
-    this.confetti = new Confetti( this );
     this.scores = new Scores( this );
     this.storage = new Storage( this );
+    this.confetti = new Confetti( this );
 
     this.initActions();
 
@@ -100,7 +100,6 @@ class Game {
 
         if ( ! this.saved ) {
 
-          this.scrambler.scrambleLength = 1;
           this.scrambler.scramble();
           this.controls.scrambleCube();
 
