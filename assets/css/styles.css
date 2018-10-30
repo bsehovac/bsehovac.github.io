@@ -226,3 +226,11 @@ body {
     z-index: 3; }
   .ui__buttons {
     z-index: 4; }
+  .ui__version {
+    position: absolute;
+    right: 0.8em;
+    top: 0.8em; }
+    .ui__version span {
+      display: block;
+      font-size: 0.5em;
+      color: rgba(0, 0, 0, 0.15); }
