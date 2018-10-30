@@ -5,7 +5,7 @@ class Storage {
     this.game = game;
 
     const gameVersion = 'v0.9';
-    const userVersion = parseInt( localStorage.getItem( 'version' ) );
+    const userVersion = localStorage.getItem( 'version' );
 
     if ( ! userVersion || userVersion !== gameVersion ) {
 
