@@ -134,8 +134,6 @@ class Game {
         this.state = STATS;
         this.saved = false;
 
-        this.confetti.stop();
-
         this.transition.timer( HIDE );
         this.transition.complete( HIDE, this.bestTime );
         this.transition.cube( HIDE );
@@ -143,7 +141,8 @@ class Game {
 
         setTimeout( () => {
 
-          this.cube.reset()
+          this.cube.reset();
+          this.confetti.stop();
 
           this.transition.stats( SHOW )
           this.transition.elevate( 0 );

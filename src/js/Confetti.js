@@ -18,8 +18,8 @@ class Confetti {
     this.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide } );
 
     this.holders = [
-      new ConfettiStage( this.game, this, 1, 35 ),
-      new ConfettiStage( this.game, this, -1, 65 ),
+      new ConfettiStage( this.game, this, 1, 20 ),
+      new ConfettiStage( this.game, this, -1, 30 ),
     ];
 
   }
@@ -190,17 +190,19 @@ class Particle {
 
   }
 
-  reset() {
+  reset( randomHeight = true ) {
 
     this.completed = false;
 
-    this.mesh.position.x = THREE.Math.randFloat( - this.confetti.width / 2, this.confetti.width / 2 );
-    this.mesh.position.y = THREE.Math.randFloat( this.size, this.confetti.height + this.size );
     this.speed = THREE.Math.randFloat( this.options.speed.min, this.options.speed.max ) * - 1;
+    this.mesh.position.x = THREE.Math.randFloat( - this.confetti.width / 2, this.confetti.width / 2 );
+    this.mesh.position.y = ( randomHeight )
+      ? THREE.Math.randFloat( this.size, this.confetti.height + this.size )
+      : this.size;
 
-    this.mesh.rotation.set( Math.random() * Math.PI / 3, Math.random() * Math.PI / 3, Math.random() * Math.PI / 3 );
     this.revolutionSpeed = THREE.Math.randFloat( this.options.revolution.min, this.options.revolution.max );
     this.revolutionAxis = [ 'x', 'y', 'z' ][ Math.floor( Math.random() * 3 ) ];
+    this.mesh.rotation.set( Math.random() * Math.PI / 3, Math.random() * Math.PI / 3, Math.random() * Math.PI / 3 );
 
   }
 
@@ -217,7 +219,7 @@ class Particle {
     this.mesh.rotation[ this.revolutionAxis ] += this.revolutionSpeed;
 
     if ( this.mesh.position.y < - this.confetti.height - this.size )
-      ( this.confetti.playing ) ? this.reset() : this.stop();
+      ( this.confetti.playing ) ? this.reset( false ) : this.stop();
 
   }
 
