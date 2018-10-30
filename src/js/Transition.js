@@ -8,16 +8,16 @@ class Transition {
 
     this.tweens = {};
     this.durations = {};
-    this.data = {};
+    this.data = {
+      cubeY: -0.2,
+      cameraZoom: 0.85,
+    };
 
     this.activeTransitions = 0;
 
   }
 
   init() {
-
-    this.data.cubeY = -0.2;
-    this.data.cameraZoom = 0.85;
 
     this.game.controls.disable();
 

@@ -4,20 +4,64 @@
 		"selected_items":
 		[
 			[
+				"revo",
+				"revolutionAxis"
+			],
+			[
+				"sta",
+				"started"
+			],
+			[
+				"hol",
+				"holders"
+			],
+			[
+				"Conf",
+				"ConfettiHolder"
+			],
+			[
+				"sc",
+				"scrambleSpeed"
+			],
+			[
+				"pos",
+				"positionScale"
+			],
+			[
+				"ge",
+				"geometry"
+			],
+			[
+				"sys",
+				"systemMaterial"
+			],
+			[
+				"Par",
+				"particleSystem"
+			],
+			[
+				"con",
+				"confetti"
+			],
+			[
+				"op",
+				"options"
+			],
+			[
+				"rez",
+				"resizeViewport"
+			],
+			[
+				"Mesh",
+				"MeshLambertMaterial"
+			],
+			[
 				"scra",
 				"scrambleLength"
 			],
 			[
-				"con",
-				"controls"
-			],
-			[
 				"load",
 				"loadPreferences"
-			],
-			[
-				"pos",
-				"position"
 			],
 			[
 				"posi",
@@ -168,10 +212,6 @@
 				"flexbox-display"
 			],
 			[
-				"sc",
-				"scrambleLength"
-			],
-			[
 				"ui",
 				"ui__preferences"
 			],
@@ -286,10 +326,6 @@
 			[
 				"roun",
 				"roundAngle"
-			],
-			[
-				"sta",
-				"startQuaternion"
 			],
 			[
 				"que",
@@ -478,65 +514,11 @@
 			[
 				"direct",
 				"directionFix"
-			],
-			[
-				"items",
-				"itemsPerPage"
-			],
-			[
-				"no",
-				"noMoreMarginTop"
-			],
-			[
-				"wra",
-				"wrapperHeight"
-			],
-			[
-				"filte",
-				"filterBy"
-			],
-			[
-				"ca",
-				"category"
-			],
-			[
-				"data",
-				"dataProvider"
-			],
-			[
-				"replace",
-				"str_replace"
-			],
-			[
-				"md",
-				"mdpath"
-			],
-			[
-				"CUBE",
-				"CUBE_LAYERS"
 			]
 		]
 	},
 	"buffers":
 	[
-		{
-			"file": "rollup.config.rubik.js",
-			"settings":
-			{
-				"buffer_size": 303,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "index.html",
-			"settings":
-			{
-				"buffer_size": 3483,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "Libsass",
 	"build_system_choices":
@@ -668,12 +650,19 @@
 	},
 	"expanded_folders":
 	[
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js"
+		"/Users/boris/Sites/bsehovac.github.io"
 	],
 	"file_history":
 	[
+		"/Users/boris/Sites/bsehovac.github.io/src/js/Confetti.js",
+		"/Users/boris/Sites/bsehovac.github.io/src/js/Game.js",
+		"/Users/boris/Sites/bsehovac.github.io/rollup.config.rubik.js",
+		"/Users/boris/Sites/bsehovac.github.io/src/js/Icons.js",
+		"/Users/boris/Sites/bsehovac.github.io/src/js/Transition.js",
+		"/Users/boris/Sites/bsehovac.github.io/index.html",
+		"/Users/boris/Sites/bsehovac.github.io/src/scss/components/_ui.sass",
+		"/Users/boris/Sites/bsehovac.github.io/src/js/Cube.js",
+		"/Users/boris/Sites/bsehovac.github.io/src/js/World.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Preferences.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Controls.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/src/js/Cube.js",
@@ -712,30 +701,21 @@
 		"/Users/boris/Sites/bsehovac.github.io/assets/js/solver/worker.js",
 		"/Users/boris/Sites/bsehovac.github.io/assets/js/solver/solve.js",
 		"/Users/boris/Sites/bsehovac.github.io/assets/js/solver/cube.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/scss/components/_ui.sass",
-		"/Users/boris/Sites/bsehovac.github.io/rollup.config.rubik.js",
 		"/Users/boris/Sites/test/lib/solve.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/solver/Main.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/solver/Bundle.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/js/Game.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/solver/worker.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/solver/async.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/solver/cube.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/solver/solve.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/js/Transition.js",
 		"/Users/boris/Sites/test/lib/async.js",
 		"/Users/boris/Sites/test/lib/cube.js",
-		"/Users/boris/Sites/bsehovac.github.io/index.html",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/CubePieces.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/js/Icons.js",
 		"/Users/boris/Sites/bsehovac.github.io/assets/js/cube.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/DoubleClick.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/TapEvents.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/DoubleTap.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/js/Cube.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/js/World.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Tween.js",
-		"/Users/boris/Sites/bsehovac.github.io/src/js/Confetti.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Animation.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/RollupMain.js",
 		"/Users/boris/Sites/bsehovac.github.io/src/js/Controls.js",
@@ -805,7 +785,7 @@
 	],
 	"find":
 	{
-		"height": 30.0
+		"height": 54.0
 	},
 	"find_in_files":
 	{
@@ -864,6 +844,30 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"class",
+			"this.confetti.options",
+			"attach",
+			"positionScale",
+			"geometryScale",
+			"this.scale",
+			"this.radius",
+			"radius",
+			"confett",
+			"confett1",
+			"old",
+			"confett",
+			"this.scale",
+			"this.options",
+			"angle",
+			"object___",
+			"holder",
+			"object",
+			"opacit",
+			"options",
+			"done",
+			"this.done",
+			"callba",
+			"getProgre",
 			"console",
 			"cubeModel",
 			"conso",
@@ -967,31 +971,7 @@
 			"this._flipLayer",
 			"onSolved",
 			"checkIs",
-			"checkIsSo",
-			"localStorage",
-			"loadState",
-			"clearState",
-			"elements",
-			"this.game",
-			"game.",
-			"game",
-			"this._",
-			"setItem",
-			"clearStat",
-			"moves",
-			"name",
-			"saveState",
-			"this._moves",
-			"addMove",
-			"checkIsSolved",
-			"Cube",
-			"window",
-			"Cube",
-			"solve",
-			"Include",
-			"Extend",
-			"this",
-			"module"
+			"checkIsSo"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -999,6 +979,12 @@
 		"regex": false,
 		"replace_history":
 		[
+			"this.options",
+			"this.size",
+			"this.confetti.options",
+			"holder",
+			"object",
+			"object___",
 			"CubeModel",
 			"3",
 			"- size / 2",
@@ -1120,13 +1106,7 @@
 			"drag",
 			"getPositionCurrent",
 			"window.requestAnimationFrame",
-			"window.cancelAnimationFrame",
-			"this.drag",
-			"this.drag.move",
-			"this.drag.start",
-			"getCurrentIntersect",
-			"this.intersect.start",
-			"this.drag.start"
+			"window.cancelAnimationFrame"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -1137,75 +1117,14 @@
 	"groups":
 	[
 		{
-			"selected": 1,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "rollup.config.rubik.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 303,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								8,
-								8
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3483,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1673,
-								1678
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 781.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 30.0
+		"height": 28.0
 	},
 	"input":
 	{
@@ -1246,7 +1165,7 @@
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 56.0
+		"height": 88.0
 	},
 	"save_all_on_build": true,
 	"select_file":

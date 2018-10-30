@@ -1,62 +1,135 @@
 import { Animation } from './Animation.js';
 
-class Confetti extends Animation {
+class Confetti {
 
   constructor( game ) {
 
-    super( false );
-
     this.game = game;
+    this.started = 0;
 
-    this.count = 100;
-    this.particles = [];
-
-    this.object = new THREE.Object3D();
-    this.object.position.y = 0.25;
-    this.game.world.scene.add( this.object );
+    this.options = {
+      speed: { min: 0.0011, max: 0.0022 },
+      revolution: { min: 0.01, max: 0.05 },
+      size: { min: 0.1, max: 0.15 },
+      colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
+    }
 
     this.geometry = new THREE.PlaneGeometry( 1, 1 );
-    this.material = new THREE.MeshLambertMaterial( { transparent: true, side: THREE.DoubleSide} );
-    this.opacity = 0;
-    this.callback = ( () => {} );
+    this.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide } );
 
-    this.particleOptions = {
-      geometry: this.geometry,
-      material: this.material,
-      holder: this.object,
-      velocity: { min: 5, max: 20 },
-      revolution: { min: 0, max: 0.05 },
-      angle: { direction: new THREE.Vector3( 0, 1, 0 ), spread: 30 },
-      radius: { min: 10, max: 15 },
-      mass: { min: 0.05, max: 0.1 },
-      gravity: -9.81,
-      geometryScale: 0.01, // used to scale in threejs world
-      positionScale: 0.3333, // used to scale in threejs world
-      colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
-    };
-
-    let i = this.count;
-    while ( i-- )  this.particles.push( new Particle( this.particleOptions ) );
+    this.holders = [
+      new ConfettiStage( this.game, this, 1, 35 ),
+      new ConfettiStage( this.game, this, -1, 65 ),
+    ];
 
   }
 
-  start( callback ) {
+  start() {
 
-    this.opacity = 0;
-    this.done = 0;
-    this.time = performance.now();
-    this.callback = ( typeof callback === 'function') ? callback : () => {};
-    
-    super.start();
+    if ( this.started > 0 ) return;
+
+    this.holders.forEach( holder => {
+
+      this.game.world.scene.add( holder.holder );
+      holder.start();
+      this.started ++;
+
+    } );
 
   }
 
   stop() {
 
-    super.stop();
+    if ( this.started == 0 ) return;
+
+    this.holders.forEach( holder => {
+
+      holder.stop( () => {
+
+        this.game.world.scene.remove( holder.holder );
+        this.started --;
+
+      } );
+
+    } );
+
+  }
+
+  updateColors( colors ) {
+
+    this.holders.forEach( holder => {
+
+      holder.options.colors.forEach( ( color, index ) => {
+
+        holder.options.colors[ index ] = colors[ [ 'D', 'F', 'R', 'B', 'L' ][ index ] ];
+
+      } );
+
+    } );
+
+  }
+
+}
+
+class ConfettiStage extends Animation {
+
+  constructor( game, parent, distance, count ) {
+
+    super( false );
+
+    this.game = game;
+    this.parent = parent;
+
+    this.distanceFromCube = distance;
+
+    this.count = count;
+    this.particles = [];
+
+    this.holder = new THREE.Object3D();
+    this.holder.rotation.copy( this.game.world.camera.rotation );
+
+    this.object = new THREE.Object3D();
+    this.holder.add( this.object );
+
+    this.resizeViewport = this.resizeViewport.bind( this );
+    this.game.world.onResize.push( this.resizeViewport )
+    this.resizeViewport();    
+
+    this.geometry = this.parent.geometry;
+    this.material = this.parent.material;
+
+    this.options = this.parent.options;
+
+    let i = this.count;
+    while ( i-- ) this.particles.push( new Particle( this ) );
+
+  }
+
+  start() {
+
+    this.time = performance.now();
+    this.playing = true;
 
     let i = this.count;
     while ( i-- ) this.particles[ i ].reset();
+
+    super.start();
+
+  }
+
+  stop( callback ) {
+
+    this.playing = false;
+    this.completed = 0;
+    this.callback = callback;
+
+  }
+
+  reset() {
+
+    super.stop();
+
+    this.callback();
 
   }
 
@@ -66,46 +139,52 @@ class Confetti extends Animation {
     const delta = now - this.time;
     this.time = now;
 
-    this.opacity += ( 1 - this.opacity ) * 0.1;
-
     let i = this.count;
-    while ( i-- ) {
 
-      if ( this.particles[ i ].update( delta, this.opacity ) ) this.done++;
+    while ( i-- )
+      if ( ! this.particles[ i ].completed ) this.particles[ i ].update( delta );
 
-    }
+    if ( ! this.playing && this.completed == this.count ) this.reset();
 
-    if ( this.done == this.count) {
+  }
 
-      this.stop();
+  resizeViewport() {
 
-      this.callback();
-      this.callback = ( () => {} );
+    const fovRad = this.game.world.camera.fov * THREE.Math.DEG2RAD;
 
-    }
+    this.height = 2 * Math.tan( fovRad / 2 ) * ( this.game.world.camera.position.length() - this.distanceFromCube );
+    this.width = this.height * this.game.world.camera.aspect;
+
+    const scale = 1 / this.game.transition.data.cameraZoom;
+
+    this.width *= scale;
+    this.height *= scale;
+
+    this.object.position.z = this.distanceFromCube;
+    this.object.position.y = this.height / 2;
 
   }
   
 }
 
-const rnd = THREE.Math.randFloat;
-
 class Particle {
 
-  constructor( options ) {
+  constructor( confetti ) {
 
-    this.options = options;
+    this.confetti = confetti;
+    this.options = this.confetti.options;
 
     this.velocity = new THREE.Vector3();
     this.force = new THREE.Vector3();
 
-    this.mesh = new THREE.Mesh( options.geometry, options.material.clone() );
+    this.mesh = new THREE.Mesh( this.confetti.geometry, this.confetti.material.clone() );
+    this.confetti.object.add( this.mesh );
 
-    options.holder.add( this.mesh );
+    this.color = new THREE.Color( this.options.colors[ Math.floor( Math.random() * this.options.colors.length ) ] );
+    this.mesh.material.color.set( this.color );
 
-    this.reset();
-
-    this.ag = options.gravity; // -9.81
+    this.size = THREE.Math.randFloat( this.options.size.min, this.options.size.max );
+    this.mesh.scale.set( this.size, this.size, this.size );
 
     return this;
 
@@ -113,87 +192,33 @@ class Particle {
 
   reset() {
 
-    const axis = this.velocity.clone();
+    this.completed = false;
 
-    this.velocity.copy( this.options.angle.direction ).multiplyScalar( rnd( this.options.velocity.min, this.options.velocity.max ) );
-    this.velocity.applyAxisAngle( axis.set( 1, 0, 0 ), rnd( -this.options.angle.spread / 2, this.options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
-    this.velocity.applyAxisAngle( axis.set( 0, 0, 1 ), rnd( -this.options.angle.spread / 2, this.options.angle.spread / 2 ) * THREE.Math.DEG2RAD );
+    this.mesh.position.x = THREE.Math.randFloat( - this.confetti.width / 2, this.confetti.width / 2 );
+    this.mesh.position.y = THREE.Math.randFloat( this.size, this.confetti.height + this.size );
+    this.speed = THREE.Math.randFloat( this.options.speed.min, this.options.speed.max ) * - 1;
 
-    this.color = new THREE.Color( this.options.colors[ Math.floor( Math.random() * this.options.colors.length ) ] );
-
-    this.revolution = new THREE.Vector3(
-      rnd( this.options.revolution.min, this.options.revolution.max ),
-      rnd( this.options.revolution.min, this.options.revolution.max ),
-      rnd( this.options.revolution.min, this.options.revolution.max )
-    );
-
-    this.mesh.position.set( 0, 0, 0 );
-
-    this.positionScale = this.options.positionScale;
-    this.mass = rnd( this.options.mass.min, this.options.mass.max );
-    this.radius = rnd( this.options.radius.min, this.options.radius.max );
-    this.scale = this.radius * this.options.geometryScale;
-
-    this.mesh.scale.set( this.scale, this.scale, this.scale );
-    this.mesh.material.color.set( this.color );
-    this.mesh.material.opacity = 0;
-    this.mesh.rotation.set( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 )
-
-    this.physics = this.getPhysics( this.radius );
-
-    this.done = false;
+    this.mesh.rotation.set( Math.random() * Math.PI / 3, Math.random() * Math.PI / 3, Math.random() * Math.PI / 3 );
+    this.revolutionSpeed = THREE.Math.randFloat( this.options.revolution.min, this.options.revolution.max );
+    this.revolutionAxis = [ 'x', 'y', 'z' ][ Math.floor( Math.random() * 3 ) ];
 
   }
 
-  update( delta, opacity, complete ) {
+  stop() {
 
-    if ( this.done ) return false;
-
-    delta = 16 / 1000;
-
-    this.force.set(
-      this.getForce( this.velocity.x ),
-      this.getForce( this.velocity.y ) + this.ag,
-      this.getForce( this.velocity.z )
-    );
-
-    this.velocity.add( this.force.multiplyScalar( delta ) );
-
-    this.mesh.position.add( this.velocity.clone().multiplyScalar( delta * this.positionScale ) );
-    this.mesh.rotateX( this.revolution.x ).rotateY( this.revolution.y ).rotateZ( this.revolution.y );
-    this.mesh.material.opacity = opacity * this.getProgressInRange( this.mesh.position.y, -4, -2 );
-
-    if ( this.mesh.position.y < -4 ) { 
-      
-      this.done = true;
-      return true;
-
-    }
-
-    return false;
+    this.completed = true;
+    this.confetti.completed ++;
 
   }
 
-  getPhysics( r ) {
+  update( delta ) {
 
-    const Cd = 0.47;
-    const rho = 1.22;
-    const A = Math.PI * r * r / 10000;
+    this.mesh.position.y += this.speed * delta;
+    this.mesh.rotation[ this.revolutionAxis ] += this.revolutionSpeed;
 
-    return -0.5 * Cd * rho * A;
+    if ( this.mesh.position.y < - this.confetti.height - this.size )
+      ( this.confetti.playing ) ? this.reset() : this.stop();
 
-  }
-
-  getForce( velocity ) {
-
-    return this.physics * velocity * velocity * Math.sign( velocity ) / this.mass;
-
-  }
-
-  getProgressInRange( value, start, end ) {
-
-    return Math.min( Math.max( (value - start) / (end - start), 0 ), 1 );
-    
   }
 
 }

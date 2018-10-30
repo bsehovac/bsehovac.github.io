@@ -30,11 +30,11 @@ class Cube {
       },
       pastel: {
         U: 0xf7ffff, // white
-        D: 0xf1ff4d, //++ yellow
-        F: 0xff4d4d, //++ red
-        R: 0x4dcbff, //++ blue
-        B: 0xe8a746, //++ orange
-        L: 0x4be846, //++ green
+        D: 0xf1ff4d, // yellow
+        F: 0xff4d4d, // red
+        R: 0x4dcbff, // blue
+        B: 0xe8a746, // orange
+        L: 0x4be846, // green
         P: 0x111111, // piece - black
       },
 		};
@@ -221,6 +221,8 @@ class Cube {
       edge.material.color.setHex( colors[ edge.name ] );
 
     } );
+
+    this.game.confetti.updateColors( colors );
 
 	}
 

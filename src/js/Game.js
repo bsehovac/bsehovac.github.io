@@ -5,7 +5,7 @@ import { Scrambler } from './Scrambler.js';
 import { Transition } from './Transition.js';
 import { Timer } from './Timer.js';
 import { Preferences } from './Preferences.js';
-// import { Confetti } from './Confetti.js';
+import { Confetti } from './Confetti.js';
 import { Scores } from './Scores.js';
 import { Storage } from './Storage.js';
 
@@ -52,9 +52,9 @@ class Game {
     this.transition = new Transition( this );
     this.timer = new Timer( this );
     this.preferences = new Preferences( this );
-    // this.confetti = new Confetti( this );
     this.scores = new Scores( this );
     this.storage = new Storage( this );
+    this.confetti = new Confetti( this );
 
     this.initActions();
 
@@ -133,6 +133,8 @@ class Game {
 
         this.state = STATS;
         this.saved = false;
+
+        this.confetti.stop();
 
         this.transition.timer( HIDE );
         this.transition.complete( HIDE, this.bestTime );
@@ -250,7 +252,12 @@ class Game {
       this.transition.zoom( MENU, 0 );
       this.transition.elevate( SHOW );
 
-      setTimeout( () => this.transition.complete( SHOW, this.bestTime ), 1000 );
+      setTimeout( () => {
+
+        this.transition.complete( SHOW, this.bestTime )
+        this.confetti.start();
+
+      }, 1000 );
 
     };
 
@@ -258,8 +265,4 @@ class Game {
 
 }
 
-const game = new Game();
-
-window.game = game;
-
-
+window.game = new Game();

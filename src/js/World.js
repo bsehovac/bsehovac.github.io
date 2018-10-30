@@ -22,6 +22,8 @@ class World extends Animation {
 
 		this.createLights();
 
+		this.onResize = [];
+
 		this.resize();
 		window.addEventListener( 'resize', () => this.resize(), false );
 
@@ -61,6 +63,8 @@ class World extends Animation {
 			: this.width / 100;
 
 		document.documentElement.style.fontSize = docFontSize + 'px';
+
+		if ( this.onResize ) this.onResize.forEach( cb => cb() );
 
 	}
 
