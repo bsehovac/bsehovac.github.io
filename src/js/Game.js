@@ -46,36 +46,36 @@ class Game {
     };
 
     this.world = new World( this );
-    // this.cube = new Cube( this );
-    // this.controls = new Controls( this );
-    // this.scrambler = new Scrambler( this );
-    // this.transition = new Transition( this );
-    // this.timer = new Timer( this );
-    // this.preferences = new Preferences( this );
+    this.cube = new Cube( this );
+    this.controls = new Controls( this );
+    this.scrambler = new Scrambler( this );
+    this.transition = new Transition( this );
+    this.timer = new Timer( this );
+    this.preferences = new Preferences( this );
     this.confetti = new Confetti( this );
-    // this.scores = new Scores( this );
-    // this.storage = new Storage( this );
+    this.scores = new Scores( this );
+    this.storage = new Storage( this );
 
-    // this.initActions();
+    this.initActions();
 
-    // this.state = MENU;
-    // this.saved = false;
+    this.state = MENU;
+    this.saved = false;
 
-    // this.storage.init();
-    // this.preferences.init();
-    // this.transition.init();
+    this.storage.init();
+    this.preferences.init();
+    this.transition.init();
 
-    // this.scores.calcStats();
+    this.scores.calcStats();
 
-    // setTimeout( () => {
+    setTimeout( () => {
 
-    //   this.transition.float();
-    //   this.transition.cube( SHOW );
+      this.transition.float();
+      this.transition.cube( SHOW );
 
-    //   setTimeout( () => this.transition.title( SHOW ), 700 );
-    //   setTimeout( () => this.transition.buttons( [ 'prefs', 'stats' ], [] ), 1000 );
+      setTimeout( () => this.transition.title( SHOW ), 700 );
+      setTimeout( () => this.transition.buttons( [ 'prefs', 'stats' ], [] ), 1000 );
 
-    // }, 500 );
+    }, 500 );
 
   }
 
@@ -100,6 +100,7 @@ class Game {
 
         if ( ! this.saved ) {
 
+          this.scrambler.scrambleLength = 1;
           this.scrambler.scramble();
           this.controls.scrambleCube();
 
@@ -133,6 +134,8 @@ class Game {
 
         this.state = STATS;
         this.saved = false;
+
+        this.confetti.stop();
 
         this.transition.timer( HIDE );
         this.transition.complete( HIDE, this.bestTime );
@@ -250,7 +253,12 @@ class Game {
       this.transition.zoom( MENU, 0 );
       this.transition.elevate( SHOW );
 
-      setTimeout( () => this.transition.complete( SHOW, this.bestTime ), 1000 );
+      setTimeout( () => {
+
+        this.transition.complete( SHOW, this.bestTime )
+        this.confetti.start();
+
+      }, 1000 );
 
     };
 
@@ -258,8 +266,4 @@ class Game {
 
 }
 
-const game = new Game();
-
-window.game = game;
-
-
+window.game = new Game();

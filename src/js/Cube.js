@@ -222,6 +222,8 @@ class Cube {
 
     } );
 
+    this.game.confetti.updateColors( colors );
+
 	}
 
 }
