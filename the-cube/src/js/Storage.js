@@ -4,15 +4,15 @@ class Storage {
 
     this.game = game;
 
-    const gameVersion = 'v0.93';
-    const userVersion = localStorage.getItem( 'version' );
+    const gameVersion = '0.98';
+    const userVersion = localStorage.getItem( 'theCube_version' );
 
     if ( ! userVersion || userVersion !== gameVersion ) {
 
       this.clearGame();
       this.clearPreferences();
-      // this.clearScores();
-      localStorage.setItem( 'version', gameVersion );
+      this.clearScores();
+      localStorage.setItem( 'theCube_version', gameVersion );
 
     }
 
@@ -32,12 +32,12 @@ class Storage {
 
     try {
 
-      const gameInProgress = localStorage.getItem( 'gameInProgress' ) === 'true';
+      const gameInProgress = localStorage.getItem( 'theCube_playing' ) === 'true';
 
       if ( ! gameInProgress ) throw new Error();
 
-      const gameCubeData = JSON.parse( localStorage.getItem( 'gameCubeData' ) );
-      const gameTime = parseInt( localStorage.getItem( 'gameTime' ) );
+      const gameCubeData = JSON.parse( localStorage.getItem( 'theCube_savedState' ) );
+      const gameTime = parseInt( localStorage.getItem( 'theCube_time' ) );
 
       if ( ! gameCubeData || ! gameTime ) throw new Error();
 
@@ -79,17 +79,17 @@ class Storage {
 
     } );
 
-    localStorage.setItem( 'gameInProgress', gameInProgress );
-    localStorage.setItem( 'gameCubeData', JSON.stringify( gameCubeData ) );
-    localStorage.setItem( 'gameTime', gameTime );
+    localStorage.setItem( 'theCube_playing', gameInProgress );
+    localStorage.setItem( 'theCube_savedState', JSON.stringify( gameCubeData ) );
+    localStorage.setItem( 'theCube_time', gameTime );
 
   }
 
   clearGame() {
 
-    localStorage.removeItem( 'gameInProgress' );
-    localStorage.removeItem( 'gameCubeData' );
-    localStorage.removeItem( 'gameTime' );
+    localStorage.removeItem( 'theCube_playing' );
+    localStorage.removeItem( 'theCube_savedState' );
+    localStorage.removeItem( 'theCube_time' );
 
   }
 
@@ -99,10 +99,10 @@ class Storage {
 
     try {
 
-      const scoresData = JSON.parse( localStorage.getItem( 'scoresData' ) );
-      const scoresBest = parseInt( localStorage.getItem( 'scoresBest' ) );
-      const scoresWorst = parseInt( localStorage.getItem( 'scoresWorst' ) );
-      const scoresSolves = parseInt( localStorage.getItem( 'scoresSolves' ) );
+      const scoresData = JSON.parse( localStorage.getItem( 'theCube_scoresData' ) );
+      const scoresBest = parseInt( localStorage.getItem( 'theCube_scoresBest' ) );
+      const scoresWorst = parseInt( localStorage.getItem( 'theCube_scoresWorst' ) );
+      const scoresSolves = parseInt( localStorage.getItem( 'theCube_scoresSolves' ) );
 
       if ( ! scoresData || ! scoresBest || ! scoresSolves || ! scoresWorst ) throw new Error();
 
@@ -130,19 +130,19 @@ class Storage {
     const scoresWorst = this.game.scores.worst;
     const scoresSolves = this.game.scores.solves;
 
-    localStorage.setItem( 'scoresData', JSON.stringify( scoresData ) );
-    localStorage.setItem( 'scoresBest', JSON.stringify( scoresBest ) );
-    localStorage.setItem( 'scoresWorst', JSON.stringify( scoresWorst ) );
-    localStorage.setItem( 'scoresSolves', JSON.stringify( scoresSolves ) );
+    localStorage.setItem( 'theCube_scoresData', JSON.stringify( scoresData ) );
+    localStorage.setItem( 'theCube_scoresBest', JSON.stringify( scoresBest ) );
+    localStorage.setItem( 'theCube_scoresWorst', JSON.stringify( scoresWorst ) );
+    localStorage.setItem( 'theCube_scoresSolves', JSON.stringify( scoresSolves ) );
 
   }
 
   clearScores() {
 
-    localStorage.removeItem( 'scoresData' );
-    localStorage.removeItem( 'scoresBest' );
-    localStorage.removeItem( 'scoresWorst' );
-    localStorage.removeItem( 'scoresSolves' );
+    localStorage.removeItem( 'theCube_scoresData' );
+    localStorage.removeItem( 'theCube_scoresBest' );
+    localStorage.removeItem( 'theCube_scoresWorst' );
+    localStorage.removeItem( 'theCube_scoresSolves' );
 
   }
 
@@ -152,7 +152,7 @@ class Storage {
 
     try {
 
-      const preferences = JSON.parse( localStorage.getItem( 'preferences' ) );
+      const preferences = JSON.parse( localStorage.getItem( 'theCube_preferences' ) );
 
       if ( ! preferences ) throw new Error();
 
@@ -196,13 +196,13 @@ class Storage {
       theme: this.game.cube.theme,
     };
 
-    localStorage.setItem( 'preferences', JSON.stringify( preferences ) );
+    localStorage.setItem( 'theCube_preferences', JSON.stringify( preferences ) );
 
   }
 
   clearPreferences() {
 
-    localStorage.removeItem( 'preferences' );
+    localStorage.removeItem( 'theCube_preferences' );
 
   }
 

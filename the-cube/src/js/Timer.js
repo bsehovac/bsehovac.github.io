@@ -52,7 +52,7 @@ class Timer extends Animation {
 
 		if ( this.converted != old ) {
 
-			localStorage.setItem( 'gameTime', this.deltaTime );
+			localStorage.setItem( 'theCube_time', this.deltaTime );
 			this.setText();
 
 		}

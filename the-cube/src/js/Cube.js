@@ -224,8 +224,6 @@ class Cube {
 
 		this.theme = theme;
 
-    console.log( theme, this.colors )
-
 		const colors = this.colors[ this.theme ];
 
     this.pieces.forEach( piece => {
