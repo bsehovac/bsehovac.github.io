@@ -9,8 +9,8 @@ class Cube {
 
 		this.theme = 'default';
 
-		this.colors = [
-			{ // CUBE
+		this.colors = {
+			cube: {
         U: 0xfff7ff, // white
         D: 0xffef48, // yellow
         F: 0xef3923, // red
@@ -19,7 +19,7 @@ class Cube {
         L: 0x82ca38, // green
         P: 0x08101a, // piece - black --- d1d5db
       },
-      { // RUBIK
+      erno: {
         U: 0xffffff, // white
         D: 0xffd500, // yellow
         F: 0xc41e3a, // red
@@ -28,7 +28,7 @@ class Cube {
         L: 0x009e60, // green
         P: 0x111111, // piece - black --- 8abdff
       },
-      { // CAMO
+      camo: {
         U: 0xfff6eb, // white
         D: 0xe7c48d, // yellow
         F: 0x8f253e, // red
@@ -37,7 +37,7 @@ class Cube {
         L: 0x849f5d, // green
         P: 0x111111, // piece - black --- E7C48D
       },
-      { // LEAF
+      leaf: {
         U: 0xfff6eb, // white
         D: 0xbfb672, // yellow
         F: 0x37241c, // red
@@ -46,7 +46,7 @@ class Cube {
         L: 0x718456, // green
         P: 0x111111, // piece - black --- BFB672
       },
-      { // RAIN
+      rain: {
         U: 0xfafaff, // white
         D: 0xedb92d, // yellow
         F: 0xce2135, // red
@@ -55,7 +55,7 @@ class Cube {
         L: 0xa3a947, // green
         P: 0x111111, // piece - black --- edb92d
       },
-		];
+		};
 
 		this.geometry = {
 			pieceSize: 1 / 3,
@@ -224,6 +224,8 @@ class Cube {
 
 		this.theme = theme;
 
+    console.log( theme, this.colors )
+
 		const colors = this.colors[ this.theme ];
 
     this.pieces.forEach( piece => {
@@ -240,7 +242,7 @@ class Cube {
 
     this.game.confetti.updateColors( colors );
 
-    this.colors.forEach( ( color, index ) => this.game.dom.ui.classList.remove( 'ui--theme-' + index ) );
+    Object.keys( this.colors ).forEach( name => this.game.dom.ui.classList.remove( 'ui--theme-' + name ) ); 
     this.game.dom.ui.classList.add( 'ui--theme-' + theme );
 
 	}

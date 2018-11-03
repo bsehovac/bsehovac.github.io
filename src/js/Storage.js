@@ -4,7 +4,7 @@ class Storage {
 
     this.game = game;
 
-    const gameVersion = 'v0.92';
+    const gameVersion = 'v0.93';
     const userVersion = localStorage.getItem( 'version' );
 
     if ( ! userVersion || userVersion !== gameVersion ) {
@@ -176,7 +176,7 @@ class Storage {
       this.game.world.fov = 10;
       this.game.world.resize();
 
-      this.game.cube.setTheme( 0 );
+      this.game.cube.setTheme( 'cube' );
 
       this.savePreferences();
 

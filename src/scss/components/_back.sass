@@ -3,9 +3,8 @@
   transition: opacity 500ms ease
   opacity: 0
 
-  $colors: #d1d5db #8abdff #E7C48D #BFB672 #e4c665
+  $colors: ( cube: #d1d5db, erno: #8abdff, camo: #E7C48D, leaf: #BFB672, rain: #87b9ac )
 
-  @each $color in $colors
-    $i: index($colors, $color)
-    &--#{$i - 1}
+  @each $name, $color in $colors
+    &--#{$name}
       background-image: linear-gradient(to bottom, #ffffff 50%, $color 100%)
