@@ -14,7 +14,7 @@ class Themes {
         B: 0xff8c0a, // orange
         L: 0x82ca38, // green
         P: 0x08101a, // piece
-        B: 0xd1d5db, // background
+        G: 0xd1d5db, // background
       },
       erno: {
         U: 0xffffff, // white
@@ -24,7 +24,7 @@ class Themes {
         B: 0xff5800, // orange
         L: 0x009e60, // green
         P: 0x111111, // piece
-        B: 0x8abdff, // background
+        G: 0x8abdff, // background
       },
       dust: {
         U: 0xfff6eb, // white
@@ -34,7 +34,7 @@ class Themes {
         B: 0xbe6f62, // orange
         L: 0x849f5d, // green
         P: 0x111111, // piece
-        B: 0xE7C48D, // background
+        G: 0xE7C48D, // background
       },
       camo: {
         U: 0xfff6eb, // white
@@ -44,7 +44,7 @@ class Themes {
         B: 0x37241c, // red
         L: 0x37431d, // blue
         P: 0x111111, // piece
-        B: 0xBFB672, // background
+        G: 0xBFB672, // background
       },
       rain: {
         U: 0xfafaff, // white
@@ -54,7 +54,7 @@ class Themes {
         B: 0xec582f, // orange
         L: 0xa3a947, // green
         P: 0x111111, // piece
-        B: 0x87b9ac, // background
+        G: 0x87b9ac, // background
       },
     };
 
@@ -88,7 +88,7 @@ class Themes {
 
     this.game.confetti.updateColors( colors );
 
-    this.game.dom.back.style.background = '#' + colors.B.toString(16).padStart(6, '0');
+    this.game.dom.back.style.background = '#' + colors.G.toString(16).padStart(6, '0');
 
   }
 
