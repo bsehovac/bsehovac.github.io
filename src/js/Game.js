@@ -27,6 +27,7 @@ class Game {
     this.dom = {
       ui: document.querySelector( '.ui' ),
       game: document.querySelector( '.ui__game' ),
+      back: document.querySelector( '.ui__background' ),
       texts: document.querySelector( '.ui__texts' ),
       prefs: document.querySelector( '.ui__prefs' ),
       stats: document.querySelector( '.ui__stats' ),

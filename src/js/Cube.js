@@ -9,35 +9,53 @@ class Cube {
 
 		this.theme = 'default';
 
-		this.colors = {
-			default: {
+		this.colors = [
+			{ // CUBE
         U: 0xfff7ff, // white
         D: 0xffef48, // yellow
         F: 0xef3923, // red
         R: 0x41aac8, // blue
         B: 0xff8c0a, // orange
         L: 0x82ca38, // green
-        P: 0x08101a, // piece - black
+        P: 0x08101a, // piece - black --- d1d5db
       },
-      original: {
+      { // RUBIK
         U: 0xffffff, // white
         D: 0xffd500, // yellow
         F: 0xc41e3a, // red
         R: 0x0051ba, // blue
         B: 0xff5800, // orange
         L: 0x009e60, // green
-        P: 0x111111, // piece - black
+        P: 0x111111, // piece - black --- 8abdff
       },
-      military: {
-        U: 0xbcb3a8, // white
+      { // CAMO
+        U: 0xfff6eb, // white
+        D: 0xe7c48d, // yellow
+        F: 0x8f253e, // red
+        R: 0x607e69, // blue
+        B: 0xbe6f62, // orange
+        L: 0x849f5d, // green
+        P: 0x111111, // piece - black --- E7C48D
+      },
+      { // LEAF
+        U: 0xfff6eb, // white
         D: 0xbfb672, // yellow
         F: 0x37241c, // red
         R: 0x37431d, // blue
         B: 0x805831, // orange
         L: 0x718456, // green
-        P: 0x111111, // piece - black
+        P: 0x111111, // piece - black --- BFB672
       },
-		};
+      { // RAIN
+        U: 0xfafaff, // white
+        D: 0xedb92d, // yellow
+        F: 0xce2135, // red
+        R: 0x449a89, // blue
+        B: 0xec582f, // orange
+        L: 0xa3a947, // green
+        P: 0x111111, // piece - black --- edb92d
+      },
+		];
 
 		this.geometry = {
 			pieceSize: 1 / 3,
@@ -133,9 +151,7 @@ class Cube {
 
 		const pieceSize = 1 / 3;
 
-		const mainMaterial = new THREE.MeshLambertMaterial( {
-			color: this.colors.default.P
-		} );
+		const mainMaterial = new THREE.MeshLambertMaterial();
 
 		const pieceMesh = new THREE.Mesh(
 			new RoundedBoxGeometry( pieceSize, this.geometry.pieceCornerRadius, 3 ),
@@ -224,9 +240,7 @@ class Cube {
 
     this.game.confetti.updateColors( colors );
 
-    this.game.dom.ui.classList.remove( 'ui--theme-default' );
-    this.game.dom.ui.classList.remove( 'ui--theme-original' );
-    this.game.dom.ui.classList.remove( 'ui--theme-military' );
+    this.colors.forEach( ( color, index ) => this.game.dom.ui.classList.remove( 'ui--theme-' + index ) );
     this.game.dom.ui.classList.add( 'ui--theme-' + theme );
 
 	}

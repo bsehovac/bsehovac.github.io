@@ -4,7 +4,7 @@ class Storage {
 
     this.game = game;
 
-    const gameVersion = 'v0.9';
+    const gameVersion = 'v0.92';
     const userVersion = localStorage.getItem( 'version' );
 
     if ( ! userVersion || userVersion !== gameVersion ) {
@@ -173,10 +173,10 @@ class Storage {
       this.game.controls.flipBounce = 2;
       this.game.scrambler.scrambleLength = 20;
 
-      this.game.world.fov = 15;
+      this.game.world.fov = 10;
       this.game.world.resize();
 
-      this.game.cube.setTheme( 'default' );
+      this.game.cube.setTheme( 0 );
 
       this.savePreferences();
 

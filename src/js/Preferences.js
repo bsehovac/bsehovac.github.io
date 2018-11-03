@@ -55,13 +55,12 @@ class Preferences {
       } ),
 
       theme: new Range( 'theme', {
-        value: { 'default': 0, 'original': 1, 'military': 2 }[ this.game.cube.theme ],
-        range: [ 0, 2 ],
+        value: this.game.cube.theme,
+        range: [ 0, 4 ],
         step: 1,
         onUpdate: value => {
 
-          const theme = [ 'default', 'original', 'military' ][ value ]
-          this.game.cube.setTheme( theme );
+          this.game.cube.setTheme( value );
 
         },
         onComplete: () => this.game.storage.savePreferences()
