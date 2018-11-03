@@ -20,11 +20,11 @@ class Preferences {
 
       speed: new Range( 'speed', {
         value: this.game.controls.flipSpeed,
-        range: [ 350, 100 ], 
+        range: [ 400, 100 ], 
         onUpdate: value => {
 
           this.game.controls.flipSpeed = value;
-          this.game.controls.flipBounce = getProgressInRange( value, 100, 350 ) * 2.125;
+          this.game.controls.flipBounce = getProgressInRange( value, 100, 400 ) * 2.5;
 
         },
         onComplete: () => this.game.storage.savePreferences(),
@@ -55,12 +55,12 @@ class Preferences {
       } ),
 
       theme: new Range( 'theme', {
-        value: { 'default': 0, 'original': 1, 'pastel': 2 }[ this.game.cube.theme ],
+        value: { 'default': 0, 'original': 1, 'military': 2 }[ this.game.cube.theme ],
         range: [ 0, 2 ],
         step: 1,
         onUpdate: value => {
 
-          const theme = [ 'default', 'original', 'pastel' ][ value ]
+          const theme = [ 'default', 'original', 'military' ][ value ]
           this.game.cube.setTheme( theme );
 
         },

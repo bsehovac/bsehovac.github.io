@@ -169,8 +169,8 @@ class Storage {
 
     } catch (e) {
 
-      this.game.controls.flipSpeed = 300;
-      this.game.controls.flipBounce = 1.70158;
+      this.game.controls.flipSpeed = 350;
+      this.game.controls.flipBounce = 2;
       this.game.scrambler.scrambleLength = 20;
 
       this.game.world.fov = 15;

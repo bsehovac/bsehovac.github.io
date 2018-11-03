@@ -12,8 +12,8 @@ class Controls {
 
     this.game = game;
 
-    this.flipSpeed = 300;
-    this.flipBounce = 1.70158;
+    this.flipSpeed = 350;
+    this.flipBounce = 2;
     this.scrambleSpeed = 150;
     this.scrambleBounce = 0;
 
