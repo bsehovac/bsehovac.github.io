@@ -39,18 +39,16 @@
     gtag('config', 'UA-128627708-1');
   </script>
 
+  <script>
+    window.gameVersion = '0.98002';
+  </script>
+
 </head>
 <body>
 
   <div class="ui">
 
-    <div class="ui__background">
-      <div class="back back--cube"></div>
-      <div class="back back--erno"></div>
-      <div class="back back--camo"></div>
-      <div class="back back--leaf"></div>
-      <div class="back back--rain"></div>
-    </div>
+    <div class="ui__background"></div>
 
     <div class="ui__game"></div>
 
@@ -78,7 +76,7 @@
       <range name="speed" title="Flip Speed" list="Bounce,Snap"></range>
       <range name="scramble" title="Scramble Length" list="20,25,30"></range>
       <range name="fov" title="Camera Angle" list="Ortographic,Perspective"></range>
-      <range name="theme" title="Color Scheme" list="Cube,Erno,Camo,Leaf,Rain"></range>
+      <range name="theme" title="Color Scheme" list="Cube,Erno,Dust,Camo,Rain"></range>
     </div>
 
     <div class="ui__stats">
@@ -114,6 +112,13 @@
       </button>
     </div>
 
+    <!-- <div class="ui__notification">
+      <img class="ui__notification-icon" src="assets/icons/apple-touch-icon.png">
+      <div class="ui__notification-text">
+        Add game to your Home Screen for full screen experience. Tap <icon share></icon> then <b>Add to Home Screen</b>.
+      </div>
+    </div> -->
+
   </div>
 
   <script src="assets/js/three.js"></script>
@@ -122,7 +127,7 @@
   <script src="upup.min.js"></script>
   <script>
     UpUp.start({
-      'cache-version': '0.98',
+      'cache-version': window.gameVersion,
       'content-url': 'index.html',
       'assets': [ 'assets/css/styles.css', 'assets/js/three.js', 'assets/js/cube.js' ]
     });

@@ -8,6 +8,8 @@ import { Preferences } from './Preferences.js';
 import { Confetti } from './Confetti.js';
 import { Scores } from './Scores.js';
 import { Storage } from './Storage.js';
+import { Themes } from './Themes.js';
+// import { AddToHomeScreen } from './AddToHomeScreen.js';
 
 import { Icons } from './Icons.js';
 
@@ -43,7 +45,8 @@ class Game {
         prefs: document.querySelector( '.btn--prefs' ),
         back: document.querySelector( '.btn--back' ),
         stats: document.querySelector( '.btn--stats' ),
-      }
+      },
+      rangeHandles: document.querySelectorAll( '.range__handle div' ),
     };
 
     this.world = new World( this );
@@ -56,6 +59,7 @@ class Game {
     this.scores = new Scores( this );
     this.storage = new Storage( this );
     this.confetti = new Confetti( this );
+    this.themes = new Themes( this );
 
     this.initActions();
 

@@ -4,15 +4,14 @@ class Storage {
 
     this.game = game;
 
-    const gameVersion = '0.98';
     const userVersion = localStorage.getItem( 'theCube_version' );
 
-    if ( ! userVersion || userVersion !== gameVersion ) {
+    if ( ! userVersion || userVersion !== window.gameVersion ) {
 
       this.clearGame();
       this.clearPreferences();
       this.clearScores();
-      localStorage.setItem( 'theCube_version', gameVersion );
+      localStorage.setItem( 'theCube_version', window.gameVersion );
 
     }
 
@@ -163,7 +162,7 @@ class Storage {
       this.game.world.fov = parseFloat( preferences.fov );
       this.game.world.resize();
 
-      this.game.cube.setTheme( preferences.theme );
+      this.game.themes.setTheme( preferences.theme );
 
       return true;
 
@@ -176,7 +175,7 @@ class Storage {
       this.game.world.fov = 10;
       this.game.world.resize();
 
-      this.game.cube.setTheme( 'cube' );
+      this.game.themes.setTheme( 'cube' );
 
       this.savePreferences();
 
@@ -193,7 +192,7 @@ class Storage {
       flipBounce: this.game.controls.flipBounce,
       scrambleLength: this.game.scrambler.scrambleLength,
       fov: this.game.world.fov,
-      theme: this.game.cube.theme,
+      theme: this.game.themes.theme,
     };
 
     localStorage.setItem( 'theCube_preferences', JSON.stringify( preferences ) );
