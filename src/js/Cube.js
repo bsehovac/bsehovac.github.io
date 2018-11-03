@@ -29,12 +29,12 @@ class Cube {
         P: 0x111111, // piece - black
       },
       military: {
-        U: 0xbcb3a8, // white +++
-        D: 0xbfb672, // yellow +++
-        F: 0x37241c, // red +++
-        R: 0x37431d, // blue +++
+        U: 0xbcb3a8, // white
+        D: 0xbfb672, // yellow
+        F: 0x37241c, // red
+        R: 0x37431d, // blue
         B: 0x805831, // orange
-        L: 0x718456, // green +++
+        L: 0x718456, // green
         P: 0x111111, // piece - black
       },
 		};
@@ -223,6 +223,11 @@ class Cube {
     } );
 
     this.game.confetti.updateColors( colors );
+
+    this.game.dom.ui.classList.remove( 'ui--theme-default' );
+    this.game.dom.ui.classList.remove( 'ui--theme-original' );
+    this.game.dom.ui.classList.remove( 'ui--theme-military' );
+    this.game.dom.ui.classList.add( 'ui--theme-' + theme );
 
 	}
 

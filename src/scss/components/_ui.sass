@@ -1,9 +1,9 @@
 .ui
   pointer-events: none
-  background-image: linear-gradient(to bottom, #fff 50%, #e1e5eb 100%)
   color: #070d15
 
   &,
+  &__background,
   &__game,
   &__texts,
   &__prefs,
@@ -12,9 +12,12 @@
     @include fullscreen
     overflow: hidden
 
+  &__background
+    z-index: 1
+
   &__game
     pointer-events: all
-    z-index: 1
+    z-index: 2
 
     canvas
       display: block
@@ -27,7 +30,7 @@
       // image-rendering: pixelated
 
   &__texts
-    z-index: 2
+    z-index: 3
 
   &__prefs,
   &__stats
@@ -36,18 +39,7 @@
     justify-content: center
     align-items: center
     overflow: hidden
-    z-index: 3
-
-  &__buttons
     z-index: 4
 
-  &__version
-    position: absolute
-    right: 0.8em
-    top: 0.8em
-    display: none
-
-    span
-      display: block
-      font-size: 0.5em
-      color: rgba(#000, 0.15)
+  &__buttons
+    z-index: 5
