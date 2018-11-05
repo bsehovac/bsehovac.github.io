@@ -10,7 +10,7 @@ class Storage {
 
       this.clearGame();
       this.clearPreferences();
-      this.clearScores();
+      // this.clearScores();
       localStorage.setItem( 'theCube_version', window.gameVersion );
 
     }
