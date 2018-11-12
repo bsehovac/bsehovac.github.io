@@ -110,7 +110,7 @@ class Game {
 
         }
 
-        const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
+        const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.flipSpeeds[0];
 
         this.state = PLAYING;
         this.saved = true;

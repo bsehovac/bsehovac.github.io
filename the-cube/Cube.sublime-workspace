@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"eas",
+				"easingFunction"
+			],
+			[
+				"scram",
+				"scramble"
+			],
+			[
+				"flipS",
+				"flipSetting"
+			],
+			[
+				"scra",
+				"scramble"
+			],
+			[
 				"color",
 				"colors"
 			],
@@ -60,10 +76,6 @@
 				"MeshLambertMaterial"
 			],
 			[
-				"scra",
-				"scrambleLength"
-			],
-			[
 				"load",
 				"loadPreferences"
 			],
@@ -106,10 +118,6 @@
 			[
 				"flip",
 				"_flipLayer"
-			],
-			[
-				"scram",
-				"scrambler"
 			],
 			[
 				"_game",
@@ -506,33 +514,43 @@
 			[
 				"redo",
 				"redocHolder"
-			],
-			[
-				"Red",
-				"RedocInterval"
-			],
-			[
-				"roundVec",
-				"roundVectorNumber"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "src/js/Game.js",
+			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 6655,
+				"buffer_size": 4915,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/js/Themes.js",
+			"file": "src/js/Preferences.js",
 			"settings":
 			{
-				"buffer_size": 2129,
+				"buffer_size": 1619,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/Storage.js",
+			"settings":
+			{
+				"buffer_size": 4862,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/Controls.js",
+			"settings":
+			{
+				"buffer_size": 12682,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -577,10 +595,14 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 229.0,
-		"last_filter": "insta",
+		"height": 126.0,
+		"last_filter": "add re",
 		"selected_items":
 		[
+			[
+				"add re",
+				"Package Control: Add Repository"
+			],
 			[
 				"insta",
 				"Package Control: Install Package"
@@ -646,7 +668,7 @@
 				"Material Theme: Activate theme"
 			]
 		],
-		"width": 416.0
+		"width": 448.0
 	},
 	"console":
 	{
@@ -668,12 +690,17 @@
 	},
 	"expanded_folders":
 	[
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/the-cube",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/the-cube/src",
-		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/the-cube/src/js"
 	],
 	"file_history":
 	[
+		"/Users/boris/Sites/bsehovac.github.io/the-cube/src/js/Game.js",
+		"/Users/boris/Sites/bsehovac.github.io/the-cube/src/js/Storage.js",
+		"/Users/boris/Sites/bsehovac.github.io/the-cube/src/js/Preferences.js",
+		"/Users/boris/Sites/bsehovac.github.io/the-cube/index.html",
+		"/Users/boris/Sites/bsehovac.github.io/the-cube/src/js/Controls.js",
+		"/Users/boris/Sites/bsehovac.github.io/the-cube/src/js/Scores.js",
+		"/Users/boris/Sites/bsehovac.github.io/the-cube/src/js/Themes.js",
+		"/Users/boris/Downloads/GeometryFighter/GeometryFighter/GameViewController.swift",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/the-cube/src/scss/components/_range.sass",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/the-cube/src/js/Timer.js",
 		"/Library/WebServer/Documents/Localhost/bsehovac.github.io/the-cube/src/js/Storage.js",
@@ -793,19 +820,11 @@
 		"/Users/boris/Documents/bsehovac.github.io/index.html",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/World.js",
 		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Tween.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_ui.sass",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Lettering.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/styles.sass",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/variables/_easings.sass",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/Cube.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/js/components/Timer.js",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/mixins/_transition.sass",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/mixins/_fullscreen.scss",
-		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_btn.scss"
+		"/Users/boris/Documents/bsehovac.github.io/src/scss/components/_ui.sass"
 	],
 	"find":
 	{
-		"height": 30.0
+		"height": 54.0
 	},
 	"find_in_files":
 	{
@@ -865,6 +884,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"scramble",
+			"flipConf",
+			"flip",
+			" r",
+			" p",
+			" s",
+			" x",
 			"/assets",
 			"theCube_gameCubeData",
 			"theCube_gameInProgress",
@@ -985,14 +1011,7 @@
 			"name:",
 			"super(",
 			"super( true,",
-			"._",
-			"timer\\(",
-			"timer(",
-			"timer",
-			"(.*)name: '(.*)',\\n",
-			"timer.stop()",
-			"Tween",
-			"Tween("
+			"._"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1000,6 +1019,10 @@
 		"regex": false,
 		"replace_history":
 		[
+			" edgeCornerRadius",
+			" edgeSize / -2",
+			" edgeSize",
+			" p",
 			"theCube_savedState",
 			"theCube_playing",
 			"theCube_time",
@@ -1123,11 +1146,7 @@
 			"this",
 			"position",
 			"aa",
-			"33",
-			"aa",
-			"",
-			"position.drag",
-			"drag"
+			"33"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -1138,54 +1157,54 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/js/Game.js",
+					"file": "index.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6655,
+						"buffer_size": 4915,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1803,
-								2560
+								2345,
+								2345
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1396.0,
+						"translation.y": 644.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "src/js/Themes.js",
+					"file": "src/js/Preferences.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2129,
+						"buffer_size": 1619,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1963,
-								1840
+								483,
+								483
 							]
 						],
 						"settings":
@@ -1195,10 +1214,70 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1512.0,
+						"translation.y": 82.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/js/Storage.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4862,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4324,
+								4324
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2528.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/js/Controls.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12682,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								391,
+								391
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -1206,7 +1285,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 30.0
+		"height": 28.0
 	},
 	"input":
 	{
@@ -1247,7 +1326,7 @@
 	"project": "Cube.sublime-project",
 	"replace":
 	{
-		"height": 56.0
+		"height": 52.0
 	},
 	"save_all_on_build": true,
 	"select_file":

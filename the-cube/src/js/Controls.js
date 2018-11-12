@@ -12,10 +12,10 @@ class Controls {
 
     this.game = game;
 
-    this.flipSpeed = 350;
-    this.flipBounce = 2;
-    this.scrambleSpeed = 150;
-    this.scrambleBounce = 0;
+    this.flipConfig = 0;
+
+    this.flipEasings = [ Easing.Power.Out( 3 ), Easing.Sine.Out(), Easing.Back.Out( 2 ) ];
+    this.flipSpeeds = [ 100, 175, 350 ];
 
     this.raycaster = new THREE.Raycaster();
 
@@ -232,17 +232,20 @@ class Controls {
 
   rotateLayer( rotation, scramble, callback ) {
 
-    const bounce = scramble ? this.scrambleBounce : this.flipBounce;
-    const bounceCube = ( bounce > 0 ) ? this.bounceCube() : ( () => {} );
+    const config = scramble ? 0 : this.flipConfig;
+
+    const easing = this.flipEasings[ config ];
+    const duration = this.flipSpeeds[ config ]
+    const bounce = ( config == 2 ) ? this.bounceCube() : ( () => {} );
 
     this.rotationTween = new Tween( {
-      duration:scramble ? this.scrambleSpeed : this.flipSpeed,
-      easing: Easing.Back.Out( bounce ),
+      easing: easing,
+      duration: duration,
       onUpdate: tween => {
 
         let deltaAngle = tween.delta * rotation;
         this.group.rotateOnAxis( this.flipAxis, deltaAngle );
-        bounceCube( tween.value, deltaAngle, rotation );
+        bounce( tween.value, deltaAngle, rotation );
 
       },
       onComplete: () => {
@@ -287,9 +290,13 @@ class Controls {
 
   rotateCube( rotation, callback ) {
 
+    const config = this.flipConfig;
+    const easing = [ Easing.Power.Out( 4 ), Easing.Sine.Out(), Easing.Back.Out( 2 ) ][ config ];
+    const duration = [ 100, 150, 350 ][ config ]
+
     this.rotationTween = new Tween( {
-      duration: this.flipSpeed,
-      easing: Easing.Back.Out( this.flipBounce ),
+      easing: easing,
+      duration: duration,
       onUpdate: tween => {
 
         this.edges.rotateOnWorldAxis( this.flipAxis, tween.delta * rotation );

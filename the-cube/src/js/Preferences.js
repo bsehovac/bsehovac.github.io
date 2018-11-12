@@ -18,13 +18,13 @@ class Preferences {
 
     this.ranges = {
 
-      speed: new Range( 'speed', {
-        value: this.game.controls.flipSpeed,
-        range: [ 400, 100 ], 
+      flip: new Range( 'flip', {
+        value: this.game.controls.flipConfig,
+        range: [ 0, 2 ],
+        step: 1,
         onUpdate: value => {
 
-          this.game.controls.flipSpeed = value;
-          this.game.controls.flipBounce = getProgressInRange( value, 100, 400 ) * 2.5;
+          this.game.controls.flipConfig = value;
 
         },
         onComplete: () => this.game.storage.savePreferences(),

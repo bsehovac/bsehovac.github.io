@@ -10,7 +10,6 @@ class Storage {
 
       this.clearGame();
       this.clearPreferences();
-      // this.clearScores();
       localStorage.setItem( 'theCube_version', window.gameVersion );
 
     }
@@ -155,9 +154,8 @@ class Storage {
 
       if ( ! preferences ) throw new Error();
 
-      this.game.controls.flipSpeed = preferences.flipSpeed;
-      this.game.controls.flipBounce = preferences.flipBounce;
-      this.game.scrambler.scrambleLength = preferences.scrambleLength;
+      this.game.controls.flipConfig = parseInt( preferences.flipConfig );
+      this.game.scrambler.scrambleLength = parseInt( preferences.scrambleLength );
 
       this.game.world.fov = parseFloat( preferences.fov );
       this.game.world.resize();
@@ -168,8 +166,7 @@ class Storage {
 
     } catch (e) {
 
-      this.game.controls.flipSpeed = 350;
-      this.game.controls.flipBounce = 2;
+      this.game.controls.flipConfig = 0;
       this.game.scrambler.scrambleLength = 20;
 
       this.game.world.fov = 10;
@@ -188,8 +185,7 @@ class Storage {
   savePreferences() {
 
     const preferences = {
-      flipSpeed: this.game.controls.flipSpeed,
-      flipBounce: this.game.controls.flipBounce,
+      flipConfig: this.game.controls.flipConfig,
       scrambleLength: this.game.scrambler.scrambleLength,
       fov: this.game.world.fov,
       theme: this.game.themes.theme,
