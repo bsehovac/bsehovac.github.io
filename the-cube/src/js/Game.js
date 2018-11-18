@@ -65,6 +65,7 @@ class Game {
 
     this.state = MENU;
     this.saved = false;
+    this.newGame = false;
 
     this.storage.init();
     this.preferences.init();
@@ -107,10 +108,11 @@ class Game {
 
           this.scrambler.scramble();
           this.controls.scrambleCube();
+          this.newGame = true;
 
         }
 
-        const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.scrambleSpeed;
+        const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.flipSpeeds[0];
 
         this.state = PLAYING;
         this.saved = true;
@@ -130,7 +132,7 @@ class Game {
         setTimeout( () => {
 
           this.controls.enable();
-          this.timer.start( true )
+          if ( ! this.newGame ) this.timer.start( true )
 
         }, this.transition.durations.zoom );
 
@@ -182,6 +184,17 @@ class Game {
 
     };
 
+    this.controls.onMove = () => {
+
+      if ( this.newGame ) {
+        
+        this.timer.start( true );
+        this.newGame = false;
+
+      }
+
+    }
+
     this.dom.buttons.back.onclick = event => {
 
       if ( this.transition.activeTransitions > 0 ) return;
@@ -231,12 +244,6 @@ class Game {
       this.transition.cube( HIDE );
 
       setTimeout( () => this.transition.stats( SHOW ), 1000 );
-
-    }
-
-    this.controls.onMove = () => {
-
-
 
     }
 

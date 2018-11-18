@@ -41,8 +41,8 @@ class Scores {
     this.setStat( 'best-time', this.convertTime( this.best ) );
     this.setStat( 'worst-time', this.convertTime( this.worst ) );
     this.setStat( 'average-5', this.getAverage( 5 ) );
-    this.setStat( 'average-10', this.getAverage( 10 ) );
-    this.setStat( 'average-15', this.getAverage( 15 ) );
+    this.setStat( 'average-12', this.getAverage( 12 ) );
+    this.setStat( 'average-25', this.getAverage( 25 ) );
 
   }
 
