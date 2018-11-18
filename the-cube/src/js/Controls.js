@@ -15,7 +15,7 @@ class Controls {
     this.flipConfig = 0;
 
     this.flipEasings = [ Easing.Power.Out( 3 ), Easing.Sine.Out(), Easing.Back.Out( 2 ) ];
-    this.flipSpeeds = [ 100, 175, 350 ];
+    this.flipSpeeds = [ 125, 200, 350 ];
 
     this.raycaster = new THREE.Raycaster();
 
@@ -250,7 +250,7 @@ class Controls {
       },
       onComplete: () => {
 
-        this.onMove();
+        if ( ! scramble ) this.onMove();
 
         const layer = this.flipLayer.slice( 0 );
 
