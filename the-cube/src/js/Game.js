@@ -207,7 +207,7 @@ class Game {
       this.transition.zoom( MENU, 0 );
 
       this.controls.disable();
-      this.timer.stop();
+      if ( ! this.newGame ) this.timer.stop();
       this.transition.timer( HIDE );
 
       setTimeout( () => this.transition.title( SHOW ), this.transition.durations.zoom - 1000 );
