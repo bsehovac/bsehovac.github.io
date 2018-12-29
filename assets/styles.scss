@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&subset=latin-ext');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400&subset=latin-ext');
 
 * {
   margin: 0;
@@ -20,10 +20,11 @@ body {
 body {
   margin: 0;
   background: #000;
-  color: #fff;
+  color: #bbb;
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   font-style: normal;
+  font-weight: 300;
   line-height: 1.2;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -31,6 +32,13 @@ body {
 
 a {
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
 }
 
 .cnt {
@@ -39,47 +47,136 @@ a {
   max-width: 1200px;
 }
 
+.icon {
+  display: block;
+}
+
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 150vw;
+  padding: 40px 0 60px;
 
   &__helix {
-    &,
-    canvas {
+    &, & canvas {
       position: absolute;
       display: block;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
-    }
-
-    canvas {
-      &:first-child {
-        z-index: 2;
-      }
-
-      &:last-child {
-        filter: blur(48px);
-        z-index: 1;
-      }
+      height: 600px;
     }
   }
 
   &__content {
     position: relative;
-    padding-top: 110vw;
+    padding-top: 330px;
   }
 
   &__title {
     font-size: 44px;
-    font-weight: 700;
     line-height: 1;
     margin-bottom: 10px;
+    color: #fff;
   }
 
-  .hero__subtitle {
+  &__subtitle {
     font-size: 20px;
-    color: #36f;
+    color: #38f;
+  }
+
+  &__text {
+    margin-top: 15px;
+  }
+
+  &__social {
+    position: absolute;
+    top: 40px;
+    right: 32px;
+  }
+}
+
+.social {
+  white-space: nowrap;
+
+  &__icon {
+    font-size: 0;
+    display: inline-block;
+    vertical-align: top;
+
+    .icon {
+      font-size: 32px;
+    }
+
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+}
+
+.section {
+  padding: 40px 0;
+
+  &__title {
+    font-size: 26px;
+    margin-bottom: 40px;
+    color: #fff;
+  }
+}
+
+.list {
+  &__item {
+    position: relative;
+    padding-left: 40px;
+    padding-right: 10px;
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 5px;
+      top: 10px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #38f;
+      z-index: 2;
+    }
+
+    &:not(:last-child) {
+      padding-bottom: 30px;
+
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 7px;
+        width: 1px;
+        background: #333;
+        top: 20px;
+        bottom: -5px;
+        z-index: 1;
+      }
+    }
+  }
+
+  &__title {
+    font-size: 20px;
+    margin-bottom: 3px;
+    display: inline-block;
+    color: #fff;
+  }
+
+  &__time {
+    font-size: 15px;
+    color: #38f;
+  }
+
+  &__text {
+    font-size: 15px;
+    margin-top: 10px;
+
+    i {
+      color: #38f;
+    }
   }
 }
