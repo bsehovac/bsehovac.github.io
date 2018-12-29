@@ -44,7 +44,8 @@ a {
   min-height: 100vh;
 
   &__helix {
-    &, & canvas {
+    &,
+    canvas {
       position: absolute;
       display: block;
       top: 0;
@@ -52,12 +53,16 @@ a {
       width: 100%;
       height: 100%;
     }
+
+    canvas:last-child {
+      filter: blur(48px);
+      mix-blend-mode: hue;
+    }
   }
 
   &__content {
     position: relative;
-    padding-top: 65vh;
-    // text-align: right;
+    padding-top: 110vw;
   }
 
   &__title {

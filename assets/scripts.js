@@ -18,9 +18,10 @@ const stage = ( () => {
 
   const container = document.querySelector( '.hero__helix' )
 
-  const canvas = document.createElement( 'canvas' )
-  const ctx = canvas.getContext( '2d' )
-  container.appendChild( canvas )
+  const canvas = [ document.createElement( 'canvas' ), document.createElement( 'canvas' ) ]
+  const ctx = [ canvas[0].getContext( '2d' ), canvas[1].getContext( '2d' ) ]
+  container.appendChild( canvas[0] )
+  container.appendChild( canvas[1] )
 
   const renderer = new THREE.WebGLRenderer( { antialias: false, alpha: true } )
   // container.appendChild( renderer.domElement )
@@ -44,8 +45,10 @@ const stage = ( () => {
     const h = container.offsetHeight
     const dpi = window.devicePixelRatio
 
-    canvas.width = w * dpi
-    canvas.height = h * dpi
+    canvas[0].width = w * dpi
+    canvas[0].height = h * dpi
+    canvas[1].width = w * dpi / 4
+    canvas[1].height = h * dpi / 4
 
     helixes.forEach( helix => {
       helix.material.uniforms.dpi.value = dpi
@@ -71,15 +74,11 @@ const stage = ( () => {
 
     requestAnimationFrame( animate )
 
-    ctx.clearRect( 0, 0, canvas.width, canvas.height )
+    ctx[0].clearRect( 0, 0, canvas[0].width, canvas[0].height )
+    ctx[1].clearRect( 0, 0, canvas[1].width, canvas[1].height )
 
-    ctx.save()
-    ctx.filter = 'blur(48px)'
-    ctx.globalCompositeOperation = 'lighter'
-    ctx.drawImage( renderer.domElement, 0, 0 )
-    ctx.restore()
-
-    ctx.drawImage( renderer.domElement, 0, 0 )
+    ctx[0].drawImage( renderer.domElement, 0, 0, canvas[0].width, canvas[0].height )
+    ctx[1].drawImage( renderer.domElement, 0, 0, canvas[1].width, canvas[1].height )
 
   }
 
