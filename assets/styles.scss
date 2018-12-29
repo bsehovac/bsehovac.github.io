@@ -54,9 +54,15 @@ a {
       height: 100%;
     }
 
-    canvas:last-child {
-      filter: blur(48px);
-      mix-blend-mode: hue;
+    canvas {
+      &:first-child {
+        z-index: 2;
+      }
+
+      &:last-child {
+        filter: blur(48px);
+        z-index: 1;
+      }
     }
   }
 
