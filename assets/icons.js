@@ -13,7 +13,7 @@
     const viewbox = svgData.v.split(' ')
     const width = parseFloat( viewbox[2] ) / parseFloat( viewbox[3] )
     svg.setAttributeNS(null, 'viewBox', svgData.v)
-    svg.style.cssText = 'height: 1em; width' + width + 'em;'
+    svg.style.cssText = 'height: 1em; width: ' + width + 'em;'
 
     svg.innerHTML = svgData.c
     element.parentNode.replaceChild(svg, element)

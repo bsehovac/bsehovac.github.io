@@ -8,7 +8,7 @@
   font-style: inherit;
   line-height: inherit;
   box-sizing: border-box;
-  cursor: default; }
+  cursor: inherit; }
 
 html,
 body {
@@ -23,6 +23,7 @@ body {
   font-style: normal;
   font-weight: 300;
   line-height: 1.2;
+  cursor: default;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
 
@@ -45,8 +46,7 @@ ol {
 
 .hero {
   position: relative;
-  min-height: 150vw;
-  padding: 40px 0 60px; }
+  padding: 40px 0 40px; }
   .hero__helix, .hero__helix canvas {
     position: absolute;
     display: block;
@@ -56,7 +56,7 @@ ol {
     height: 600px; }
   .hero__content {
     position: relative;
-    padding-top: 330px; }
+    padding: 280px 0 20px; }
   .hero__title {
     font-size: 44px;
     line-height: 1;
@@ -68,9 +68,7 @@ ol {
   .hero__text {
     margin-top: 15px; }
   .hero__social {
-    position: absolute;
-    top: 40px;
-    right: 32px; }
+    text-align: right; }
 
 .social {
   white-space: nowrap; }
@@ -79,7 +77,8 @@ ol {
     display: inline-block;
     vertical-align: top; }
     .social__icon .icon {
-      font-size: 32px; }
+      font-size: 32px;
+      filter: drop-shadow(0 0 0.07em rgba(255, 255, 255, 0.5)); }
     .social__icon:not(:last-child) {
       margin-right: 5px; }
 

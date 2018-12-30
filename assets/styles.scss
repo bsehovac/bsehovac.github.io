@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400&subset=latin-ext');
 
+$blue: #38f;
+
 * {
   margin: 0;
   padding: 0;
@@ -9,7 +11,7 @@
   font-style: inherit;
   line-height: inherit;
   box-sizing: border-box;
-  cursor: default;
+  cursor: inherit;
 }
 
 html,
@@ -26,6 +28,7 @@ body {
   font-style: normal;
   font-weight: 300;
   line-height: 1.2;
+  cursor: default;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -47,14 +50,17 @@ ol {
   max-width: 1200px;
 }
 
+// .glow {
+//   filter: drop-shadow(0 0 0.2em rgba($blue, 0.5));
+// }
+
 .icon {
   display: block;
 }
 
 .hero {
   position: relative;
-  min-height: 150vw;
-  padding: 40px 0 60px;
+  padding: 40px 0 40px;
 
   &__helix {
     &, & canvas {
@@ -69,7 +75,7 @@ ol {
 
   &__content {
     position: relative;
-    padding-top: 330px;
+    padding: 280px 0 20px;
   }
 
   &__title {
@@ -81,7 +87,7 @@ ol {
 
   &__subtitle {
     font-size: 20px;
-    color: #38f;
+    color: $blue;
   }
 
   &__text {
@@ -89,9 +95,7 @@ ol {
   }
 
   &__social {
-    position: absolute;
-    top: 40px;
-    right: 32px;
+    text-align: right;
   }
 }
 
@@ -105,6 +109,7 @@ ol {
 
     .icon {
       font-size: 32px;
+      filter: drop-shadow(0 0 0.07em rgba(#fff, 0.5));
     }
 
     &:not(:last-child) {
@@ -138,7 +143,7 @@ ol {
       width: 5px;
       height: 5px;
       border-radius: 50%;
-      background: #38f;
+      background: $blue;
       z-index: 2;
     }
 
@@ -168,7 +173,7 @@ ol {
 
   &__time {
     font-size: 15px;
-    color: #38f;
+    color: $blue;
   }
 
   &__text {
@@ -176,7 +181,7 @@ ol {
     margin-top: 10px;
 
     i {
-      color: #38f;
+      color: $blue;
     }
   }
 }
