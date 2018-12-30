@@ -3,22 +3,15 @@ const options = {
     count: 50,
     turns: 2,
     thickness: 3.8,
-    particles: 150,
+    particles: 100,
     length: 200,
     speed: 0.4,
     radius: [ 2, 10 ],
     move: [ -1, 1 ],
     moveSpeed: [ 0.1, 0.5 ],
-    color: [ '#02f', '#4cf' ]
+    color: [ '#02f', '#8ff' ]
   },
-  bloom: {
-    exposure: 1,
-    strength: 0.4,
-    radius: 0.8,
-    threshold: 0.25,
-  },
-  ssaa: 1,
-  postprocessing: true,
+  blurScale: 0.25,
   ticking: true,
 }
 
@@ -27,8 +20,13 @@ const stage = ( () => {
 
   const container = document.querySelector( '.hero__helix' )
 
-  const renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } )
+  const renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } )
+  renderer.domElement.classList.add( 'hero__helix-main' )
   container.appendChild( renderer.domElement )
+
+  const blur = new THREE.WebGLRenderer( { antialias: false, alpha: true } )
+  blur.domElement.classList.add( 'hero__helix-blur' )
+  container.appendChild( blur.domElement )
 
   const scene = new THREE.Scene()
 
@@ -42,24 +40,6 @@ const stage = ( () => {
 
   const clock = new THREE.Clock( false )
 
-  const passes = {
-    ssaa: new THREE.SSAARenderPass( scene, camera ),
-    bloom: new THREE.UnrealBloomPass(
-      new THREE.Vector2(),
-      options.bloom.strength,
-      options.bloom.radius,
-      options.bloom.threshold
-    ),
-  }
-
-  passes.ssaa.unbiased = false
-  passes.ssaa.sampleLevel = options.ssaa
-  passes.bloom.renderToScreen = true
-
-  const composer = new THREE.EffectComposer( renderer )
-  composer.addPass( passes.ssaa )
-  composer.addPass( passes.bloom )
-
   const resize = () => {
 
     const dpi = window.devicePixelRatio
@@ -71,11 +51,11 @@ const stage = ( () => {
       helix.material.resolution.set( w, h )
     } )
 
-    passes.bloom.setSize( w, h )
-    passes.ssaa.sampleLevel = dpi > 1 ? 0 : 1
-    composer.setSize( w * dpi, h * dpi )
     renderer.setSize( w, h )
     renderer.setPixelRatio( dpi )
+
+    blur.setSize( w * options.blurScale, h * options.blurScale )
+    blur.setPixelRatio( dpi )
 
     camera.aspect = w / h
     camera.updateProjectionMatrix()
@@ -84,39 +64,18 @@ const stage = ( () => {
 
   }
 
-  let dev
+  let stats
 
-  if ( window.location.href.includes('dev') ) {
+  if ( window.location.href.includes('stats') ) {
 
-    dev = {
-      stats: new Stats(),
-      gui: new dat.GUI(),
-    }
-
-    dev.gui.closed = true
-
-    container.appendChild( dev.stats.dom )
-
-    dev.gui.add( options.bloom, 'strength', 0.0, 3.0 ).step( 0.01 ).onChange( v =>
-      passes.bloom.strength = Number( v ) )
-
-    dev.gui.add( options.bloom, 'radius', 0.0, 1.0 ).step( 0.01 ).onChange( v =>
-      passes.bloom.radius = Number( v ) )
-
-    dev.gui.add( options.bloom, 'threshold', 0.0, 1.0 ).step( 0.01 ).onChange( v =>
-      passes.bloom.threshold = Number( v ) )
-
-    dev.gui.add( options.helix, 'thickness', 1.0, 10.0 ).step( 0.01 ).onChange( resize )
-
-    dev.gui.add( options, 'ticking' )
-
-    dev.gui.add( options, 'postprocessing' )
+    stats = new Stats()
+    container.appendChild( stats.dom )
 
   }
 
-  let rotationSpeed = 5
-
   const animate = () => {
+
+    requestAnimationFrame( animate )
 
     if ( options.ticking ) {
 
@@ -133,12 +92,10 @@ const stage = ( () => {
 
     }
 
-    if ( options.postprocessing ) composer.render()
-    else renderer.render( scene, camera )
+    renderer.render( scene, camera )
+    blur.render( scene, camera )
 
-    requestAnimationFrame( animate )
-
-    if ( dev ) dev.stats.update()
+    if ( stats ) stats.update()
 
   }
 
@@ -201,8 +158,6 @@ const helixes = ( () => {
     } )
 
     helix = new THREE.Line2( geometry, material )
-    // helix.computeLineDistances()
-    // helix.scale.set( 1, 1, 1 )
     helix.position.x = - o.length / 2
     stage.addHelix( helix )
 

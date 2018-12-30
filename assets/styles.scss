@@ -64,13 +64,30 @@ ol {
   padding: 40px 0 40px;
 
   &__helix {
-    &, & canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 600px;
+
+    &-main,
+    &-blur {
       position: absolute;
       display: block;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 600px;
+    }
+
+    &-blur {
+      filter: blur(10px);
+      transform-origin: top left;
+      transform: scale3d(4, 4, 4);
+      opacity: 0.5;
+      z-index: -2;
+    }
+
+    &-main {
+      z-index: -1;
     }
   }
 
@@ -106,13 +123,18 @@ ol {
   white-space: nowrap;
 
   &__icon {
+    transition: color 300ms ease;
     font-size: 0;
     display: inline-block;
     vertical-align: top;
 
+    &:hover {
+      color: $blue;
+    }
+
     .icon {
       font-size: 32px;
-      filter: drop-shadow(0 0 0.07em rgba(#fff, 0.5));
+      filter: drop-shadow(0 0 0.1em currentColor);
     }
 
     &:not(:last-child) {

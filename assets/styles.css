@@ -51,13 +51,25 @@ ol {
 .hero {
   position: relative;
   padding: 40px 0 40px; }
-  .hero__helix, .hero__helix canvas {
+  .hero__helix {
     position: absolute;
-    display: block;
     top: 0;
     left: 0;
     width: 100%;
     height: 600px; }
+    .hero__helix-main, .hero__helix-blur {
+      position: absolute;
+      display: block;
+      top: 0;
+      left: 0; }
+    .hero__helix-blur {
+      filter: blur(10px);
+      transform-origin: top left;
+      transform: scale3d(4, 4, 4);
+      opacity: 0.5;
+      z-index: -2; }
+    .hero__helix-main {
+      z-index: -1; }
   .hero__content {
     position: relative;
     padding: 280px 0 20px; }
@@ -77,12 +89,15 @@ ol {
 .social {
   white-space: nowrap; }
   .social__icon {
+    transition: color 300ms ease;
     font-size: 0;
     display: inline-block;
     vertical-align: top; }
+    .social__icon:hover {
+      color: #38f; }
     .social__icon .icon {
       font-size: 32px;
-      filter: drop-shadow(0 0 0.07em rgba(255, 255, 255, 0.5)); }
+      filter: drop-shadow(0 0 0.1em currentColor); }
     .social__icon:not(:last-child) {
       margin-right: 5px; }
 
