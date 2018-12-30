@@ -50,9 +50,9 @@ ol {
   max-width: 1200px;
 }
 
-// .glow {
-//   filter: drop-shadow(0 0 0.2em rgba($blue, 0.5));
-// }
+%glow {
+   text-shadow: 0 0 0.5em currentColor;
+}
 
 .icon {
   display: block;
@@ -79,6 +79,7 @@ ol {
   }
 
   &__title {
+    @extend %glow;
     font-size: 44px;
     line-height: 1;
     margin-bottom: 10px;
@@ -88,6 +89,7 @@ ol {
   &__subtitle {
     font-size: 20px;
     color: $blue;
+    @extend %glow;
   }
 
   &__text {
@@ -125,6 +127,7 @@ ol {
     font-size: 26px;
     margin-bottom: 40px;
     color: #fff;
+    @extend %glow;
   }
 }
 

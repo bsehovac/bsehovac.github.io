@@ -41,6 +41,9 @@ ol {
   margin: 0 auto;
   max-width: 1200px; }
 
+.hero__title, .hero__subtitle, .section__title {
+  text-shadow: 0 0 0.5em currentColor; }
+
 .icon {
   display: block; }
 
