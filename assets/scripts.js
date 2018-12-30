@@ -7,8 +7,6 @@ const options = {
     length: 200,
     speed: 0.4,
     radius: [ 2, 10 ],
-    move: [ -1, 1 ],
-    moveSpeed: [ 0.1, 0.5 ],
     color: [ '#02f', '#8ff' ]
   },
   blurScale: 0.25,
@@ -83,12 +81,9 @@ const stage = ( () => {
 
       helix.rotation.x = - time * options.helix.speed
 
-      helixes.forEach( ( helix, i ) => {
-
-        helix.position.y = Math.cos(time * helix.userData.speed) * helix.userData.move.x
-        helix.position.z = Math.sin(time * helix.userData.speed) * helix.userData.move.y
-
-      } )
+      helixes.forEach( ( helix, i ) =>
+        helix.rotation.x = Math.sin( time + i ) * 0.15
+      )
 
     }
 
@@ -160,13 +155,6 @@ const helixes = ( () => {
     helix = new THREE.Line2( geometry, material )
     helix.position.x = - o.length / 2
     stage.addHelix( helix )
-
-    helix.userData.speed = range( o.moveSpeed[ 0 ], o.moveSpeed[ 1 ], Math.random() )
-
-    helix.userData.move = new THREE.Vector2(
-      range( o.move[ 0 ], o.move[ 1 ], Math.random() ),
-      range( o.move[ 0 ], o.move[ 1 ], Math.random() )
-    )
 
     return helix
 
