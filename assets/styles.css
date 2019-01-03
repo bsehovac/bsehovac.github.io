@@ -42,9 +42,6 @@ ol {
   margin: 0 auto;
   max-width: 1200px; }
 
-.hero__title, .hero__subtitle, .section__title {
-  text-shadow: 0 0 0.5em currentColor; }
-
 .icon {
   display: block; }
 
@@ -52,11 +49,11 @@ ol {
   position: relative;
   padding: 40px 0 40px; }
   .hero__helix {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 600px; }
+    height: 100%; }
     .hero__helix-main, .hero__helix-blur {
       position: absolute;
       display: block;
@@ -87,17 +84,18 @@ ol {
     text-align: right; }
 
 .social {
-  white-space: nowrap; }
+  white-space: nowrap;
+  position: relative; }
   .social__icon {
     transition: color 300ms ease;
     font-size: 0;
     display: inline-block;
-    vertical-align: top; }
+    vertical-align: top;
+    color: #fff; }
     .social__icon:hover {
       color: #38f; }
     .social__icon .icon {
-      font-size: 32px;
-      filter: drop-shadow(0 0 0.1em currentColor); }
+      font-size: 32px; }
     .social__icon:not(:last-child) {
       margin-right: 5px; }
 
