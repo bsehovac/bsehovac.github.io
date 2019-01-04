@@ -120,12 +120,10 @@ const helixes = ( o => {
     fragmentShader: `
 
       uniform vec3 color;
-      // uniform sampler2D texture;
-      // varying vec2 vUv;
 
       void main() {
 
-        // vec4 sprite = texture2D(texture, vUv);
+        if (length(gl_PointCoord - vec2(0.5)) > 0.5) discard;
 
         gl_FragColor = vec4( color, 1.0 );
 
