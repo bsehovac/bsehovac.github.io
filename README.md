@@ -1,4 +1,3 @@
 # bsehovac.github.io
-Rubik's Cube Game
-
-Moved to: https://github.com/bsehovac/the-cube
+The Cube source code moved to:
+https://github.com/bsehovac/the-cube
