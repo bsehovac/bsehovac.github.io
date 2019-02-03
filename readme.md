@@ -1,4 +1,0 @@
----
-permalink: /index.html
----
-
